@@ -6,36 +6,47 @@ using UnityEngine.UI;
 public class TimingAndScore : MonoBehaviour {
 
     public float timer; // Timer for timing
-    private float squareStartTime; // The time when the note spawns
-    private float squarePerfectTime; // The end time for perfect hit
-    private float squareEarlyTime; // The early time
-    private float squareLateTime; // The late time, last possible hit time before input is cancelled
-    private int squareEarlyScore; // The value of the early hits for score
-    private int squarePerfectScore; // The value of the perfect hits for score
-    private int squareLateScore; // The value of the late hits for score
+    private float hitObjectStartTime; // The time when the note spawns
+    private float perfectJudgementTime; // The end time for perfect hit
+    private float earlyJudgementTime; // The early time
+    private float destroyedTime; // The late time, last possible hit time before input is cancelled
+    private int earlyScore; // The value of the early hits for score
+    private int perfectScore; // The value of the perfect hits for score
+    private int goodScore; // The value of the good hits for score
     public int playerTotalScore; // Total score for the player
     private int combo; // Total combo
     public Text comboText; // The combo text on UI
     public Text judgementText; // The judgement text such as PERFECT, MISS
     public Text playerTotalScoreText; // The score text
-    bool squareHit; // Has the square been hit
+    public Text timeWhenHitText; // Time when the user pressed down the key and hit a note
+    bool hitObjectHit; // Has the square been hit
+    public AudioSource clickSound; // The sound that plays when the button is pressed
+    public ParticleSystem particles; // The particles that appear when the button is pressed
 
-	// Use this for initialization
-	void Start () {
+    private float timeWhenHit;
 
-        // Initalize square values
-        squareStartTime = 0f; 
-        squareEarlyTime = 0.6f;
-        squarePerfectTime = 1.1f;
-        squareLateTime = 1.2f;
+    // Use this for initialization
+    void Start () {
+
+        // Initalize hit object
+        hitObjectStartTime = 0f; 
+
+        // Initialize judgements
+        earlyJudgementTime = 0.4f;
+        perfectJudgementTime = 0.8f;
+        destroyedTime = 1.2f;
         combo = 0;
-        squareHit = false;
+        hitObjectHit = false;
 
-        squareEarlyScore = 100; // 100 points for early hits
-        squarePerfectScore = 1000; // 1000 points for perfect hits
-        squareLateScore = 500; // 500 points for late hits
+        // Initialize scores
+        earlyScore = 1000; 
+        perfectScore = 5000; 
+        goodScore = 2500; 
 
-        playerTotalScore = 0; // Set to 0 at the start
+        playerTotalScore = 0;
+
+
+        timeWhenHit = 0;
 	}
 	
 	// Update is called once per frame
@@ -44,57 +55,76 @@ public class TimingAndScore : MonoBehaviour {
         // The timer increments per frame
         timer += Time.deltaTime;
 
-        // RESET TIMER FOR TESTING IF IT GOES ABOVE LARGE TIME
-        if (timer > 1)
-        {
-            timer = 0;
-        }
-
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             // Timing check to calculate the type of hit on timing (perfect, miss)
 
-            // CHECK IF PLAYER HIT EARLY
-            if (timer >= squareStartTime && timer <= squareEarlyTime)
+            if (hitObjectHit == false)
             {
-                judgementText.text = "EARLY"; // Sets judgement to early
-                judgementText.color = Color.red; // Changes text color to red
-                squareHit = true; // The square has been hit
-                combo++; // Increase combo
-                comboText.text = combo.ToString(); // Send current combo to update the UI text
-                playerTotalScore += squareEarlyScore; // Add early score value to the players current score
-                playerTotalScoreText.text = "Score: " + playerTotalScore; // Update the players score for the UI
+                // CHECK IF PLAYER HIT EARLY
+                if (timer >= hitObjectStartTime && timer <= earlyJudgementTime)
+                {
+                    hitObjectHit = true; // The square has been hit and further judgement is disabled
+
+                    particles.Play(); // Play the particle animation
+                    clickSound.Play(); // Play the click sound effect
+
+                    judgementText.text = "EARLY"; // Sets judgement to early
+                    judgementText.color = Color.red; // Changes text color to red
+                  
+                    combo++; // Increase combo
+                    comboText.text = "x " + combo.ToString(); // Send current combo to update the UI text
+
+                    playerTotalScore += earlyScore; // Add early score value to the players current score
+                    playerTotalScoreText.text = playerTotalScore.ToString(); // Update the players score for the UI
+
+                    timeWhenHit = timer; // Get the time when hit
+                    timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
+                }
+
+                // CHECK IF PLAYER HIT GOOD
+                if (timer >= earlyJudgementTime && timer <= perfectJudgementTime)
+                {
+                    hitObjectHit = true; // The square has been hit and further judgement is disabled
+
+                    particles.Play(); // Play the particle animation
+                    clickSound.Play(); // Play the click sound effect
+
+                    judgementText.text = "GOOD"; // Sets judgement to early
+                    judgementText.color = Color.blue; // Changes text color to red
+
+                    combo++; // Increase combo
+                    comboText.text = "x " + combo.ToString(); // Send current combo to update the UI text
+
+                    playerTotalScore += goodScore; // Add early score value to the players current score
+                    playerTotalScoreText.text = playerTotalScore.ToString(); // Update the players score for the UI
+
+                    timeWhenHit = timer; // Get the time when hit
+                    timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
+                }
+
+                // CHECK IF PLAYER HIT GOOD
+                if (timer >= perfectJudgementTime && timer <= destroyedTime)
+                {
+                    hitObjectHit = true; // The square has been hit and further judgement is disabled
+
+                    particles.Play(); // Play the particle animation
+                    clickSound.Play(); // Play the click sound effect
+
+                    judgementText.text = "PERFECT"; // Sets judgement to early
+                    judgementText.color = Color.yellow; // Changes text color to red
+
+                    combo++; // Increase combo
+                    comboText.text = "x " + combo.ToString(); // Send current combo to update the UI text
+
+                    playerTotalScore += perfectScore; // Add early score value to the players current score
+                    playerTotalScoreText.text = playerTotalScore.ToString(); // Update the players score for the UI
+
+                    timeWhenHit = timer; // Get the time when hit
+                    timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
+                }
             }
 
-            // CHECK IF PLAYER HIT PERFECT
-            if (timer > squareEarlyTime && timer <= squarePerfectTime)
-            {
-                judgementText.text = "PERFECT"; // Sets judgement to perfect
-                judgementText.color = Color.yellow; // Changes text color to yellow
-                squareHit = true; // The square has been hit
-                combo++; // Increase combo
-                comboText.text = combo.ToString(); // Send current combo to update the UI text
-                playerTotalScore += squarePerfectScore; // Add perfect score value to the players current score
-                playerTotalScoreText.text = "Score: " + playerTotalScore; // Update the players score for the UI
-            }
-
-            /*
-
-            Add this when more notes are added, does not work for testing currently
-             
-            // CHECK IF PLAYER HIT LATE
-            if (timer > squarePerfectTime && timer <= squareLateTime)
-            {
-                judgementText.text = "LATE"; // Sets judgement to late
-                judgementText.color = Color.magenta; // Changes text color
-                squareHit = true; // The square has been hit
-                combo++; // Increase combo
-                comboText.text = combo.ToString(); // Send current combo to update the UI text
-                playerTotalScore += squareLateScore; // Add perfect score value to the players current score
-                playerTotalScoreText.text = "Score: " + playerTotalScore; // Update the players score for the UI
-            }
-            */
         }
 
 	}
