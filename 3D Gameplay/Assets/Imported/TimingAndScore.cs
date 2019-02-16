@@ -19,21 +19,13 @@ public class TimingAndScore : MonoBehaviour {
     public Text judgementText; // The judgement text such as PERFECT, MISS
     public Text playerTotalScoreText; // The score text
     public Text timeWhenHitText; // Time when the user pressed down the key and hit a note
-    bool hitObjectHit; // Has the square been hit
+    public bool hitObjectHit; // Has the square been hit
     public AudioSource clickSound; // The sound that plays when the button is pressed
-    public ParticleSystem particles; // The particles that appear when the button is pressed
-
-    private float timeWhenHit;
-
-
-
-    public Animator anim;
-
-
-        
-
-
-
+    public GameObject explosion; // Particle system object
+    private float timeWhenHit; // The time when the object is hit
+    public Animator scoreAnimation; // Animate the score text
+    public Animator comboAnimation; // Animate the combo text
+    public Animator judgementAnimation; // Animate the judgement text
 
     // Use this for initialization
     void Start () {
@@ -76,7 +68,11 @@ public class TimingAndScore : MonoBehaviour {
                 {
                     hitObjectHit = true; // The square has been hit and further judgement is disabled
 
-                    particles.Play(); // Play the particle animation
+                    // particles.Play(); // Play the particle animation
+
+                    Instantiate(explosion, transform.position, Quaternion.Euler(90, 0, -45)); // Instantiate particle system
+
+
                     clickSound.Play(); // Play the click sound effect
 
                     judgementText.text = "EARLY"; // Sets judgement to early
@@ -92,8 +88,9 @@ public class TimingAndScore : MonoBehaviour {
                     timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
 
                     // Animates UI Text
-                    anim.Play("GameplayTextAnimation");
-
+                    scoreAnimation.Play("GameplayTextAnimation");
+                    comboAnimation.Play("GameplayTextAnimation");
+                    judgementAnimation.Play("GameplayTextAnimation");
                 }
 
                 // CHECK IF PLAYER HIT GOOD
@@ -101,7 +98,11 @@ public class TimingAndScore : MonoBehaviour {
                 {
                     hitObjectHit = true; // The square has been hit and further judgement is disabled
 
-                    particles.Play(); // Play the particle animation
+                    //particles.Play(); // Play the particle animation
+
+                    Instantiate(explosion, transform.position, Quaternion.Euler(90, 0, -45)); // Instantiate particle system
+
+
                     clickSound.Play(); // Play the click sound effect
 
                     judgementText.text = "GOOD"; // Sets judgement to early
@@ -117,7 +118,9 @@ public class TimingAndScore : MonoBehaviour {
                     timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
 
                     // Animates UI Text
-                    anim.Play("GameplayTextAnimation");
+                    scoreAnimation.Play("GameplayTextAnimation");
+                    comboAnimation.Play("GameplayTextAnimation");
+                    judgementAnimation.Play("GameplayTextAnimation");
                 }
 
                 // CHECK IF PLAYER HIT GOOD
@@ -125,7 +128,8 @@ public class TimingAndScore : MonoBehaviour {
                 {
                     hitObjectHit = true; // The square has been hit and further judgement is disabled
 
-                    particles.Play(); // Play the particle animation
+                    Instantiate(explosion, transform.position, Quaternion.Euler(90, 0, -45)); // Instantiate particle system
+
                     clickSound.Play(); // Play the click sound effect
 
                     judgementText.text = "PERFECT"; // Sets judgement to early
@@ -141,8 +145,10 @@ public class TimingAndScore : MonoBehaviour {
                     timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
 
                     // Animates UI Text
-                    anim.Play("GameplayTextAnimation");
-                    
+                    scoreAnimation.Play("GameplayTextAnimation");
+                    comboAnimation.Play("GameplayTextAnimation");
+                    judgementAnimation.Play("GameplayTextAnimation");
+
                 }
             }
         }

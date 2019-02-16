@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4760883225845294}
   - component: {fileID: 114982637209951864}
   m_Layer: 0
-  m_Name: HitObject
+  m_Name: BlueHitObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

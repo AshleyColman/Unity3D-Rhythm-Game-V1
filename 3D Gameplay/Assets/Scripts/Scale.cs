@@ -20,8 +20,6 @@ public class Scale : MonoBehaviour {
     private float perfectTime = 1f; // The perfect time to hit the hit object/max scale size for inner
 
     public Vector3 objectScale;
-    public Text scaleLerpTimeText;
-    public Text objectScaleText;
 
 	// Use this for initialization
 	void Start () {
@@ -46,8 +44,6 @@ public class Scale : MonoBehaviour {
         {
            transform.localScale = Lerp(minScale, maxScale, timeStartedLerping, lerpTime);
            objectScale = transform.localScale;
-           scaleLerpTimeText.text = "Scale Lerp Time: " + timer.ToString();
-           objectScaleText.text = "Object Scale: " + objectScale.ToString();
         }
 
         // Delay the inner ring at max size for a few extra time
