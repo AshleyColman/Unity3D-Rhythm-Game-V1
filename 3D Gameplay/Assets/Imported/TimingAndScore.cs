@@ -25,6 +25,16 @@ public class TimingAndScore : MonoBehaviour {
 
     private float timeWhenHit;
 
+
+
+    public Animator anim;
+
+
+        
+
+
+
+
     // Use this for initialization
     void Start () {
 
@@ -80,6 +90,10 @@ public class TimingAndScore : MonoBehaviour {
 
                     timeWhenHit = timer; // Get the time when hit
                     timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
+
+                    // Animates UI Text
+                    anim.Play("GameplayTextAnimation");
+
                 }
 
                 // CHECK IF PLAYER HIT GOOD
@@ -101,6 +115,9 @@ public class TimingAndScore : MonoBehaviour {
 
                     timeWhenHit = timer; // Get the time when hit
                     timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
+
+                    // Animates UI Text
+                    anim.Play("GameplayTextAnimation");
                 }
 
                 // CHECK IF PLAYER HIT GOOD
@@ -122,10 +139,13 @@ public class TimingAndScore : MonoBehaviour {
 
                     timeWhenHit = timer; // Get the time when hit
                     timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
+
+                    // Animates UI Text
+                    anim.Play("GameplayTextAnimation");
+                    
                 }
             }
-
         }
-
-	}
+    }
+    
 }
