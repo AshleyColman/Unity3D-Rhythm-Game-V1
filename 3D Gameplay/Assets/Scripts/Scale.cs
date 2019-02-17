@@ -16,7 +16,6 @@ public class Scale : MonoBehaviour {
 
     // Timer and spawn variables
     public float timer;
-    private float spawnTime = 1f;
     private float perfectTime = 1f; // The perfect time to hit the hit object/max scale size for inner
 
     public Vector3 objectScale;

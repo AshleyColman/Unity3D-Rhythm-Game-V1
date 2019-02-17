@@ -7,7 +7,7 @@ public class DestroyObject : MonoBehaviour {
     private float timer;
     private float destroyTime = 1.2f; // Hit object destroy time
 
-    public TimingAndScore timingAndScore;
+
 
 	// Use this for initialization
 	void Start () {
@@ -26,14 +26,9 @@ public class DestroyObject : MonoBehaviour {
         {
             DestroyHitObject();
         }
-
-        // If the buttons key has been pressed destroy object
-        if (timingAndScore.hitObjectHit == true)
-        {
-            DestroyHitObject();
-        }
     }
 
+    // Destory hit object
     public void DestroyHitObject()
     {
         Destroy(gameObject);

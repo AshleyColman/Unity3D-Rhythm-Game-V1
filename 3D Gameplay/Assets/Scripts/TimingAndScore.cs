@@ -15,23 +15,23 @@ public class TimingAndScore : MonoBehaviour {
     private int goodScore; // The value of the good hits for score
     public int playerTotalScore; // Total score for the player
     private int combo; // Total combo
-    public Text timeWhenHitText; // Time when the user pressed down the key and hit a note
     public bool hitObjectHit; // Has the square been hit
-    public AudioSource clickSound; // The sound that plays when the button is pressed
-    public GameObject explosion; // Particle system object
     private float timeWhenHit; // The time when the object is hit
-    public Animator scoreAnimation; // Animate the score text
-    public Animator comboAnimation; // Animate the combo text
-    public Animator judgementAnimation; // Animate the judgement text
+    public Vector3 hitObjectPosition; // The position of the object
 
-    private ScoreManager scoreManager;
-
+    private ScoreManager scoreManager; // Manage score UI text
+    private SoundController soundController; // Manage audio
+    private ExplosionController explosionController; // Manage explosions
+    private DestroyObject destroyObject; // Manages destroys
 
     // Use this for initialization
     void Start () {
 
+        // References
         scoreManager = FindObjectOfType<ScoreManager>();
-
+        soundController = FindObjectOfType<SoundController>();
+        explosionController = FindObjectOfType<ExplosionController>();
+        destroyObject = FindObjectOfType<DestroyObject>();
 
         // Initalize hit object
         hitObjectStartTime = 0f; 
@@ -49,8 +49,6 @@ public class TimingAndScore : MonoBehaviour {
         goodScore = 2500; 
 
         playerTotalScore = 0;
-
-
         timeWhenHit = 0;
 	}
 	
@@ -71,12 +69,10 @@ public class TimingAndScore : MonoBehaviour {
                 {
                     hitObjectHit = true; // The square has been hit and further judgement is disabled
 
-                    // particles.Play(); // Play the particle animation
+                    hitObjectPosition = transform.position; // Get the position of the object
+                    explosionController.SpawnExplosion(hitObjectPosition); // Pass the position and spawn a particle system
 
-                    Instantiate(explosion, transform.position, Quaternion.Euler(90, 0, -45)); // Instantiate particle system
-
-
-                    clickSound.Play(); // Play the click sound effect
+                    soundController.PlayHitSound(); // Play the hitsound
 
                     scoreManager.AddJudgement("EARLY"); // Sets judgement to early
 
@@ -87,12 +83,8 @@ public class TimingAndScore : MonoBehaviour {
                     scoreManager.AddScore(playerTotalScore); // Pass to score manager to update text
 
                     timeWhenHit = timer; // Get the time when hit
-                    timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
 
-                    // Animates UI Text
-                    scoreAnimation.Play("GameplayTextAnimation");
-                    comboAnimation.Play("GameplayTextAnimation");
-                    judgementAnimation.Play("GameplayTextAnimation");
+                    DestroyHitObject(); // Destroy hit object
                 }
 
                 // CHECK IF PLAYER HIT GOOD
@@ -100,12 +92,10 @@ public class TimingAndScore : MonoBehaviour {
                 {
                     hitObjectHit = true; // The square has been hit and further judgement is disabled
 
-                    //particles.Play(); // Play the particle animation
+                    hitObjectPosition = transform.position; // Get the position of the object
+                    explosionController.SpawnExplosion(hitObjectPosition); // Pass the position and spawn a particle system
 
-                    Instantiate(explosion, transform.position, Quaternion.Euler(90, 0, -45)); // Instantiate particle system
-
-
-                    clickSound.Play(); // Play the click sound effect
+                    soundController.PlayHitSound(); // Play the hitsound
 
                     scoreManager.AddJudgement("GOOD"); // Sets judgement to early
 
@@ -116,12 +106,8 @@ public class TimingAndScore : MonoBehaviour {
                     scoreManager.AddScore(playerTotalScore); // Pass to score manager to update text
 
                     timeWhenHit = timer; // Get the time when hit
-                    timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
 
-                    // Animates UI Text
-                    scoreAnimation.Play("GameplayTextAnimation");
-                    comboAnimation.Play("GameplayTextAnimation");
-                    judgementAnimation.Play("GameplayTextAnimation");
+                    DestroyHitObject(); // Destroy hit object
                 }
 
                 // CHECK IF PLAYER HIT GOOD
@@ -129,9 +115,10 @@ public class TimingAndScore : MonoBehaviour {
                 {
                     hitObjectHit = true; // The square has been hit and further judgement is disabled
 
-                    Instantiate(explosion, transform.position, Quaternion.Euler(90, 0, -45)); // Instantiate particle system
+                    hitObjectPosition = transform.position; // Get the position of the object
+                    explosionController.SpawnExplosion(hitObjectPosition); // Pass the position and spawn a particle system
 
-                    clickSound.Play(); // Play the click sound effect
+                    soundController.PlayHitSound(); // Play the hitsound
 
                     scoreManager.AddJudgement("PERFECT");
 
@@ -142,16 +129,16 @@ public class TimingAndScore : MonoBehaviour {
                     scoreManager.AddScore(playerTotalScore); // Pass to score manager to update text
 
                     timeWhenHit = timer; // Get the time when hit
-                    timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
 
-                    // Animates UI Text
-                    scoreAnimation.Play("GameplayTextAnimation");
-                    comboAnimation.Play("GameplayTextAnimation");
-                    judgementAnimation.Play("GameplayTextAnimation");
-
+                    DestroyHitObject(); // Destroy hit object
                 }
             }
         }
     }
-    
+
+    // Destory hit object
+    private void DestroyHitObject()
+    {
+        Destroy(gameObject);
+    }
 }

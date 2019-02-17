@@ -11,6 +11,9 @@ public class ScoreManager : MonoBehaviour {
     public Text comboText;
     public int judgement;
     public Text judgementText;
+    public Animator scoreAnimation; // Animate the score text
+    public Animator comboAnimation; // Animate the combo text
+    public Animator judgementAnimation; // Animate the judgement text
 
     // Use this for initialization
     void Start () {
@@ -29,17 +32,25 @@ public class ScoreManager : MonoBehaviour {
     {
         score += scorePass;
         scoreText.text = score.ToString();
+
+        scoreAnimation.Play("GameplayTextAnimation");
     }
 
+    // Update combo text
     public void AddCombo(int comboPass)
     {
         combo += comboPass;
         comboText.text = combo.ToString();
+
+        comboAnimation.Play("GameplayTextAnimation");
     }
 
+    // Update judgement text
     public void AddJudgement(string judgementPass)
     {
         judgementText.text = judgementPass.ToString();
+
+        judgementAnimation.Play("GameplayTextAnimation");
 
         if (judgementPass == "EARLY")
         {
