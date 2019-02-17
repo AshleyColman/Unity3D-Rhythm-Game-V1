@@ -15,9 +15,6 @@ public class TimingAndScore : MonoBehaviour {
     private int goodScore; // The value of the good hits for score
     public int playerTotalScore; // Total score for the player
     private int combo; // Total combo
-    public Text comboText; // The combo text on UI
-    public Text judgementText; // The judgement text such as PERFECT, MISS
-    public Text playerTotalScoreText; // The score text
     public Text timeWhenHitText; // Time when the user pressed down the key and hit a note
     public bool hitObjectHit; // Has the square been hit
     public AudioSource clickSound; // The sound that plays when the button is pressed
@@ -27,8 +24,14 @@ public class TimingAndScore : MonoBehaviour {
     public Animator comboAnimation; // Animate the combo text
     public Animator judgementAnimation; // Animate the judgement text
 
+    private ScoreManager scoreManager;
+
+
     // Use this for initialization
     void Start () {
+
+        scoreManager = FindObjectOfType<ScoreManager>();
+
 
         // Initalize hit object
         hitObjectStartTime = 0f; 
@@ -75,14 +78,13 @@ public class TimingAndScore : MonoBehaviour {
 
                     clickSound.Play(); // Play the click sound effect
 
-                    judgementText.text = "EARLY"; // Sets judgement to early
-                    judgementText.color = Color.red; // Changes text color to red
-                  
-                    combo++; // Increase combo
-                    comboText.text = "x " + combo.ToString(); // Send current combo to update the UI text
+                    scoreManager.AddJudgement("EARLY"); // Sets judgement to early
 
-                    playerTotalScore += earlyScore; // Add early score value to the players current score
-                    playerTotalScoreText.text = playerTotalScore.ToString(); // Update the players score for the UI
+                    combo++; // Increase combo
+                    scoreManager.AddCombo(combo); // Send current combo to update the UI text
+
+                    playerTotalScore += earlyScore; // Increase score
+                    scoreManager.AddScore(playerTotalScore); // Pass to score manager to update text
 
                     timeWhenHit = timer; // Get the time when hit
                     timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
@@ -105,14 +107,13 @@ public class TimingAndScore : MonoBehaviour {
 
                     clickSound.Play(); // Play the click sound effect
 
-                    judgementText.text = "GOOD"; // Sets judgement to early
-                    judgementText.color = Color.blue; // Changes text color to red
+                    scoreManager.AddJudgement("GOOD"); // Sets judgement to early
 
                     combo++; // Increase combo
-                    comboText.text = "x " + combo.ToString(); // Send current combo to update the UI text
+                    scoreManager.AddCombo(combo); // Send current combo to update the UI text
 
                     playerTotalScore += goodScore; // Add early score value to the players current score
-                    playerTotalScoreText.text = playerTotalScore.ToString(); // Update the players score for the UI
+                    scoreManager.AddScore(playerTotalScore); // Pass to score manager to update text
 
                     timeWhenHit = timer; // Get the time when hit
                     timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
@@ -132,14 +133,13 @@ public class TimingAndScore : MonoBehaviour {
 
                     clickSound.Play(); // Play the click sound effect
 
-                    judgementText.text = "PERFECT"; // Sets judgement to early
-                    judgementText.color = Color.yellow; // Changes text color to red
+                    scoreManager.AddJudgement("PERFECT");
 
                     combo++; // Increase combo
-                    comboText.text = "x " + combo.ToString(); // Send current combo to update the UI text
+                    scoreManager.AddCombo(combo); // Send current combo to update the UI text
 
                     playerTotalScore += perfectScore; // Add early score value to the players current score
-                    playerTotalScoreText.text = playerTotalScore.ToString(); // Update the players score for the UI
+                    scoreManager.AddScore(playerTotalScore); // Pass to score manager to update text
 
                     timeWhenHit = timer; // Get the time when hit
                     timeWhenHitText.text = "Time When Hit: " + timeWhenHit.ToString(); // The time when the user hit the note
