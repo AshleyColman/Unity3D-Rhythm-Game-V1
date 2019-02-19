@@ -9,7 +9,7 @@ public class ScoreManager : MonoBehaviour {
     public Text scoreText;
     public int combo;
     public Text comboText;
-    public int judgement;
+    public string judgement;
     public Text judgementText;
     public Animator scoreAnimation; // Animate the score text
     public Animator comboAnimation; // Animate the combo text

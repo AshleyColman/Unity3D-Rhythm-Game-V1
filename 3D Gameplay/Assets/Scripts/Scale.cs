@@ -8,42 +8,42 @@ public class Scale : MonoBehaviour {
     // Lerp Variables
     private bool shouldLerp = false; // Starts the lerp
 
-    public Vector3 maxScale; // Max scale value
-    public Vector3 minScale; // Min scale value
+    private Vector3 maxScale; // Max scale value
+    private Vector3 minScale; // Min scale value
 
     public float timeStartedLerping; // The time started lerping
-    public float lerpTime;
+    private float lerpTime;
+    private float timeToStartLerping;
 
     // Timer and spawn variables
     public float timer;
-    private float perfectTime = 1f; // The perfect time to hit the hit object/max scale size for inner
+    private float perfectTime = 1.2f; // The perfect time to hit the hit object/max scale size for inner
 
     public Vector3 objectScale;
 
+    public float positionX;
+
 	// Use this for initialization
 	void Start () {
-        shouldLerp = true;
-	}
+        timeStartedLerping = 0;
+        lerpTime = 1;
+        timeToStartLerping = 0;
+        objectScale = transform.localScale;
+        maxScale = new Vector3(5, 1, 5);
+        minScale = new Vector3(0, 0, 0);
+    }
 
     // Update is called once per frame
     void Update () {
-
-
+        
         // Increments timer
         timer += Time.deltaTime;
 
-        // Starts the lerp from maxScale to minScale and resets the timer
-        if (timer >= lerpTime)
-            {
-                StartLerping();
-            }
+        // Increment the time since spawned
+        timeStartedLerping += Time.deltaTime;
 
-        // Started the lerping by changing the scale
-        if (shouldLerp)
-        {
-           transform.localScale = Lerp(minScale, maxScale, timeStartedLerping, lerpTime);
-           objectScale = transform.localScale;
-        }
+        // Lerp scale
+        transform.localScale = Lerp(minScale, maxScale, timeStartedLerping, lerpTime);
 
         // Delay the inner ring at max size for a few extra time
         if (timer >= perfectTime)
@@ -52,33 +52,24 @@ public class Scale : MonoBehaviour {
         }
 
     }
-
+    
     // Lerping scale function
-    public Vector3 Lerp(Vector3 maxScale, Vector3 minScale, float timeStartedLerping, float lerpTime = 1)
+    public Vector3 Lerp(Vector3 minScale, Vector3 maxScale, float timeStartedLerping, float lerpTime)
     {
-        float timeSinceStarted = Time.time - timeStartedLerping;
+        float timeSinceStarted = timeStartedLerping;
 
         float percentageComplete = timeSinceStarted / lerpTime;
 
-        var result = Vector3.Lerp(maxScale, minScale, percentageComplete);
+        var result = Vector3.Lerp(minScale, maxScale, percentageComplete);
 
         return result;
     }
-
-    // Sets the time it started lerping, sets should lerp to true
-    private void StartLerping()
-    {
-        timeStartedLerping = Time.time;
-
-        shouldLerp = true;
-    }
-
+    
     // Delays the inner for a few seconds keeping it at max scale
     IEnumerator DelayInner()
     {
         transform.localScale = maxScale;
         yield return new WaitForSeconds(.2f);
     }
-
-
+    
 }

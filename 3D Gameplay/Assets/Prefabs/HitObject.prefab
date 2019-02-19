@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4760883225845294}
   - component: {fileID: 114982637209951864}
+  - component: {fileID: 114141641589948612}
   m_Layer: 0
   m_Name: HitObject
   m_TagString: Untagged
@@ -218,6 +219,21 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114141641589948612
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1012444458814832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b77be63652558c74db7e157f7bc24945, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timer: 0
+  playerTotalScore: 0
+  hitObjectHit: 0
+  hitObjectPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &114229084410634322
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -247,8 +263,6 @@ MonoBehaviour:
   lerpTime: 1
   timer: 0
   objectScale: {x: 0, y: 0, z: 0}
-  scaleLerpTimeText: {fileID: 0}
-  objectScaleText: {fileID: 0}
 --- !u!114 &114594176427271636
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -286,4 +300,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b3db52fb99ed04aaa6ed51d4773e23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timingAndScore: {fileID: 0}
