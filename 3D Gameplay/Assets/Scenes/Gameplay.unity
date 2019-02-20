@@ -323,7 +323,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timer: 0
-  hitObject: {fileID: 1154397954264660, guid: 574ce523ac533104a8d76915e4e1f1f8, type: 2}
+  hitObject:
+  - {fileID: 1012444458814832, guid: 832c1cca9ff43a445a59d6b556ecfc89, type: 2}
+  - {fileID: 1012444458814832, guid: ec22fdc944ba3d84692d44f2e1571365, type: 2}
+  - {fileID: 1154397954264660, guid: d7fcf183e6c59714280157e9c7474d10, type: 2}
+  - {fileID: 1154397954264660, guid: 574ce523ac533104a8d76915e4e1f1f8, type: 2}
+  - {fileID: 1154397954264660, guid: 28a696a1027a2c34db3b7692f911ee65, type: 2}
+  - {fileID: 1154397954264660, guid: 514421fe49c75f74685167e1f2e5a719, type: 2}
+  - {fileID: 1154397954264660, guid: b1b5ec2eff1df9f468d48a7f657313f7, type: 2}
   position: {x: 0, y: 0, z: 0}
   positionX: 0
   spawnTime: 0
@@ -526,7 +533,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 295d2c1402dcf3840b9a389b18bde946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosion: {fileID: 1964874745442386, guid: ff0e7eb0654c20c4a96bed928b21fe87, type: 2}
+  explosion:
+  - {fileID: 1964874745442386, guid: ab2caabad5ef58d4e972225f95a40bb5, type: 2}
+  - {fileID: 1964874745442386, guid: dbb06b838caf9554fbc63ab72c00ea50, type: 2}
+  - {fileID: 1964874745442386, guid: 43d371303421c7048bfb828d40cf6a03, type: 2}
+  - {fileID: 1964874745442386, guid: 3cdee98d54d6b354ab64e73921957006, type: 2}
+  - {fileID: 1964874745442386, guid: 7235e09a2a1e31241858858a4be89839, type: 2}
+  - {fileID: 1522777317854008, guid: b4f1333212b270245b97f6719346d5a5, type: 2}
+  - {fileID: 1964874745442386, guid: bbcae12471bd5174b868f1fa32886f25, type: 2}
+  - {fileID: 1964874745442386, guid: d389b4efc325d2f4b830af402889a1c5, type: 2}
+  - {fileID: 1522268404722352, guid: de2f1e83b7803de4884eef30eef1badf, type: 2}
 --- !u!1 &1452479387
 GameObject:
   m_ObjectHideFlags: 0

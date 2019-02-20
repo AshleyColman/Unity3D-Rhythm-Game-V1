@@ -24,6 +24,8 @@ public class TimingAndScore : MonoBehaviour {
     private ExplosionController explosionController; // Manage explosions
     private DestroyObject destroyObject; // Manages destroys
 
+    private string objectTag; // The tag of the object
+
     // Use this for initialization
     void Start () {
 
@@ -50,6 +52,9 @@ public class TimingAndScore : MonoBehaviour {
 
         playerTotalScore = 0;
         timeWhenHit = 0;
+
+        // Get object tag
+        objectTag = gameObject.tag;
 	}
 	
 	// Update is called once per frame
@@ -57,6 +62,15 @@ public class TimingAndScore : MonoBehaviour {
 
         // The timer increments per frame
         timer += Time.deltaTime;
+
+        // Spawn miss explosion
+        if (timer >= 1.19f)
+        {
+            hitObjectPosition = transform.position; // Get the position of the object
+            explosionController.SpawnExplosion(hitObjectPosition, "Miss"); // Pass the position and spawn a miss particle system
+            scoreManager.AddJudgement("MISS"); // Sets judgement to early
+            scoreManager.ResetCombo(); // Reset combo as missed
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -70,7 +84,8 @@ public class TimingAndScore : MonoBehaviour {
                     hitObjectHit = true; // The square has been hit and further judgement is disabled
 
                     hitObjectPosition = transform.position; // Get the position of the object
-                    explosionController.SpawnExplosion(hitObjectPosition); // Pass the position and spawn a particle system
+
+                    explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
                     soundController.PlayHitSound(); // Play the hitsound
 
@@ -93,7 +108,7 @@ public class TimingAndScore : MonoBehaviour {
                     hitObjectHit = true; // The square has been hit and further judgement is disabled
 
                     hitObjectPosition = transform.position; // Get the position of the object
-                    explosionController.SpawnExplosion(hitObjectPosition); // Pass the position and spawn a particle system
+                    explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
                     soundController.PlayHitSound(); // Play the hitsound
 
@@ -116,7 +131,7 @@ public class TimingAndScore : MonoBehaviour {
                     hitObjectHit = true; // The square has been hit and further judgement is disabled
 
                     hitObjectPosition = transform.position; // Get the position of the object
-                    explosionController.SpawnExplosion(hitObjectPosition); // Pass the position and spawn a particle system
+                    explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
                     soundController.PlayHitSound(); // Play the hitsound
 

@@ -5,16 +5,18 @@ using UnityEngine;
 public class HitObjectSpawner : MonoBehaviour {
 
     public float timer;
-    public GameObject hitObject;
+    public GameObject[] hitObject = new GameObject[6];
     public Vector3 position;
     public float positionX;
-    public float spawnTime; 
-
+    public float spawnTime;
+    private int hitObjectType;
+    private string hitObjectTag;
 	// Use this for initialization
 	void Start () {
         timer = 0;
         spawnTime = 1.5f;
-        positionX = -200f;
+        positionX = -350f;
+        hitObjectType = 0;
 	}
 	
 	// Update is called once per frame
@@ -22,22 +24,23 @@ public class HitObjectSpawner : MonoBehaviour {
 
         timer += Time.deltaTime; // Increment timer
 
-
         if (timer >= spawnTime)
         {
             // New position
             positionX += 80;
             position = new Vector3(positionX, 20, 0);
-            SpawnHitObject(position);
+            SpawnHitObject(position, hitObjectType);
+            // Increment color and type of hitobject
+            hitObjectType += 1;
 
             timer = 0;
         }
 	}
 
 
-    public void SpawnHitObject(Vector3 positionPass)
+    public void SpawnHitObject(Vector3 positionPass, int hitObjectTypePass)
     {
-        Instantiate(hitObject, positionPass, Quaternion.Euler(0, 45, 0));
+        Instantiate(hitObject[hitObjectTypePass], positionPass, Quaternion.Euler(0, 45, 0));
     }
 
 }

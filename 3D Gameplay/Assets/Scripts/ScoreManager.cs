@@ -27,6 +27,13 @@ public class ScoreManager : MonoBehaviour {
 		
 	}
 
+    // Reset combo
+    public void ResetCombo()
+    {
+        combo = 0;
+        comboText.text = combo.ToString();
+    }
+
     // Update the score text
     public void AddScore(int scorePass)
     {
@@ -64,5 +71,10 @@ public class ScoreManager : MonoBehaviour {
         {
             judgementText.color = Color.yellow;
         }
+        else if (judgementPass == "MISS")
+        {
+            judgementText.color = Color.red;
+        }
+
     }
 }

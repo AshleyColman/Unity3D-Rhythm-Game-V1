@@ -40,10 +40,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4809778447507568}
   - component: {fileID: 114091797035287076}
-  - component: {fileID: 114650457033447492}
+  - component: {fileID: 114951047934183676}
   m_Layer: 0
-  m_Name: YellowHitObject
-  m_TagString: Untagged
+  m_Name: GreyHitObject
+  m_TagString: Grey
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,7 +76,7 @@ Transform:
   m_GameObject: {fileID: 1077159304452136}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4809778447507568}
   m_RootOrder: 1
@@ -101,7 +101,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1154397954264660}
   m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -100, y: 10, z: 0}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4790352096794752}
@@ -123,7 +123,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 26127e6bca3de4242817199b13dd0a86, type: 2}
+  - {fileID: 2100000, guid: 2773df5dd2efb8049afd82b5da5fd9b4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -157,7 +157,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 0da4b188567604e448999d98eac559dd, type: 2}
+  - {fileID: 2100000, guid: dc33b534d947a3d418608789f4403299, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -230,12 +230,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14923c8a94552b04c958d651feb46561, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxScale: {x: 5, y: 1, z: 5}
-  minScale: {x: 0, y: 0, z: 0}
   timeStartedLerping: 0
-  lerpTime: 1
   timer: 0
   objectScale: {x: 0, y: 0, z: 0}
+  positionX: 0
 --- !u!114 &114052371665510226
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -247,7 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeSpeed: 1
+  timer: 0
 --- !u!114 &114091797035287076
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -270,8 +268,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeSpeed: 1
---- !u!114 &114650457033447492
+  timer: 0
+--- !u!114 &114951047934183676
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -297,6 +295,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3896370b7aeb05c4ba83b695a18ae3be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultMaterial: {fileID: 2100000, guid: 0da4b188567604e448999d98eac559dd, type: 2}
+  defaultMaterial: {fileID: 2100000, guid: dc33b534d947a3d418608789f4403299, type: 2}
   changedMaterial: {fileID: 2100000, guid: 786704168e2bfc14bbde3767b05e413d, type: 2}
   rend: {fileID: 23554232939133306}
