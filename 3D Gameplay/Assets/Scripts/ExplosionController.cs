@@ -28,8 +28,8 @@ public class ExplosionController : MonoBehaviour {
         {
             Instantiate(explosion[1], positionPass, Quaternion.Euler(90, 0, -45));
         }
-        // Spawn blue explosion for lightgreen notes
-        else if (objectTagPass == "LightGreen")
+        // Spawn blue explosion for orange notes
+        else if (objectTagPass == "Orange")
         {
             Instantiate(explosion[2], positionPass, Quaternion.Euler(90, 0, -45));
         }

@@ -25,6 +25,7 @@ public class TimingAndScore : MonoBehaviour {
     private DestroyObject destroyObject; // Manages destroys
 
     private string objectTag; // The tag of the object
+    private KeyCode objectKey = KeyCode.None;
 
     // Use this for initialization
     void Start () {
@@ -55,10 +56,14 @@ public class TimingAndScore : MonoBehaviour {
 
         // Get object tag
         objectTag = gameObject.tag;
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+        // Check the tag for input of the hit object
+        CheckTagType();
 
         // The timer increments per frame
         timer += Time.deltaTime;
@@ -72,7 +77,9 @@ public class TimingAndScore : MonoBehaviour {
             scoreManager.ResetCombo(); // Reset combo as missed
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+
+        // If the user has pressed the right object key enable hit 
+        if (Input.GetKeyDown(objectKey))
         {
             // Timing check to calculate the type of hit on timing (perfect, miss)
 
@@ -156,4 +163,37 @@ public class TimingAndScore : MonoBehaviour {
     {
         Destroy(gameObject);
     }
+
+    private void CheckTagType()
+    {
+        if (objectTag == "Blue")
+        {
+            objectKey = KeyCode.S;
+        }
+        else if (objectTag == "Green")
+        {
+            objectKey = KeyCode.D;
+        }
+        else if (objectTag == "Grey")
+        {
+            objectKey = KeyCode.F;
+        }
+        else if (objectTag == "Orange")
+        {
+            objectKey = KeyCode.J;
+        }
+        else if (objectTag == "Purple")
+        {
+            objectKey = KeyCode.K;
+        }
+        else if (objectTag == "Red")
+        {
+            objectKey = KeyCode.L;
+        }
+        else if (objectTag == "Yellow")
+        {
+            objectKey = KeyCode.E;
+        }
+    }
+
 }
