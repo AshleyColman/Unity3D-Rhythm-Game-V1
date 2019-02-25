@@ -15,8 +15,18 @@ public class SongData : MonoBehaviour {
     private int hitObjectType;
     private string hitObjectTag;
 
-    private Vector3[] Positions = new Vector3[20];
+    private Vector3[] Positions = new Vector3[23];
     private int increment = 0;
+
+
+    public List<GameObject> spawnedList = new List<GameObject>();
+    private int earliestIndex; // The current earliest note
+    public bool hasHit;
+    private bool startCheck;
+    private int sizeOfList;
+    private int nextIndex;
+    private bool justHit = false;
+
 
     // Use this for initialization
     void Start () {
@@ -36,29 +46,39 @@ public class SongData : MonoBehaviour {
 
         // Positions
         Positions[0] = new Vector3(0, 0, 0);
-        Positions[1] = new Vector3(50, 0, 0);
-        Positions[2] = new Vector3(100, 0, 0);
-        Positions[3] = new Vector3(150, 0, 0);
-        Positions[4] = new Vector3(200, 0, 0);
-        Positions[5] = new Vector3(250, 0, 0);
+        Positions[1] = new Vector3(-50, 0, 0);
+        Positions[2] = new Vector3(-100, 0, 0);
+        Positions[3] = new Vector3(-150, 0, 0);
+        Positions[4] = new Vector3(-200, 0, 0);
+        Positions[5] = new Vector3(-250, 0, 0);
         Positions[6] = new Vector3(0, 0, 0);
         Positions[7] = new Vector3(0, 0, 50);
         Positions[8] = new Vector3(0, 0, 100);
         Positions[9] = new Vector3(0, 0, 150);
-        Positions[10] = new Vector3(0, 0, 200);
-        Positions[11] = new Vector3(0, 0, 250);
+        Positions[10] = new Vector3(0, 0, 100);
+        Positions[11] = new Vector3(0, 0, 50);
         Positions[12] = new Vector3(0, 0, 0);
         Positions[13] = new Vector3(50, 0, 0);
         Positions[14] = new Vector3(100, 0, 0);
         Positions[15] = new Vector3(150, 0, 0);
-        Positions[16] = new Vector3(200, 0, 0);
+        Positions[16] = new Vector3(100, 0, 0);
         Positions[17] = new Vector3(0, 0, 0);
-        Positions[18] = new Vector3(0, 0, 50);
-        Positions[19] = new Vector3(0, 0, 100);
+        Positions[18] = new Vector3(0, 0, -50);
+        Positions[19] = new Vector3(0, 0, -100);
+        Positions[20] = new Vector3(0, 0, -150);
+        Positions[21] = new Vector3(0, 0, -100);
 
         spawnTime = BPS;
         hitObjectType = 0;
 
+
+
+
+        earliestIndex = 0;
+        hasHit = false;
+        startCheck = false;
+        sizeOfList = 0;
+        nextIndex = 0;
     }
 	
 	// Update is called once per frame
@@ -71,16 +91,47 @@ public class SongData : MonoBehaviour {
         if (timer >= spawnTime)
         {
             increment += 1;
+
             SpawnHitObject(Positions[increment], hitObjectType);
-            // Increment color and type of hitobject
-            // hitObjectType += 1;
+            
+
+            hitObjectType += 1;
+
+            if (hitObjectType == 7)
+            {
+                hitObjectType = 0;
+            }
+           
+
 
             timer = 0;
+        }
+
+        // Size of list
+        sizeOfList = spawnedList.Count;
+        // Next index required to increment for check
+        nextIndex = earliestIndex + 2;
+
+        if (startCheck == true)
+        {
+            // If the index object exists
+            if (spawnedList[earliestIndex] != null)
+            {
+                spawnedList[earliestIndex].GetComponent<TimingAndScore>().isEarliest = true;
+            }
+
+            if (spawnedList[earliestIndex] == null && sizeOfList > earliestIndex)
+            {
+                earliestIndex++;
+
+            }
         }
     }
 
     public void SpawnHitObject(Vector3 positionPass, int hitObjectTypePass)
     {
-        Instantiate(hitObject[hitObjectTypePass], positionPass, Quaternion.Euler(0, 45, 0));
+        spawnedList.Add(Instantiate(hitObject[hitObjectTypePass], positionPass, Quaternion.Euler(0, 45, 0)));
+        startCheck = true;
     }
+
 }

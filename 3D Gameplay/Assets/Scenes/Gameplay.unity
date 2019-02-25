@@ -318,7 +318,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 629350426}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe1f51eeb854892418c3f1bb1e9e4a13, type: 3}
   m_Name: 
@@ -335,6 +335,7 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   positionX: 0
   spawnTime: 0
+  spawnedList: []
 --- !u!4 &629350428
 Transform:
   m_ObjectHideFlags: 0
@@ -354,7 +355,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 629350426}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c165fd2896479e44eaa12d3ad5490698, type: 3}
   m_Name: 
@@ -369,6 +370,8 @@ MonoBehaviour:
   - {fileID: 1154397954264660, guid: 574ce523ac533104a8d76915e4e1f1f8, type: 2}
   - {fileID: 1154397954264660, guid: 28a696a1027a2c34db3b7692f911ee65, type: 2}
   spawnTime: 0
+  spawnedList: []
+  hasHit: 0
 --- !u!1 &726410537
 GameObject:
   m_ObjectHideFlags: 0

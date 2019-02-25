@@ -23,9 +23,11 @@ public class TimingAndScore : MonoBehaviour {
     private SoundController soundController; // Manage audio
     private ExplosionController explosionController; // Manage explosions
     private DestroyObject destroyObject; // Manages destroys
-
+    private SongData songData;
     private string objectTag; // The tag of the object
     private KeyCode objectKey = KeyCode.None;
+
+    public bool isEarliest;
 
     // Use this for initialization
     void Start () {
@@ -35,6 +37,9 @@ public class TimingAndScore : MonoBehaviour {
         soundController = FindObjectOfType<SoundController>();
         explosionController = FindObjectOfType<ExplosionController>();
         destroyObject = FindObjectOfType<DestroyObject>();
+        songData = FindObjectOfType<SongData>();
+        
+
 
         // Initalize hit object
         hitObjectStartTime = 0f; 
@@ -54,9 +59,10 @@ public class TimingAndScore : MonoBehaviour {
         playerTotalScore = 0;
         timeWhenHit = 0;
 
+        isEarliest = false;
+
         // Get object tag
         objectTag = gameObject.tag;
-
 	}
 	
 	// Update is called once per frame
@@ -77,9 +83,8 @@ public class TimingAndScore : MonoBehaviour {
             scoreManager.ResetCombo(); // Reset combo as missed
         }
 
-
         // If the user has pressed the right object key enable hit 
-        if (Input.GetKeyDown(objectKey))
+        if (Input.GetKeyDown(objectKey) && isEarliest == true)
         {
             // Timing check to calculate the type of hit on timing (perfect, miss)
 
@@ -88,7 +93,6 @@ public class TimingAndScore : MonoBehaviour {
                 // CHECK IF PLAYER HIT EARLY
                 if (timer >= hitObjectStartTime && timer <= earlyJudgementTime)
                 {
-                    hitObjectHit = true; // The square has been hit and further judgement is disabled
 
                     hitObjectPosition = transform.position; // Get the position of the object
 
@@ -112,7 +116,6 @@ public class TimingAndScore : MonoBehaviour {
                 // CHECK IF PLAYER HIT GOOD
                 if (timer >= earlyJudgementTime && timer <= perfectJudgementTime)
                 {
-                    hitObjectHit = true; // The square has been hit and further judgement is disabled
 
                     hitObjectPosition = transform.position; // Get the position of the object
                     explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
@@ -135,7 +138,6 @@ public class TimingAndScore : MonoBehaviour {
                 // CHECK IF PLAYER HIT GOOD
                 if (timer >= perfectJudgementTime && timer <= destroyedTime)
                 {
-                    hitObjectHit = true; // The square has been hit and further judgement is disabled
 
                     hitObjectPosition = transform.position; // Get the position of the object
                     explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
@@ -194,6 +196,12 @@ public class TimingAndScore : MonoBehaviour {
         {
             objectKey = KeyCode.E;
         }
+    }
+    
+    // Set as earliest note
+    public void IsEarliest()
+    {
+        isEarliest = true;
     }
 
 }
