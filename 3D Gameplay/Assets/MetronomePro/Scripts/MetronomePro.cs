@@ -1,15 +1,40 @@
-﻿using System.Collections;
+﻿// Created by Carlos Arturo Rodriguez Silva (Legend)
+
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Runtime.InteropServices;
 
-public class SongData : MonoBehaviour {
+public class MetronomePro : MonoBehaviour {
+	
+	[Header("Variables")]
+	public bool active = false;
 
-    private float BPM = 168;
-    private float BPS = 0;
-    private string SongTitle = "Pure Ruby";
-    private float offset = 0;
+	public AudioSource songAudioSource;
 
+	[Header("Metronome (this values will be overrided by Song Data)")]
+
+	public double Bpm = 140.0f;
+	public double OffsetMS = 0;
+
+	public int Step = 4;
+	public int Base = 4;
+
+	public int CurrentMeasure = 0;
+	public int CurrentStep = 0;
+	public int CurrentTick;
+
+	public List<Double> songTickTimes;
+
+	double interval;
+
+	public bool neverPlayed = true;
+
+
+
+    // NEW VARIABLES
     public float timer;
     public GameObject[] hitObject = new GameObject[7];
     public float spawnTime;
@@ -28,17 +53,9 @@ public class SongData : MonoBehaviour {
     private int nextIndex;
     private bool justHit = false;
 
-    public AudioSource audioData;
 
-    // Use this for initialization
-        void Start () {
 
-        // BPS
-        BPS = (60/BPM);
-   
-        offset = 0f;
-
-        
+    void Start () {
 
         // Positions
         Positions[0] = new Vector3(0, 0, 0);
@@ -141,16 +158,6 @@ public class SongData : MonoBehaviour {
         Positions[97] = new Vector3(0, 0, 0);
         Positions[98] = new Vector3(0, 0, 0);
         Positions[99] = new Vector3(0, 0, 0);
-        Positions[0] = new Vector3(0, 0, 0);
-        Positions[1] = new Vector3(0, 0, 0);
-        Positions[2] = new Vector3(0, 0, 0);
-        Positions[3] = new Vector3(0, 0, 0);
-        Positions[4] = new Vector3(0, 0, 0);
-        Positions[5] = new Vector3(0, 0, 0);
-        Positions[6] = new Vector3(0, 0, 0);
-        Positions[7] = new Vector3(0, 0, 0);
-        Positions[8] = new Vector3(0, 0, 0);
-        Positions[9] = new Vector3(0, 0, 0);
         Positions[100] = new Vector3(0, 0, 0);
         Positions[101] = new Vector3(0, 0, 0);
         Positions[102] = new Vector3(0, 0, 0);
@@ -242,46 +249,26 @@ public class SongData : MonoBehaviour {
         Positions[188] = new Vector3(0, 0, 0);
         Positions[189] = new Vector3(0, 0, 0);
 
-        //spawnTime = BPS;
-        spawnTime = BPS * 2;
         hitObjectType = 0;
-
         earliestIndex = 0;
         hasHit = false;
         startCheck = false;
         sizeOfList = 0;
         nextIndex = 0;
-
-        Invoke("PlayAudio", 0);
-
     }
-	
-	// Update is called once per frame
-	void Update () {
 
-            timer += Time.deltaTime;
+	public void GetSongData (double _bpm, double _offsetMS, int _base, int _step) {
+		Bpm = _bpm;
+		OffsetMS = _offsetMS;
+		Base = _base;
+		Step = _step;
+	}
 
-       
-        // Spawn a note every quarter note
-        if (timer >= spawnTime)
-        {
-            increment += 1;
+    // Update is called once per frame
+    void Update()
+    {
 
-            SpawnHitObject(Positions[increment], hitObjectType);
-            
-            /*
-            hitObjectType += 1;
-
-            if (hitObjectType == 7)
-            {
-                hitObjectType = 0;
-            }
-           */
-
-
-            timer = 0;
-        }
-
+        // Check for earliest object to hit
         // Size of list
         sizeOfList = spawnedList.Count;
         // Next index required to increment for check
@@ -298,21 +285,175 @@ public class SongData : MonoBehaviour {
             if (spawnedList[earliestIndex] == null && sizeOfList > earliestIndex)
             {
                 earliestIndex++;
-
             }
         }
-
     }
 
+    // Set the new BPM when is playing
+    public void UpdateBPM () {
+
+	}
+
+	// Set the new Offset when is playing
+	public void UpdateOffset () {
+
+	}
+
+	void SetDelay () {
+		bool isPlaying = false;
+
+		if (songAudioSource.isPlaying) {
+			isPlaying = true;
+		}
+
+
+		songAudioSource.Pause ();
+
+		CalculateIntervals ();
+		CalculateActualStep ();
+
+		if (isPlaying) {
+			songAudioSource.Play ();
+		}
+	}
+
+	// Play Metronome
+	public void Play () {
+		if (neverPlayed) {
+			CalculateIntervals ();
+		}
+
+		neverPlayed = false;
+		active = true;
+	}
+
+	// Pause Metronome
+	public void Pause () {
+		active = false;
+	}
+
+	// Stop Metronome
+	public void Stop () {
+		active = false;
+
+		CurrentMeasure = 0;
+		CurrentStep = 4;
+		CurrentTick = 0;
+	}
+
+	// Calculate Time Intervals for the song
+	public void CalculateIntervals () {
+		try {
+		active = false;
+		var multiplier = Base / Step;
+		var tmpInterval = 60f / Bpm;
+		interval = tmpInterval / multiplier;
+
+		int i = 0;
+
+		songTickTimes.Clear ();
+
+			while (interval * i <= songAudioSource.clip.length) {
+				songTickTimes.Add ((interval * i) + (OffsetMS / 1000f));
+				i++;
+			}
+
+			active = true;
+		} catch {
+			Debug.LogWarning ("There isn't an Audio Clip assigned in the Player.");
+		}
+	}
+
+	// Calculate Actual Step when the user changes song position in the UI
+	public void CalculateActualStep () {
+		active = false;
+
+		// Get the Actual Step searching the closest Song Tick Time using the Actual Song Time
+		for (int i = 0; i < songTickTimes.Count; i++) {
+			if (songAudioSource.time < songTickTimes[i]) {
+				CurrentMeasure = (i / Base);
+				CurrentStep = (int)((((float)i / (float)Base) - (i / Base)) * 4);
+				if (CurrentStep == 0) {
+					CurrentMeasure = 0;
+					CurrentStep = 4;
+				} else {
+					CurrentMeasure++;
+				}
+
+				CurrentTick = i;
+				Debug.Log ("Metronome Synchronized at Tick: " + i + " Time: "+ songTickTimes[i]);
+				break;
+			}
+		}
+		active = true;
+	}
+
+	// Read Audio (this function executes from Unity Audio Thread)
+	void OnAudioFilterRead (float[] data, int channels) {
+		if (!active)
+			return;
+
+		// You can't execute any function of Unity here because this function is working on Unity Audio Thread (this ensure the Metronome Accuracy)
+		// To Fix that you need to execute your function on Main Thread again, don't worry i created an easy way to do that :D
+		// There are so much other fixes to do this, like Ninja Thread.
+		ToMainThread.AssignNewAction ().ExecuteOnMainThread (CalculateTicks());
+	}
+		
+	// Metronome Main function, this calculates the times to make a Tick, Step Count, Metronome Sounds, etc.
+	IEnumerator CalculateTicks () {
+		if (!active)
+			yield return null;
+
+		// Check if the song time is greater than the current tick Time
+		if (songAudioSource.time >= songTickTimes [CurrentTick]) {
+
+			CurrentTick++;
+
+			if (CurrentTick >= songTickTimes.Count) {
+				active = false;
+			}
+
+			// If the Current Step is greater than the Step, reset it and increment the Measure
+			if (CurrentStep >= Step) {
+				CurrentStep = 1;
+				CurrentMeasure++;
+			} else {
+				CurrentStep++;
+			}
+
+			// Call OnTick functions
+			StartCoroutine (OnTick ());
+		}
+
+		yield return null;
+	}
+
+	// Tick Time (execute here all what you want)
+	IEnumerator OnTick () {
+
+        // YOUR FUNCTIONS HERE
+
+        // Example 1
+        /*
+		if (CurrentTick == 100) {
+			Debug.Log ("OMG! IS THE TICK NUMBER 100!");
+		}
+		*/
+
+
+        // Spawn Hit Object 
+        // Increment positions array for the object 
+        increment += 1;
+        SpawnHitObject(Positions[increment], hitObjectType);
+
+        Debug.Log ("Current Step: " + CurrentStep + "/" + Step);
+		yield return null;
+	}
+
+    // Spawn the hit object
     public void SpawnHitObject(Vector3 positionPass, int hitObjectTypePass)
     {
         spawnedList.Add(Instantiate(hitObject[hitObjectTypePass], positionPass, Quaternion.Euler(0, 45, 0)));
         startCheck = true;
     }
-
-    void PlayAudio()
-    {
-        audioData.Play(0);
-    }
-
 }

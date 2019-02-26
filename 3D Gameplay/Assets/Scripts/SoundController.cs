@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class SoundController : MonoBehaviour {
 
-    public AudioSource clickSound; // The sound that plays when the button is pressed
+    public AudioSource audioSource; // The sound that plays when the button is pressed
+    public AudioClip clickSound;
 
     // Use this for initialization
     void Start () {
@@ -18,6 +19,6 @@ public class SoundController : MonoBehaviour {
 
     public void PlayHitSound()
     {
-        clickSound.Play();
+        audioSource.Play();
     }
 }
