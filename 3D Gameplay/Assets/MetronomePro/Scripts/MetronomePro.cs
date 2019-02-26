@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 public class MetronomePro : MonoBehaviour {
 	
 	[Header("Variables")]
-	public bool active = false;
+	private bool active = true;
 
 	public AudioSource songAudioSource;
 
@@ -319,9 +319,8 @@ public class MetronomePro : MonoBehaviour {
 
 	// Play Metronome
 	public void Play () {
-		if (neverPlayed) {
-			CalculateIntervals ();
-		}
+
+	    CalculateIntervals ();
 
 		neverPlayed = false;
 		active = true;
