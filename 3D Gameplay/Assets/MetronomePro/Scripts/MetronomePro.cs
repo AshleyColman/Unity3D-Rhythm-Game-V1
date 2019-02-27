@@ -10,7 +10,22 @@ using System.Runtime.InteropServices;
 public class MetronomePro : MonoBehaviour {
 	
 	[Header("Variables")]
-	private bool active = true;
+	public bool active = false;
+
+	[Space(5)]
+
+	public AudioSource metronomeAudioSource;
+	public AudioClip highClip;
+	public AudioClip lowClip;
+
+	[Space(5)]
+	public Text txtBPM;
+	public Text txtOffsetMS;
+	public InputField BPMInputField;
+	public InputField OffsetInputField;
+	public Text txtState;
+
+	[Space(5)]
 
 	public AudioSource songAudioSource;
 
@@ -34,8 +49,7 @@ public class MetronomePro : MonoBehaviour {
 
 
 
-    // NEW VARIABLES
-    public float timer;
+    // NEW
     public GameObject[] hitObject = new GameObject[7];
     public float spawnTime;
     private int hitObjectType;
@@ -53,6 +67,7 @@ public class MetronomePro : MonoBehaviour {
     private int nextIndex;
     private bool justHit = false;
 
+    public AudioSource audioData;
 
 
     void Start () {
@@ -158,6 +173,16 @@ public class MetronomePro : MonoBehaviour {
         Positions[97] = new Vector3(0, 0, 0);
         Positions[98] = new Vector3(0, 0, 0);
         Positions[99] = new Vector3(0, 0, 0);
+        Positions[0] = new Vector3(0, 0, 0);
+        Positions[1] = new Vector3(0, 0, 0);
+        Positions[2] = new Vector3(0, 0, 0);
+        Positions[3] = new Vector3(0, 0, 0);
+        Positions[4] = new Vector3(0, 0, 0);
+        Positions[5] = new Vector3(0, 0, 0);
+        Positions[6] = new Vector3(0, 0, 0);
+        Positions[7] = new Vector3(0, 0, 0);
+        Positions[8] = new Vector3(0, 0, 0);
+        Positions[9] = new Vector3(0, 0, 0);
         Positions[100] = new Vector3(0, 0, 0);
         Positions[101] = new Vector3(0, 0, 0);
         Positions[102] = new Vector3(0, 0, 0);
@@ -250,11 +275,13 @@ public class MetronomePro : MonoBehaviour {
         Positions[189] = new Vector3(0, 0, 0);
 
         hitObjectType = 0;
+
         earliestIndex = 0;
         hasHit = false;
         startCheck = false;
         sizeOfList = 0;
         nextIndex = 0;
+
     }
 
 	public void GetSongData (double _bpm, double _offsetMS, int _base, int _step) {
@@ -264,11 +291,24 @@ public class MetronomePro : MonoBehaviour {
 		Step = _step;
 	}
 
-    // Update is called once per frame
-    void Update()
-    {
+	// Set the new BPM when is playing
+	public void UpdateBPM () {
+		try {
+		var newBPMFloat = float.Parse (BPMInputField.text);
+		Bpm = (double)newBPMFloat;
 
-        // Check for earliest object to hit
+		txtBPM.text = "BPM: " + Bpm.ToString("F");
+		txtState.text = "";
+
+		SetDelay ();
+		} catch {
+			txtState.text = "Please enter the new BPM value correctly.";
+			Debug.Log ("Please enter the new BPM value correctly.");
+		}
+	}
+
+    public void Update()
+    {
         // Size of list
         sizeOfList = spawnedList.Count;
         // Next index required to increment for check
@@ -289,15 +329,22 @@ public class MetronomePro : MonoBehaviour {
         }
     }
 
-    // Set the new BPM when is playing
-    public void UpdateBPM () {
-
-	}
-
 	// Set the new Offset when is playing
 	public void UpdateOffset () {
+		try {
+		var newOffsetFloat = int.Parse (OffsetInputField.text);
+		OffsetMS = newOffsetFloat;
 
+		txtOffsetMS.text = "Offset: " + OffsetMS.ToString () + " MS";
+		txtState.text = "";
+
+		SetDelay ();
+		} catch {
+			txtState.text = "Please enter the new Offset value correctly.";
+			Debug.Log ("Please enter the new Offset value correctly.");
+		}
 	}
+
 
 	void SetDelay () {
 		bool isPlaying = false;
@@ -319,12 +366,13 @@ public class MetronomePro : MonoBehaviour {
 
 	// Play Metronome
 	public void Play () {
-
-	    CalculateIntervals ();
+		if (neverPlayed) {
+			CalculateIntervals ();
+		}
 
 		neverPlayed = false;
 		active = true;
-	}
+    }
 
 	// Pause Metronome
 	public void Pause () {
@@ -343,7 +391,8 @@ public class MetronomePro : MonoBehaviour {
 	// Calculate Time Intervals for the song
 	public void CalculateIntervals () {
 		try {
-		active = false;
+
+        active = false;
 		var multiplier = Base / Step;
 		var tmpInterval = 60f / Bpm;
 		interval = tmpInterval / multiplier;
@@ -359,6 +408,7 @@ public class MetronomePro : MonoBehaviour {
 
 			active = true;
 		} catch {
+			txtState.text = "There isn't an Audio Clip assigned in the Player.";
 			Debug.LogWarning ("There isn't an Audio Clip assigned in the Player.");
 		}
 	}
@@ -390,12 +440,14 @@ public class MetronomePro : MonoBehaviour {
 	// Read Audio (this function executes from Unity Audio Thread)
 	void OnAudioFilterRead (float[] data, int channels) {
 		if (!active)
-			return;
 
-		// You can't execute any function of Unity here because this function is working on Unity Audio Thread (this ensure the Metronome Accuracy)
-		// To Fix that you need to execute your function on Main Thread again, don't worry i created an easy way to do that :D
-		// There are so much other fixes to do this, like Ninja Thread.
-		ToMainThread.AssignNewAction ().ExecuteOnMainThread (CalculateTicks());
+           
+        return;
+       
+        // You can't execute any function of Unity here because this function is working on Unity Audio Thread (this ensure the Metronome Accuracy)
+        // To Fix that you need to execute your function on Main Thread again, don't worry i created an easy way to do that :D
+        // There are so much other fixes to do this, like Ninja Thread.
+        ToMainThread.AssignNewAction ().ExecuteOnMainThread (CalculateTicks());
 	}
 		
 	// Metronome Main function, this calculates the times to make a Tick, Step Count, Metronome Sounds, etc.
@@ -416,8 +468,10 @@ public class MetronomePro : MonoBehaviour {
 			if (CurrentStep >= Step) {
 				CurrentStep = 1;
 				CurrentMeasure++;
+				metronomeAudioSource.clip = highClip;
 			} else {
 				CurrentStep++;
+				metronomeAudioSource.clip = lowClip;
 			}
 
 			// Call OnTick functions
@@ -430,26 +484,17 @@ public class MetronomePro : MonoBehaviour {
 	// Tick Time (execute here all what you want)
 	IEnumerator OnTick () {
 
-        // YOUR FUNCTIONS HERE
+        // YOUR FUNCTION HERE
 
-        // Example 1
-        /*
-		if (CurrentTick == 100) {
-			Debug.Log ("OMG! IS THE TICK NUMBER 100!");
-		}
-		*/
-
-
-        // Spawn Hit Object 
-        // Increment positions array for the object 
         increment += 1;
+
         SpawnHitObject(Positions[increment], hitObjectType);
 
-        Debug.Log ("Current Step: " + CurrentStep + "/" + Step);
+
+		Debug.Log ("Current Step: " + CurrentStep + "/" + Step);
 		yield return null;
 	}
 
-    // Spawn the hit object
     public void SpawnHitObject(Vector3 positionPass, int hitObjectTypePass)
     {
         spawnedList.Add(Instantiate(hitObject[hitObjectTypePass], positionPass, Quaternion.Euler(0, 45, 0)));
