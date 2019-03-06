@@ -515,6 +515,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 1720197410}
   clickSound: {fileID: 8300000, guid: ac0e40992949af54b8ec30a777c0aff7, type: 3}
+  missSound: {fileID: 8300000, guid: f4017fd93cf1f944895df8387c6a074d, type: 3}
 --- !u!4 &613079526
 Transform:
   m_ObjectHideFlags: 0
@@ -1387,7 +1388,7 @@ MonoBehaviour:
   - {fileID: 1522777317854008, guid: b4f1333212b270245b97f6719346d5a5, type: 2}
   - {fileID: 1964874745442386, guid: bbcae12471bd5174b868f1fa32886f25, type: 2}
   - {fileID: 1964874745442386, guid: d389b4efc325d2f4b830af402889a1c5, type: 2}
-  - {fileID: 1522268404722352, guid: de2f1e83b7803de4884eef30eef1badf, type: 2}
+  - {fileID: 1847769943786638, guid: 77ecd53a48be8584c92cf3bc13e9cda3, type: 2}
 --- !u!1001 &1433777347
 Prefab:
   m_ObjectHideFlags: 0
