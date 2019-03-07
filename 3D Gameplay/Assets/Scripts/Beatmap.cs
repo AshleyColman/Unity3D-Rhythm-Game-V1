@@ -9,7 +9,7 @@ public class Beatmap
     public float hitObjectPositionZ;
     */
 
-    public float hitObjectStartTime;
+    public List<float> HitObjectSpawnTime = new List<float>();
 
     public List<float> PositionX = new List<float>();
     public List<float> PositionY = new List<float>();

@@ -19,6 +19,7 @@ public class SongProgressBar : MonoBehaviour {
     float songVolume = 0.4f;
     float amount;
     public AudioClip songClip;
+    public float songAudioSourceTime;
 
     // Calculate Song Total Duration
     public void DisplaySongDuration()

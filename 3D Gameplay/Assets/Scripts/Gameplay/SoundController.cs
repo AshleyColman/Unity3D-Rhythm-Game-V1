@@ -7,7 +7,7 @@ public class SoundController : MonoBehaviour {
     public AudioSource audioSource; // The sound that plays when the button is pressed
     public AudioClip clickSound;
     public AudioClip missSound;
-    private float songVolume = 0.3f;
+    private float songVolume = 1f;
     // Use this for initialization
     void Start () {
         audioSource.volume = songVolume;
@@ -28,7 +28,7 @@ public class SoundController : MonoBehaviour {
     // Play miss sound
     public void PlayMissSound()
     {
-        audioSource.clip = missSound;
-        audioSource.Play();
+        audioSource.clip = clickSound;
+        audioSource.PlayOneShot(missSound);
     }
 }

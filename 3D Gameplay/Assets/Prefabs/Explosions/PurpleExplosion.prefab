@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4598362820109888}
   - component: {fileID: 198927003216592620}
   - component: {fileID: 199232948222438324}
-  - component: {fileID: 114032030854522952}
+  - component: {fileID: 114281861164183178}
   m_Layer: 0
   m_Name: PurpleExplosion
   m_TagString: Untagged
@@ -42,7 +42,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!114 &114032030854522952
+--- !u!114 &114281861164183178
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -50,7 +50,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1964874745442386}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23b3db52fb99ed04aaa6ed51d4773e23, type: 3}
+  m_Script: {fileID: 11500000, guid: 36f8cd5b6612b494ca93cdd9476f8d8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!198 &198927003216592620

@@ -27,6 +27,11 @@ public class Database : MonoBehaviour {
     public List<float> LoadedPositionY = new List<float>();
     public List<float> LoadedPositionZ = new List<float>();
 
+    // List of spawn times of the objects
+    public List<float> HitObjectSpawnTime = new List<float>();
+    // Loaded list of spawn times
+    public List<float> LoadedHitObjectSpawnTime = new List<float>();
+
     private void Awake()
     {
         database = this;
@@ -52,7 +57,11 @@ public class Database : MonoBehaviour {
             beatmap.PositionZ.Add(PositionZ[i]);
         }
 
-
+        // Save list of all spawn times
+        for (int i = 0; i < HitObjectSpawnTime.Count; i++)
+        {
+            beatmap.HitObjectSpawnTime.Add(HitObjectSpawnTime[i]);
+        }
 
         bf.Serialize(stream, beatmap);
         stream.Close();
@@ -77,6 +86,15 @@ public class Database : MonoBehaviour {
             LoadedPositionY.Add(beatmap.PositionY[i]);
             LoadedPositionZ.Add(beatmap.PositionZ[i]);
         }
+
+        // Load the spawn times
+        // Save list of all spawn times
+        for (int i = 0; i < beatmap.HitObjectSpawnTime.Count; i++)
+        {
+            LoadedHitObjectSpawnTime.Add(beatmap.HitObjectSpawnTime[i]);
+        }
+
+
         //}
 
     }

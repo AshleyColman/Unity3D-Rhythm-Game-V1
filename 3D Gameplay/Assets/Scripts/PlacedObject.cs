@@ -10,41 +10,39 @@ public class PlacedObject : MonoBehaviour {
     List<Vector3> editorHitObjectPositions = new List<Vector3>();
     Vector3 instantiatePosition;
     bool hasClickedUIButton = false;
+    public SongProgressBar songProgressBar;
 
     // Use this for initialization
     void Start () {
         mouseFollow = FindObjectOfType<MouseFollow>();
+        songProgressBar = FindObjectOfType<SongProgressBar>();
     }
 	
 	// Update is called once per frame
 	void Update () {
 
         // Place a hit object only if the mouse has been clicked and the UI button has been clicked
-        if (Input.GetMouseButtonDown(0) && hasClickedUIButton == true)
+        if (hasClickedUIButton == true)
         {
-            instantiatePosition = mouseFollow.pos;
-            InstantiateEditorPlacedHitObject(instantiatePosition);
-            // Store the time spawned and position of the object
-            editorHitObjectPositions.Add(mouseFollow.pos);
-            // Add to total
-            totalEditorHitObjects += 1;
+            if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.X))
+            {
+                instantiatePosition = mouseFollow.pos;
+                InstantiateEditorPlacedHitObject(instantiatePosition);
+                // Store the time spawned and position of the object
+                editorHitObjectPositions.Add(mouseFollow.pos);
+                // Add to total
+                totalEditorHitObjects += 1;
 
 
-            // SAVE?
-            /*
-            Database.database.hitObjectPositionX = mouseFollow.pos.x;
-            Database.database.hitObjectPositionY = mouseFollow.pos.y;
-            Database.database.hitObjectPositionZ = mouseFollow.pos.z;
-            */
+                // Save object position to the list?
+                Database.database.PositionX.Add(mouseFollow.pos.x);
+                Database.database.PositionY.Add(mouseFollow.pos.y);
+                Database.database.PositionZ.Add(mouseFollow.pos.z);
 
-            // Save object position to the list?
-            Database.database.PositionX.Add(mouseFollow.pos.x);
-            Database.database.PositionY.Add(mouseFollow.pos.y);
-            Database.database.PositionZ.Add(mouseFollow.pos.z);
+                // Save object spawn time
+                Database.database.HitObjectSpawnTime.Add(songProgressBar.songAudioSource.time);
+            }
         }
-
-
-
     }
 
     // Instantiate placed hit object at the position on the mouse

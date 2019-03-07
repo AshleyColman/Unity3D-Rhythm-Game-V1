@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4087155353236206}
   - component: {fileID: 198266399562499270}
   - component: {fileID: 199216561444878768}
-  - component: {fileID: 114802492715044094}
   m_Layer: 0
   m_Name: MissExplosion5 1
   m_TagString: Untagged
@@ -42,17 +41,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!114 &114802492715044094
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1893279380335888}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23b3db52fb99ed04aaa6ed51d4773e23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!198 &198266399562499270
 ParticleSystem:
   m_ObjectHideFlags: 1
