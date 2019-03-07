@@ -28,6 +28,19 @@ public class PlacedObject : MonoBehaviour {
             editorHitObjectPositions.Add(mouseFollow.pos);
             // Add to total
             totalEditorHitObjects += 1;
+
+
+            // SAVE?
+            /*
+            Database.database.hitObjectPositionX = mouseFollow.pos.x;
+            Database.database.hitObjectPositionY = mouseFollow.pos.y;
+            Database.database.hitObjectPositionZ = mouseFollow.pos.z;
+            */
+
+            // Save object position to the list?
+            Database.database.PositionX.Add(mouseFollow.pos.x);
+            Database.database.PositionY.Add(mouseFollow.pos.y);
+            Database.database.PositionZ.Add(mouseFollow.pos.z);
         }
 
 
