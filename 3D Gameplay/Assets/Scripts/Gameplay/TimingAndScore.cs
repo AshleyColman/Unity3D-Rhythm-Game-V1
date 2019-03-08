@@ -24,10 +24,12 @@ public class TimingAndScore : MonoBehaviour {
     private ExplosionController explosionController; // Manage explosions
     private DestroyObject destroyObject; // Manages destroys
     private SongData songData;
+    private SpecialTimeManager specialTimeManager; // Manager special time objects and effects
     private string objectTag; // The tag of the object
     private KeyCode objectKey = KeyCode.None;
 
     public bool isEarliest;
+    public bool isSpecial; // Is it a special note during special time?
 
     // Use this for initialization
     void Start () {
@@ -38,7 +40,7 @@ public class TimingAndScore : MonoBehaviour {
         explosionController = FindObjectOfType<ExplosionController>();
         destroyObject = FindObjectOfType<DestroyObject>();
         songData = FindObjectOfType<SongData>();
-        
+        specialTimeManager = FindObjectOfType<SpecialTimeManager>();
 
 
         // Initalize hit object
@@ -60,6 +62,7 @@ public class TimingAndScore : MonoBehaviour {
         timeWhenHit = 0;
 
         isEarliest = false;
+        isSpecial = false;
 
         // Get object tag
         objectTag = gameObject.tag;
@@ -67,6 +70,9 @@ public class TimingAndScore : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        // Check if special time is now
+        CheckIsSpecialTime();
 
         // Check the tag for input of the hit object
         CheckTagType();
@@ -93,6 +99,7 @@ public class TimingAndScore : MonoBehaviour {
                 // CHECK IF PLAYER HIT EARLY
                 if (timer >= hitObjectStartTime && timer <= earlyJudgementTime)
                 {
+                    CheckIsSpecial(); // Check if the note is special
 
                     hitObjectPosition = transform.position; // Get the position of the object
 
@@ -110,12 +117,14 @@ public class TimingAndScore : MonoBehaviour {
 
                     timeWhenHit = timer; // Get the time when hit
 
+
                     DestroyHitObject(); // Destroy hit object
                 }
 
                 // CHECK IF PLAYER HIT GOOD
                 if (timer >= earlyJudgementTime && timer <= perfectJudgementTime)
                 {
+                    CheckIsSpecial(); // Check if the note is special
 
                     hitObjectPosition = transform.position; // Get the position of the object
                     explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
@@ -138,6 +147,7 @@ public class TimingAndScore : MonoBehaviour {
                 // CHECK IF PLAYER HIT GOOD
                 if (timer >= perfectJudgementTime && timer <= destroyedTime)
                 {
+                    CheckIsSpecial(); // Check if the note is special
 
                     hitObjectPosition = transform.position; // Get the position of the object
                     explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
@@ -204,4 +214,22 @@ public class TimingAndScore : MonoBehaviour {
         isEarliest = true;
     }
 
+    // Is the note special during special time?
+    public void CheckIsSpecial()
+    {
+        if (isSpecial == true)
+        {
+            specialTimeManager.BackgroundAnimation();
+        }
+    }
+
+    // Check if it's special time
+    public void CheckIsSpecialTime()
+    {
+        if(specialTimeManager.isSpecialTime == true)
+        {
+            isSpecial = true;
+        }
+         
+    }
 }

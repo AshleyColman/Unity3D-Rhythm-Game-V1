@@ -12,6 +12,8 @@ TagManager:
   - Yellow
   - Grey
   - Orange
+  - MenuMusicController
+  - MenuSFXAudioSource
   layers:
   - Default
   - TransparentFX
