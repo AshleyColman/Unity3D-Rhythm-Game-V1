@@ -17,7 +17,7 @@ public class ScoreManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        scoreText.text = score.ToString();
+        //scoreText.text = score.ToString();
         comboText.text = combo.ToString();
         judgementText.text = judgement.ToString();
     }
@@ -31,14 +31,32 @@ public class ScoreManager : MonoBehaviour {
     public void ResetCombo()
     {
         combo = 0;
-        comboText.text = combo.ToString();
+        comboText.text = "   " + combo.ToString() + "x";
     }
 
     // Update the score text
     public void AddScore(int scorePass)
     {
         score += scorePass;
-        scoreText.text = score.ToString();
+
+        // Check the score and add the 0's according to the type
+        if (score < 1000)
+        {
+            scoreText.text = "00000" + score.ToString();
+        }
+        if (score >= 1000 && score < 10000)
+        {
+            scoreText.text = "0000" + score.ToString();
+        }
+        if (score >= 10000 && score < 100000)
+        {
+            scoreText.text = "000" + score.ToString();
+        }
+        if (score >= 100000 && score < 1000000)
+        {
+            scoreText.text = "000" + score.ToString();
+        }
+
 
         scoreAnimation.Play("GameplayTextAnimation");
     }
@@ -47,7 +65,24 @@ public class ScoreManager : MonoBehaviour {
     public void AddCombo(int comboPass)
     {
         combo += comboPass;
-        comboText.text = combo.ToString();
+
+        // Check the combo and add spacing according to the type
+        if (combo < 10)
+        {
+            comboText.text = "   " + combo.ToString() + "x";
+        }
+        if (combo >= 10 && combo < 100)
+        {
+            comboText.text = "  " + combo.ToString() + "x";
+        }
+        if (combo >= 100 && combo < 1000)
+        {
+            comboText.text = " " + combo.ToString() + "x";
+        }
+        if (combo >= 1000 && combo < 10000)
+        {
+            comboText.text = " " + combo.ToString() + "x";
+        }
 
         comboAnimation.Play("GameplayTextAnimation");
     }

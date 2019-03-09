@@ -99,10 +99,6 @@ public class Healthbar : MonoBehaviour {
             healthValueToLerpTo = 0;
         }
 
-        Debug.Log("healthbarvaluepass = " + healthBarValuePass);
-        Debug.Log("currenthealth = " + currentHealth);
-        Debug.Log("to lerp to = " + healthValueToLerpTo);
-
         // Lerp the slider value to the current health, to the new health over time
         healthBarSlider.value = Mathf.Lerp(currentHealth, healthValueToLerpTo, Time.deltaTime * lerpSpeed);
 
