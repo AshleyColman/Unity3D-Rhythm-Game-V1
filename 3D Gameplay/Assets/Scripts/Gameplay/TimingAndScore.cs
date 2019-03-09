@@ -23,13 +23,19 @@ public class TimingAndScore : MonoBehaviour {
     private SoundController soundController; // Manage audio
     private ExplosionController explosionController; // Manage explosions
     private DestroyObject destroyObject; // Manages destroys
-    private SongData songData;
+    private SongData songData; // Manages the songData
     private SpecialTimeManager specialTimeManager; // Manager special time objects and effects
+    private Healthbar healthbar; // Manages the healthbar when hitting objects increasing or descreasing health
     private string objectTag; // The tag of the object
     private KeyCode objectKey = KeyCode.None;
 
     public bool isEarliest;
     public bool isSpecial; // Is it a special note during special time?
+
+    private int earlyHealthValue; // The amount of health given when hitting early
+    private int perfectHealthValue; // The amount of health given when hitting perfect
+    private int goodHealthValue; // The amount of health given when hitting good
+    private int missHealthValue; // The amount of health taken away if missed
 
     // Use this for initialization
     void Start () {
@@ -41,6 +47,7 @@ public class TimingAndScore : MonoBehaviour {
         destroyObject = FindObjectOfType<DestroyObject>();
         songData = FindObjectOfType<SongData>();
         specialTimeManager = FindObjectOfType<SpecialTimeManager>();
+        healthbar = FindObjectOfType<Healthbar>();
 
 
         // Initalize hit object
@@ -54,9 +61,9 @@ public class TimingAndScore : MonoBehaviour {
         hitObjectHit = false;
 
         // Initialize scores
-        earlyScore = 1000; 
-        perfectScore = 5000; 
-        goodScore = 2500; 
+        earlyScore = 100; 
+        perfectScore = 500; 
+        goodScore = 250; 
 
         playerTotalScore = 0;
         timeWhenHit = 0;
@@ -66,6 +73,12 @@ public class TimingAndScore : MonoBehaviour {
 
         // Get object tag
         objectTag = gameObject.tag;
+
+        // Initialize health bar values when hit
+        earlyHealthValue = 5;
+        perfectHealthValue = 15;
+        goodHealthValue = 10;
+        missHealthValue = -10;
 	}
 	
 	// Update is called once per frame
@@ -83,6 +96,9 @@ public class TimingAndScore : MonoBehaviour {
         // Spawn miss explosion
         if (timer >= 1.19f)
         {
+            healthbar.healthBarValue = missHealthValue; // Update the healthbar with the miss value
+            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+
             hitObjectPosition = transform.position; // Get the position of the object
             explosionController.SpawnExplosion(hitObjectPosition, "Miss"); // Pass the position and spawn a miss particle system
             scoreManager.AddJudgement("MISS"); // Sets judgement to early
@@ -117,6 +133,8 @@ public class TimingAndScore : MonoBehaviour {
 
                     timeWhenHit = timer; // Get the time when hit
 
+                    healthbar.healthBarValue = earlyHealthValue; // Update the healthbar with the miss value
+                    healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
 
                     DestroyHitObject(); // Destroy hit object
                 }
@@ -141,6 +159,9 @@ public class TimingAndScore : MonoBehaviour {
 
                     timeWhenHit = timer; // Get the time when hit
 
+                    healthbar.healthBarValue = goodHealthValue; // Update the healthbar with the miss value
+                    healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+
                     DestroyHitObject(); // Destroy hit object
                 }
 
@@ -164,6 +185,9 @@ public class TimingAndScore : MonoBehaviour {
 
                     timeWhenHit = timer; // Get the time when hit
 
+                    healthbar.healthBarValue = perfectHealthValue; // Update the healthbar with the miss value
+                    healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+
                     DestroyHitObject(); // Destroy hit object
                 }
             }
@@ -173,6 +197,7 @@ public class TimingAndScore : MonoBehaviour {
     // Destory hit object
     private void DestroyHitObject()
     {
+        // Destroy hit object
         Destroy(gameObject);
     }
 
