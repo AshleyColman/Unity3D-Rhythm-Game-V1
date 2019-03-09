@@ -39,7 +39,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4864046690821754}
   m_Layer: 0
-  m_Name: EditorPlacedHitObject
+  m_Name: EditorPlacedHitObjectBlue
   m_TagString: Blue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

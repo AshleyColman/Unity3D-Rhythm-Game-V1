@@ -10,15 +10,16 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     float timer = 0f;
 
     public float spawnTime;
-    private int hitObjectType;
     private string hitObjectTag;
 
     public GameObject[] hitObject = new GameObject[7];
+    public GameObject[] specialHitObject = new GameObject[7];
     public List<float> hitObjectPositionsX = new List<float>();
     public List<float> hitObjectPositionsY = new List<float>();
     public List<float> hitObjectPositionsZ = new List<float>();
     public List<Vector3> hitObjectPositions = new List<Vector3>();
     public List<float> hitObjectSpawnTimes = new List<float>();
+    public List<int> hitObjectType = new List<int>();
     public List<GameObject> spawnedList = new List<GameObject>();
     public Vector3 hitObjectPosition;
     private int hitObjectID;
@@ -29,6 +30,11 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     private int nextIndex;
     private bool justHit = false;
     public float songTimer;
+    public float specialTimeStart;
+    public float specialTimeEnd;
+    public SpecialTimeManager specialTimeManager;
+    public bool isSpecialTime;
+
     void Awake()
     {
         // Load beatmap
@@ -37,11 +43,10 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-
         songProgressBar = FindObjectOfType<SongProgressBar>();
-
+        specialTimeManager = FindObjectOfType<SpecialTimeManager>();
+        isSpecialTime = false;
         songTimer = 0;
-        hitObjectType = 0;
         earliestIndex = 0;
         hasHit = false;
         startCheck = false;
@@ -71,8 +76,14 @@ public class LoadAndRunBeatmap : MonoBehaviour {
             // Remove 1 second from each of the loaded spawn times
             hitObjectSpawnTimes[i] = hitObjectSpawnTimes[i] - 1;
         }
-        
 
+        // Load the hit object types
+        hitObjectType = Database.database.LoadedObjectType;
+
+        // Load special time start
+        specialTimeStart = Database.database.SpecialTimeStart;
+        // Load special time end
+        specialTimeEnd = Database.database.SpecialTimeEnd;
     }
 	
 	// Update is called once per frame
@@ -81,12 +92,28 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         // Update the song timer with the current song time
         songTimer = songProgressBar.songAudioSource.time;
 
+        // Check if it's special time 
+        CheckSpecialTime();
 
-        if (songTimer >= hitObjectSpawnTimes[hitObjectID])
+        // Spawn normal notes if not special time
+        if (isSpecialTime == false)
         {
-            SpawnHitObject(hitObjectPositions[hitObjectID], hitObjectType);
-            hitObjectID++;
+            if (songTimer >= hitObjectSpawnTimes[hitObjectID])
+            {
+                SpawnHitObject(hitObjectPositions[hitObjectID], hitObjectType[hitObjectID]);
+                hitObjectID++;
+            }
         }
+        // Spawn special notes if special time
+        else if (isSpecialTime == true)
+        {
+            if (songTimer >= hitObjectSpawnTimes[hitObjectID])
+            {
+                SpawnSpecialHitObject(hitObjectPositions[hitObjectID], hitObjectType[hitObjectID]);
+                hitObjectID++;
+            }
+        }
+
 
         
         
@@ -133,5 +160,27 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         startCheck = true;
         // Increment the highest index currently
         nextIndex++;
+    }
+
+    // Spawn special hit object during special time
+    public void SpawnSpecialHitObject(Vector3 positionPass, int hitObjectTypePass)
+    {
+        spawnedList.Add(Instantiate(specialHitObject[hitObjectTypePass], positionPass, Quaternion.Euler(0, 45, 0)));
+        startCheck = true;
+        // Increment the highest index currently
+        nextIndex++;
+    }
+
+    // Check if it's special time, if it is we spawn special time notes
+    public void CheckSpecialTime()
+    {
+        if (specialTimeManager.isSpecialTime == true)
+        {
+            isSpecialTime = true;
+        }
+        if (specialTimeManager.isSpecialTime == false)
+        {
+            isSpecialTime = false;
+        }
     }
 }

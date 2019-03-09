@@ -178,11 +178,8 @@ public class TimingAndScore : MonoBehaviour {
 
     private void CheckTagType()
     {
-        if (objectTag == "Blue")
-        {
-            objectKey = KeyCode.S;
-        }
-        else if (objectTag == "Green")
+        
+        if (objectTag == "Green")
         {
             objectKey = KeyCode.D;
         }
@@ -191,6 +188,10 @@ public class TimingAndScore : MonoBehaviour {
             objectKey = KeyCode.F;
         }
         else if (objectTag == "Orange")
+        {
+            objectKey = KeyCode.S;
+        }
+        else if (objectTag == "Blue")
         {
             objectKey = KeyCode.J;
         }

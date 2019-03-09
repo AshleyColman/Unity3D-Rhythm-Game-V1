@@ -32,6 +32,18 @@ public class Database : MonoBehaviour {
     // Loaded list of spawn times
     public List<float> LoadedHitObjectSpawnTime = new List<float>();
 
+    // List of object types
+    public List<int> ObjectType = new List<int>();
+    // Loaded of object types
+    public List<int> LoadedObjectType = new List<int>();
+
+    // Special time start and end 
+    public float SpecialTimeStart;
+    public float SpecialTimeEnd;
+    // Loaded Special time start and end
+    public float LoadedSpecialTimeStart;
+    public float LoadedSpecialTimeEnd;
+
     private void Awake()
     {
         database = this;
@@ -63,6 +75,16 @@ public class Database : MonoBehaviour {
             beatmap.HitObjectSpawnTime.Add(HitObjectSpawnTime[i]);
         }
 
+        // Save all object types
+        for (int i = 0; i < ObjectType.Count; i++)
+        {
+            beatmap.ObjectType.Add(ObjectType[i]);
+        }
+
+        // Save special time start and load
+        beatmap.SpecialTimeStart = SpecialTimeStart;
+        beatmap.SpecialTimeEnd = SpecialTimeEnd;
+
         bf.Serialize(stream, beatmap);
         stream.Close();
     }
@@ -88,14 +110,20 @@ public class Database : MonoBehaviour {
         }
 
         // Load the spawn times
-        // Save list of all spawn times
         for (int i = 0; i < beatmap.HitObjectSpawnTime.Count; i++)
         {
             LoadedHitObjectSpawnTime.Add(beatmap.HitObjectSpawnTime[i]);
         }
 
+        // Load object types
+        for (int i = 0; i < beatmap.ObjectType.Count; i++)
+        {
+            LoadedObjectType.Add(beatmap.ObjectType[i]);
+        }
 
-        //}
+        // Load special time start and end
+        LoadedSpecialTimeStart = beatmap.SpecialTimeStart;
+        LoadedSpecialTimeEnd = beatmap.SpecialTimeEnd;
 
     }
 }

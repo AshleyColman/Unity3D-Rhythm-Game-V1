@@ -14,4 +14,9 @@ public class Beatmap
     public List<float> PositionX = new List<float>();
     public List<float> PositionY = new List<float>();
     public List<float> PositionZ = new List<float>();
+
+    public List<int> ObjectType = new List<int>();
+
+    public float SpecialTimeStart;
+    public float SpecialTimeEnd;
 }
