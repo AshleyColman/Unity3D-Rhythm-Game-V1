@@ -71,5 +71,10 @@ public class LevelChanger : MonoBehaviour {
             levelToLoad = 1;
             hasBackLevel = true;
         }
+        if (currentLevelIndex == 4)
+        {
+            levelToLoad = 3;
+            hasBackLevel = true;
+        }
     }
 }

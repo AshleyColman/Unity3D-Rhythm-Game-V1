@@ -320,6 +320,7 @@ MonoBehaviour:
   hitObjectHit: 0
   hitObjectPosition: {x: 0, y: 0, z: 0}
   isEarliest: 0
+  isSpecial: 0
 --- !u!114 &114229084410634322
 MonoBehaviour:
   m_ObjectHideFlags: 1

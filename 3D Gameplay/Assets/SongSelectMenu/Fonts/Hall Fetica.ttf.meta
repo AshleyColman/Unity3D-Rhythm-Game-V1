@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: ccbd8ae2dbcd4bb4faec4331d95c4550
+timeCreated: 1552170835
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Hall Fetica
+  fontNames:
+  - Hall Fetica
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

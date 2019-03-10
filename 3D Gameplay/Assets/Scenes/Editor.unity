@@ -480,6 +480,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114591839356208324, guid: a51493b45fbdfd04fbc2aa55be7c8a67,
+        type: 2}
+      propertyPath: backSound
+      value: 
+      objectReference: {fileID: 8300000, guid: dd9bc3def0537aa479820eafa2cf474a, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
   m_IsPrefabParent: 0
