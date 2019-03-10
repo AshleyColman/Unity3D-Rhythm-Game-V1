@@ -38,6 +38,17 @@ public class SongProgressBar : MonoBehaviour {
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
     void Update()
     {
+        // Play song when user press Space button
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // Play song
+            songAudioSource.clip = songClip;
+            songAudioSource.volume = songVolume;
+            songAudioSource.Play();
+            playing = true;
+            active = true;
+        }
+
         if (active)
         {
             if (playing)
@@ -54,17 +65,6 @@ public class SongProgressBar : MonoBehaviour {
                     
                 }
             }
-        }
-
-        // Play song when user press Space button
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // Play song
-            songAudioSource.Play();
-            songAudioSource.clip = songClip;
-            songAudioSource.volume = songVolume;
-            playing = true;
-            active = true;
         }
 
     }

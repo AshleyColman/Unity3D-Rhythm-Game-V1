@@ -15,6 +15,8 @@ public class PlacedObject : MonoBehaviour {
     public int editorPlacedHitObjectType;
     private int specialTimeKeyPresses;
     public Image backgroundImage; // To spawn during special time
+    public Text instructionButtonText; // The instruction button text
+    public Animator instructionButtonAnimation; // Animate the instruction button text
 
     // Use this for initialization
     void Start () {
@@ -26,6 +28,13 @@ public class PlacedObject : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        // Check if live mapping has started
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // Update the instruction button text and play animation
+            UpdateInstructionButtonText("SpacebarPressed");
+        }
 
         // Place a hit object only if the mouse has been clicked and the UI button has been clicked
         if (hasClickedUIButton == true)
@@ -58,19 +67,28 @@ public class PlacedObject : MonoBehaviour {
             // Special Time Key Press Set Times
             if (Input.GetKeyDown(KeyCode.H))
             {
+                // Increase the special time key presses to know when it's started and ended
                 specialTimeKeyPresses++;
 
                 // If the first press set the start time for special time
                 if (specialTimeKeyPresses == 1)
                 {
+                    // Activate the border image
                     ActivateBorder();
+                    // Mark the special time start
                     SetSpecialTimeStart();
+                    // Update the instruction button text and play animation
+                    UpdateInstructionButtonText("HKeyPressedOnce");
                 }
                 // The the second time set the special time end
                 if (specialTimeKeyPresses == 2)
                 {
+                    // Deactive the border image
                     DeActivateBorder();
+                    // Mark the special time end
                     SetSpecialTimeEnd();
+                    // Update the instruction button text and play animation
+                    UpdateInstructionButtonText("HKeyPressedTwice");
                 }
             }
         }
@@ -132,5 +150,38 @@ public class PlacedObject : MonoBehaviour {
     public void DeActivateBorder()
     {
         backgroundImage.enabled = false;
+    }
+
+    // When the save button has been clicked update the instruction button text and play animation
+    public void UpdateInstructionButtonText(string actionPass)
+    {
+        if (actionPass == "SpacebarPressed")
+        {
+            // Update the instruction button text
+            instructionButtonText.text = "Press H to Start Special Time";
+            // Do instruction button animation
+            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
+        }
+        else if (actionPass == "HKeyPressedOnce")
+        {
+            // Update the instruction button text
+            instructionButtonText.text = "Press H to End Special Time";
+            // Do instruction button animation
+            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
+        }
+        else if (actionPass == "HKeyPressedTwice")
+        {
+            // Update the instruction button text
+            instructionButtonText.text = "Save Your Beatmap When Finished";
+            // Do instruction button animation
+            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
+        }
+        else if (actionPass == "SaveButtonPressed")
+        {
+            // Update the instruction button text
+            instructionButtonText.text = "Beatmap is Saved";
+            // Do instruction button animation
+            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
+        }
     }
 }

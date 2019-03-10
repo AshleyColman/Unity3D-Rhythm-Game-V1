@@ -356,7 +356,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1221984675857880, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114591839356208324, guid: a51493b45fbdfd04fbc2aa55be7c8a67,
         type: 2}
@@ -519,6 +519,8 @@ MonoBehaviour:
   songProgressBar: {fileID: 0}
   editorPlacedHitObjectType: 0
   backgroundImage: {fileID: 2121974089}
+  instructionButtonText: {fileID: 957555143}
+  instructionButtonAnimation: {fileID: 746110474}
 --- !u!114 &435480790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -645,6 +647,7 @@ GameObject:
   - component: {fileID: 746110471}
   - component: {fileID: 746110470}
   - component: {fileID: 746110473}
+  - component: {fileID: 746110474}
   m_Layer: 5
   m_Name: Instructions
   m_TagString: Untagged
@@ -660,7 +663,7 @@ RectTransform:
   m_GameObject: {fileID: 746110468}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1.0000005, z: 1.0000005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 957555142}
   m_Father: {fileID: 1389497274}
@@ -792,6 +795,23 @@ MonoBehaviour:
       m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
         Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   delegates: []
+--- !u!95 &746110474
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 746110468}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2459e175cc2297d4da76f39b79b637e4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1001 &746387309
 Prefab:
   m_ObjectHideFlags: 0
@@ -1878,6 +1898,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 435480789}
+        m_MethodName: UpdateInstructionButtonText
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: SaveButtonPressed
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1494877248
@@ -2239,7 +2270,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1029179756
+  randomSeed: -1004344987
   InitialModule:
     serializedVersion: 3
     enabled: 1
