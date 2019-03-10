@@ -9,15 +9,18 @@ public class SpecialTimeManager : MonoBehaviour {
     public SongProgressBar songProgressBar; // For checking the song time 
     private float songTime = 0f;
     public Image backgroundImage;
-    private float specialTimeStart;
-    private float specialTimeEnd;
+    public float specialTimeStart;
+    public float specialTimeEnd;
     public bool isSpecialTime = false;
     private bool specialTimesLoaded;
+    public float borderDisableTime;
+
     // Use this for initialization
     void Start () {
         specialTimesLoaded = false;
         specialTimeStart = 0;
         specialTimeEnd = 0;
+        borderDisableTime = 0;
         backgroundImage.enabled = false;
         songProgressBar = FindObjectOfType<SongProgressBar>();
     }
@@ -30,6 +33,9 @@ public class SpecialTimeManager : MonoBehaviour {
             // Get the special time start and end from the database load
             specialTimeStart = Database.database.LoadedSpecialTimeStart;
             specialTimeEnd = Database.database.LoadedSpecialTimeEnd;
+
+            // Make the border disable 1.2 seconds after special time has ended
+            borderDisableTime = (specialTimeEnd + 1.5f);
         }
         else
         {
@@ -47,12 +53,22 @@ public class SpecialTimeManager : MonoBehaviour {
         if (specialTimesLoaded == true && songTime >= specialTimeStart && songTime <= specialTimeEnd)
         {
             isSpecialTime = true;
+        }
+        // Activate the border if within special time and below the additional 1 second borderDisableTime
+        if (specialTimesLoaded == true && songTime >= specialTimeStart && songTime <= borderDisableTime)
+        {
             ActivateBorder();
         }
-        else
+        // Deactivate the border and special time to false if its below the special time or greater than the borderDisableTime
+        if (songTime < specialTimeStart || songTime > borderDisableTime)
         {
             isSpecialTime = false;
             DeActivateBorder();
+        }
+        // If the time is greater than the specialTimeEnd set special time to false
+        if (songTime > specialTimeEnd)
+        {
+            isSpecialTime = false;
         }
         
     }

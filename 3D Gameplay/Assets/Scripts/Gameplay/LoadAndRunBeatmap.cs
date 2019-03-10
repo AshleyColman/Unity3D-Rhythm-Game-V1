@@ -79,15 +79,15 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
         // Load the hit object types
         hitObjectType = Database.database.LoadedObjectType;
-
-        // Load special time start
-        specialTimeStart = Database.database.SpecialTimeStart;
-        // Load special time end
-        specialTimeEnd = Database.database.SpecialTimeEnd;
     }
 	
 	// Update is called once per frame
 	void Update () {
+
+        // Load special time start
+        specialTimeStart = specialTimeManager.specialTimeStart;
+        // Load special time end
+        specialTimeEnd = specialTimeManager.specialTimeEnd;
 
         // Update the song timer with the current song time
         songTimer = songProgressBar.songAudioSource.time;

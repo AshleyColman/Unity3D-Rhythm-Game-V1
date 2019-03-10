@@ -21,9 +21,9 @@ GameObject:
   - component: {fileID: 4598362820109888}
   - component: {fileID: 198927003216592620}
   - component: {fileID: 199232948222438324}
-  - component: {fileID: 114281861164183178}
+  - component: {fileID: 114777209419772010}
   m_Layer: 0
-  m_Name: PurpleExplosion
+  m_Name: SpecialExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,7 +42,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!114 &114281861164183178
+--- !u!114 &114777209419772010
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -161,7 +161,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 300
+      scalar: 500
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -206,20 +206,20 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.29803923, g: 0.31764707, b: 0.5058824, a: 0.6666667}
-        key1: {r: 0.29803923, g: 0.31764707, b: 0.5058824, a: 0.6666667}
-        key2: {r: 0.29803923, g: 0.31764707, b: 0.5058824, a: 0}
-        key3: {r: 0.29803923, g: 0.31764707, b: 0.5058824, a: 0}
-        key4: {r: 0.29803923, g: 0.31764707, b: 0.5058824, a: 0}
-        key5: {r: 0.29803923, g: 0.31764707, b: 0.5058824, a: 0}
+        key0: {r: 0.09803922, g: 0.4745098, b: 0.67058825, a: 0.6666667}
+        key1: {r: 0.37254903, g: 0.7176471, b: 0.09019608, a: 0.6666667}
+        key2: {r: 0.13725491, g: 0.72156864, b: 0.32941177, a: 0}
+        key3: {r: 0.70980394, g: 0.5647059, b: 0.05490196, a: 0}
+        key4: {r: 0.76862746, g: 0.015686275, b: 0.09803922, a: 0}
+        key5: {r: 0.7490196, g: 0.019607844, b: 0.5803922, a: 0}
         key6: {r: 0.29803923, g: 0.31764707, b: 0.5058824, a: 0}
         key7: {r: 0.29803923, g: 0.31764707, b: 0.5058824, a: 0}
         ctime0: 0
-        ctime1: 65535
-        ctime2: 39514
-        ctime3: 63045
-        ctime4: 63045
-        ctime5: 63045
+        ctime1: 10879
+        ctime2: 21758
+        ctime3: 32571
+        ctime4: 43515
+        ctime5: 54394
         ctime6: 63045
         ctime7: 64764
         atime0: 0
@@ -231,7 +231,7 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_NumColorKeys: 2
+        m_NumColorKeys: 7
         m_NumAlphaKeys: 2
       minGradient:
         serializedVersion: 2

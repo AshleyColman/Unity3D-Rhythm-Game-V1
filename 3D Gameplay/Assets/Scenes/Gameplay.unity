@@ -1559,7 +1559,10 @@ MonoBehaviour:
   backgroundImageAnimation: {fileID: 123364675}
   songProgressBar: {fileID: 0}
   backgroundImage: {fileID: 1857075221}
+  specialTimeStart: 0
+  specialTimeEnd: 0
   isSpecialTime: 0
+  borderDisableTime: 0
 --- !u!4 &1345915210
 Transform:
   m_ObjectHideFlags: 0
@@ -1757,6 +1760,9 @@ MonoBehaviour:
   - {fileID: 1964874745442386, guid: bbcae12471bd5174b868f1fa32886f25, type: 2}
   - {fileID: 1964874745442386, guid: d389b4efc325d2f4b830af402889a1c5, type: 2}
   - {fileID: 1847769943786638, guid: 77ecd53a48be8584c92cf3bc13e9cda3, type: 2}
+  - {fileID: 1964874745442386, guid: ff0e7eb0654c20c4a96bed928b21fe87, type: 2}
+  - {fileID: 1367367812799958, guid: 8d849ebecebdb774897dff09ee50edc6, type: 2}
+  loadAndRunBeatmap: {fileID: 0}
 --- !u!1001 &1433777347
 Prefab:
   m_ObjectHideFlags: 0
