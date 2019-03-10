@@ -10,7 +10,7 @@ public class PlacedObject : MonoBehaviour {
     int totalEditorHitObjects = 0;
     List<Vector3> editorHitObjectPositions = new List<Vector3>();
     Vector3 instantiatePosition;
-    bool hasClickedUIButton = false;
+    public bool hasClickedUIButton = false;
     public SongProgressBar songProgressBar;
     public int editorPlacedHitObjectType;
     private int specialTimeKeyPresses;
