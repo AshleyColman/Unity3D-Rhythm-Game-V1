@@ -17,9 +17,12 @@ public class PlacedObject : MonoBehaviour {
     public Image backgroundImage; // To spawn during special time
     public Text instructionButtonText; // The instruction button text
     public Animator instructionButtonAnimation; // Animate the instruction button text
-
+    public bool startSongTimer;
+    public float songTimer;
     // Use this for initialization
     void Start () {
+        startSongTimer = false;
+        songTimer = 0f;
         specialTimeKeyPresses = 0;
         backgroundImage.enabled = false;
         mouseFollow = FindObjectOfType<MouseFollow>();
@@ -34,7 +37,18 @@ public class PlacedObject : MonoBehaviour {
         {
             // Update the instruction button text and play animation
             UpdateInstructionButtonText("SpacebarPressed");
+
+            // If the space key has been pressed we start the song and song timer
+            startSongTimer = true;
         }
+
+        // Update the song timer with the current song time
+        if (startSongTimer == true)
+        {
+            songTimer += Time.deltaTime;
+        }
+
+
 
         // Place a hit object only if the mouse has been clicked and the UI button has been clicked
         if (hasClickedUIButton == true)
@@ -122,7 +136,7 @@ public class PlacedObject : MonoBehaviour {
         Database.database.PositionZ.Add(mouseFollow.pos.z);
 
         // Save object spawn time
-        Database.database.HitObjectSpawnTime.Add(songProgressBar.songAudioSource.time);
+        Database.database.HitObjectSpawnTime.Add(songTimer);
 
         // Save object type
         Database.database.ObjectType.Add(editorPlacedHitObjectType);
@@ -131,13 +145,13 @@ public class PlacedObject : MonoBehaviour {
     // Set the special time start when the key has been pressed at the current time of the song when pressed
     public void SetSpecialTimeStart()
     {
-        Database.database.SpecialTimeStart = songProgressBar.songAudioSource.time;
+        Database.database.SpecialTimeStart = songTimer;
     }
 
     // Set the special time end when the key has been pressed at the current time of the song when pressed
     public void SetSpecialTimeEnd()
     {
-        Database.database.SpecialTimeEnd = songProgressBar.songAudioSource.time;
+        Database.database.SpecialTimeEnd = songTimer;
     }
 
     // Display the special time border during mapping when the key has been pressed

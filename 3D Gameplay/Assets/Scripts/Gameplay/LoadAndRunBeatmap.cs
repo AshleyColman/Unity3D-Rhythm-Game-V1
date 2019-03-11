@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LoadAndRunBeatmap : MonoBehaviour {
 
@@ -34,6 +35,9 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     public float specialTimeEnd;
     public SpecialTimeManager specialTimeManager;
     public bool isSpecialTime;
+    public bool startSongTimer;
+    public Animator pressPlayAnimator; // Animates the Press Play Text at the start of the song
+    public Text pressPlayText; // The Press Play text at the start of the song
 
     void Awake()
     {
@@ -47,6 +51,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         specialTimeManager = FindObjectOfType<SpecialTimeManager>();
         isSpecialTime = false;
         songTimer = 0;
+        startSongTimer = false;
         earliestIndex = 0;
         hasHit = false;
         startCheck = false;
@@ -89,8 +94,21 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         // Load special time end
         specialTimeEnd = specialTimeManager.specialTimeEnd;
 
-        // Update the song timer with the current song time
-        songTimer = songProgressBar.songAudioSource.time;
+        
+        // If the space key has been pressed we start the song and song timer
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            startSongTimer = true;
+            // Animate the press play text at the start of the song
+            StartCoroutine(AnimatePressPlayText());
+        }
+
+        if (startSongTimer == true)
+        {
+            // Update the song timer with the current song time
+            songTimer += Time.deltaTime;
+        }
+
 
         // Check if it's special time 
         CheckSpecialTime();
@@ -182,5 +200,13 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         {
             isSpecialTime = false;
         }
+    }
+
+    // Play the animation for the PressPlayText
+    private IEnumerator AnimatePressPlayText()
+    {
+        pressPlayAnimator.Play("PressPlayTextAnimation");
+        yield return new WaitForSeconds(0.10f);
+        pressPlayText.enabled = false;
     }
 }

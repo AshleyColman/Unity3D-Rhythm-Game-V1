@@ -14,6 +14,11 @@ public class SpecialTimeManager : MonoBehaviour {
     public bool isSpecialTime = false;
     private bool specialTimesLoaded;
     public float borderDisableTime;
+    public float specialTimeWarningActivateTime; // The time to activate the specialTimeWarningText
+    public float specialTimeWarningDeactivateTime; // The time to deactivate the specialTimeWarningText
+    public Text specialTimeWarningText; // The specialTimeWarningText that appears just before special time starts
+    public Animator specialTimeWarningAnimator; // The animator for the specialTimeWarningText
+    public bool startSongTimer; // Start the song timer
 
     // Use this for initialization
     void Start () {
@@ -21,8 +26,10 @@ public class SpecialTimeManager : MonoBehaviour {
         specialTimeStart = 0;
         specialTimeEnd = 0;
         borderDisableTime = 0;
+        specialTimeWarningActivateTime = 0;
         backgroundImage.enabled = false;
         songProgressBar = FindObjectOfType<SongProgressBar>();
+        specialTimeWarningText.enabled = false; // Deactivate the specialTimeWarningText at the start
     }
 	
 	// Update is called once per frame
@@ -36,6 +43,10 @@ public class SpecialTimeManager : MonoBehaviour {
 
             // Make the border disable 1.2 seconds after special time has ended
             borderDisableTime = (specialTimeEnd + 1.5f);
+            // Assign the specialWarningActivateTime to be 3 seconds before special time begins
+            specialTimeWarningActivateTime = (specialTimeStart - 3);
+            // Assign the specialWarningDeactivateTime to be at the time special time begins
+            specialTimeWarningDeactivateTime = specialTimeStart;
         }
         else
         {
@@ -43,12 +54,34 @@ public class SpecialTimeManager : MonoBehaviour {
             specialTimesLoaded = true;
         }
 
-        
+       
+        // If the space key has been pressed we start the song and song timer
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            startSongTimer = true;
+        }
 
-        // Get the song time
-        songTime = songProgressBar.songAudioSource.time;
+        if (startSongTimer == true)
+        {
+            // Update the song timer with the current song time
+            songTime += Time.deltaTime;
+        }
 
-        Debug.Log("specialTimeloaded = " + specialTimesLoaded);
+
+        // If if it time to activate the specialTimeWarningText but less than the deactivate time 
+        if (songTime >= specialTimeWarningActivateTime && songTime <= specialTimeWarningDeactivateTime)
+        {
+            // Enable the warning text
+            specialTimeWarningText.enabled = true;
+            // Play the animation for the warning text
+            StartCoroutine(AnimateSpecialTimeWarningText());
+        }
+        else
+        {
+            // Disable the text
+            specialTimeWarningText.enabled = false;
+        }
+
         // If it is the special time 
         if (specialTimesLoaded == true && songTime >= specialTimeStart && songTime <= specialTimeEnd)
         {
@@ -86,5 +119,16 @@ public class SpecialTimeManager : MonoBehaviour {
     public void DeActivateBorder()
     {
         backgroundImage.enabled = false;
+    }
+
+    // Play the animation for the specialTimeWarningText
+    private IEnumerator AnimateSpecialTimeWarningText()
+    {
+        // Play the animation
+        specialTimeWarningAnimator.Play("SpecialTimeWarningAnimation");
+        // Wait for the animation to end before disabling
+        yield return new WaitForSeconds(4f);
+        // Disable the text
+        specialTimeWarningText.enabled = false;
     }
 }
