@@ -21,19 +21,6 @@ public class SongProgressBar : MonoBehaviour {
     public AudioClip songClip;
     public float songAudioSourceTime;
 
-    // Calculate Song Total Duration
-    public void DisplaySongDuration()
-    {
-        try
-        {
-            songTotalDuration.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.clip.length);
-        }
-        catch
-        {
-            FindObjectOfType<MetronomePro>().txtState.text = "Please assign an Audio Clip to the Player!";
-            Debug.LogWarning("Please assign an Audio Clip to the Player!");
-        }
-    }
 
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
     void Update()
@@ -59,6 +46,7 @@ public class SongProgressBar : MonoBehaviour {
                     amount = (songAudioSource.time) / (songAudioSource.clip.length);
                     songPlayerBar.fillAmount = amount;
                     actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
+                    songTotalDuration.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.clip.length);
                 }
                 else
                 {
