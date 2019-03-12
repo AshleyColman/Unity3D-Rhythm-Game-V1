@@ -24,11 +24,11 @@ public class ExplosionController : MonoBehaviour {
         {
             if (objectTagPass == "Miss")
             {
-                Instantiate(explosion[10], positionPass, Quaternion.Euler(90, 0, -45)); // Spawn special miss explosion for special miss notes
+                Instantiate(explosion[7], positionPass, Quaternion.Euler(90, 0, -45)); // Spawn special miss explosion for special miss notes
             }
             else
             {
-                Instantiate(explosion[9], positionPass, Quaternion.Euler(90, 0, -45)); // Instantiate special explosion for special notes
+                Instantiate(explosion[8], positionPass, Quaternion.Euler(90, 0, -45)); // Instantiate special explosion for special notes
             }
         }
         else
@@ -38,45 +38,35 @@ public class ExplosionController : MonoBehaviour {
             {
                 Instantiate(explosion[0], positionPass, Quaternion.Euler(90, 0, -45)); // Instantiate blue particle system
             }
-            // Spawn green explosion for green notes
-            else if (objectTagPass == "Green")
+            // Spawn green explosion for purple notes
+            else if (objectTagPass == "Purple")
             {
                 Instantiate(explosion[1], positionPass, Quaternion.Euler(90, 0, -45));
             }
-            // Spawn orange explosion for orange notes
-            else if (objectTagPass == "Orange")
+            // Spawn orange explosion for Red notes
+            else if (objectTagPass == "Red")
             {
                 Instantiate(explosion[2], positionPass, Quaternion.Euler(90, 0, -45));
             }
-            // Spawn pink explosion for pink notes
-            else if (objectTagPass == "Pink")
+            // Spawn pink explosion for Green notes
+            else if (objectTagPass == "Green")
             {
                 Instantiate(explosion[3], positionPass, Quaternion.Euler(90, 0, -45));
             }
-            // Spawn purple explosion for purple notes
-            else if (objectTagPass == "Purple")
+            // Spawn purple explosion for Yellow notes
+            else if (objectTagPass == "Yellow")
             {
                 Instantiate(explosion[4], positionPass, Quaternion.Euler(90, 0, -45));
             }
-            // Spawn red explosion for red notes
-            else if (objectTagPass == "Red")
+            // Spawn red explosion for Orange notes
+            else if (objectTagPass == "Orange")
             {
                 Instantiate(explosion[5], positionPass, Quaternion.Euler(90, 0, -45));
             }
-            // Spawn yellow explosion for yellow notes
-            else if (objectTagPass == "Yellow")
-            {
-                Instantiate(explosion[6], positionPass, Quaternion.Euler(90, 0, -45));
-            }
-            // Spawn grey explosion for grey notes
-            else if (objectTagPass == "Grey")
-            {
-                Instantiate(explosion[7], positionPass, Quaternion.Euler(90, 0, -45));
-            }
-            // Spawn miss explosion for grey notes
+            // Spawn yellow explosion for miss notes
             else if (objectTagPass == "Miss")
             {
-                Instantiate(explosion[8], positionPass, Quaternion.Euler(90, 0, -45));
+                Instantiate(explosion[6], positionPass, Quaternion.Euler(90, 0, -45));
             }
         }
     }

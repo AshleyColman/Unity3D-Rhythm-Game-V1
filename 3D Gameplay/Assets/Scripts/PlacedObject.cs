@@ -86,6 +86,37 @@ public class PlacedObject : MonoBehaviour {
                 // Play the placed sound effect
                 editorSoundController.PlayPlacedSound();
             }
+            // Green Key Pressed
+            if (Input.GetKeyDown(KeyCode.U))
+            {
+                // Set the type to GREEN as the U key has been pressed
+                editorPlacedHitObjectType = 3;
+                // Spawn and save the placed object information in the beatmap file
+                SpawnAndSavePlacedObject(editorPlacedHitObjectType);
+                // Play the placed sound effect
+                editorSoundController.PlayPlacedSound();
+            }
+            // Yellow Key Pressed
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                // Set the type to YELLOW as the I key has been pressed
+                editorPlacedHitObjectType = 4;
+                // Spawn and save the placed object information in the beatmap file
+                SpawnAndSavePlacedObject(editorPlacedHitObjectType);
+                // Play the placed sound effect
+                editorSoundController.PlayPlacedSound();
+            }
+            // Orange Key Pressed
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                // Set the type to ORANGE as the O key has been pressed
+                editorPlacedHitObjectType = 5;
+                // Spawn and save the placed object information in the beatmap file
+                SpawnAndSavePlacedObject(editorPlacedHitObjectType);
+                // Play the placed sound effect
+                editorSoundController.PlayPlacedSound();
+            }
+
 
             // Special Time Key Press Set Times
             if (Input.GetKeyDown(KeyCode.H))

@@ -206,15 +206,15 @@ public class TimingAndScore : MonoBehaviour {
         
         if (objectTag == "Green")
         {
-            objectKey = KeyCode.D;
+            objectKey = KeyCode.S;
         }
-        else if (objectTag == "Grey")
+        else if (objectTag == "Yellow")
         {
-            objectKey = KeyCode.F;
+            objectKey = KeyCode.D;
         }
         else if (objectTag == "Orange")
         {
-            objectKey = KeyCode.S;
+            objectKey = KeyCode.F;
         }
         else if (objectTag == "Blue")
         {

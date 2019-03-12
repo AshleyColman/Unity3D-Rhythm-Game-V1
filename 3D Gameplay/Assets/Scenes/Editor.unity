@@ -356,7 +356,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1221984675857880, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114591839356208324, guid: a51493b45fbdfd04fbc2aa55be7c8a67,
         type: 2}
@@ -514,6 +514,9 @@ MonoBehaviour:
   - {fileID: 1880505404341086, guid: 46decdaf0af08cd4cae9466fb8f21776, type: 2}
   - {fileID: 1323061971163328, guid: 0a81d216d79666c4089978c8387b7e58, type: 2}
   - {fileID: 1880505404341086, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
+  - {fileID: 1323061971163328, guid: 2d59966a92440c14ea4ccc9d37b062bb, type: 2}
+  - {fileID: 1323061971163328, guid: cd7d385cb6c0c14438f241b97f2eb527, type: 2}
+  - {fileID: 1880505404341086, guid: 0b044bfaeed256f4494d3e7bba68da4e, type: 2}
   mouseFollow: {fileID: 0}
   hasClickedUIButton: 0
   songProgressBar: {fileID: 0}

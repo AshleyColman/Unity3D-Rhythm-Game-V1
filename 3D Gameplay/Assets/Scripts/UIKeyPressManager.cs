@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class UIKeyPressManager : MonoBehaviour {
 
+    public Animator UIKeyPressAnimatorS; // Animate the S key
+    public Animator UIKeyPressAnimatorD; // Animate the D key
+    public Animator UIKeyPressAnimatorF; // Animate the F key
+
     public Animator UIKeyPressAnimatorJ; // Animate the J key
     public Animator UIKeyPressAnimatorK; // Animate the K key
     public Animator UIKeyPressAnimatorL; // Animate the L key
@@ -17,6 +21,43 @@ public class UIKeyPressManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        // If the green key has been pressed
+        if (Input.GetKey(KeyCode.S))
+        {
+            // Play the animation
+            PlayUIKeyHeldAnimation(UIKeyPressAnimatorS);
+        }
+        if (Input.GetKeyUp(KeyCode.S))
+        {
+            // Play the animation
+            PlayUIKeyReleaseAnimation(UIKeyPressAnimatorS);
+        }
+
+        // If the yellow key has been pressed
+        if (Input.GetKey(KeyCode.D))
+        {
+            // Play the animation
+            PlayUIKeyHeldAnimation(UIKeyPressAnimatorD);
+        }
+        if (Input.GetKeyUp(KeyCode.D))
+        {
+            // Play the animation
+            PlayUIKeyReleaseAnimation(UIKeyPressAnimatorD);
+        }
+
+        // If the orange key has been pressed
+        if (Input.GetKey(KeyCode.F))
+        {
+            // Play the animation
+            PlayUIKeyHeldAnimation(UIKeyPressAnimatorF);
+        }
+        if (Input.GetKeyUp(KeyCode.F))
+        {
+            // Play the animation
+            PlayUIKeyReleaseAnimation(UIKeyPressAnimatorF);
+        }
+
+
         // If the blue key has been pressed
         if (Input.GetKey(KeyCode.J))
         {
@@ -58,6 +99,19 @@ public class UIKeyPressManager : MonoBehaviour {
     // Play the animation
     public void PlayUIKeyHeldAnimation(Animator animatorPass)
     {
+
+        if (animatorPass == UIKeyPressAnimatorS)
+        {
+            animatorPass.Play("HeldS");
+        }
+        if (animatorPass == UIKeyPressAnimatorD)
+        {
+            animatorPass.Play("HeldD");
+        }
+        if (animatorPass == UIKeyPressAnimatorF)
+        {
+            animatorPass.Play("HeldF");
+        }
         if (animatorPass == UIKeyPressAnimatorJ)
         { 
             animatorPass.Play("HeldJ");
@@ -76,6 +130,18 @@ public class UIKeyPressManager : MonoBehaviour {
     }
     public void PlayUIKeyReleaseAnimation(Animator animatorPass)
     {
+        if (animatorPass == UIKeyPressAnimatorS)
+        {
+            animatorPass.Play("ReleaseS");
+        }
+        if (animatorPass == UIKeyPressAnimatorD)
+        {
+            animatorPass.Play("ReleaseD");
+        }
+        if (animatorPass == UIKeyPressAnimatorF)
+        {
+            animatorPass.Play("ReleaseF");
+        }
         if (animatorPass == UIKeyPressAnimatorJ)
         {
             animatorPass.Play("ReleaseJ");
