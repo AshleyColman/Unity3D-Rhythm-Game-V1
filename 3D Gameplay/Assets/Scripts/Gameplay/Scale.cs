@@ -38,7 +38,7 @@ public class Scale : MonoBehaviour {
         
         // Increments timer
         timer += Time.deltaTime;
-        Debug.Log("Timer: " + timer);
+
         // Increment the time since spawned
         timeStartedLerping += Time.deltaTime;
 

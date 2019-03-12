@@ -38,6 +38,8 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     public bool startSongTimer;
     public Animator pressPlayAnimator; // Animates the Press Play Text at the start of the song
     public Text pressPlayText; // The Press Play text at the start of the song
+    public AudioSource menuSFXAudioSource; // The audio source for playing the start sound effect
+    public AudioClip PressPlaySound; // The sound that plays when you press play at the start of the game
 
     void Awake()
     {
@@ -98,9 +100,12 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         // If the space key has been pressed we start the song and song timer
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            // Start the song timer as the game has started
             startSongTimer = true;
             // Animate the press play text at the start of the song
             StartCoroutine(AnimatePressPlayText());
+            // Play the press play sound effect
+            PlayPressPlaySound();
         }
 
         if (startSongTimer == true)
@@ -208,5 +213,11 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         pressPlayAnimator.Play("PressPlayTextAnimation");
         yield return new WaitForSeconds(0.10f);
         pressPlayText.enabled = false;
+    }
+
+    // Play the PressPlay sound effect
+    private void PlayPressPlaySound()
+    {
+        menuSFXAudioSource.PlayOneShot(PressPlaySound, 1f);
     }
 }

@@ -16,6 +16,18 @@ public class Menu : MonoBehaviour {
     public float fadeRate = 8f;
     public float growRate = 0.5f;
 
+    public Text descriptionPanelText; // The description panel text to change and update
+    private string PLAYText, MULTIPLAYERText, EDITORText, SETTINGSText, EXITText;
+
+    void Start()
+    {
+        PLAYText = "Compete against others on user created beatmaps";
+        MULTIPLAYERText = "Play against others online";
+        EDITORText = "Create your own beatmap";
+        SETTINGSText = "Customize the game to your preference";
+        EXITText = "Exit the game";
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -74,5 +86,35 @@ public class Menu : MonoBehaviour {
         cg.alpha = 1f;
         currentPage.transform.localScale = Vector3.one;
         fadeIn = false;
+    }
+
+
+    public void UpdatePage(string buttonSelectedPass)
+    {
+        if (buttonSelectedPass == "PLAY")
+        {
+            descriptionPanelText.text = PLAYText;
+            newPage(0);
+        }
+        if (buttonSelectedPass == "MULTIPLAYER")
+        {
+            descriptionPanelText.text = MULTIPLAYERText;
+            newPage(1);
+        }
+        if (buttonSelectedPass == "EDITOR")
+        {
+            descriptionPanelText.text = EDITORText;
+            newPage(2);
+        }
+        if (buttonSelectedPass == "SETTINGS")
+        {
+            descriptionPanelText.text = SETTINGSText;
+            newPage(3);
+        }
+        if (buttonSelectedPass == "EXIT")
+        {
+            descriptionPanelText.text = EXITText;
+            newPage(4);
+        }
     }
 }

@@ -19,6 +19,8 @@ public class PlacedObject : MonoBehaviour {
     public Animator instructionButtonAnimation; // Animate the instruction button text
     public bool startSongTimer;
     public float songTimer;
+    private EditorSoundController editorSoundController; // The editorSoundController
+
     // Use this for initialization
     void Start () {
         startSongTimer = false;
@@ -27,6 +29,7 @@ public class PlacedObject : MonoBehaviour {
         backgroundImage.enabled = false;
         mouseFollow = FindObjectOfType<MouseFollow>();
         songProgressBar = FindObjectOfType<SongProgressBar>();
+        editorSoundController = FindObjectOfType<EditorSoundController>(); // Reference to the editor sound controller
     }
 	
 	// Update is called once per frame
@@ -58,24 +61,30 @@ public class PlacedObject : MonoBehaviour {
             {
                 // Set the type to BLUE as the J key has been pressed
                 editorPlacedHitObjectType = 0;
-
+                // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
+                // Play the placed sound effect
+                editorSoundController.PlayPlacedSound();
             }
             // Purple Key Pressed
             else if (Input.GetKeyDown(KeyCode.K))
             {
                 // Set the type to PURPLE as the K key has been pressed
                 editorPlacedHitObjectType = 1;
-
+                // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
+                // Play the placed sound effect
+                editorSoundController.PlayPlacedSound();
             }
             // Red Key Pressed
             else if (Input.GetKeyDown(KeyCode.L))
             {
                 // Set the type to RED as the L key has been pressed
                 editorPlacedHitObjectType = 2;
-
+                // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
+                // Play the placed sound effect
+                editorSoundController.PlayPlacedSound();
             }
 
             // Special Time Key Press Set Times
@@ -93,6 +102,8 @@ public class PlacedObject : MonoBehaviour {
                     SetSpecialTimeStart();
                     // Update the instruction button text and play animation
                     UpdateInstructionButtonText("HKeyPressedOnce");
+                    // Play the specialTimeFirstPlaced sound effect
+                    editorSoundController.PlaySpecialTimeStartPlacedSound();
                 }
                 // The the second time set the special time end
                 if (specialTimeKeyPresses == 2)
@@ -103,6 +114,8 @@ public class PlacedObject : MonoBehaviour {
                     SetSpecialTimeEnd();
                     // Update the instruction button text and play animation
                     UpdateInstructionButtonText("HKeyPressedTwice");
+                    // Play the second specialTimeSecondPlaced sound effect
+                    editorSoundController.PlaySpecialTimeEndPlacedSound();
                 }
             }
         }

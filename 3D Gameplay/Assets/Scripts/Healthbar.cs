@@ -39,7 +39,6 @@ public class Healthbar : MonoBehaviour {
         redBarAmount = 33.33f;
         yellowBarAmount = 66.66f;
         greenBarAmount = 100f;
-
     }
 	
 	// Update is called once per frame
@@ -48,6 +47,7 @@ public class Healthbar : MonoBehaviour {
         // Check and update the color based on its current value
         UpdateHealthbarColor();
 
+        // Lerp the healthbar
         UpdateHealthbar(healthBarValue, assignHealthBarLerp);
     }
 
@@ -89,27 +89,30 @@ public class Healthbar : MonoBehaviour {
             assignHealthBarLerp = false;
         }
 
+
         // Error check for higher or lower values
         if (healthValueToLerpTo >= 100)
         {
             healthValueToLerpTo = 100;
         }
-        if (healthValueToLerpTo <= 0)
+        if (healthValueToLerpTo <= 1)
         {
-            healthValueToLerpTo = 0;
+            healthValueToLerpTo = 1;
         }
 
         // Lerp the slider value to the current health, to the new health over time
         healthBarSlider.value = Mathf.Lerp(currentHealth, healthValueToLerpTo, Time.deltaTime * lerpSpeed);
 
+
+
         // Assign the current health to the new slider value
         currentHealth = healthBarSlider.value;
 
         // Prevent bar from going below zero
-        if (currentHealth <= 0)
+        if (currentHealth <= 1)
         {
-            currentHealth = 0;
-            healthBarSlider.value = 0;
+            currentHealth = 1;
+            healthBarSlider.value = 1;
         }
         // Prevent bar from going above 100
         if (currentHealth >= 100)
