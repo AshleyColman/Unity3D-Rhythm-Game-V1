@@ -406,7 +406,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1221984675857880, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
@@ -738,6 +738,13 @@ MonoBehaviour:
   scoreAnimation: {fileID: 390554070}
   comboAnimation: {fileID: 1452479391}
   judgementAnimation: {fileID: 2070906543}
+  highestCombo: 0
+  totalPerfect: 0
+  totalGood: 0
+  totalEarly: 0
+  totalMiss: 0
+  gradeAchieved: 0
+  totalScorePossible: 0
 --- !u!1 &390554065
 GameObject:
   m_ObjectHideFlags: 0
@@ -1047,6 +1054,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   comboFlashAnimator: {fileID: 631474651}
+  scoreManager: {fileID: 0}
 --- !u!114 &631474653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3207,6 +3215,57 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4d109a1a369c0684ca2db8fc10cbcbf7, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1530869057
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1530869059}
+  - component: {fileID: 1530869058}
+  m_Layer: 0
+  m_Name: GameplayToResultsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1530869058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1530869057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d67ea64f9d5400c43bfc1b9e75b4d448, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelChanger: {fileID: 0}
+  songProgressBar: {fileID: 1222644627}
+  highestCombo: 0
+  totalPerfect: 0
+  totalGood: 0
+  totalEarly: 0
+  totalMiss: 0
+  gradeAchieved: 0
+  totalScorePossible: 0
+  score: 0
+  Percentage: 0
+--- !u!4 &1530869059
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1530869057}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 20
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1538793939
 GameObject:
   m_ObjectHideFlags: 0

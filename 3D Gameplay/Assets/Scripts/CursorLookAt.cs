@@ -27,9 +27,9 @@ public class CursorLookAt : MonoBehaviour {
 
         // Get the angles and restrict movement after certain amount
         newRotationY = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivity;
-        newRotationY = Mathf.Clamp(newRotationY, 0, 3);
+        newRotationY = Mathf.Clamp(newRotationY, 0, 0.5f);
         newRotationX = transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * sensitivity;
-        newRotationX = Mathf.Clamp(newRotationX, 0, 3);
+        newRotationX = Mathf.Clamp(newRotationX, 0, 0.5f);
 
         gameObject.transform.localEulerAngles = new Vector3(newRotationX, newRotationY, 0);
 

@@ -15,8 +15,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Editor.unity
     guid: 3473170073538e94fa2c44eee9707ba4
   - enabled: 1
-    path: Assets/SongSelectMenu/Scenes/SongSelectMenu.unity
+    path: Assets/Scripts/SongSelectMenu/Scenes/SongSelectMenu.unity
     guid: b99d9832a166ddb4fbf1bd19b9334d0a
   - enabled: 1
     path: Assets/Scenes/Gameplay.unity
     guid: 1abf9a78f61269847a04ab7d8bb1c21b
+  - enabled: 1
+    path: Assets/ResultsScene/Scenes/ResultsScene.unity
+    guid: a1bd23defab1a2f41a154c9c8b284187

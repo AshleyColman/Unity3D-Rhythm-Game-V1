@@ -15,8 +15,19 @@ public class ScoreManager : MonoBehaviour {
     public Animator comboAnimation; // Animate the combo text
     public Animator judgementAnimation; // Animate the judgement text
 
+    public int highestCombo;
+    public int totalPerfect;
+    public int totalGood;
+    public int totalEarly;
+    public int totalMiss;
+    public int gradeAchieved;
+    public float totalScorePossible;
+
     // Use this for initialization
     void Start () {
+
+        highestCombo = 0;
+        
         //scoreText.text = score.ToString();
         comboText.text = combo.ToString();
         judgementText.text = judgement.ToString();
@@ -24,7 +35,13 @@ public class ScoreManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+
+        // Check the current combo and see if it's the highest so far;
+        CheckHighestCombo();
+
+        // Calculate the highest score possible in the beatmap
+        CalculateHighestScoreForBeatmap();
 	}
 
     // Reset combo
@@ -96,20 +113,49 @@ public class ScoreManager : MonoBehaviour {
 
         if (judgementPass == "EARLY")
         {
-            judgementText.color = Color.red; 
+            judgementText.color = Color.red;
+
+            // Hit so we add 1 to the total for the results screen
+            totalEarly++;
         }
         else if (judgementPass == "GOOD")
         {
             judgementText.color = Color.blue;
+            // Hit so we add 1 to the total for the results screen
+            totalGood++;
         }
         else if (judgementPass == "PERFECT")
         {
             judgementText.color = Color.yellow;
+            // Hit so we add 1 to the total for the results screen
+            totalPerfect++;
         }
         else if (judgementPass == "MISS")
         {
             judgementText.color = Color.red;
+            // Hit so we add 1 to the total for the results screen
+            totalMiss++;
         }
+
+    }
+
+    // Check if the current combo is the highest combo so far
+    public void CheckHighestCombo()
+    {
+        Debug.Log("combo right now: " + highestCombo);
+        if (combo > highestCombo)
+        {
+            highestCombo = combo;
+        }
+    }
+
+    // Check the highest score possible by calculating the total notes in the song x perfect judgement
+    public void CalculateHighestScoreForBeatmap()
+    {
+        // Get the total number of hit objects possible in the map
+        float totalHitObjects = Database.database.LoadedPositionX.Count;
+        float scorePerPerfect = 500;
+        totalScorePossible = totalHitObjects * scorePerPerfect;
 
     }
 }

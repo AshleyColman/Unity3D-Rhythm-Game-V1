@@ -14,6 +14,11 @@ TagManager:
   - Orange
   - MenuMusicController
   - MenuSFXAudioSource
+  - PerfectText
+  - GoodText
+  - EarlyText
+  - MissText
+  - ScoreText
   layers:
   - Default
   - TransparentFX
