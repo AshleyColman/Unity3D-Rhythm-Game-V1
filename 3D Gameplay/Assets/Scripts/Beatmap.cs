@@ -3,12 +3,6 @@ using System.Collections.Generic;
 [Serializable]
 public class Beatmap
 {
-    /*
-    public float hitObjectPositionX;
-    public float hitObjectPositionY;
-    public float hitObjectPositionZ;
-    */
-
     public List<float> HitObjectSpawnTime = new List<float>();
 
     public List<float> PositionX = new List<float>();
@@ -19,4 +13,10 @@ public class Beatmap
 
     public float SpecialTimeStart;
     public float SpecialTimeEnd;
+
+    public string songName;
+    public string songArtist;
+    public string beatmapCreator;
+    public List<string> beatmapDifficulty = new List<string>();
+    public string beatmapFolderDirectory;
 }

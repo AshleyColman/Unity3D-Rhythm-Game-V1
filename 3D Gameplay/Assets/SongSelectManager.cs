@@ -1,0 +1,194 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.IO;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+
+public class SongSelectManager : MonoBehaviour {
+
+    // Get the directories and folder names of all songs in the beatmap folder
+    string[] beatmapDirectories;
+    public int selectedDirectoryIndex;
+    public int previousDirectoryIndex;
+    private string defaultBeatmapDifficulty = "advanced";
+    private string extraBeatmapDifficuly = "extra";
+    // Song select menu UI elements
+    public Text songTitleText;
+    public Text beatmapCreatorText;
+
+    // Loaded song variables
+    private string songName;
+    private string songArtist;
+    private string beatmapCreator;
+    private int advancedDifficultyLevel;
+    private int extraDifficultyLevel;
+
+    // References to the difficulty buttons
+    public Button DifficultyOptionAdvancedButton;
+    public Button DifficultyOptionExtraButton;
+    public Button DifficultyOptionAdvancedLevelButton;
+    public Button DifficultyOptionExtraLevelButton;
+    public Text DifficultyOptionAdvancedLevelText;
+    public Text DifficultyOptionExtraLevelText;
+    public string disabledText = "X";
+    // Bools for checking if the files exist for loading advanced/extra difficulties
+    private bool advancedDifficultyExist;
+    private bool extraDifficultyExist;
+
+    // Use this for initialization
+    void Start () {
+
+        beatmapDirectories = Directory.GetDirectories(@"c:\Beatmaps");
+        selectedDirectoryIndex = 0; // Set the first song when entering the screen to the first one in the directory
+        previousDirectoryIndex = selectedDirectoryIndex;
+        CheckIfAdvancedDifficultyExists();
+
+        if (advancedDifficultyExist)
+        {
+            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, defaultBeatmapDifficulty);
+        }
+        else if (extraDifficultyExist)
+        {
+            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, defaultBeatmapDifficulty);
+        }
+        else
+        {
+            // Do not load any new song
+        }
+
+    }
+	
+	// Update is called once per frame
+	void Update () {
+        
+	}
+
+    // Load beatmap song select information
+    public void LoadBeatmapSongSelectInformation(int selectedDirectoryIndexPass, string beatmapDifficulty)
+    {
+        // Reset difficulty check bools
+        advancedDifficultyExist = false;
+        extraDifficultyExist = false;
+
+        // Do a check on the selectedDirectoryIndexPass, if it's out of the directory range reset back to 0 to loop through the song list
+        if (selectedDirectoryIndexPass == beatmapDirectories.Length)
+        {
+            selectedDirectoryIndexPass = 0; // Reset the variable passed
+            selectedDirectoryIndex = 0; // Also reset the variable that is being sent from SongSelectMenuFlash when arrow key is pressed
+        }
+        // Do a check on the selectedDirectoryIndexPass, if it's out of the directory range go to max range to loop through the song list
+        if (selectedDirectoryIndexPass < 0)
+        {
+            selectedDirectoryIndexPass = beatmapDirectories.Length - 1; // Set the index to the last song in the list
+            selectedDirectoryIndex = beatmapDirectories.Length - 1; // Also set the variable that is being sent from SongSelectMenuFlash when arrow key is pressed
+        }
+
+        // Check if the advanced difficulty exists
+        CheckIfAdvancedDifficultyExists();
+        // Check if the extra difficulty exists
+        CheckIfExtraDifficultyExists();
+
+        // If the advanced file only exists and the extra difficulty does not exist
+        if (advancedDifficultyExist == true && extraDifficultyExist == false)
+        {
+            // Set the beatmap to be loaded first to be the advanced difficulty
+            beatmapDifficulty = defaultBeatmapDifficulty;
+        }
+        // If the advanced file does not exist but the extra difficulty does exist
+        else if (advancedDifficultyExist == false && extraDifficultyExist == true)
+        {
+            // Set the beatmap to be loaded first to be the extra difficulty
+            beatmapDifficulty = extraBeatmapDifficuly;
+        }
+
+        if (advancedDifficultyExist == true || extraDifficultyExist == true)
+        {
+            // Load the database and beatmap information for the beatmap directory selected
+            Database.database.Load(beatmapDirectories[selectedDirectoryIndexPass], beatmapDifficulty);
+
+            // Load the song select UI variables from the database
+            songName = Database.database.loadedSongName;
+            songArtist = Database.database.loadedSongArtist;
+            beatmapCreator = Database.database.loadedBeatmapCreator;
+
+            // Change the current song selected text to the information loaded from the current directory
+            songTitleText.text = songName + " [ " + songArtist + " ] ";
+            beatmapCreatorText.text = "Created by " + beatmapCreator;
+
+            // Update the previous index to be the current index
+            previousDirectoryIndex = selectedDirectoryIndex;
+        }
+        else
+        {
+            // As we tried to access a file with no difficulties remain on the current index
+            selectedDirectoryIndex = previousDirectoryIndex;
+        }
+    }
+
+    // Check if advanced difficulty exists
+    public void CheckIfAdvancedDifficultyExists()
+    {
+        if (File.Exists(beatmapDirectories[selectedDirectoryIndex] + @"\" + "advanced.dia"))
+        {
+            // Allow gameplay
+            // Set bool to exist
+            advancedDifficultyExist = true;
+            // Enable the button
+            DifficultyOptionAdvancedButton.GetComponent<Button>().interactable = true;
+            // Enable the event trigger 
+            DifficultyOptionAdvancedButton.GetComponent<EventTrigger>().enabled = true;
+            // Enable the level button
+            DifficultyOptionAdvancedLevelButton.GetComponent<Button>().interactable = true;
+            // Set the difficulty level 
+            DifficultyOptionAdvancedLevelText.text = advancedDifficultyLevel.ToString();
+        }
+        else
+        {
+            // Disable the button
+            DifficultyOptionAdvancedButton.GetComponent<Button>().interactable = false;
+            // Disable the event trigger to prevent it trying to load the advanced file that doesn't exist
+            DifficultyOptionAdvancedButton.GetComponent<EventTrigger>().enabled = false;
+            // Disable the level button
+            DifficultyOptionAdvancedLevelButton.GetComponent<Button>().interactable = false;
+            // Print disabled text on the level
+            DifficultyOptionAdvancedLevelText.text = disabledText;
+            // Set bool to not exist
+            advancedDifficultyExist = false;
+        }
+    }
+
+    // Check if extra difficulty exists
+    public void CheckIfExtraDifficultyExists()
+    {
+        // Check if the file exists for the current song selected
+        if (File.Exists(beatmapDirectories[selectedDirectoryIndex] + @"\" + "extra.dia"))
+        {
+            // Allow gameplay
+            // Set bool to exist
+            extraDifficultyExist = true;
+            // Enable the button
+            DifficultyOptionExtraButton.GetComponent<Button>().interactable = true;
+            // Enable the event trigger 
+            DifficultyOptionExtraButton.GetComponent<EventTrigger>().enabled = true;
+            // Enable the level button
+            DifficultyOptionExtraLevelButton.GetComponent<Button>().interactable = true;
+            // Set the difficulty level 
+            DifficultyOptionExtraLevelText.text = extraDifficultyLevel.ToString();
+        }
+        else
+        {
+            // Disable the button
+            DifficultyOptionExtraButton.GetComponent<Button>().interactable = false;
+            // Disable the event trigger to prevent it trying to load the extra file that doesn't exist
+            DifficultyOptionExtraButton.GetComponent<EventTrigger>().enabled = false;
+            // Disable the level button
+            DifficultyOptionExtraLevelButton.GetComponent<Button>().interactable = false;
+            // Print disabled text on the level
+            DifficultyOptionExtraLevelText.text = disabledText;
+
+            // Set bool to exist
+            extraDifficultyExist = false;
+        }
+    }
+}

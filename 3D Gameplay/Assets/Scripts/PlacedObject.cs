@@ -21,6 +21,9 @@ public class PlacedObject : MonoBehaviour {
     public float songTimer;
     private EditorSoundController editorSoundController; // The editorSoundController
 
+    // Get the reference to the beatmap setup to disable starting the song when space is pressed whilst in the editor
+    public BeatmapSetup beatmapSetup;
+
     // Use this for initialization
     void Start () {
         startSongTimer = false;
@@ -30,20 +33,26 @@ public class PlacedObject : MonoBehaviour {
         mouseFollow = FindObjectOfType<MouseFollow>();
         songProgressBar = FindObjectOfType<SongProgressBar>();
         editorSoundController = FindObjectOfType<EditorSoundController>(); // Reference to the editor sound controller
+        beatmapSetup = FindObjectOfType<BeatmapSetup>(); // Required for disabling the animation whilst the spacebar is pressed in the setup screen
     }
 	
 	// Update is called once per frame
 	void Update () {
 
-        // Check if live mapping has started
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // Update the instruction button text and play animation
-            UpdateInstructionButtonText("SpacebarPressed");
 
-            // If the space key has been pressed we start the song and song timer
-            startSongTimer = true;
+        if (beatmapSetup.settingUp == false)
+        {
+            // Check if live mapping has started
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                // Update the instruction button text and play animation
+                UpdateInstructionButtonText("SpacebarPressed");
+
+                // If the space key has been pressed we start the song and song timer
+                startSongTimer = true;
+            }
         }
+
 
         // Update the song timer with the current song time
         if (startSongTimer == true)

@@ -555,18 +555,19 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &223633052
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 223633051}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b9f41e2d160936459f711ae98af6e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  beatmapSetup: {fileID: 0}
   hitObjectPositionX: 0
   hitObjectPositionY: 0
   hitObjectPositionZ: 0
@@ -584,6 +585,16 @@ MonoBehaviour:
   SpecialTimeEnd: 0
   LoadedSpecialTimeStart: 0
   LoadedSpecialTimeEnd: 0
+  songName: 
+  songArtist: 
+  beatmapCreator: 
+  beatmapDifficulty: 
+  beatmapFolderDirectory: 
+  loadedSongName: 
+  loadedSongArtist: 
+  loadedBeatmapCreator: 
+  loadedBeatmapDifficulty: 
+  loadedBeatmapFolderDirectory: 
 --- !u!4 &223633053
 Transform:
   m_ObjectHideFlags: 0
@@ -2337,6 +2348,8 @@ MonoBehaviour:
   active: 0
   songClip: {fileID: 8300000, guid: 60e6ab99641226a49ad6f019d66e3055, type: 3}
   songAudioSourceTime: 0
+  beatmapSetup: {fileID: 0}
+  levelChanger: {fileID: 0}
 --- !u!114 &1222644628
 MonoBehaviour:
   m_ObjectHideFlags: 0

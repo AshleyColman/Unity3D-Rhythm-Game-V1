@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine.UI;
 
 public class Database : MonoBehaviour {
 
     public static Beatmap beatmap;
     public static Database database;
+    public BeatmapSetup beatmapSetup;
 
-    string SAVE_FILE = "/SAVEGAME";
     string FILE_EXTENSION = ".dia";
 
     public float hitObjectPositionX;
@@ -44,22 +45,43 @@ public class Database : MonoBehaviour {
     public float LoadedSpecialTimeStart;
     public float LoadedSpecialTimeEnd;
 
+
+    // Beatmap setup variables
+    public string songName;
+    public string songArtist;
+    public string beatmapCreator;
+    public string beatmapDifficulty;
+    public string beatmapFolderDirectory;
+
+    // Loaded beatmap variables
+    public string loadedSongName;
+    public string loadedSongArtist;
+    public string loadedBeatmapCreator;
+    public string loadedBeatmapDifficulty;
+    public string loadedBeatmapFolderDirectory;
+
     private void Awake()
     {
         database = this;
         beatmap = new Beatmap();
     }
 
+    private void Start()
+    {
+        beatmapSetup = FindObjectOfType<BeatmapSetup>();
+    }
     public void Save()
     {
-        Stream stream = File.Open(Application.dataPath + SAVE_FILE + FILE_EXTENSION, FileMode.OpenOrCreate);
-        BinaryFormatter bf = new BinaryFormatter();
 
-        /*
-        beatmap.hitObjectPositionX = hitObjectPositionX;
-        beatmap.hitObjectPositionY = hitObjectPositionY;
-        beatmap.hitObjectPositionZ = hitObjectPositionZ;
-        */
+
+        // Get the difficulty name that the user has inputted
+        beatmapDifficulty = beatmapSetup.beatmapDifficulty;
+        // Get the beatmap directory for saving to the right beatmap folder
+        beatmapFolderDirectory = beatmapSetup.folderDirectory;
+        Debug.Log("beatmapsavedirectory: " + beatmapFolderDirectory);
+        // Create new beatmap folder with the name provided
+        Stream stream = File.Open(beatmapFolderDirectory + beatmapDifficulty + FILE_EXTENSION, FileMode.OpenOrCreate);
+        BinaryFormatter bf = new BinaryFormatter();
 
         // Save the list of positions for all objects to the file?
         for (int i = 0; i < PositionX.Count; i++)
@@ -85,22 +107,35 @@ public class Database : MonoBehaviour {
         beatmap.SpecialTimeStart = SpecialTimeStart;
         beatmap.SpecialTimeEnd = SpecialTimeEnd;
 
+        // Get beatmap information from the setup
+        songName = beatmapSetup.songName;
+        songArtist = beatmapSetup.songArtist;
+        beatmapCreator = beatmapSetup.beatmapCreator;
+        // Save beatmap information
+        beatmap.songName = songName;
+        beatmap.songArtist = songArtist;
+        beatmap.beatmapCreator = beatmapCreator;
+        beatmap.beatmapDifficulty.Add(beatmapDifficulty);
+        beatmap.beatmapFolderDirectory = beatmapFolderDirectory;
+
+
         bf.Serialize(stream, beatmap);
         stream.Close();
     }
     
-    public void Load()
+    public void Load(string beatmapFolderDirectoryPass, string beatmapDifficultyPass)
     {
-        //if (File.Exists(Application.persistentDataPath + SAVE_FILE + FILE_EXTENSION))
-        //{
-            FileStream stream = File.Open(Application.dataPath + SAVE_FILE + FILE_EXTENSION, FileMode.Open);
+        // Load the folder directory to load the map 
+        beatmapFolderDirectory = beatmapFolderDirectoryPass + @"\";
+        // Load the beatmap difficulty
+        beatmapDifficulty = beatmapDifficultyPass;
+
+            FileStream stream = File.Open(beatmapFolderDirectory + beatmapDifficulty + FILE_EXTENSION, FileMode.Open);
             BinaryFormatter bf = new BinaryFormatter();
 
             beatmap = (Beatmap)bf.Deserialize(stream);
             stream.Close();
 
-        Debug.Log("loading");
-        Debug.Log("saved file list size: " + beatmap.PositionX.Count);
         // Load the list of positions for all objects to the file?
         for (int i = 0; i < beatmap.PositionX.Count; i++)
         {
@@ -125,5 +160,9 @@ public class Database : MonoBehaviour {
         LoadedSpecialTimeStart = beatmap.SpecialTimeStart;
         LoadedSpecialTimeEnd = beatmap.SpecialTimeEnd;
 
-    }
+        // Load beatmap information
+        loadedSongName = beatmap.songName;
+        loadedSongArtist = beatmap.songArtist;
+        loadedBeatmapCreator = beatmap.beatmapCreator;
+}
 }

@@ -21,20 +21,53 @@ public class SongProgressBar : MonoBehaviour {
     public AudioClip songClip;
     public float songAudioSourceTime;
 
+    // Get the reference to the beatmap setup to disable starting the song when space is pressed whilst in the editor
+    public BeatmapSetup beatmapSetup;
+    // Required  for only disabling the songProgressBar in the editor and not gameplay
+    public LevelChanger levelChanger; 
+
+    void Start()
+    {
+        // Get the reference
+        beatmapSetup = FindObjectOfType<BeatmapSetup>();
+        // Get the reference
+        levelChanger = FindObjectOfType<LevelChanger>();
+    }
 
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
     void Update()
     {
-        // Play song when user press Space button
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (levelChanger.currentLevelIndex == 2)
         {
-            // Play song
-            songAudioSource.clip = songClip;
-            songAudioSource.volume = songVolume;
-            songAudioSource.Play();
-            playing = true;
-            active = true;
+            if (beatmapSetup.settingUp == false)
+            {
+                // Play song when user press Space button
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    // Play song
+                    songAudioSource.clip = songClip;
+                    songAudioSource.volume = songVolume;
+                    songAudioSource.Play();
+                    playing = true;
+                    active = true;
+                }
+            }
         }
+        else
+        {
+            // Play song when user press Space button
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                // Play song
+                songAudioSource.clip = songClip;
+                songAudioSource.volume = songVolume;
+                songAudioSource.Play();
+                playing = true;
+                active = true;
+            }
+        }
+        
+
 
         if (active)
         {

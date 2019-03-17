@@ -43,8 +43,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
     void Awake()
     {
-        // Load beatmap
-        Database.database.Load();
+
     }
 
     // Use this for initialization

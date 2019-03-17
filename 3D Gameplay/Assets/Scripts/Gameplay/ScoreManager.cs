@@ -142,7 +142,6 @@ public class ScoreManager : MonoBehaviour {
     // Check if the current combo is the highest combo so far
     public void CheckHighestCombo()
     {
-        Debug.Log("combo right now: " + highestCombo);
         if (combo > highestCombo)
         {
             highestCombo = combo;
