@@ -406,7 +406,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1221984675857880, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
@@ -590,11 +590,15 @@ MonoBehaviour:
   beatmapCreator: 
   beatmapDifficulty: 
   beatmapFolderDirectory: 
+  beatmapAdvancedDifficultyLevel: 
+  beatmapExtraDifficultyLevel: 
   loadedSongName: 
   loadedSongArtist: 
   loadedBeatmapCreator: 
   loadedBeatmapDifficulty: 
   loadedBeatmapFolderDirectory: 
+  loadedbeatmapAdvancedDifficultyLevel: 
+  loadedbeatmapExtraDifficultyLevel: 
 --- !u!4 &223633053
 Transform:
   m_ObjectHideFlags: 0
@@ -1814,6 +1818,10 @@ MonoBehaviour:
   pressPlayText: {fileID: 328392023}
   menuSFXAudioSource: {fileID: 1574949174}
   PressPlaySound: {fileID: 8300000, guid: 831e8f67b1fd459408fb1adc74c616a1, type: 3}
+  gameplayTitleText: {fileID: 2020439276}
+  songName: 
+  songArtist: 
+  beatmapDifficulty: 
 --- !u!4 &1028074937
 Transform:
   m_ObjectHideFlags: 0
@@ -4330,7 +4338,7 @@ GameObject:
   - component: {fileID: 2020439277}
   - component: {fileID: 2020439276}
   m_Layer: 5
-  m_Name: txt Song Name
+  m_Name: gameplayTitleText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4352,7 +4360,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -8.5, y: -37}
+  m_AnchoredPosition: {x: 29, y: -37}
   m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &2020439276
@@ -4382,13 +4390,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 300
-    m_Alignment: 5
+    m_Alignment: 3
     m_AlignByGeometry: 1
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: PUPA [ Morimori Atsushi ] [ ADVANCED ]
+  m_Text: '-'
 --- !u!222 &2020439277
 CanvasRenderer:
   m_ObjectHideFlags: 0

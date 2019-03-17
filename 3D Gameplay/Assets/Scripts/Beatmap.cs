@@ -17,6 +17,9 @@ public class Beatmap
     public string songName;
     public string songArtist;
     public string beatmapCreator;
-    public List<string> beatmapDifficulty = new List<string>();
+    public string beatmapDifficulty;
     public string beatmapFolderDirectory;
+
+    public string beatmapAdvancedDifficultyLevel;
+    public string beatmapExtraDifficultyLevel;
 }

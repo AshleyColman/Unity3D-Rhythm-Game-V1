@@ -17,6 +17,8 @@ public class LevelChanger : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        // Get the current level index
+        currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
 
         // Find the object for menu back sound effect
         AudioSource menuSFXAudioSource = GameObject.FindGameObjectWithTag("MenuSFXAudioSource").GetComponent<AudioSource>();

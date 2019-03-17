@@ -40,6 +40,10 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     public Text pressPlayText; // The Press Play text at the start of the song
     public AudioSource menuSFXAudioSource; // The audio source for playing the start sound effect
     public AudioClip PressPlaySound; // The sound that plays when you press play at the start of the game
+    public Text gameplayTitleText;
+    public string songName;
+    public string songArtist;
+    public string beatmapDifficulty;
 
     void Awake()
     {
@@ -48,6 +52,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+
         songProgressBar = FindObjectOfType<SongProgressBar>();
         specialTimeManager = FindObjectOfType<SpecialTimeManager>();
         isSpecialTime = false;
@@ -85,10 +90,17 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
         // Load the hit object types
         hitObjectType = Database.database.LoadedObjectType;
+
+        // Load the UI text information from the loaded file
+        songName = Database.database.loadedSongName;
+        songArtist = Database.database.loadedSongArtist;
+        beatmapDifficulty = Database.database.loadedBeatmapDifficulty;
+        // When gameplay scene has loaded update the UI text
+        UpdateGameplayUI();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 
         // Load special time start
         specialTimeStart = specialTimeManager.specialTimeStart;
@@ -218,5 +230,11 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     private void PlayPressPlaySound()
     {
         menuSFXAudioSource.PlayOneShot(PressPlaySound, 1f);
+    }
+
+    // Update the song name, artist and difficulty with the values entered
+    public void UpdateGameplayUI()
+    {
+        gameplayTitleText.text = songName + " [ " + songArtist + " ] " + " [ " + beatmapDifficulty.ToUpper() + " ] ";
     }
 }

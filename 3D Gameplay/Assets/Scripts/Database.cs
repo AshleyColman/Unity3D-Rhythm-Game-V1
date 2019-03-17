@@ -52,6 +52,8 @@ public class Database : MonoBehaviour {
     public string beatmapCreator;
     public string beatmapDifficulty;
     public string beatmapFolderDirectory;
+    public string beatmapAdvancedDifficultyLevel;
+    public string beatmapExtraDifficultyLevel;
 
     // Loaded beatmap variables
     public string loadedSongName;
@@ -59,6 +61,8 @@ public class Database : MonoBehaviour {
     public string loadedBeatmapCreator;
     public string loadedBeatmapDifficulty;
     public string loadedBeatmapFolderDirectory;
+    public string loadedbeatmapAdvancedDifficultyLevel;
+    public string loadedbeatmapExtraDifficultyLevel;
 
     private void Awake()
     {
@@ -111,12 +115,17 @@ public class Database : MonoBehaviour {
         songName = beatmapSetup.songName;
         songArtist = beatmapSetup.songArtist;
         beatmapCreator = beatmapSetup.beatmapCreator;
+        beatmapAdvancedDifficultyLevel = beatmapSetup.beatmapAdvancedDifficultyLevel;
+        beatmapExtraDifficultyLevel = beatmapSetup.beatmapExtraDifficultyLevel;
+
         // Save beatmap information
         beatmap.songName = songName;
         beatmap.songArtist = songArtist;
         beatmap.beatmapCreator = beatmapCreator;
-        beatmap.beatmapDifficulty.Add(beatmapDifficulty);
+        beatmap.beatmapDifficulty = beatmapDifficulty;
         beatmap.beatmapFolderDirectory = beatmapFolderDirectory;
+        beatmap.beatmapAdvancedDifficultyLevel = beatmapAdvancedDifficultyLevel;
+        beatmap.beatmapExtraDifficultyLevel = beatmapExtraDifficultyLevel;
 
 
         bf.Serialize(stream, beatmap);
@@ -164,5 +173,27 @@ public class Database : MonoBehaviour {
         loadedSongName = beatmap.songName;
         loadedSongArtist = beatmap.songArtist;
         loadedBeatmapCreator = beatmap.beatmapCreator;
+        loadedBeatmapDifficulty = beatmap.beatmapDifficulty;
+        loadedbeatmapAdvancedDifficultyLevel = beatmap.beatmapAdvancedDifficultyLevel;
+        loadedbeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
 }
+
+    // Clear all loaded items, used in the song select screen to remove all loaded when selecting a new difficulty
+    public void Clear()
+    {
+        LoadedPositionX.Clear();
+        LoadedPositionY.Clear();
+        LoadedPositionZ.Clear();
+        LoadedHitObjectSpawnTime.Clear();
+        LoadedObjectType.Clear();
+
+        LoadedSpecialTimeStart = 0;
+        LoadedSpecialTimeEnd = 0;
+
+        loadedSongName = "";
+        loadedSongArtist = "";
+        loadedBeatmapCreator = "";
+        loadedbeatmapAdvancedDifficultyLevel = "";
+        loadedbeatmapExtraDifficultyLevel = "";
+    }
 }

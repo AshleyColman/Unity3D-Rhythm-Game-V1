@@ -21,9 +21,16 @@ public class BeatmapSetup : MonoBehaviour {
     public string fileDirectory;
     */
 
+    // Beatmap difficulty level
+    public InputField beatmapDifficultyLevelInputField;
+    public Button beatmapDifficultyLevelSaveButton;
+    public string beatmapAdvancedDifficultyLevel;
+    public string beatmapExtraDifficultyLevel;
+
     // Beatmap difficulty
     public InputField beatmapDifficultyInputField;
-    public Button beatmapDifficultySaveButton;
+    public Button beatmapDifficultyAdvancedButton;
+    public Button beatmapDifficultyExtraButton;
     public string beatmapDifficulty;
 
     // Song name
@@ -53,6 +60,7 @@ public class BeatmapSetup : MonoBehaviour {
     public Image SetupProgressBlock3;
     public Image SetupProgressBlock4;
     public Image SetupProgressBlock5;
+    public Image SetupProgressBlock6;
     public Color SetupProgressBlockCompletedColor;
 
     // The editor UI components
@@ -131,7 +139,8 @@ public class BeatmapSetup : MonoBehaviour {
         beatmapCreatorSaveButton.gameObject.SetActive(false);
         beatmapCreatorInputField.gameObject.SetActive(false);
         // Disable the button and textfield and enable the next buttons
-        beatmapDifficultySaveButton.gameObject.SetActive(true);
+        beatmapDifficultyAdvancedButton.gameObject.SetActive(true);
+        beatmapDifficultyExtraButton.gameObject.SetActive(true);
         beatmapDifficultyInputField.gameObject.SetActive(true);
 
         // Change the color of the fourth progress block 
@@ -139,33 +148,63 @@ public class BeatmapSetup : MonoBehaviour {
     }
 
     // Insert beatmap difficulty
-    public void InsertBeatmapDifficulty()
+    public void InsertBeatmapDifficulty(string beatmapDifficultyPass)
     {
-        // Save 
-        beatmapDifficulty = beatmapDifficultyInputField.text;
+        // The beatmap difficulty is the difficulty button chosen during the setup menu
+        beatmapDifficulty = beatmapDifficultyPass;
         // Disable all
-        beatmapDifficultySaveButton.gameObject.SetActive(false);
+        beatmapDifficultyAdvancedButton.gameObject.SetActive(false);
+        beatmapDifficultyExtraButton.gameObject.SetActive(false);
         beatmapDifficultyInputField.gameObject.SetActive(false);
+
+        // Enable next buttons and input field
+        beatmapDifficultyLevelInputField.gameObject.SetActive(true);
+        beatmapDifficultyLevelSaveButton.gameObject.SetActive(true);
+
+        // Change the color of the fifth progress block 
+        SetupProgressBlock5.GetComponent<Image>().color = SetupProgressBlockCompletedColor;
+    }
+
+    // Insert the beatmap difficulty level
+    public void InsertBeatmapDifficultyLevel()
+    {
+        // If the beatmap difficulty selected previously is advanced
+        if (beatmapDifficulty == "advanced")
+        {
+            // Insert the advanced difficulty level
+            beatmapAdvancedDifficultyLevel = beatmapDifficultyLevelInputField.text;
+        }
+        // If the beatmap difficulty selected previously is extra
+        else if (beatmapDifficulty == "extra")
+        {
+            // Insert the extra difficulty level
+            beatmapExtraDifficultyLevel = beatmapDifficultyLevelInputField.text;
+        }
+
+        // Change the color of the sixth progress block 
+        SetupProgressBlock6.GetComponent<Image>().color = SetupProgressBlockCompletedColor;
+
+        // Disable the button and textfield 
+        beatmapDifficultyLevelInputField.gameObject.SetActive(false);
+        beatmapDifficultyLevelSaveButton.gameObject.SetActive(false);
+        SetupProgressBlock6.gameObject.SetActive(false);
         beatmapSetupPanel.gameObject.SetActive(false);
         SetupProgressBlock1.gameObject.SetActive(false);
         SetupProgressBlock2.gameObject.SetActive(false);
         SetupProgressBlock3.gameObject.SetActive(false);
         SetupProgressBlock4.gameObject.SetActive(false);
         SetupProgressBlock5.gameObject.SetActive(false);
-        // Change the color of the fourth progress block 
-        SetupProgressBlock5.GetComponent<Image>().color = SetupProgressBlockCompletedColor;
-
-        // Update the editor UI with all the new information inserted
-        UpdateEditorUI();
-
         // We have finished setting up so set setting up to false allowing editor functionality
         settingUp = false;
+        // Update the editor UI with all the new information inserted
+        UpdateEditorUI();
     }
+
 
     // Update the song name, artist and difficulty with the values entered
     public void UpdateEditorUI()
     {
-        editorTitle.text = songName + " [ " + songArtist + " ] " + " [ " + beatmapDifficulty + " ] ";
+        editorTitle.text = songName + " [ " + songArtist + " ] " + " [ " + beatmapDifficulty.ToUpper() + " ] ";
     }
 
     /*

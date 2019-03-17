@@ -54,28 +54,30 @@ public class ScoreManager : MonoBehaviour {
     // Update the score text
     public void AddScore(int scorePass)
     {
-        score += scorePass;
-
-        // Check the score and add the 0's according to the type
-        if (score < 1000)
-        {
-            scoreText.text = "00000" + score.ToString();
-        }
-        if (score >= 1000 && score < 10000)
-        {
-            scoreText.text = "0000" + score.ToString();
-        }
-        if (score >= 10000 && score < 100000)
-        {
-            scoreText.text = "000" + score.ToString();
-        }
-        if (score >= 100000 && score < 1000000)
-        {
-            scoreText.text = "000" + score.ToString();
-        }
-
 
         scoreAnimation.Play("GameplayTextAnimation");
+
+        score += scorePass;
+
+            // Check the score and add the 0's according to the type
+            if (score < 1000)
+            {
+                scoreText.text = "00000" + score.ToString();
+            }
+            if (score >= 1000 && score < 10000)
+            {
+                scoreText.text = "0000" + score.ToString();
+            }
+            if (score >= 10000 && score < 100000)
+            {
+                scoreText.text = "000" + score.ToString();
+            }
+            if (score >= 100000 && score < 1000000)
+            {
+                scoreText.text = "000" + score.ToString();
+            }
+ 
+
     }
 
     // Update combo text

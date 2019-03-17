@@ -21,8 +21,8 @@ public class SongSelectManager : MonoBehaviour {
     private string songName;
     private string songArtist;
     private string beatmapCreator;
-    private int advancedDifficultyLevel;
-    private int extraDifficultyLevel;
+    private string advancedDifficultyLevel;
+    private string extraDifficultyLevel;
 
     // References to the difficulty buttons
     public Button DifficultyOptionAdvancedButton;
@@ -43,6 +43,7 @@ public class SongSelectManager : MonoBehaviour {
         selectedDirectoryIndex = 0; // Set the first song when entering the screen to the first one in the directory
         previousDirectoryIndex = selectedDirectoryIndex;
         CheckIfAdvancedDifficultyExists();
+        CheckIfExtraDifficultyExists();
 
         if (advancedDifficultyExist)
         {
@@ -111,11 +112,22 @@ public class SongSelectManager : MonoBehaviour {
             songName = Database.database.loadedSongName;
             songArtist = Database.database.loadedSongArtist;
             beatmapCreator = Database.database.loadedBeatmapCreator;
+            advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
+            extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
 
             // Change the current song selected text to the information loaded from the current directory
             songTitleText.text = songName + " [ " + songArtist + " ] ";
             beatmapCreatorText.text = "Created by " + beatmapCreator;
 
+            // Do a check to ensure the level is outputted if exists, and if it doesn't output the missing difficulty text
+            if (extraDifficultyExist == true)
+            {
+                DifficultyOptionExtraLevelText.text = extraDifficultyLevel;
+            }
+            else if (advancedDifficultyExist == true)
+            {
+                DifficultyOptionAdvancedLevelText.text = advancedDifficultyLevel;
+            }
             // Update the previous index to be the current index
             previousDirectoryIndex = selectedDirectoryIndex;
         }
@@ -140,8 +152,6 @@ public class SongSelectManager : MonoBehaviour {
             DifficultyOptionAdvancedButton.GetComponent<EventTrigger>().enabled = true;
             // Enable the level button
             DifficultyOptionAdvancedLevelButton.GetComponent<Button>().interactable = true;
-            // Set the difficulty level 
-            DifficultyOptionAdvancedLevelText.text = advancedDifficultyLevel.ToString();
         }
         else
         {
@@ -173,8 +183,6 @@ public class SongSelectManager : MonoBehaviour {
             DifficultyOptionExtraButton.GetComponent<EventTrigger>().enabled = true;
             // Enable the level button
             DifficultyOptionExtraLevelButton.GetComponent<Button>().interactable = true;
-            // Set the difficulty level 
-            DifficultyOptionExtraLevelText.text = extraDifficultyLevel.ToString();
         }
         else
         {
