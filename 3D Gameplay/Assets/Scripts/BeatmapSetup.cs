@@ -21,6 +21,10 @@ public class BeatmapSetup : MonoBehaviour {
     public string fileDirectory;
     */
 
+    // Beatmap song select panel
+    public Button songSelectPanel;
+    public int songClipChosenIndex;
+
     // Beatmap difficulty level
     public InputField beatmapDifficultyLevelInputField;
     public Button beatmapDifficultyLevelSaveButton;
@@ -78,7 +82,20 @@ public class BeatmapSetup : MonoBehaviour {
     {
         settingUp = true;
     }
-    
+
+
+    // Get the song chosen to load 
+    public void GetSongChosen(int songChosenIndexPass)
+    {
+        // Get the index of the song chosens
+        songClipChosenIndex = songChosenIndexPass;
+
+        // Disable the button and textfield and enable the next buttons
+        songSelectPanel.gameObject.SetActive(false);
+        // Enable the next input field and button
+        createFolderButton.gameObject.SetActive(true);
+        folderNameInputField.gameObject.SetActive(true);
+    }
 
     // Create the folder based on the name inserted in the folderNameInputField
     public void CreateBeatmapFolder()

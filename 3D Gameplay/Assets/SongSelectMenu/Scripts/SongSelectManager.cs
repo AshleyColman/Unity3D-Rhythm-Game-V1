@@ -36,9 +36,14 @@ public class SongSelectManager : MonoBehaviour {
     private bool advancedDifficultyExist;
     private bool extraDifficultyExist;
 
+    // Get reference to song select preview to control playing the song previews
+    private SongSelectPreview songSelectPreview;
+    private int songClipChosenIndex;
+
     // Use this for initialization
     void Start () {
-
+        songClipChosenIndex = 0;
+        songSelectPreview = FindObjectOfType<SongSelectPreview>();
         beatmapDirectories = Directory.GetDirectories(@"c:\Beatmaps");
         selectedDirectoryIndex = 0; // Set the first song when entering the screen to the first one in the directory
         previousDirectoryIndex = selectedDirectoryIndex;
@@ -47,11 +52,11 @@ public class SongSelectManager : MonoBehaviour {
 
         if (advancedDifficultyExist)
         {
-            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, defaultBeatmapDifficulty);
+            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, defaultBeatmapDifficulty, true);
         }
         else if (extraDifficultyExist)
         {
-            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, defaultBeatmapDifficulty);
+            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, defaultBeatmapDifficulty, true);
         }
         else
         {
@@ -66,7 +71,7 @@ public class SongSelectManager : MonoBehaviour {
 	}
 
     // Load beatmap song select information
-    public void LoadBeatmapSongSelectInformation(int selectedDirectoryIndexPass, string beatmapDifficulty)
+    public void LoadBeatmapSongSelectInformation(int selectedDirectoryIndexPass, string beatmapDifficulty, bool hasPressedArrowKey)
     {
         // Reset difficulty check bools
         advancedDifficultyExist = false;
@@ -114,6 +119,7 @@ public class SongSelectManager : MonoBehaviour {
             beatmapCreator = Database.database.loadedBeatmapCreator;
             advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
             extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
+            songClipChosenIndex = Database.database.loadedSongClipChosenIndex;
 
             // Change the current song selected text to the information loaded from the current directory
             songTitleText.text = songName + " [ " + songArtist + " ] ";
@@ -135,6 +141,11 @@ public class SongSelectManager : MonoBehaviour {
         {
             // As we tried to access a file with no difficulties remain on the current index
             selectedDirectoryIndex = previousDirectoryIndex;
+        }
+
+        if (hasPressedArrowKey == true)
+        {
+            songSelectPreview.GetSongChosen(songClipChosenIndex);
         }
     }
 

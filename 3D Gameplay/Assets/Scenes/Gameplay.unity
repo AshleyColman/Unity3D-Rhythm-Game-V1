@@ -406,7 +406,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1221984675857880, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
@@ -592,6 +592,7 @@ MonoBehaviour:
   beatmapFolderDirectory: 
   beatmapAdvancedDifficultyLevel: 
   beatmapExtraDifficultyLevel: 
+  songClipChosenIndex: 0
   loadedSongName: 
   loadedSongArtist: 
   loadedBeatmapCreator: 
@@ -599,6 +600,7 @@ MonoBehaviour:
   loadedBeatmapFolderDirectory: 
   loadedbeatmapAdvancedDifficultyLevel: 
   loadedbeatmapExtraDifficultyLevel: 
+  loadedSongClipChosenIndex: 0
 --- !u!4 &223633053
 Transform:
   m_ObjectHideFlags: 0
@@ -2354,8 +2356,21 @@ MonoBehaviour:
   songPlayerSlider: {fileID: 1359534246}
   songAudioSource: {fileID: 152080549}
   active: 0
-  songClip: {fileID: 8300000, guid: 60e6ab99641226a49ad6f019d66e3055, type: 3}
+  songClip:
+  - {fileID: 8300000, guid: 9e1ebb1b8def1ac4f87ef77edb036bfb, type: 3}
+  - {fileID: 8300000, guid: 1fcbb8070d618764e85075d8f8d67f68, type: 3}
+  - {fileID: 8300000, guid: 3cf98c247366775499562412b6d813a3, type: 3}
+  - {fileID: 8300000, guid: 1392561ea9668a34d8260d7dbb249aea, type: 3}
+  - {fileID: 8300000, guid: 4e97f60a75a47e941bb3ae5b279bca27, type: 3}
+  - {fileID: 8300000, guid: 60e6ab99641226a49ad6f019d66e3055, type: 3}
+  - {fileID: 8300000, guid: 0d88904b65f66f94685ca2df2597ca16, type: 3}
+  - {fileID: 8300000, guid: aa487d16f21947845af53bd00f85946e, type: 3}
+  - {fileID: 8300000, guid: 704b5d233339d434096686f44c6ce996, type: 3}
+  - {fileID: 8300000, guid: 774bfbb6b4fccc648afe5932aef3ee54, type: 3}
+  - {fileID: 8300000, guid: a9e7daea67e6e2245bd6d058fc9f3b17, type: 3}
+  - {fileID: 8300000, guid: 0229d7218357c0a4a915b81dfa9eca2a, type: 3}
   songAudioSourceTime: 0
+  songClipChosenIndex: 0
   beatmapSetup: {fileID: 0}
   levelChanger: {fileID: 0}
 --- !u!114 &1222644628
@@ -4361,7 +4376,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 29, y: -37}
-  m_SizeDelta: {x: 500, y: 200}
+  m_SizeDelta: {x: 1000, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &2020439276
 MonoBehaviour:

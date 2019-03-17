@@ -16,7 +16,8 @@ public class SongSelectPreview : MonoBehaviour
     bool playing = false;
     float songVolume = 0.4f;
     float amount;
-    public AudioClip songClip;
+    public AudioClip[] songClip;
+    public int songClipChosenIndex;
     public float songAudioSourceTime;
     bool choseSong;
 
@@ -50,13 +51,7 @@ public class SongSelectPreview : MonoBehaviour
         // Plays song when chosen
         if (choseSong == true)
         {
-            // Play song
-            songAudioSource.clip = songClip;
-            songAudioSource.volume = songVolume;
-            songAudioSource.Play();
-            playing = true;
-            active = true;
-            choseSong = false;
+            PlaySongPreview();
         }
 
        
@@ -73,5 +68,26 @@ public class SongSelectPreview : MonoBehaviour
             string minSec = min.ToString("D2") + ":" + sec.ToString("D2");
             return minSec;
         }
+    }
+
+    // Get the song chosen to load 
+    public void GetSongChosen(int songChosenIndexPass)
+    {
+        // Get the index of the song chosens
+        songClipChosenIndex = songChosenIndexPass;
+        // Play the song
+        PlaySongPreview();
+    }
+
+    // Play the song preview
+    public void PlaySongPreview()
+    {
+        // Play song
+        songAudioSource.clip = songClip[songClipChosenIndex];
+        songAudioSource.volume = songVolume;
+        songAudioSource.Play();
+        playing = true;
+        active = true;
+        choseSong = false;
     }
 }

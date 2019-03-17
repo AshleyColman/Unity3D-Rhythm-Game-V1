@@ -54,6 +54,7 @@ public class Database : MonoBehaviour {
     public string beatmapFolderDirectory;
     public string beatmapAdvancedDifficultyLevel;
     public string beatmapExtraDifficultyLevel;
+    public int songClipChosenIndex;
 
     // Loaded beatmap variables
     public string loadedSongName;
@@ -63,6 +64,7 @@ public class Database : MonoBehaviour {
     public string loadedBeatmapFolderDirectory;
     public string loadedbeatmapAdvancedDifficultyLevel;
     public string loadedbeatmapExtraDifficultyLevel;
+    public int loadedSongClipChosenIndex;
 
     private void Awake()
     {
@@ -117,6 +119,7 @@ public class Database : MonoBehaviour {
         beatmapCreator = beatmapSetup.beatmapCreator;
         beatmapAdvancedDifficultyLevel = beatmapSetup.beatmapAdvancedDifficultyLevel;
         beatmapExtraDifficultyLevel = beatmapSetup.beatmapExtraDifficultyLevel;
+        songClipChosenIndex = beatmapSetup.songClipChosenIndex;
 
         // Save beatmap information
         beatmap.songName = songName;
@@ -126,7 +129,7 @@ public class Database : MonoBehaviour {
         beatmap.beatmapFolderDirectory = beatmapFolderDirectory;
         beatmap.beatmapAdvancedDifficultyLevel = beatmapAdvancedDifficultyLevel;
         beatmap.beatmapExtraDifficultyLevel = beatmapExtraDifficultyLevel;
-
+        beatmap.songClipChosenIndex = songClipChosenIndex;
 
         bf.Serialize(stream, beatmap);
         stream.Close();
@@ -176,6 +179,7 @@ public class Database : MonoBehaviour {
         loadedBeatmapDifficulty = beatmap.beatmapDifficulty;
         loadedbeatmapAdvancedDifficultyLevel = beatmap.beatmapAdvancedDifficultyLevel;
         loadedbeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
+        loadedSongClipChosenIndex = beatmap.songClipChosenIndex;
 }
 
     // Clear all loaded items, used in the song select screen to remove all loaded when selecting a new difficulty
@@ -195,5 +199,7 @@ public class Database : MonoBehaviour {
         loadedBeatmapCreator = "";
         loadedbeatmapAdvancedDifficultyLevel = "";
         loadedbeatmapExtraDifficultyLevel = "";
+
+        loadedSongClipChosenIndex = 0;
     }
 }

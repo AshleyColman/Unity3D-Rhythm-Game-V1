@@ -18,8 +18,9 @@ public class SongProgressBar : MonoBehaviour {
     bool playing = false;
     float songVolume = 0.4f;
     float amount;
-    public AudioClip songClip;
+    public AudioClip[] songClip;
     public float songAudioSourceTime;
+    public int songClipChosenIndex; // The song clip chosen for this beatmap
 
     // Get the reference to the beatmap setup to disable starting the song when space is pressed whilst in the editor
     public BeatmapSetup beatmapSetup;
@@ -37,6 +38,7 @@ public class SongProgressBar : MonoBehaviour {
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
     void Update()
     {
+    
         if (levelChanger.currentLevelIndex == 2)
         {
             if (beatmapSetup.settingUp == false)
@@ -45,7 +47,7 @@ public class SongProgressBar : MonoBehaviour {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     // Play song
-                    songAudioSource.clip = songClip;
+                    songAudioSource.clip = songClip[songClipChosenIndex];
                     songAudioSource.volume = songVolume;
                     songAudioSource.Play();
                     playing = true;
@@ -55,16 +57,23 @@ public class SongProgressBar : MonoBehaviour {
         }
         else
         {
-            // Play song when user press Space button
-            if (Input.GetKeyDown(KeyCode.Space))
+            // Play song when user press Space button in gameplay
+            if (levelChanger.currentLevelIndex == 4)
             {
-                // Play song
-                songAudioSource.clip = songClip;
-                songAudioSource.volume = songVolume;
-                songAudioSource.Play();
-                playing = true;
-                active = true;
+                // Set the song to the song loaded
+                songClipChosenIndex = Database.database.loadedSongClipChosenIndex;
+
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    // Play song
+                    songAudioSource.clip = songClip[songClipChosenIndex];
+                    songAudioSource.volume = songVolume;
+                    songAudioSource.Play();
+                    playing = true;
+                    active = true;
+                }
             }
+
         }
         
 
@@ -100,6 +109,12 @@ public class SongProgressBar : MonoBehaviour {
             string minSec = min.ToString("D2") + ":" + sec.ToString("D2");
             return minSec;
         }
+    }
+
+    // Get the song chosen to load 
+    public void GetSongChosen(int songChosenIndexPass)
+    {
+        songClipChosenIndex = songChosenIndexPass;
     }
 }
 
