@@ -18,14 +18,15 @@ public class SongProgressBar : MonoBehaviour {
     bool playing = false;
     float songVolume = 0.4f;
     float amount;
-    public AudioClip[] songClip;
     public float songAudioSourceTime;
     public int songClipChosenIndex; // The song clip chosen for this beatmap
 
     // Get the reference to the beatmap setup to disable starting the song when space is pressed whilst in the editor
     public BeatmapSetup beatmapSetup;
     // Required  for only disabling the songProgressBar in the editor and not gameplay
-    public LevelChanger levelChanger; 
+    public LevelChanger levelChanger;
+    // Required for getting the song list from the songDatabase
+    public SongDatabase songDatabase;
 
     void Start()
     {
@@ -33,6 +34,8 @@ public class SongProgressBar : MonoBehaviour {
         beatmapSetup = FindObjectOfType<BeatmapSetup>();
         // Get the reference
         levelChanger = FindObjectOfType<LevelChanger>();
+        // Get the reference
+        songDatabase = FindObjectOfType<SongDatabase>();
     }
 
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
@@ -47,7 +50,7 @@ public class SongProgressBar : MonoBehaviour {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     // Play song
-                    songAudioSource.clip = songClip[songClipChosenIndex];
+                    songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
                     songAudioSource.volume = songVolume;
                     songAudioSource.Play();
                     playing = true;
@@ -66,7 +69,7 @@ public class SongProgressBar : MonoBehaviour {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     // Play song
-                    songAudioSource.clip = songClip[songClipChosenIndex];
+                    songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
                     songAudioSource.volume = songVolume;
                     songAudioSource.Play();
                     playing = true;

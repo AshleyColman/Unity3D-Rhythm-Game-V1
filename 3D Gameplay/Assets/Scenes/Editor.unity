@@ -5706,23 +5706,11 @@ MonoBehaviour:
   songPlayerSlider: {fileID: 1537647792}
   songAudioSource: {fileID: 430761615}
   active: 0
-  songClip:
-  - {fileID: 8300000, guid: 9e1ebb1b8def1ac4f87ef77edb036bfb, type: 3}
-  - {fileID: 8300000, guid: 1fcbb8070d618764e85075d8f8d67f68, type: 3}
-  - {fileID: 8300000, guid: 3cf98c247366775499562412b6d813a3, type: 3}
-  - {fileID: 8300000, guid: 1392561ea9668a34d8260d7dbb249aea, type: 3}
-  - {fileID: 8300000, guid: 4e97f60a75a47e941bb3ae5b279bca27, type: 3}
-  - {fileID: 8300000, guid: 60e6ab99641226a49ad6f019d66e3055, type: 3}
-  - {fileID: 8300000, guid: 0d88904b65f66f94685ca2df2597ca16, type: 3}
-  - {fileID: 8300000, guid: aa487d16f21947845af53bd00f85946e, type: 3}
-  - {fileID: 8300000, guid: 704b5d233339d434096686f44c6ce996, type: 3}
-  - {fileID: 8300000, guid: 774bfbb6b4fccc648afe5932aef3ee54, type: 3}
-  - {fileID: 8300000, guid: a9e7daea67e6e2245bd6d058fc9f3b17, type: 3}
-  - {fileID: 8300000, guid: 0229d7218357c0a4a915b81dfa9eca2a, type: 3}
   songAudioSourceTime: 0
   songClipChosenIndex: 0
   beatmapSetup: {fileID: 0}
   levelChanger: {fileID: 0}
+  songDatabase: {fileID: 0}
 --- !u!114 &1179841969
 MonoBehaviour:
   m_ObjectHideFlags: 0

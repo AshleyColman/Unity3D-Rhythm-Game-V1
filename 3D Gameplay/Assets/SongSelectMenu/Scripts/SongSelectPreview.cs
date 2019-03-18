@@ -16,14 +16,16 @@ public class SongSelectPreview : MonoBehaviour
     bool playing = false;
     float songVolume = 0.4f;
     float amount;
-    public AudioClip[] songClip;
     public int songClipChosenIndex;
     public float songAudioSourceTime;
     bool choseSong;
+    public SongDatabase songDatabase; // Required for loading all the songs in the game
 
     void Start()
     {
         choseSong = true;
+        // Get the reference
+        songDatabase = FindObjectOfType<SongDatabase>();
     }
 
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
@@ -83,7 +85,7 @@ public class SongSelectPreview : MonoBehaviour
     public void PlaySongPreview()
     {
         // Play song
-        songAudioSource.clip = songClip[songClipChosenIndex];
+        songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
         songAudioSource.volume = songVolume;
         songAudioSource.Play();
         playing = true;

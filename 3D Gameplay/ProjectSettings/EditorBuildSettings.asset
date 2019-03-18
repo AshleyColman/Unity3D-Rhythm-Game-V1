@@ -23,3 +23,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/ResultsScene/Scenes/ResultsScene.unity
     guid: a1bd23defab1a2f41a154c9c8b284187
+  - enabled: 1
+    path: Assets/LoginAndRegisterScenes/Scenes/EnterGameScene.unity
+    guid: 4b5e2de5eafe72d458de17f0630d63ce
+  - enabled: 1
+    path: Assets/LoginAndRegisterScenes/Scenes/RegisterScene.unity
+    guid: e8a62c2669a1ccd41a93209d4f74bd5a
+  - enabled: 1
+    path: Assets/LoginAndRegisterScenes/Scenes/LoginScene.unity
+    guid: 8d4c005594e1e034393b72ab3b1e8e8a
+  - enabled: 1
+    path: Assets/LoginAndRegisterScenes/Scenes/TestGameScene.unity
+    guid: 3677e9ed1788a324aaff25c348e74543
