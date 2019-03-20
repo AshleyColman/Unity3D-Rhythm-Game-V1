@@ -11,6 +11,9 @@ public class SongSelectMenuFlash : MonoBehaviour {
     public string lastSelectedDifficulty; // The last selected difficulty on the current beatmap, so if extra was last selected allow the flash for advanced
     public bool hasPressedArrowKey; // Passed in the loading function to change the preview song each load but not for when hovering over the difficulties
 
+    // Get reference to beatmap ranking manager to load the leaderboard after loading the beatmap information
+    private BeatmapRankingManager beatmapRankingManager;
+
     // Use this for initialization
     void Start () {
 
@@ -22,6 +25,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
 
         // Get the reference
         songSelectManager = FindObjectOfType<SongSelectManager>();
+        // Get the reference
+        beatmapRankingManager = FindObjectOfType<BeatmapRankingManager>();
 	}
 	
 	// Update is called once per frame
@@ -31,6 +36,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
         {
             // Clear all loaded beatmaps
             ClearBeatmapLoaded();
+            // Reset leaderboard rankings
+            beatmapRankingManager.ResetLeaderboard();
             // Has pressed arrow key
             hasPressedArrowKey = true;
             // Flash the image
@@ -43,12 +50,18 @@ public class SongSelectMenuFlash : MonoBehaviour {
             lastSelectedDifficulty = defaultBeatmapDifficulty;
             // Set back to false
             hasPressedArrowKey = false;
+            // Load the beatmap rankings
+            beatmapRankingManager.leaderboardPlaceToGet = 1;
+            beatmapRankingManager.notChecked = true;
+
         }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             // Clear all loaded beatmaps
             ClearBeatmapLoaded();
+            // Reset leaderboard rankings
+            beatmapRankingManager.ResetLeaderboard();
             // Has pressed arrow key
             hasPressedArrowKey = true;
             // Flash the image
@@ -61,6 +74,10 @@ public class SongSelectMenuFlash : MonoBehaviour {
             lastSelectedDifficulty = defaultBeatmapDifficulty;
             // Set back to false
             hasPressedArrowKey = false;
+            // Load the beatmap rankings
+            beatmapRankingManager.leaderboardPlaceToGet = 1;
+            beatmapRankingManager.notChecked = true;
+            
         }
 
     }
@@ -68,7 +85,6 @@ public class SongSelectMenuFlash : MonoBehaviour {
     // Animate the flash on screen
     public void FlashImage()
     {
-        Debug.Log("Animated");
         songSelectFlashAnimator.Play("SongSelectMenuFlash");
     }
     

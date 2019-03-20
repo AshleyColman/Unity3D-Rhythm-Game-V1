@@ -17,9 +17,10 @@ public class GameplayToResultsManager : MonoBehaviour {
     public int totalMiss;
     public string gradeAchieved;
     public float totalScorePossible;
-    public float score;
+    public int score;
     public float Percentage;
-
+    float AudioSourceLength;
+    float AudioSourceTime;
     // Use this for initialization
     void Start () {
         scoreManager = FindObjectOfType<ScoreManager>();
@@ -32,8 +33,8 @@ public class GameplayToResultsManager : MonoBehaviour {
 
         if (levelChanger.currentLevelIndex == 4)
         {
-            float AudioSourceTime = songProgressBar.songAudioSource.time;
-            float AudioSourceLength = songProgressBar.songAudioSource.clip.length;
+            AudioSourceTime = songProgressBar.songAudioSource.time;
+            AudioSourceLength = songProgressBar.songAudioSource.clip.length;
 
             if (AudioSourceTime >= AudioSourceLength)
             {

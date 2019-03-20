@@ -4951,7 +4951,7 @@ Prefab:
         type: 2}
       propertyPath: songClip.Array.data[6]
       value: 
-      objectReference: {fileID: 8300000, guid: 4befbe953a695864d8b7cdf79f1818f1, type: 3}
+      objectReference: {fileID: 8300000, guid: 0d88904b65f66f94685ca2df2597ca16, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d377f2b4f2a68c449b392f8d9c3e4edf, type: 2}
   m_IsPrefabParent: 0

@@ -45,6 +45,7 @@ public class LeaderboardManager : MonoBehaviour {
         WWWForm form = new WWWForm();
         // Get all the data from the beatmap played and user information, submit to the php file that uploads to the leaderboard
         form.AddField("leaderboardTableName", leaderboardTableName);
+        form.AddField("score", gameplayToResultsManager.score);
         form.AddField("perfect", gameplayToResultsManager.totalPerfect);
         form.AddField("good", gameplayToResultsManager.totalGood);
         form.AddField("early", gameplayToResultsManager.totalEarly);

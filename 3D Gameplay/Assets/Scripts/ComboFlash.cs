@@ -57,7 +57,6 @@ public class ComboFlash : MonoBehaviour {
     // Animate the flash on screen
     public void FlashComboFlashImage()
     {
-        Debug.Log("Animated");
         comboFlashAnimator.Play("ComboFlashAnimation");
     }
 }

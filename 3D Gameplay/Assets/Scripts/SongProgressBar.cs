@@ -65,12 +65,13 @@ public class SongProgressBar : MonoBehaviour {
             {
                 // Set the song to the song loaded
                 songClipChosenIndex = Database.database.loadedSongClipChosenIndex;
+                songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
+                songAudioSource.volume = songVolume;
 
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     // Play song
-                    songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
-                    songAudioSource.volume = songVolume;
+
                     songAudioSource.Play();
                     playing = true;
                     active = true;
@@ -87,7 +88,6 @@ public class SongProgressBar : MonoBehaviour {
             {
                 if (songAudioSource.isPlaying)
                 {
-                    Debug.Log("Song Playing");
                     amount = (songAudioSource.time) / (songAudioSource.clip.length);
                     songPlayerBar.fillAmount = amount;
                     actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);

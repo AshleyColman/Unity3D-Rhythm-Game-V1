@@ -1937,6 +1937,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 981f2e749769af94bb6aec535c41e9c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leaderboardTableName: 
+  notChecked: 1
+  firstPlaceLeaderboardData: []
+  secondPlaceLeaderboardData: []
+  thirdPlaceLeaderboardData: []
+  fourthPlaceLeaderboardData: []
+  fifthPlaceLeaderboardData: []
+  teststring: 
+  leaderboardPlaceToGet: 0
+  setFirst: 0
+  RankedButtonFirstText: {fileID: 196629189}
+  RankedButtonSecondText: {fileID: 695935124}
+  RankedButtonThirdText: {fileID: 1274021922}
+  RankedButtonFourthText: {fileID: 1413458933}
+  RankedButtonFifthText: {fileID: 1162738115}
 --- !u!1 &678052320
 GameObject:
   m_ObjectHideFlags: 0
@@ -2610,7 +2625,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0000037321201, y: 0.000044484932}
+  m_AnchoredPosition: {x: -0.000012568459, y: 0.000044484932}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1148356218
@@ -3839,7 +3854,7 @@ Prefab:
       objectReference: {fileID: 8300000, guid: dd9bc3def0537aa479820eafa2cf474a, type: 3}
     - target: {fileID: 1221984675857880, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}

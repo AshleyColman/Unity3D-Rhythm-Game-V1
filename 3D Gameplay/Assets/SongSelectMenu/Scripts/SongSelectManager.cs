@@ -40,6 +40,7 @@ public class SongSelectManager : MonoBehaviour {
     private SongSelectPreview songSelectPreview;
     private int songClipChosenIndex;
 
+
     // Use this for initialization
     void Start () {
         songClipChosenIndex = 0;

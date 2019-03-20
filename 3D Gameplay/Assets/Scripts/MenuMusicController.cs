@@ -28,8 +28,6 @@ public class MenuMusicController : MonoBehaviour {
     
         LevelChanger levelChanger = FindObjectOfType<LevelChanger>();
 
-        Debug.Log("currentlevel index" + levelChanger.currentLevelIndex);
-        Debug.Log("paused: " + previouslyPaused);
         // destroy to stop playing on certain scenes
         if (levelChanger.currentLevelIndex == 2 || levelChanger.currentLevelIndex == 3)
         {
@@ -47,7 +45,6 @@ public class MenuMusicController : MonoBehaviour {
             
         }
 
-        Debug.Log("endpaused: " + previouslyPaused);
     }
 
 }

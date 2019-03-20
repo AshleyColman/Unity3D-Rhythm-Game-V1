@@ -37,7 +37,6 @@ public class Login : MonoBehaviour {
         // Success
         if (www.downloadHandler.text == "0")
         {
-            Debug.Log("Logged in");
             error = "success";
             MySQLDBManager.username = usernameInputField.text;
             DisableLoginCanvas();
