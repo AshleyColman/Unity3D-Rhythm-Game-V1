@@ -29,6 +29,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
 		
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
+            // Clear all loaded beatmaps
+            ClearBeatmapLoaded();
             // Has pressed arrow key
             hasPressedArrowKey = true;
             // Flash the image
@@ -45,6 +47,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            // Clear all loaded beatmaps
+            ClearBeatmapLoaded();
             // Has pressed arrow key
             hasPressedArrowKey = true;
             // Flash the image
@@ -88,5 +92,11 @@ public class SongSelectMenuFlash : MonoBehaviour {
         songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.selectedDirectoryIndex, defaultBeatmapDifficulty, hasPressedArrowKey);
         // Set the last selected difficulty to Advanced
         lastSelectedDifficulty = defaultBeatmapDifficulty;
+    }
+
+    // Clear all loaded beatmap currently in song select
+    public void ClearBeatmapLoaded()
+    {
+        Database.database.Clear();
     }
 }

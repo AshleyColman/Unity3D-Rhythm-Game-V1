@@ -10,6 +10,7 @@ public class Database : MonoBehaviour {
     public static Beatmap beatmap;
     public static Database database;
     public BeatmapSetup beatmapSetup;
+    public LeaderboardCreate leaderboardCreate;
 
     string FILE_EXTENSION = ".dia";
 
@@ -45,6 +46,10 @@ public class Database : MonoBehaviour {
     public float LoadedSpecialTimeStart;
     public float LoadedSpecialTimeEnd;
 
+    // Beatmap leaderboard table name
+    public string leaderboardTableName;
+    // Loaded leaderboard table name
+    public string loadedLeaderboardTableName;
 
     // Beatmap setup variables
     public string songName;
@@ -131,6 +136,9 @@ public class Database : MonoBehaviour {
         beatmap.beatmapExtraDifficultyLevel = beatmapExtraDifficultyLevel;
         beatmap.songClipChosenIndex = songClipChosenIndex;
 
+        // Save leaderboard table name
+        beatmap.leaderboardTableName = leaderboardTableName;
+
         bf.Serialize(stream, beatmap);
         stream.Close();
     }
@@ -180,6 +188,9 @@ public class Database : MonoBehaviour {
         loadedbeatmapAdvancedDifficultyLevel = beatmap.beatmapAdvancedDifficultyLevel;
         loadedbeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
         loadedSongClipChosenIndex = beatmap.songClipChosenIndex;
+
+        // Load beatmap table name for leaderboards
+        loadedLeaderboardTableName = beatmap.leaderboardTableName;
 }
 
     // Clear all loaded items, used in the song select screen to remove all loaded when selecting a new difficulty
@@ -201,5 +212,6 @@ public class Database : MonoBehaviour {
         loadedbeatmapExtraDifficultyLevel = "";
 
         loadedSongClipChosenIndex = 0;
+        loadedLeaderboardTableName = "";
     }
 }

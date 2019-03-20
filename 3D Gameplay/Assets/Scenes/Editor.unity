@@ -2391,6 +2391,7 @@ GameObject:
   - component: {fileID: 435480790}
   - component: {fileID: 435480791}
   - component: {fileID: 435480792}
+  - component: {fileID: 435480793}
   m_Layer: 0
   m_Name: EditorManager
   m_TagString: Untagged
@@ -2556,6 +2557,19 @@ MonoBehaviour:
   SetupProgressBlockCompletedColor: {r: 0.18468858, g: 1, b: 0.04411763, a: 1}
   editorTitle: {fileID: 1490003564}
   settingUp: 0
+--- !u!114 &435480793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 435480786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4225bb4ae56e8f44dbf80ea5794f7891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leaderboardTableName: 
+  beatmapSetup: {fileID: 0}
 --- !u!1 &482911544
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,7 +21,7 @@ public class Menu : MonoBehaviour {
 
     void Start()
     {
-        PLAYText = "Compete against others on user created beatmaps";
+        PLAYText = "Compete against others on beatmaps";
         MULTIPLAYERText = "Play against others online";
         EDITORText = "Create your own beatmap";
         SETTINGSText = "Customize the game to your preference";

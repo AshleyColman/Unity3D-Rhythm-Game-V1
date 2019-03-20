@@ -23,4 +23,6 @@ public class Beatmap
     public string beatmapAdvancedDifficultyLevel;
     public string beatmapExtraDifficultyLevel;
     public int songClipChosenIndex;
+
+    public string leaderboardTableName;
 }
