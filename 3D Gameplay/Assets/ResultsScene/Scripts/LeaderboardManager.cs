@@ -52,6 +52,8 @@ public class LeaderboardManager : MonoBehaviour {
         form.AddField("miss", gameplayToResultsManager.totalMiss);
         form.AddField("combo", gameplayToResultsManager.highestCombo);
         form.AddField("player_id", username);
+        form.AddField("grade", gameplayToResultsManager.gradeAchieved);
+        form.AddField("percentage", gameplayToResultsManager.Percentage.ToString());
 
         UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/uploaduserscoretobeatmap.php", form);
         www.chunkedTransfer = false;

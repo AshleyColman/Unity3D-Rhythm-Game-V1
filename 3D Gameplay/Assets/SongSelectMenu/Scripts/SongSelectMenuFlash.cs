@@ -52,7 +52,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
             hasPressedArrowKey = false;
             // Load the beatmap rankings
             beatmapRankingManager.leaderboardPlaceToGet = 1;
-            beatmapRankingManager.notChecked = true;
+            beatmapRankingManager.ResetNotChecked();
 
         }
 
@@ -76,8 +76,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
             hasPressedArrowKey = false;
             // Load the beatmap rankings
             beatmapRankingManager.leaderboardPlaceToGet = 1;
-            beatmapRankingManager.notChecked = true;
-            
+            beatmapRankingManager.ResetNotChecked();
         }
 
     }

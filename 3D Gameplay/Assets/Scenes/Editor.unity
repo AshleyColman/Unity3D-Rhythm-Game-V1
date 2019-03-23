@@ -783,7 +783,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: MASQUERADE
+  m_Text: ANIMA
 --- !u!222 &183630759
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2480,6 +2480,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beatmapSetup: {fileID: 0}
+  leaderboardCreate: {fileID: 0}
   hitObjectPositionX: 0
   hitObjectPositionY: 0
   hitObjectPositionZ: 0
@@ -2497,6 +2498,8 @@ MonoBehaviour:
   SpecialTimeEnd: 0
   LoadedSpecialTimeStart: 0
   LoadedSpecialTimeEnd: 0
+  leaderboardTableName: 
+  loadedLeaderboardTableName: 
   songName: 
   songArtist: 
   beatmapCreator: 
@@ -3255,7 +3258,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: INNOCENT TREASURES
+  m_Text: SOLAR STORM
 --- !u!222 &518141457
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7198,7 +7201,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SHINING STREAM
+  m_Text: SKY HIGH
 --- !u!222 &1487301426
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12584,7 +12587,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SNOW STORM
+  m_Text: 01+-+B+button
 --- !u!222 &1947180933
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12865,7 +12868,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: NIFLHEIMR
+  m_Text: SATORI 3RD EYES
 --- !u!222 &2036242099
 CanvasRenderer:
   m_ObjectHideFlags: 0

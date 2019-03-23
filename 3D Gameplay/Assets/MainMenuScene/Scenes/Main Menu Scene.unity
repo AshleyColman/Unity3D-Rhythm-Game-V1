@@ -483,11 +483,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4279164825020420, guid: ddd3bb472532a2848a715618c05b02e0, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -853
+      value: -590
       objectReference: {fileID: 0}
     - target: {fileID: 4279164825020420, guid: ddd3bb472532a2848a715618c05b02e0, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 202
+      value: -22
       objectReference: {fileID: 0}
     - target: {fileID: 4279164825020420, guid: ddd3bb472532a2848a715618c05b02e0, type: 2}
       propertyPath: m_LocalRotation.x
@@ -1259,7 +1259,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: WELCOME TO THE GAME
+  m_Text: Welcome to PROJECTDIA
 --- !u!222 &954542967
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5324,7 +5324,7 @@ Prefab:
     - target: {fileID: 114565685448435478, guid: 7dbd94f5d8fd3004aa99f6e959cee3ab,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 224477430260342128, guid: 7dbd94f5d8fd3004aa99f6e959cee3ab,
         type: 2}
@@ -5453,7 +5453,7 @@ Prefab:
     - target: {fileID: 114565685448435478, guid: 7dbd94f5d8fd3004aa99f6e959cee3ab,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114565685448435478, guid: 7dbd94f5d8fd3004aa99f6e959cee3ab,
         type: 2}
@@ -5464,22 +5464,22 @@ Prefab:
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1981177735}
+      objectReference: {fileID: 1239212394}
     - target: {fileID: 114565685448435478, guid: 7dbd94f5d8fd3004aa99f6e959cee3ab,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: PlayOneShot
+      value: ExitGame
       objectReference: {fileID: 0}
     - target: {fileID: 114565685448435478, guid: 7dbd94f5d8fd3004aa99f6e959cee3ab,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.AudioClip, UnityEngine
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 114565685448435478, guid: 7dbd94f5d8fd3004aa99f6e959cee3ab,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 8300000, guid: 9344d123b2eb09747916e81f248041c2, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 95411308812984188, guid: 7dbd94f5d8fd3004aa99f6e959cee3ab,
         type: 2}
       propertyPath: m_Controller
@@ -5671,7 +5671,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1397382488}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -400}
+  m_LocalPosition: {x: 0, y: 0, z: -463}
   m_LocalScale: {x: 100, y: 100, z: 0}
   m_Children:
   - {fileID: 111347271}
@@ -7071,11 +7071,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4005688609788230, guid: 8092bc64c7148cc4992e1e16b881aaac, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -853
+      value: -590
       objectReference: {fileID: 0}
     - target: {fileID: 4005688609788230, guid: 8092bc64c7148cc4992e1e16b881aaac, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 202
+      value: -22
       objectReference: {fileID: 0}
     - target: {fileID: 4005688609788230, guid: 8092bc64c7148cc4992e1e16b881aaac, type: 2}
       propertyPath: m_LocalRotation.x
@@ -7199,11 +7199,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4019317367833158, guid: 23d29fbc549c61c4eb5fe9c3a4df4148, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -853
+      value: -590
       objectReference: {fileID: 0}
     - target: {fileID: 4019317367833158, guid: 23d29fbc549c61c4eb5fe9c3a4df4148, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 202
+      value: -22
       objectReference: {fileID: 0}
     - target: {fileID: 4019317367833158, guid: 23d29fbc549c61c4eb5fe9c3a4df4148, type: 2}
       propertyPath: m_LocalRotation.x

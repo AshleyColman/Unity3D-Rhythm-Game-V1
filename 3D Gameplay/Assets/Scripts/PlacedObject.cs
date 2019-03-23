@@ -126,6 +126,13 @@ public class PlacedObject : MonoBehaviour {
                 editorSoundController.PlayPlacedSound();
             }
 
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                // Update the instruction button text that a leaderboard has been created
+                UpdateInstructionButtonText("Leaderboard created");
+                // Play the specialTimeFirstPlaced sound effect
+                editorSoundController.PlaySpecialTimeStartPlacedSound();
+            }
 
             // Special Time Key Press Set Times
             if (Input.GetKeyDown(KeyCode.H))

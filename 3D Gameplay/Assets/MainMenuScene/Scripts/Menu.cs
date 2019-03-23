@@ -24,7 +24,7 @@ public class Menu : MonoBehaviour {
         PLAYText = "Compete against others on beatmaps";
         MULTIPLAYERText = "Play against others online";
         EDITORText = "Create your own beatmap";
-        SETTINGSText = "Customize the game to your preference";
+        SETTINGSText = "Customize your settings";
         EXITText = "Exit the game";
     }
 
@@ -116,5 +116,11 @@ public class Menu : MonoBehaviour {
             descriptionPanelText.text = EXITText;
             newPage(4);
         }
+    }
+
+    // Close the game
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }

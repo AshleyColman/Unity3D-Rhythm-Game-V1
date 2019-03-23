@@ -8,6 +8,8 @@ public class Registration : MonoBehaviour {
 
     public InputField usernameInputField;
     public InputField passwordInputField;
+    public Text usernameFieldDescription;
+    public Text passwordFieldDescription;
     public Button submitButton;
     public Button registerCanvas; // The register canvas
     public Button enterGameCanvas; // The enter game canvas
@@ -15,6 +17,20 @@ public class Registration : MonoBehaviour {
     public string password;
     public string error;
 
+
+    void Update()
+    {
+        if (usernameInputField.isFocused)
+        {
+            usernameFieldDescription.gameObject.SetActive(true);
+            passwordFieldDescription.gameObject.SetActive(false);
+        }
+        else if (passwordInputField.isFocused)
+        {
+            usernameFieldDescription.gameObject.SetActive(false);
+            passwordFieldDescription.gameObject.SetActive(true);
+        }
+    }
 
     public void CallRegister()
     {
@@ -68,7 +84,7 @@ public class Registration : MonoBehaviour {
 
     public void VerifyInputs()
     {
-        submitButton.interactable = (usernameInputField.text.Length >= 5 && usernameInputField.text.Length <= 10 && passwordInputField.text.Length >= 5);
+        submitButton.interactable = (usernameInputField.text.Length >= 4 && usernameInputField.text.Length <= 10 && passwordInputField.text.Length >= 5);
     }
 
     // Disable the register canvas

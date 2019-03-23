@@ -16,6 +16,7 @@ public class SongSelectManager : MonoBehaviour {
     // Song select menu UI elements
     public Text songTitleText;
     public Text beatmapCreatorText;
+    public Text beatmapStatisticsText;
 
     // Loaded song variables
     private string songName;
@@ -23,6 +24,7 @@ public class SongSelectManager : MonoBehaviour {
     private string beatmapCreator;
     private string advancedDifficultyLevel;
     private string extraDifficultyLevel;
+    private int totalDiamonds; 
 
     // References to the difficulty buttons
     public Button DifficultyOptionAdvancedButton;
@@ -121,11 +123,12 @@ public class SongSelectManager : MonoBehaviour {
             advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
             extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
             songClipChosenIndex = Database.database.loadedSongClipChosenIndex;
+            totalDiamonds = Database.database.LoadedPositionX.Count;
 
             // Change the current song selected text to the information loaded from the current directory
             songTitleText.text = songName + " [ " + songArtist + " ] ";
-            beatmapCreatorText.text = "Created by " + beatmapCreator;
-
+            beatmapCreatorText.text = "Beatmap Created By: " + beatmapCreator;
+            beatmapStatisticsText.text = "Length: 00:00" + " Total Diamonds: " + totalDiamonds.ToString() + " Max Possible Score: " + (totalDiamonds * 500);
             // Do a check to ensure the level is outputted if exists, and if it doesn't output the missing difficulty text
             if (extraDifficultyExist == true)
             {

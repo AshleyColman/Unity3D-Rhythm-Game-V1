@@ -8,12 +8,29 @@ public class Login : MonoBehaviour {
 
     public InputField usernameInputField;
     public InputField passwordInputField;
+    public Text usernameFieldDescription;
+    public Text passwordFieldDescription;
     public Button submitButton;
     public Button enterGameCanvas;
     public Button loginCanvas;
     public string username;
     public string password;
     public string error;
+
+    void Update()
+    {
+        if (usernameInputField.isFocused)
+        {
+            usernameFieldDescription.gameObject.SetActive(true);
+            passwordFieldDescription.gameObject.SetActive(false);
+        }
+        else if (passwordInputField.isFocused)
+        {
+            usernameFieldDescription.gameObject.SetActive(false);
+            passwordFieldDescription.gameObject.SetActive(true);
+        }
+    }
+
 
     public void CallLogin()
     {
@@ -66,7 +83,7 @@ public class Login : MonoBehaviour {
 
     public void VerifyInputs()
     {
-        submitButton.interactable = (usernameInputField.text.Length >= 5 && passwordInputField.text.Length >= 5);
+        submitButton.interactable = (usernameInputField.text.Length >= 4 && usernameInputField.text.Length <= 10 && passwordInputField.text.Length >= 5);
     }
 
     // Disable the login canvas
