@@ -128,7 +128,7 @@ public class SongSelectManager : MonoBehaviour {
             // Change the current song selected text to the information loaded from the current directory
             songTitleText.text = songName + " [ " + songArtist + " ] ";
             beatmapCreatorText.text = "Beatmap Created By: " + beatmapCreator;
-            beatmapStatisticsText.text = "Length: 00:00" + " Total Diamonds: " + totalDiamonds.ToString() + " Max Possible Score: " + (totalDiamonds * 500);
+            beatmapStatisticsText.text = "Total Diamonds: " + totalDiamonds.ToString() + " Max Possible Score: " + (totalDiamonds * 500);
             // Do a check to ensure the level is outputted if exists, and if it doesn't output the missing difficulty text
             if (extraDifficultyExist == true)
             {

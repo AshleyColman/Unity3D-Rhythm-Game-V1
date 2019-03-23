@@ -24,8 +24,12 @@ public class PlacedObject : MonoBehaviour {
     // Get the reference to the beatmap setup to disable starting the song when space is pressed whilst in the editor
     public BeatmapSetup beatmapSetup;
 
+    // Used for tracking when the spacebar has been pressed to start the song and timer
+    private bool hasPressedSpacebar;
+
     // Use this for initialization
     void Start () {
+        hasPressedSpacebar = false;
         startSongTimer = false;
         songTimer = 0f;
         specialTimeKeyPresses = 0;
@@ -40,11 +44,14 @@ public class PlacedObject : MonoBehaviour {
 	void Update () {
 
 
-        if (beatmapSetup.settingUp == false)
+        if (beatmapSetup.settingUp == false && hasPressedSpacebar == false)
         {
             // Check if live mapping has started
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                // Has pressed the spacebar
+                hasPressedSpacebar = true;
+
                 // Update the instruction button text and play animation
                 UpdateInstructionButtonText("SpacebarPressed");
 
@@ -257,5 +264,20 @@ public class PlacedObject : MonoBehaviour {
             // Do instruction button animation
             instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
         }
+    }
+
+    // Reset the song timer when clear button has been pressed in the editor
+    public void ResetSongTimer()
+    {
+        // Reset the song time and spacebar pressed
+        hasPressedSpacebar = false;
+        songTimer = 0f;
+        startSongTimer = false;
+        // Update the instruction button text
+        instructionButtonText.text = "Press Space to Start Live Mapping";
+        // Do instruction button animation
+        instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
+        // Reset specialTimeKeyPresses
+        specialTimeKeyPresses = 0;
     }
 }

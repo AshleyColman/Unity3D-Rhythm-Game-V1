@@ -19,6 +19,10 @@ public class Menu : MonoBehaviour {
     public Text descriptionPanelText; // The description panel text to change and update
     private string PLAYText, MULTIPLAYERText, EDITORText, SETTINGSText, EXITText;
 
+    public Button developerMessageButton;
+    public Image developerMessagePanel;
+    private bool hasShownDeveloperMessage = false;
+
     void Start()
     {
         PLAYText = "Compete against others on beatmaps";
@@ -45,6 +49,22 @@ public class Menu : MonoBehaviour {
 
     }
 
+    // Controls the developer message panel
+    public void showDeveloperMessagePanel()
+    {
+
+        if (hasShownDeveloperMessage == false)
+        {
+            developerMessagePanel.gameObject.SetActive(true);
+            hasShownDeveloperMessage = true;
+        }
+        else
+        {
+            developerMessagePanel.gameObject.SetActive(false);
+            hasShownDeveloperMessage = false;
+        }
+
+    }
 
     public void newPage(int newPage)
     {

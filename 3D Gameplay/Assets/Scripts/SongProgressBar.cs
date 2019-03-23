@@ -28,8 +28,12 @@ public class SongProgressBar : MonoBehaviour {
     // Required for getting the song list from the songDatabase
     public SongDatabase songDatabase;
 
+    // Used for tracking if the spacebar has been pressed which starts the song, prevents restarting of the song if spacebar is pressed again
+    private bool hasPressedSpacebar; 
     void Start()
     {
+        // Set to false at the start
+        hasPressedSpacebar = false;
         // Get the reference
         beatmapSetup = FindObjectOfType<BeatmapSetup>();
         // Get the reference
@@ -44,17 +48,12 @@ public class SongProgressBar : MonoBehaviour {
     
         if (levelChanger.currentLevelIndex == 2)
         {
-            if (beatmapSetup.settingUp == false)
+            if (beatmapSetup.settingUp == false && hasPressedSpacebar == false)
             {
                 // Play song when user press Space button
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    // Play song
-                    songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
-                    songAudioSource.volume = songVolume;
-                    songAudioSource.Play();
-                    playing = true;
-                    active = true;
+                    PlaySong();
                 }
             }
         }
@@ -68,10 +67,11 @@ public class SongProgressBar : MonoBehaviour {
                 songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
                 songAudioSource.volume = songVolume;
 
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetKeyDown(KeyCode.Space) && hasPressedSpacebar == false)
                 {
+                    // Spacebar has been pressed
+                    hasPressedSpacebar = true;
                     // Play song
-
                     songAudioSource.Play();
                     playing = true;
                     active = true;
@@ -113,11 +113,39 @@ public class SongProgressBar : MonoBehaviour {
             return minSec;
         }
     }
+    
+    // Play the song
+    public void PlaySong()
+    {
+        // Has pressed the spacebar
+        hasPressedSpacebar = true;
+        // Play song
+        songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
+        songAudioSource.volume = songVolume;
+        songAudioSource.Play();
+        playing = true;
+        active = true;
+    }
 
     // Get the song chosen to load 
     public void GetSongChosen(int songChosenIndexPass)
     {
         songClipChosenIndex = songChosenIndexPass;
+    }
+
+    // Reset the song in the editor if the reset button is pressed
+    public void ResetSongInEditor()
+    {
+        // Stop the current song
+        songAudioSource.Stop();
+        songAudioSource.time = 0f;
+        // Reset the hasPressedSpacebar
+        hasPressedSpacebar = false;
+        // Reset amount of playbar 
+        amount = 0f;
+        songPlayerBar.fillAmount = amount;
+        // Reset actual position text on playbar
+        actualPosition.text = "0:00";
     }
 }
 

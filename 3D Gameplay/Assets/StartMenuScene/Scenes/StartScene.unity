@@ -4981,7 +4981,7 @@ Prefab:
         type: 2}
       propertyPath: songClip.Array.data[7]
       value: 
-      objectReference: {fileID: 8300000, guid: b7d013cb72901b64288c9b625aee036c, type: 3}
+      objectReference: {fileID: 8300000, guid: e297894463bbeb947b92d6542ba9f77d, type: 3}
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.data[8]

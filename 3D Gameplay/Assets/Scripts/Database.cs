@@ -214,4 +214,17 @@ public class Database : MonoBehaviour {
         loadedSongClipChosenIndex = 0;
         loadedLeaderboardTableName = "";
     }
+
+    // Clear all placed objects in the editor
+    public void ClearEditor()
+    {
+        PositionX.Clear();
+        PositionY.Clear();
+        PositionZ.Clear();
+        HitObjectSpawnTime.Clear();
+        ObjectType.Clear();
+
+        SpecialTimeStart = 0;
+        SpecialTimeEnd = 0;
+    }
 }

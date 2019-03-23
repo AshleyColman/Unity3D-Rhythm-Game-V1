@@ -44,7 +44,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     public string songName;
     public string songArtist;
     public string beatmapDifficulty;
-
+    private bool hasPressedSpacebar; // Used for tracking if the song has been started, if it has then we disable the song from restarting when the spacebar is pressed again
     void Awake()
     {
 
@@ -97,6 +97,9 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         beatmapDifficulty = Database.database.loadedBeatmapDifficulty;
         // When gameplay scene has loaded update the UI text
         UpdateGameplayUI();
+
+        // Set to false at the start, set to true when spacebar has been pressed
+        hasPressedSpacebar = false;
     }
 
     // Update is called once per frame
@@ -109,8 +112,10 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
         
         // If the space key has been pressed we start the song and song timer
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && hasPressedSpacebar == false)
         {
+            // Spacebar has been pressed
+            hasPressedSpacebar = true;
             // Start the song timer as the game has started
             startSongTimer = true;
             // Animate the press play text at the start of the song
