@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class LoadAndRunBeatmap : MonoBehaviour {
 
@@ -24,11 +25,11 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     public List<GameObject> spawnedList = new List<GameObject>();
     public Vector3 hitObjectPosition;
     private int hitObjectID;
-    private int earliestIndex; // The current earliest note
+    public int objectThatCanBeHitIndex; // The current earliest note
     public bool hasHit;
-    private bool startCheck;
-    private int sizeOfList;
-    private int nextIndex;
+    public bool startCheck;
+    public int sizeOfList;
+    public int nextIndex;
     private bool justHit = false;
     public float songTimer;
     public float specialTimeStart;
@@ -37,14 +38,22 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     public bool isSpecialTime;
     public bool startSongTimer;
     public Animator pressPlayAnimator; // Animates the Press Play Text at the start of the song
-    public Text pressPlayText; // The Press Play text at the start of the song
+    public TextMeshProUGUI pressPlayText; // The Press Play text at the start of the song
     public AudioSource menuSFXAudioSource; // The audio source for playing the start sound effect
     public AudioClip PressPlaySound; // The sound that plays when you press play at the start of the game
-    public Text gameplayTitleText;
+    public TextMeshProUGUI gameplayTitleText;
     public string songName;
     public string songArtist;
     public string beatmapDifficulty;
     private bool hasPressedSpacebar; // Used for tracking if the song has been started, if it has then we disable the song from restarting when the spacebar is pressed again
+    private int totalHitObjects; 
+    public float fadeSpeedModifier; // The time to take off the spawn times according to the fade speed modifier
+    bool hasSpawnedAllHitObjects; // Has the game spawned all hit objects?
+    int totalHitObjectListSize; // The total hit amount of hit objects to be spawned
+    bool checkObjectsThatCanBeHit = false;
+
+    public bool[] hitObjectSpawned;
+
     void Awake()
     {
 
@@ -58,7 +67,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         isSpecialTime = false;
         songTimer = 0;
         startSongTimer = false;
-        earliestIndex = 0;
+        objectThatCanBeHitIndex = 0;
         hasHit = false;
         startCheck = false;
         sizeOfList = 0;
@@ -69,6 +78,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         hitObjectPositionsX = Database.database.LoadedPositionX;
         hitObjectPositionsY = Database.database.LoadedPositionY;
         hitObjectPositionsZ = Database.database.LoadedPositionZ;
+        totalHitObjects = hitObjectPositionsX.Count;
         // Now merge together for vector3 positions
         for (int i = 0; i < hitObjectPositionsX.Count; i++)
         {
@@ -100,7 +110,14 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
         // Set to false at the start, set to true when spacebar has been pressed
         hasPressedSpacebar = false;
-    }
+
+        // Set to false as all object haven't been spawned yet
+        hasSpawnedAllHitObjects = false;
+        // Get total number of objects to spawn
+        totalHitObjectListSize = Database.database.LoadedPositionX.Count;
+
+        hitObjectSpawned = new bool[totalHitObjectListSize];
+}
 
     // Update is called once per frame
     void Update () {
@@ -134,71 +151,114 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         // Check if it's special time 
         CheckSpecialTime();
 
-        // Spawn normal notes if not special time
-        if (isSpecialTime == false)
+        if (hasSpawnedAllHitObjects == false && hitObjectID < totalHitObjectListSize)
         {
-            if (songTimer >= hitObjectSpawnTimes[hitObjectID])
+            // Spawn normal notes if not special time
+            if (isSpecialTime == false)
             {
-                SpawnHitObject(hitObjectPositions[hitObjectID], hitObjectType[hitObjectID]);
-                hitObjectID++;
-            }
-        }
-        // Spawn special notes if special time
-        else if (isSpecialTime == true)
-        {
-            if (songTimer >= hitObjectSpawnTimes[hitObjectID])
-            {
-                SpawnSpecialHitObject(hitObjectPositions[hitObjectID], hitObjectType[hitObjectID]);
-                hitObjectID++;
-            }
-        }
-
-
-        
-        
-        // Size of list
-        sizeOfList = spawnedList.Count;
-
-        if (startCheck == true)
-        {
-            
-            // If the index object exists
-            if (spawnedList[earliestIndex] != null)
-            {
-                // Set the earliest hit object that has spawned to be the earliest for hit detection
-                spawnedList[earliestIndex].GetComponent<TimingAndScore>().isEarliest = true;
-            }
-            // If the earliest object has been destroyed
-            if (spawnedList[earliestIndex] == null)
-            {
-                // Check if another object has spawned
-                if (nextIndex > earliestIndex)
+                if (songTimer >= hitObjectSpawnTimes[hitObjectID])
                 {
-                    earliestIndex++;
+                    SpawnHitObject(hitObjectPositions[hitObjectID], hitObjectType[hitObjectID], hitObjectID);
+                    hitObjectID++;
                 }
-           }
-            
-
-
+            }
+            // Spawn special notes if special time
+            else if (isSpecialTime == true)
+            {
+                if (songTimer >= hitObjectSpawnTimes[hitObjectID])
+                {
+                    SpawnSpecialHitObject(hitObjectPositions[hitObjectID], hitObjectType[hitObjectID]);
+                    hitObjectID++;
+                }
+            }
 
             /*
-            // If the index object doesn't exist and the size of the list is greater than the nextIndex required 
-            if (spawnedList[earliestIndex] == null && sizeOfList > nextIndex)
+            // Size of list
+            sizeOfList = spawnedList.Count;
+            Debug.Log("objecttahtcanbehitindex: " + objectThatCanBeHitIndex);
+            //if (startCheck == false)
             {
-                earliestIndex++;
+                
+                if (hitObjectSpawned[objectThatCanBeHitIndex] == true)
+                {
+                    if (spawnedList[objectThatCanBeHitIndex] != null)
+                    {
+                        Debug.Log("object: " + objectThatCanBeHitIndex + " exists and is set to CANBEHIT");
+                        // Set the earliest hit object that has spawned to be the earliest for hit detection
+                        spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().canBeHit = true;
+                    }
+
+                    // If the earliest object has been destroyed
+                    if (spawnedList[objectThatCanBeHitIndex] == null)
+                    {
+                        if (nextIndex > objectThatCanBeHitIndex)
+                        {
+                            // Check if another object has spawned
+                            objectThatCanBeHitIndex++;
+                            Debug.Log("current object doesn't not exist and nextIndex is greater than current index, incrementing");
+                        }
+                        else
+                        {
+                            Debug.Log("CURRENT OBJECT IS NULL BUT NEXTINDEX NOT LARGE ENOUGH");
+                        }
+                    }
+                }
+
+
             }
+
             */
+
+            if (startCheck == true)
+            {
+                if (spawnedList[0] != null)
+                {
+                    if (objectThatCanBeHitIndex == 0)
+                    {
+                        spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().canBeHit = true;
+                    }
+                }
+
+
+
+                if (spawnedList[objectThatCanBeHitIndex] == null)
+                {
+                    // Object has been destroyed
+                    // assign canBeHit to the next one in the list IF the next one has spawned
+
+                    if (hitObjectSpawned[objectThatCanBeHitIndex + 1] == true)
+                    {
+                        objectThatCanBeHitIndex++;
+                        // A new object has spawned assign it to be hit and increment objectThatCanBeHitIndex
+                        spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().canBeHit = true;
+                    }
+                }
+
+            }
+
+
         }
-        
     }
 
+    // index = 0
+    // first object spawns 
+    // next = 1
+    // index is hit and next = 1
+    // no object spawns
+    // index (1) does not exist
+    // check if index (1) has spawned, if it has enable checking 
+
+
     // Spawn the hit object
-    public void SpawnHitObject(Vector3 positionPass, int hitObjectTypePass)
+    public void SpawnHitObject(Vector3 positionPass, int hitObjectTypePass, int hitObjectID)
     {
         spawnedList.Add(Instantiate(hitObject[hitObjectTypePass], positionPass, Quaternion.Euler(0, 45, 0)));
         startCheck = true;
-        // Increment the highest index currently
         nextIndex++;
+        checkObjectsThatCanBeHit = true;
+
+        // Add to the list of spawned
+        hitObjectSpawned[hitObjectID] = true;
     }
 
     // Spawn special hit object during special time
@@ -208,6 +268,9 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         startCheck = true;
         // Increment the highest index currently
         nextIndex++;
+
+        // Add to the list of spawned
+        hitObjectSpawned[hitObjectID] = true;
     }
 
     // Check if it's special time, if it is we spawn special time notes

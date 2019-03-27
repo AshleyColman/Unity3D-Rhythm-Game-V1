@@ -2,27 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class EnterGameScene : MonoBehaviour {
 
-    public Text usernameDisplayText;
+    public TextMeshProUGUI usernameDisplayText;
+    public TextMeshProUGUI levelDisplayText;
     public Button loginCanvas; // The login detail canvas
     public Button registerCanvas; // The register canvas
     public Button enterGameCanvas; // The enter game canvas
+    public Button loggedInCanvas; // The logged in canvas
 
     void Start()
     {
-        // Disable the login canvas on start
-        loginCanvas.gameObject.SetActive(false);
-        // Disable the register canvas on start
-        registerCanvas.gameObject.SetActive(false);
     }
 
     void Update()
     {
         if (MySQLDBManager.loggedIn)
         {
-            usernameDisplayText.text = "Logged in as: " + MySQLDBManager.username;
+            usernameDisplayText.text = "Signed in as: " + MySQLDBManager.username;
+            enterGameCanvas.gameObject.SetActive(false);
+            loggedInCanvas.gameObject.SetActive(true);
         }
     }
     public void GoToRegister()

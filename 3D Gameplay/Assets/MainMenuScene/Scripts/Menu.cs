@@ -16,20 +16,10 @@ public class Menu : MonoBehaviour {
     public float fadeRate = 8f;
     public float growRate = 0.5f;
 
-    public Text descriptionPanelText; // The description panel text to change and update
-    private string PLAYText, MULTIPLAYERText, EDITORText, SETTINGSText, EXITText;
-
-    public Button developerMessageButton;
-    public Image developerMessagePanel;
-    private bool hasShownDeveloperMessage = false;
 
     void Start()
     {
-        PLAYText = "Compete against others on beatmaps";
-        MULTIPLAYERText = "Play against others online";
-        EDITORText = "Create your own beatmap";
-        SETTINGSText = "Customize your settings";
-        EXITText = "Exit the game";
+
     }
 
 
@@ -45,23 +35,6 @@ public class Menu : MonoBehaviour {
         {
             cg.alpha += fadeRate * Time.deltaTime;
             currentPage.transform.localScale += Vector3.one * growRate * Time.deltaTime;
-        }
-
-    }
-
-    // Controls the developer message panel
-    public void showDeveloperMessagePanel()
-    {
-
-        if (hasShownDeveloperMessage == false)
-        {
-            developerMessagePanel.gameObject.SetActive(true);
-            hasShownDeveloperMessage = true;
-        }
-        else
-        {
-            developerMessagePanel.gameObject.SetActive(false);
-            hasShownDeveloperMessage = false;
         }
 
     }
@@ -113,27 +86,22 @@ public class Menu : MonoBehaviour {
     {
         if (buttonSelectedPass == "PLAY")
         {
-            descriptionPanelText.text = PLAYText;
             newPage(0);
         }
         if (buttonSelectedPass == "MULTIPLAYER")
         {
-            descriptionPanelText.text = MULTIPLAYERText;
             newPage(1);
         }
         if (buttonSelectedPass == "EDITOR")
         {
-            descriptionPanelText.text = EDITORText;
             newPage(2);
         }
         if (buttonSelectedPass == "SETTINGS")
         {
-            descriptionPanelText.text = SETTINGSText;
             newPage(3);
         }
         if (buttonSelectedPass == "EXIT")
         {
-            descriptionPanelText.text = EXITText;
             newPage(4);
         }
     }

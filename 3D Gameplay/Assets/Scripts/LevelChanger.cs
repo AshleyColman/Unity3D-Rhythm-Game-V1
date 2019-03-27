@@ -60,7 +60,7 @@ public class LevelChanger : MonoBehaviour {
         }
         if (currentLevelIndex == 1)
         {
-            levelToLoad = 6;
+            levelToLoad = 0;
             hasBackLevel = true;
         }
         if (currentLevelIndex == 2)

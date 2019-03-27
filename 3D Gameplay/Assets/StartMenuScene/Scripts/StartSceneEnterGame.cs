@@ -21,7 +21,7 @@ public class StartSceneEnterGame : MonoBehaviour {
         if (Input.GetKey("return") && hasPressedEnter == false)
         {
             MenuSFXAudioSource.PlayOneShot(MenuSFXMenuSourceClip);
-            levelChanger.FadeToLevel(6);
+            levelChanger.FadeToLevel(1);
             hasPressedEnter = true;
         }
     }

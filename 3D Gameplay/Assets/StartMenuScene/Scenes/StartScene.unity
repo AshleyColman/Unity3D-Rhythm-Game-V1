@@ -152,6 +152,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 82165651947176002, guid: cd2fed3bdb08bf44796b3502d59c5366,
+        type: 2}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 68e817a21048ba7409dd36bfdc465e53, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cd2fed3bdb08bf44796b3502d59c5366, type: 2}
   m_IsPrefabParent: 0
@@ -416,7 +421,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 6
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4461,6 +4466,46 @@ Prefab:
       propertyPath: InitialModule.gravityModifier.minScalar
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 198199997822678056, guid: 5882cc834d11e2c4192fd6f54e433c8b,
+        type: 2}
+      propertyPath: InitialModule.startRotation.minScalar
+      value: -6.283185
+      objectReference: {fileID: 0}
+    - target: {fileID: 198199997822678056, guid: 5882cc834d11e2c4192fd6f54e433c8b,
+        type: 2}
+      propertyPath: InitialModule.startRotation.scalar
+      value: 6.283185
+      objectReference: {fileID: 0}
+    - target: {fileID: 198199997822678056, guid: 5882cc834d11e2c4192fd6f54e433c8b,
+        type: 2}
+      propertyPath: RotationModule.x.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 198199997822678056, guid: 5882cc834d11e2c4192fd6f54e433c8b,
+        type: 2}
+      propertyPath: RotationModule.y.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 198199997822678056, guid: 5882cc834d11e2c4192fd6f54e433c8b,
+        type: 2}
+      propertyPath: RotationModule.curve.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 198199997822678056, guid: 5882cc834d11e2c4192fd6f54e433c8b,
+        type: 2}
+      propertyPath: RotationModule.curve.minScalar
+      value: -6.283185
+      objectReference: {fileID: 0}
+    - target: {fileID: 198199997822678056, guid: 5882cc834d11e2c4192fd6f54e433c8b,
+        type: 2}
+      propertyPath: RotationModule.separateAxes
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198199997822678056, guid: 5882cc834d11e2c4192fd6f54e433c8b,
+        type: 2}
+      propertyPath: RotationModule.curve.scalar
+      value: 6.283185
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5882cc834d11e2c4192fd6f54e433c8b, type: 2}
   m_IsPrefabParent: 0
@@ -4996,12 +5041,17 @@ Prefab:
         type: 2}
       propertyPath: songClip.Array.data[4]
       value: 
-      objectReference: {fileID: 8300000, guid: 5e3dc56e2527de1489baae28c791206d, type: 3}
+      objectReference: {fileID: 8300000, guid: ffa073d348a723240b1d9a3ed014aa60, type: 3}
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.data[11]
       value: 
       objectReference: {fileID: 8300000, guid: f956ce0380d0b874081bb5fa716e0188, type: 3}
+    - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
+        type: 2}
+      propertyPath: songClip.Array.data[10]
+      value: 
+      objectReference: {fileID: 8300000, guid: 1f1e6ac46dd822d4ca52e0917bc3db87, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d377f2b4f2a68c449b392f8d9c3e4edf, type: 2}
   m_IsPrefabParent: 0

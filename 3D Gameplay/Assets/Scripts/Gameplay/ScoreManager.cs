@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ScoreManager : MonoBehaviour {
 
     public int score;
-    public Text scoreText;
+    public TextMeshProUGUI scoreText;
     public int combo;
-    public Text comboText;
+    public TextMeshProUGUI comboText;
     public string judgement;
-    public Text judgementText;
+    public TextMeshProUGUI judgementText;
     public Animator scoreAnimation; // Animate the score text
     public Animator comboAnimation; // Animate the combo text
     public Animator judgementAnimation; // Animate the judgement text
@@ -29,7 +30,7 @@ public class ScoreManager : MonoBehaviour {
         highestCombo = 0;
         
         //scoreText.text = score.ToString();
-        comboText.text = combo.ToString();
+        comboText.text = combo.ToString() + "x";
         judgementText.text = judgement.ToString();
     }
 	
@@ -55,7 +56,7 @@ public class ScoreManager : MonoBehaviour {
     public void AddScore(int scorePass)
     {
 
-        scoreAnimation.Play("GameplayTextAnimation");
+        scoreAnimation.Play("GameplayUITextAnimation");
 
         score += scorePass;
 
@@ -103,7 +104,7 @@ public class ScoreManager : MonoBehaviour {
             comboText.text = " " + combo.ToString() + "x";
         }
 
-        comboAnimation.Play("GameplayTextAnimation");
+        comboAnimation.Play("GameplayUITextAnimation");
     }
 
     // Update judgement text
@@ -111,7 +112,7 @@ public class ScoreManager : MonoBehaviour {
     {
         judgementText.text = judgementPass.ToString();
 
-        judgementAnimation.Play("GameplayTextAnimation");
+        judgementAnimation.Play("GameplayUITextAnimation");
 
         if (judgementPass == "EARLY")
         {

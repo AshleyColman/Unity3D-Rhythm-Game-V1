@@ -522,7 +522,7 @@ public class MetronomePro : MonoBehaviour {
             // If the index object exists
             if (spawnedList[earliestIndex] != null)
             {
-                spawnedList[earliestIndex].GetComponent<TimingAndScore>().isEarliest = true;
+                spawnedList[earliestIndex].GetComponent<TimingAndScore>().canBeHit = true;
             }
 
             if (spawnedList[earliestIndex] == null && sizeOfList > earliestIndex)

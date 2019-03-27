@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class SpecialTimeManager : MonoBehaviour {
 
     public Animator backgroundImageAnimation; // Animate the background image
@@ -16,7 +16,7 @@ public class SpecialTimeManager : MonoBehaviour {
     public float borderDisableTime;
     public float specialTimeWarningActivateTime; // The time to activate the specialTimeWarningText
     public float specialTimeWarningDeactivateTime; // The time to deactivate the specialTimeWarningText
-    public Text specialTimeWarningText; // The specialTimeWarningText that appears just before special time starts
+    public TextMeshProUGUI specialTimeWarningText; // The specialTimeWarningText that appears just before special time starts
     public Animator specialTimeWarningAnimator; // The animator for the specialTimeWarningText
     public bool startSongTimer; // Start the song timer
 

@@ -29,13 +29,15 @@ public class TimingAndScore : MonoBehaviour {
     private string objectTag; // The tag of the object
     private KeyCode objectKey = KeyCode.None;
 
-    public bool isEarliest;
-    public bool isSpecial; // Is it a special note during special time?
+    public bool canBeHit = false;
+    public bool isSpecial = false; // Is it a special note during special time?
 
     private int earlyHealthValue; // The amount of health given when hitting early
     private int perfectHealthValue; // The amount of health given when hitting perfect
     private int goodHealthValue; // The amount of health given when hitting good
     private int missHealthValue; // The amount of health taken away if missed
+
+    public int objectEarliestIndex;
 
     // Use this for initialization
     void Start () {
@@ -67,9 +69,6 @@ public class TimingAndScore : MonoBehaviour {
 
         playerTotalScore = 0;
         timeWhenHit = 0;
-
-        isEarliest = false;
-        isSpecial = false;
 
         // Get object tag
         objectTag = gameObject.tag;
@@ -106,7 +105,7 @@ public class TimingAndScore : MonoBehaviour {
         }
 
         // If the user has pressed the right object key enable hit 
-        if (Input.GetKeyDown(objectKey) && isEarliest == true)
+        if (Input.GetKeyDown(objectKey) && canBeHit == true)
         {
             // Timing check to calculate the type of hit on timing (perfect, miss)
 
@@ -235,9 +234,9 @@ public class TimingAndScore : MonoBehaviour {
     }
     
     // Set as earliest note
-    public void IsEarliest()
+    public void CanBeHit()
     {
-        isEarliest = true;
+        canBeHit = true;
     }
 
     // Is the note special during special time?

@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class SongProgressBar : MonoBehaviour {
 
-    public Text txtSongName;
-    public Text actualPosition;
-    public Text songTotalDuration;
+    public TextMeshProUGUI actualPosition;
+    public TextMeshProUGUI songTotalDuration;
     public Image playAndPauseButton;
     public Image songPlayerBar;
-    public Dropdown velocityScale;
     public Slider songPlayerSlider;
     public AudioSource songAudioSource;
     public bool active;

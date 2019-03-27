@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using TMPro;
 
 public class Login : MonoBehaviour {
 
-    public InputField usernameInputField;
-    public InputField passwordInputField;
-    public Text usernameFieldDescription;
-    public Text passwordFieldDescription;
+    public TMP_InputField usernameInputField;
+    public TMP_InputField passwordInputField;
+    public TextMeshProUGUI usernameFieldDescription;
+    public TextMeshProUGUI passwordFieldDescription;
     public Button submitButton;
-    public Button enterGameCanvas;
+    public Button loggedInCanvas;
     public Button loginCanvas;
     public string username;
     public string password;
@@ -57,7 +58,7 @@ public class Login : MonoBehaviour {
             error = "success";
             MySQLDBManager.username = usernameInputField.text;
             DisableLoginCanvas();
-            EnableEnterGameCanvas();
+            EnableLoggedInCanvas();
         }
         // Error
         if (www.downloadHandler.text == "1")
@@ -94,9 +95,9 @@ public class Login : MonoBehaviour {
     }
 
     // Enable the enter game canvas
-    public void EnableEnterGameCanvas()
+    public void EnableLoggedInCanvas()
     {
         // Enable the enter game canvas
-        enterGameCanvas.gameObject.SetActive(true);
+        loggedInCanvas.gameObject.SetActive(true);
     }
 }

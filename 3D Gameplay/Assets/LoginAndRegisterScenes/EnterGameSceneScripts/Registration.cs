@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using TMPro;
 
 public class Registration : MonoBehaviour {
 
-    public InputField usernameInputField;
-    public InputField passwordInputField;
-    public Text usernameFieldDescription;
-    public Text passwordFieldDescription;
+    public TMP_InputField usernameInputField;
+    public TMP_InputField passwordInputField;
+    public TextMeshProUGUI usernameFieldDescription;
+    public TextMeshProUGUI passwordFieldDescription;
     public Button submitButton;
     public Button registerCanvas; // The register canvas
     public Button enterGameCanvas; // The enter game canvas

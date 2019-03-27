@@ -3572,7 +3572,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: HESPERIDES
+  m_Text: SECOND HEAVEN
 --- !u!222 &565638676
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5918,12 +5918,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6d3d2dc514f0d4999bbe1407c4cf1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  txtSongName: {fileID: 1490003564}
-  actualPosition: {fileID: 2121739205}
-  songTotalDuration: {fileID: 1628835525}
+  actualPosition: {fileID: 0}
+  songTotalDuration: {fileID: 0}
   playAndPauseButton: {fileID: 0}
   songPlayerBar: {fileID: 802085984}
-  velocityScale: {fileID: 0}
   songPlayerSlider: {fileID: 1537647792}
   songAudioSource: {fileID: 430761615}
   active: 0
@@ -13147,7 +13145,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SATORI 3RD EYES
+  m_Text: KOTOKO
 --- !u!222 &2036242099
 CanvasRenderer:
   m_ObjectHideFlags: 0
