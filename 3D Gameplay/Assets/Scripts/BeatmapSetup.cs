@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using TMPro;
 
 public class BeatmapSetup : MonoBehaviour {
 
@@ -68,7 +69,7 @@ public class BeatmapSetup : MonoBehaviour {
     public Color SetupProgressBlockCompletedColor;
 
     // The editor UI components
-    public Text editorTitle;
+    public TextMeshProUGUI editorTitle;
 
     // Is true when in the setup screen, used for allowing keyboard press without starting the editor
     public bool settingUp;

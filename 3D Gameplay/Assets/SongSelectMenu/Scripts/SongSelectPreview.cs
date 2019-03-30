@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class SongSelectPreview : MonoBehaviour
 {
-    public Text actualPosition;
-    public Text songTotalDuration;
+    public TextMeshProUGUI actualPosition;
+    public TextMeshProUGUI songTotalDuration;
     public Image playAndPauseButton;
     public Image songPlayerBar;
     public Slider songPlayerSlider;

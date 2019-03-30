@@ -23,6 +23,8 @@ public class ScoreManager : MonoBehaviour {
     public int totalMiss;
     public int gradeAchieved;
     public float totalScorePossible;
+    public float totalHit;
+    public float totalSpecial;
 
     // Use this for initialization
     void Start () {
@@ -53,8 +55,18 @@ public class ScoreManager : MonoBehaviour {
     }
 
     // Update the score text
-    public void AddScore(int scorePass)
+    public void AddScore(int scorePass, string objectScoreType)
     {
+        // A hit object has been hit add 1 to total hit objects hit
+        totalHit++;
+    
+        // Scoretypes can be special or normal
+
+        // Check which type of object was hit
+        if (objectScoreType == "SPECIAL")
+        {
+            totalSpecial++;
+        }
 
         scoreAnimation.Play("GameplayUITextAnimation");
 

@@ -39,6 +39,8 @@ public class TimingAndScore : MonoBehaviour {
 
     public int objectEarliestIndex;
 
+    public string objectScoreType;
+
     // Use this for initialization
     void Start () {
 
@@ -89,6 +91,9 @@ public class TimingAndScore : MonoBehaviour {
         // Check the tag for input of the hit object
         CheckTagType();
 
+        // Assign the type, normal or special 
+        CheckObjectScoreType();
+
         // The timer increments per frame
         timer += Time.deltaTime;
 
@@ -128,7 +133,7 @@ public class TimingAndScore : MonoBehaviour {
                     scoreManager.AddCombo(combo); // Send current combo to update the UI text
 
                     playerTotalScore += earlyScore; // Increase score
-                    scoreManager.AddScore(playerTotalScore); // Pass to score manager to update text
+                    scoreManager.AddScore(playerTotalScore, objectScoreType); // Pass to score manager to update text
 
                     timeWhenHit = timer; // Get the time when hit
 
@@ -154,7 +159,7 @@ public class TimingAndScore : MonoBehaviour {
                     scoreManager.AddCombo(combo); // Send current combo to update the UI text
 
                     playerTotalScore += goodScore; // Add early score value to the players current score
-                    scoreManager.AddScore(playerTotalScore); // Pass to score manager to update text
+                    scoreManager.AddScore(playerTotalScore, objectScoreType); // Pass to score manager to update text
 
                     timeWhenHit = timer; // Get the time when hit
 
@@ -180,7 +185,7 @@ public class TimingAndScore : MonoBehaviour {
                     scoreManager.AddCombo(combo); // Send current combo to update the UI text
 
                     playerTotalScore += perfectScore; // Add early score value to the players current score
-                    scoreManager.AddScore(playerTotalScore); // Pass to score manager to update text
+                    scoreManager.AddScore(playerTotalScore, objectScoreType); // Pass to score manager to update text
 
                     timeWhenHit = timer; // Get the time when hit
 
@@ -190,6 +195,19 @@ public class TimingAndScore : MonoBehaviour {
                     DestroyHitObject(); // Destroy hit object
                 }
             }
+        }
+    }
+
+    // Check object score type
+    private void CheckObjectScoreType()
+    {
+        if (isSpecial == true)
+        {
+            objectScoreType = "SPECIAL";
+        }
+        else
+        {
+            objectScoreType = "NORMAL";
         }
     }
 

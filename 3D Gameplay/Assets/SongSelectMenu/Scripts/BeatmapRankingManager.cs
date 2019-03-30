@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using TMPro;
 
 public class BeatmapRankingManager : MonoBehaviour
 {
@@ -23,29 +24,29 @@ public class BeatmapRankingManager : MonoBehaviour
     public bool setFirst = false;
 
     // Leaderboard text
-    public Text RankedButtonFirstGradeText;
-    public Text RankedButtonFirstRankAndUsernameAndScoreText;
-    public Text RankedButtonFirstPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonFirstGradeText;
+    public TextMeshProUGUI RankedButtonFirstRankAndUsernameAndScoreText;
+    public TextMeshProUGUI RankedButtonFirstPlayStatisticsText;
 
-    public Text RankedButtonSecondGradeText;
-    public Text RankedButtonSecondRankAndUsernameAndScoreText;
-    public Text RankedButtonSecondPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonSecondGradeText;
+    public TextMeshProUGUI RankedButtonSecondRankAndUsernameAndScoreText;
+    public TextMeshProUGUI RankedButtonSecondPlayStatisticsText;
 
-    public Text RankedButtonThirdGradeText;
-    public Text RankedButtonThirdRankAndUsernameAndScoreText;
-    public Text RankedButtonThirdPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonThirdGradeText;
+    public TextMeshProUGUI RankedButtonThirdRankAndUsernameAndScoreText;
+    public TextMeshProUGUI RankedButtonThirdPlayStatisticsText;
 
-    public Text RankedButtonFourthGradeText;
-    public Text RankedButtonFourthRankAndUsernameAndScoreText;
-    public Text RankedButtonFourthPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonFourthGradeText;
+    public TextMeshProUGUI RankedButtonFourthRankAndUsernameAndScoreText;
+    public TextMeshProUGUI RankedButtonFourthPlayStatisticsText;
 
-    public Text RankedButtonFifthGradeText;
-    public Text RankedButtonFifthRankAndUsernameAndScoreText;
-    public Text RankedButtonFifthPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonFifthGradeText;
+    public TextMeshProUGUI RankedButtonFifthRankAndUsernameAndScoreText;
+    public TextMeshProUGUI RankedButtonFifthPlayStatisticsText;
 
-    public Text RankedButtonPersonalBestGradeText;
-    public Text RankedButtonPersonalBestRankAndUsernameAndScoreText;
-    public Text RankedButtonPersonalBestPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonPersonalBestGradeText;
+    public TextMeshProUGUI RankedButtonPersonalBestRankAndUsernameAndScoreText;
+    public TextMeshProUGUI RankedButtonPersonalBestPlayStatisticsText;
 
     // Default character used at the moment
     private string CharacterUsed = "NO FAIL";

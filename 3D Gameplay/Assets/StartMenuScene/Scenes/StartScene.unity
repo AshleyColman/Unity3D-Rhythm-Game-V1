@@ -156,7 +156,7 @@ Prefab:
         type: 2}
       propertyPath: m_audioClip
       value: 
-      objectReference: {fileID: 8300000, guid: 68e817a21048ba7409dd36bfdc465e53, type: 3}
+      objectReference: {fileID: 8300000, guid: dd91b014ce163b845acb6008398c85ea, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cd2fed3bdb08bf44796b3502d59c5366, type: 2}
   m_IsPrefabParent: 0
@@ -4725,7 +4725,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: DEVELOPED BY ASHLEYC97 (2019)
+  m_Text: DEVELOPED BY ASHLEY (2019)
 --- !u!222 &1624051585
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5021,7 +5021,7 @@ Prefab:
         type: 2}
       propertyPath: songClip.Array.data[3]
       value: 
-      objectReference: {fileID: 8300000, guid: aa487d16f21947845af53bd00f85946e, type: 3}
+      objectReference: {fileID: 8300000, guid: dd91b014ce163b845acb6008398c85ea, type: 3}
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.data[7]
@@ -5036,7 +5036,7 @@ Prefab:
         type: 2}
       propertyPath: songClip.Array.data[9]
       value: 
-      objectReference: {fileID: 8300000, guid: e2621590d82718142a479db66da86166, type: 3}
+      objectReference: {fileID: 8300000, guid: 112d2d36189ac544b802bf9a61b99f90, type: 3}
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.data[4]

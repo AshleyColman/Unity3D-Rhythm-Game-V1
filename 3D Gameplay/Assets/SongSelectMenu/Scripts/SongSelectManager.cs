@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class SongSelectManager : MonoBehaviour {
 
@@ -14,9 +15,9 @@ public class SongSelectManager : MonoBehaviour {
     private string defaultBeatmapDifficulty = "advanced";
     private string extraBeatmapDifficuly = "extra";
     // Song select menu UI elements
-    public Text songTitleText;
-    public Text beatmapCreatorText;
-    public Text beatmapStatisticsText;
+    public TextMeshProUGUI songTitleText;
+    public TextMeshProUGUI beatmapCreatorText;
+    public TextMeshProUGUI beatmapStatisticsText;
 
     // Loaded song variables
     private string songName;
@@ -31,8 +32,8 @@ public class SongSelectManager : MonoBehaviour {
     public Button DifficultyOptionExtraButton;
     public Button DifficultyOptionAdvancedLevelButton;
     public Button DifficultyOptionExtraLevelButton;
-    public Text DifficultyOptionAdvancedLevelText;
-    public Text DifficultyOptionExtraLevelText;
+    public TextMeshProUGUI DifficultyOptionAdvancedLevelText;
+    public TextMeshProUGUI DifficultyOptionExtraLevelText;
     public string disabledText = "X";
     // Bools for checking if the files exist for loading advanced/extra difficulties
     private bool advancedDifficultyExist;

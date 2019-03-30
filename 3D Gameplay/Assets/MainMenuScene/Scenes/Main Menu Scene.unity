@@ -1008,7 +1008,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: WEBSITE
+  m_text: DISCORD
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: df9d89ff1aa26494aab4ab738c50cb5b, type: 2}
   m_sharedMaterial: {fileID: 21022493717758286, guid: df9d89ff1aa26494aab4ab738c50cb5b,
@@ -1141,7 +1141,7 @@ GameObject:
   - component: {fileID: 339520198}
   - component: {fileID: 339520197}
   m_Layer: 0
-  m_Name: Website Button
+  m_Name: Discord Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1262,6 +1262,17 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 8300000, guid: 9344d123b2eb09747916e81f248041c2,
             type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1959407785}
+        m_MethodName: OpenDiscord
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3020,7 +3031,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: WEBSITE
+  m_text: DISCORD
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 58e5ad4e0f20f314e8b5be83c6181246, type: 2}
   m_sharedMaterial: {fileID: 21022493717758286, guid: 58e5ad4e0f20f314e8b5be83c6181246,
@@ -11484,7 +11495,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1959407790}
+      - m_Target: {fileID: 0}
         m_MethodName: ExitGame
         m_Mode: 1
         m_Arguments:
@@ -12206,12 +12217,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1959407784}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab685f3160d6cf94f81a1427eee3a82d, type: 3}
+  m_Script: {fileID: 11500000, guid: 1bdf1542047fbb94a993c6f4fc1272a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MenuSFXAudioSource: {fileID: 0}
-  MenuSFXMenuSourceClip: {fileID: 8300000, guid: 972614f45300eff49a41294be7a36485,
-    type: 3}
 --- !u!114 &1959407786
 MonoBehaviour:
   m_ObjectHideFlags: 0

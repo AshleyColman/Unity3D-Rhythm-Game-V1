@@ -19,8 +19,17 @@ public class GameplayToResultsManager : MonoBehaviour {
     public float totalScorePossible;
     public int score;
     public float Percentage;
+    public float totalHit;
+    public float totalSpecial;
+
     float AudioSourceLength;
     float AudioSourceTime;
+
+    // Song information for results page 
+    public string songTitle;
+    public string beatmapCreator;
+
+
     // Use this for initialization
     void Start () {
         scoreManager = FindObjectOfType<ScoreManager>();
@@ -30,6 +39,8 @@ public class GameplayToResultsManager : MonoBehaviour {
 	void Update () {
 
         levelChanger = FindObjectOfType<LevelChanger>();
+
+        GetBeatmapInformation();
 
         if (levelChanger.currentLevelIndex == 4)
         {
@@ -61,6 +72,14 @@ public class GameplayToResultsManager : MonoBehaviour {
         }
     }
 
+    // Get the title, artist and creator for results page text
+    private void GetBeatmapInformation()
+    {
+        // Get the beatmap information for passing to the results screen
+        songTitle = Database.database.loadedSongName + " [ " + Database.database.loadedSongArtist + " ]";
+        beatmapCreator = "Beatmap created by: " + Database.database.loadedBeatmapCreator;
+    }
+
     private void TransitionToResultsPage()
     {
         levelChanger.FadeToLevel(5);
@@ -76,6 +95,8 @@ public class GameplayToResultsManager : MonoBehaviour {
         totalMiss = scoreManager.totalMiss;
         score = scoreManager.score;
         totalScorePossible = scoreManager.totalScorePossible;
+        totalHit = scoreManager.totalHit;
+        totalSpecial = scoreManager.totalSpecial;
     }
 
     public void CalculateGradeAchieved()
