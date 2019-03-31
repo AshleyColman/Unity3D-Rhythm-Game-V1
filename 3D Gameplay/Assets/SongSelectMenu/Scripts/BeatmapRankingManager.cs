@@ -119,6 +119,8 @@ public class BeatmapRankingManager : MonoBehaviour
 
     string player_id;
 
+    public Image personalBestCharacterImage, firstPlaceCharacterImage, secondPlaceCharacterImage, thirdPlaceCharacterImage, fourthPlaceCharacterImage, fifthPlaceCharacterImage;
+
     void Start()
     {
         leaderboardPlaceToGet = 1;
@@ -162,10 +164,14 @@ public class BeatmapRankingManager : MonoBehaviour
                 RankedButtonPersonalBestGradeText.color = SetGradeColor(personalBestButtonGrade);
                 RankedButtonPersonalBestRankAndUsernameAndScoreText.text = personalBestButtonUsername + ": " + personalBestButtonScore;
                 RankedButtonPersonalBestPlayStatisticsText.text = "[" + personalBestButtonPercentage + "%] " + "[x" + personalBestButtonCombo + "] " + "[" + CharacterUsed + "]";
+
+                // Enable character used image
+                personalBestCharacterImage.gameObject.SetActive(true);
             }
             else
             {
-
+                // Disable character used image
+                personalBestCharacterImage.gameObject.SetActive(false);
             }
 
             if (firstExists == true)
@@ -186,10 +192,14 @@ public class BeatmapRankingManager : MonoBehaviour
                 RankedButtonFirstGradeText.color = SetGradeColor(firstButtonGrade);
                 RankedButtonFirstRankAndUsernameAndScoreText.text = "1# " + firstButtonUsername + ": " + firstButtonScore;
                 RankedButtonFirstPlayStatisticsText.text = "[" + firstButtonPercentage + "%] " + "[x" + firstButtonCombo + "] " + "[" + CharacterUsed + "]";
+
+                // Enable character used image
+                firstPlaceCharacterImage.gameObject.SetActive(true);
             }
             else
             {
-
+                // Disable character used image
+                firstPlaceCharacterImage.gameObject.SetActive(false);
             }
 
             if (secondExists == true)
@@ -210,10 +220,14 @@ public class BeatmapRankingManager : MonoBehaviour
                 RankedButtonSecondGradeText.color = SetGradeColor(secondButtonGrade);
                 RankedButtonSecondRankAndUsernameAndScoreText.text = "2# " + secondButtonUsername + ": " + secondButtonScore;
                 RankedButtonSecondPlayStatisticsText.text = "[" + secondButtonPercentage + "%] " + "[x" + secondButtonCombo + "] " + "[" + CharacterUsed + "]";
+
+                // Enable character used image
+                secondPlaceCharacterImage.gameObject.SetActive(true);
             }
             else
             {
-
+                // Disable character used image
+                secondPlaceCharacterImage.gameObject.SetActive(false);
             }
 
             if (thirdExists == true)
@@ -234,10 +248,14 @@ public class BeatmapRankingManager : MonoBehaviour
                 RankedButtonThirdGradeText.color = SetGradeColor(thirdButtonGrade);
                 RankedButtonThirdRankAndUsernameAndScoreText.text = "3# " + thirdButtonUsername + ": " + thirdButtonScore;
                 RankedButtonThirdPlayStatisticsText.text = "[" + thirdButtonPercentage + "%] " + "[x" + thirdButtonCombo + "] " + "[" + CharacterUsed + "]";
+
+                // Enable character used image
+                thirdPlaceCharacterImage.gameObject.SetActive(true);
             }
             else
             {
-
+                // Disable character used image
+                thirdPlaceCharacterImage.gameObject.SetActive(false);
             }
 
             if (fourthExists == true)
@@ -258,10 +276,14 @@ public class BeatmapRankingManager : MonoBehaviour
                 RankedButtonFourthGradeText.color = SetGradeColor(fourthButtonGrade);
                 RankedButtonFourthRankAndUsernameAndScoreText.text = "4# " + fourthButtonUsername + ": " + fourthButtonScore;
                 RankedButtonFourthPlayStatisticsText.text = "[" + fourthButtonPercentage + "%] " + "[x" + fourthButtonCombo + "] " + "[" + CharacterUsed + "]";
+
+                // Disable character used image
+                fourthPlaceCharacterImage.gameObject.SetActive(true);
             }
             else
             {
-
+                // Disable character used image
+                fourthPlaceCharacterImage.gameObject.SetActive(false);
             }
 
             if (fifthExists == true)
@@ -282,10 +304,14 @@ public class BeatmapRankingManager : MonoBehaviour
                 RankedButtonFifthGradeText.color = SetGradeColor(fifthButtonGrade);
                 RankedButtonFifthRankAndUsernameAndScoreText.text = "5# " + fifthButtonUsername + ": " + fifthButtonScore;
                 RankedButtonFifthPlayStatisticsText.text = "[" + fifthButtonPercentage + "%] " + "[x" + fifthButtonCombo + "] " + "[" + CharacterUsed + "]";
+
+                // Enable character used image
+                fifthPlaceCharacterImage.gameObject.SetActive(true);
             }
             else
             {
-
+                // Disable character used image
+                fifthPlaceCharacterImage.gameObject.SetActive(false);
             }
         }
     }

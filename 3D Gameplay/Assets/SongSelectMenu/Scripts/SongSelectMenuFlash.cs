@@ -34,51 +34,64 @@ public class SongSelectMenuFlash : MonoBehaviour {
 		
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            // Clear all loaded beatmaps
-            ClearBeatmapLoaded();
-            // Reset leaderboard rankings
-            beatmapRankingManager.ResetLeaderboard();
-            // Has pressed arrow key
-            hasPressedArrowKey = true;
-            // Flash the image
-            FlashImage();
-            // Load the next beatmap in the song select menu
-            // Increase the current index by 1 so we go to the next song
-            songSelectManager.selectedDirectoryIndex++;
-            songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.selectedDirectoryIndex, defaultBeatmapDifficulty, hasPressedArrowKey);
-            // Set the last selected difficulty to advanced
-            lastSelectedDifficulty = defaultBeatmapDifficulty;
-            // Set back to false
-            hasPressedArrowKey = false;
-            // Load the beatmap rankings
-            beatmapRankingManager.leaderboardPlaceToGet = 1;
-            beatmapRankingManager.ResetNotChecked();
-
+            // Load next song
+            LoadNextSong();
         }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            // Clear all loaded beatmaps
-            ClearBeatmapLoaded();
-            // Reset leaderboard rankings
-            beatmapRankingManager.ResetLeaderboard();
-            // Has pressed arrow key
-            hasPressedArrowKey = true;
-            // Flash the image
-            FlashImage();
-            // Load the next beatmap in the song select menu
-            // Decrease the current index by 1 so we go to the next song
-            songSelectManager.selectedDirectoryIndex--;
-            songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.selectedDirectoryIndex, defaultBeatmapDifficulty, hasPressedArrowKey);
-            // Set the last selected difficulty to advanced
-            lastSelectedDifficulty = defaultBeatmapDifficulty;
-            // Set back to false
-            hasPressedArrowKey = false;
-            // Load the beatmap rankings
-            beatmapRankingManager.leaderboardPlaceToGet = 1;
-            beatmapRankingManager.ResetNotChecked();
+            // Load the previous song
+            LoadPreviousSong();
         }
 
+    }
+
+    // Load the next song
+    public void LoadNextSong()
+    {
+        // Clear all loaded beatmaps
+        ClearBeatmapLoaded();
+        // Reset leaderboard rankings
+        beatmapRankingManager.ResetLeaderboard();
+        // Has pressed arrow key
+        hasPressedArrowKey = true;
+        // Flash the image
+        FlashImage();
+        // Load the next beatmap in the song select menu
+        // Increase the current index by 1 so we go to the next song
+        songSelectManager.selectedDirectoryIndex++;
+        songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.selectedDirectoryIndex, defaultBeatmapDifficulty, hasPressedArrowKey);
+        // Set the last selected difficulty to advanced
+        lastSelectedDifficulty = defaultBeatmapDifficulty;
+        // Set back to false
+        hasPressedArrowKey = false;
+        // Load the beatmap rankings
+        beatmapRankingManager.leaderboardPlaceToGet = 1;
+        beatmapRankingManager.ResetNotChecked();
+    }
+
+    // Load the previous song
+    public void LoadPreviousSong()
+    {
+        // Clear all loaded beatmaps
+        ClearBeatmapLoaded();
+        // Reset leaderboard rankings
+        beatmapRankingManager.ResetLeaderboard();
+        // Has pressed arrow key
+        hasPressedArrowKey = true;
+        // Flash the image
+        FlashImage();
+        // Load the next beatmap in the song select menu
+        // Decrease the current index by 1 so we go to the next song
+        songSelectManager.selectedDirectoryIndex--;
+        songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.selectedDirectoryIndex, defaultBeatmapDifficulty, hasPressedArrowKey);
+        // Set the last selected difficulty to advanced
+        lastSelectedDifficulty = defaultBeatmapDifficulty;
+        // Set back to false
+        hasPressedArrowKey = false;
+        // Load the beatmap rankings
+        beatmapRankingManager.leaderboardPlaceToGet = 1;
+        beatmapRankingManager.ResetNotChecked();
     }
 
     // Animate the flash on screen

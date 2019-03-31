@@ -19,6 +19,7 @@ TagManager:
   - EarlyText
   - MissText
   - ScoreText
+  - HitSoundManager
   layers:
   - Default
   - TransparentFX

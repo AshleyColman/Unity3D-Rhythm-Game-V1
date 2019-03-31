@@ -6,13 +6,12 @@ public class DestroyObject : MonoBehaviour {
 
     private float timer;
     private float destroyTime = 1.2f; // Hit object destroy time
-    private SoundController soundController; // Manage audio
+    private HitSoundPreview hitSoundPreview; // Manage audio
 
 	// Use this for initialization
 	void Start () {
 
-        soundController = FindObjectOfType<SoundController>(); // Find the sound controller to control the miss sound
-
+        hitSoundPreview = FindObjectOfType<HitSoundPreview>(); // Find the sound controller to control the miss sound
         timer = 0f;
 	}
 	
@@ -25,7 +24,7 @@ public class DestroyObject : MonoBehaviour {
         // Destroy the game object
         if (timer >= destroyTime)
         {
-            soundController.PlayMissSound(); // Play the hitsound
+            hitSoundPreview.PlayMissSound(); // Play the hitsound
             DestroyHitObject();
         }
     }

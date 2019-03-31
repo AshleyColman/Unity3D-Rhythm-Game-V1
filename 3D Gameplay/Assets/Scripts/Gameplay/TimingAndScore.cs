@@ -20,7 +20,7 @@ public class TimingAndScore : MonoBehaviour {
     public Vector3 hitObjectPosition; // The position of the object
 
     private ScoreManager scoreManager; // Manage score UI text
-    private SoundController soundController; // Manage audio
+    private HitSoundPreview hitSoundPreview; // Plays hit and miss sounds
     private ExplosionController explosionController; // Manage explosions
     private DestroyObject destroyObject; // Manages destroys
     private SongData songData; // Manages the songData
@@ -46,12 +46,12 @@ public class TimingAndScore : MonoBehaviour {
 
         // References
         scoreManager = FindObjectOfType<ScoreManager>();
-        soundController = FindObjectOfType<SoundController>();
         explosionController = FindObjectOfType<ExplosionController>();
         destroyObject = FindObjectOfType<DestroyObject>();
         songData = FindObjectOfType<SongData>();
         specialTimeManager = FindObjectOfType<SpecialTimeManager>();
         healthbar = FindObjectOfType<Healthbar>();
+        hitSoundPreview = FindObjectOfType<HitSoundPreview>();
 
 
         // Initalize hit object
@@ -102,7 +102,6 @@ public class TimingAndScore : MonoBehaviour {
         {
             healthbar.healthBarValue = missHealthValue; // Update the healthbar with the miss value
             healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
-
             hitObjectPosition = transform.position; // Get the position of the object
             explosionController.SpawnExplosion(hitObjectPosition, "Miss"); // Pass the position and spawn a miss particle system
             scoreManager.AddJudgement("MISS"); // Sets judgement to early
@@ -125,7 +124,7 @@ public class TimingAndScore : MonoBehaviour {
 
                     explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
-                    soundController.PlayHitSound(); // Play the hitsound
+                    hitSoundPreview.PlayHitSound(); // Play the hitsound
 
                     scoreManager.AddJudgement("EARLY"); // Sets judgement to early
 
@@ -151,7 +150,7 @@ public class TimingAndScore : MonoBehaviour {
                     hitObjectPosition = transform.position; // Get the position of the object
                     explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
-                    soundController.PlayHitSound(); // Play the hitsound
+                    hitSoundPreview.PlayHitSound(); // Play the hit sound
 
                     scoreManager.AddJudgement("GOOD"); // Sets judgement to early
 
@@ -177,7 +176,7 @@ public class TimingAndScore : MonoBehaviour {
                     hitObjectPosition = transform.position; // Get the position of the object
                     explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
-                    soundController.PlayHitSound(); // Play the hitsound
+                    hitSoundPreview.PlayHitSound(); // Play the hitsound
 
                     scoreManager.AddJudgement("PERFECT");
 

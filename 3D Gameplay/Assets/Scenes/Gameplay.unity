@@ -1100,6 +1100,8 @@ MonoBehaviour:
   totalMiss: 0
   gradeAchieved: 0
   totalScorePossible: 0
+  totalHit: 0
+  totalSpecial: 0
 --- !u!1 &381328333
 GameObject:
   m_ObjectHideFlags: 0
@@ -3575,6 +3577,10 @@ Prefab:
       propertyPath: clickSound
       value: 
       objectReference: {fileID: 8300000, guid: d01ca10be55fb0d4fa7be3637e984925, type: 3}
+    - target: {fileID: 1689120181344588, guid: dba9a160621e0314baaf7b08592566ed, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: dba9a160621e0314baaf7b08592566ed, type: 2}
   m_IsPrefabParent: 0
@@ -4296,6 +4302,10 @@ MonoBehaviour:
   totalScorePossible: 0
   score: 0
   Percentage: 0
+  totalHit: 0
+  totalSpecial: 0
+  songTitle: 
+  beatmapCreator: 
 --- !u!4 &1530869059
 Transform:
   m_ObjectHideFlags: 0

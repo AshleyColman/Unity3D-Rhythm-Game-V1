@@ -87,8 +87,17 @@ public class ScoreManager : MonoBehaviour {
             }
             if (score >= 100000 && score < 1000000)
             {
-                scoreText.text = "000" + score.ToString();
+                scoreText.text = "00" + score.ToString();
             }
+            if (score >= 1000000 && score < 10000000)
+            {
+                scoreText.text = "0" + score.ToString();
+            }
+            if (score >= 10000000 && score < 100000000)
+            {
+                scoreText.text = score.ToString();
+            }
+
  
 
     }
