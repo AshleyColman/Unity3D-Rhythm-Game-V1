@@ -47,12 +47,14 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     public string beatmapDifficulty;
     private bool hasPressedSpacebar; // Used for tracking if the song has been started, if it has then we disable the song from restarting when the spacebar is pressed again
     private int totalHitObjects; 
-    public float fadeSpeedModifier; // The time to take off the spawn times according to the fade speed modifier
     bool hasSpawnedAllHitObjects; // Has the game spawned all hit objects?
     int totalHitObjectListSize; // The total hit amount of hit objects to be spawned
     bool checkObjectsThatCanBeHit = false;
 
     public bool[] hitObjectSpawned;
+
+    PlayerSkillsManager playerSkillsManager; // Reference required for getting the fade speed and adjusting the spawn times based on the speed chosen
+    private float fadeSpeedSelected; // The fade speed selected
 
     void Awake()
     {
@@ -64,6 +66,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
         songProgressBar = FindObjectOfType<SongProgressBar>();
         specialTimeManager = FindObjectOfType<SpecialTimeManager>();
+        playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
         isSpecialTime = false;
         songTimer = 0;
         startSongTimer = false;
@@ -73,6 +76,9 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         sizeOfList = 0;
         nextIndex = 0;
         hitObjectID = 0;
+
+        // Get the fade speed selected
+        fadeSpeedSelected = playerSkillsManager.GetFadeSpeedSelected();
 
         // Load the hit object positions first into their own list
         hitObjectPositionsX = Database.database.LoadedPositionX;
@@ -94,8 +100,8 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         // Update the spawn times to match when they should be clicked (1 second earlier)
         for (int i = 0; i < hitObjectSpawnTimes.Count; i++)
         {
-            // Remove 1 second from each of the loaded spawn times
-            hitObjectSpawnTimes[i] = hitObjectSpawnTimes[i] - 1;
+            // Remove the fade speed seconds from each of the loaded spawn times
+            hitObjectSpawnTimes[i] = hitObjectSpawnTimes[i] - fadeSpeedSelected;
         }
 
         // Load the hit object types
@@ -172,43 +178,6 @@ public class LoadAndRunBeatmap : MonoBehaviour {
                 }
             }
 
-            /*
-            // Size of list
-            sizeOfList = spawnedList.Count;
-            Debug.Log("objecttahtcanbehitindex: " + objectThatCanBeHitIndex);
-            //if (startCheck == false)
-            {
-                
-                if (hitObjectSpawned[objectThatCanBeHitIndex] == true)
-                {
-                    if (spawnedList[objectThatCanBeHitIndex] != null)
-                    {
-                        Debug.Log("object: " + objectThatCanBeHitIndex + " exists and is set to CANBEHIT");
-                        // Set the earliest hit object that has spawned to be the earliest for hit detection
-                        spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().canBeHit = true;
-                    }
-
-                    // If the earliest object has been destroyed
-                    if (spawnedList[objectThatCanBeHitIndex] == null)
-                    {
-                        if (nextIndex > objectThatCanBeHitIndex)
-                        {
-                            // Check if another object has spawned
-                            objectThatCanBeHitIndex++;
-                            Debug.Log("current object doesn't not exist and nextIndex is greater than current index, incrementing");
-                        }
-                        else
-                        {
-                            Debug.Log("CURRENT OBJECT IS NULL BUT NEXTINDEX NOT LARGE ENOUGH");
-                        }
-                    }
-                }
-
-
-            }
-
-            */
-
             if (startCheck == true)
             {
                 if (spawnedList[0] != null)
@@ -218,8 +187,6 @@ public class LoadAndRunBeatmap : MonoBehaviour {
                         spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().canBeHit = true;
                     }
                 }
-
-
 
                 if (spawnedList[objectThatCanBeHitIndex] == null)
                 {
@@ -233,20 +200,10 @@ public class LoadAndRunBeatmap : MonoBehaviour {
                         spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().canBeHit = true;
                     }
                 }
-
             }
-
-
         }
     }
 
-    // index = 0
-    // first object spawns 
-    // next = 1
-    // index is hit and next = 1
-    // no object spawns
-    // index (1) does not exist
-    // check if index (1) has spawned, if it has enable checking 
 
 
     // Spawn the hit object

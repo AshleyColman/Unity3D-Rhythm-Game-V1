@@ -463,6 +463,14 @@ public class BeatmapRankingManager : MonoBehaviour
 
         // Reset Not Checked for leaderboard
         ResetNotChecked();
+
+        // Reset character images
+        firstPlaceCharacterImage.gameObject.SetActive(false);
+        secondPlaceCharacterImage.gameObject.SetActive(false);
+        thirdPlaceCharacterImage.gameObject.SetActive(false);
+        fourthPlaceCharacterImage.gameObject.SetActive(false);
+        fifthPlaceCharacterImage.gameObject.SetActive(false);
+
     }
 
     public void ResetNotChecked()

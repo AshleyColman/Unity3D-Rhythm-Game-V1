@@ -20,6 +20,7 @@ TagManager:
   - MissText
   - ScoreText
   - HitSoundManager
+  - PlayerSkillsManager
   layers:
   - Default
   - TransparentFX

@@ -7,9 +7,9 @@ public class TimingAndScore : MonoBehaviour {
 
     public float timer; // Timer for timing
     private float hitObjectStartTime; // The time when the note spawns
-    private float perfectJudgementTime; // The end time for perfect hit
-    private float earlyJudgementTime; // The early time
-    private float destroyedTime; // The late time, last possible hit time before input is cancelled
+    public float perfectJudgementTime; // The end time for perfect hit
+    public float earlyJudgementTime; // The early time
+    public float destroyedTime; // The late time, last possible hit time before input is cancelled
     private int earlyScore; // The value of the early hits for score
     private int perfectScore; // The value of the perfect hits for score
     private int goodScore; // The value of the good hits for score
@@ -22,10 +22,11 @@ public class TimingAndScore : MonoBehaviour {
     private ScoreManager scoreManager; // Manage score UI text
     private HitSoundPreview hitSoundPreview; // Plays hit and miss sounds
     private ExplosionController explosionController; // Manage explosions
-    private DestroyObject destroyObject; // Manages destroys
     private SongData songData; // Manages the songData
     private SpecialTimeManager specialTimeManager; // Manager special time objects and effects
     private Healthbar healthbar; // Manages the healthbar when hitting objects increasing or descreasing health
+    private PlayerSkillsManager playerSkillsManager; // Manages all character skills equiped for gameplay
+
     private string objectTag; // The tag of the object
     private KeyCode objectKey = KeyCode.None;
 
@@ -47,12 +48,11 @@ public class TimingAndScore : MonoBehaviour {
         // References
         scoreManager = FindObjectOfType<ScoreManager>();
         explosionController = FindObjectOfType<ExplosionController>();
-        destroyObject = FindObjectOfType<DestroyObject>();
         songData = FindObjectOfType<SongData>();
         specialTimeManager = FindObjectOfType<SpecialTimeManager>();
         healthbar = FindObjectOfType<Healthbar>();
         hitSoundPreview = FindObjectOfType<HitSoundPreview>();
-
+        playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
 
         // Initalize hit object
         hitObjectStartTime = 0f; 
@@ -80,6 +80,9 @@ public class TimingAndScore : MonoBehaviour {
         perfectHealthValue = 15;
         goodHealthValue = 10;
         missHealthValue = -10;
+
+        // Get and set the fade speed for the hit object
+        GetAndSetFadeSpeed();
 	}
 	
 	// Update is called once per frame
@@ -98,7 +101,7 @@ public class TimingAndScore : MonoBehaviour {
         timer += Time.deltaTime;
 
         // Spawn miss explosion
-        if (timer >= 1.19f)
+        if (timer >= destroyedTime)
         {
             healthbar.healthBarValue = missHealthValue; // Update the healthbar with the miss value
             healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
@@ -106,6 +109,8 @@ public class TimingAndScore : MonoBehaviour {
             explosionController.SpawnExplosion(hitObjectPosition, "Miss"); // Pass the position and spawn a miss particle system
             scoreManager.AddJudgement("MISS"); // Sets judgement to early
             scoreManager.ResetCombo(); // Reset combo as missed
+            DestroyHitObject(); // Destroy the hit object
+            hitSoundPreview.PlayMissSound(); // Play the miss sound effect
         }
 
         // If the user has pressed the right object key enable hit 
@@ -273,5 +278,34 @@ public class TimingAndScore : MonoBehaviour {
             isSpecial = true;
         }
          
+    }
+
+    // Check the fade speed selected from the song select menu, set the judgements based on the fade speed
+    public void GetAndSetFadeSpeed()
+    {
+        string fadeSpeedSelected = playerSkillsManager.fadeSpeedSelected;
+
+        // Set the fade speeds based on the fade speed selected
+        switch (fadeSpeedSelected)
+        {
+            case "SLOW":
+                Debug.Log("SLOW SPEED SET");
+                earlyJudgementTime = 1f;
+                perfectJudgementTime = 1.8f;
+                destroyedTime = 2.2f;
+                break;
+            case "NORMAL":
+                Debug.Log("NORMAL");
+                earlyJudgementTime = 0.4f;
+                perfectJudgementTime = 0.8f;
+                destroyedTime = 1.2f;
+                break;
+            case "FAST":
+                Debug.Log("FAST");
+                earlyJudgementTime = 0.2f;
+                perfectJudgementTime = 0.4f;
+                destroyedTime = 0.7f;
+                break;
+        }
     }
 }

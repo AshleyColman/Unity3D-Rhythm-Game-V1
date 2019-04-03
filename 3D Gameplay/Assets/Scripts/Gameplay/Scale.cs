@@ -17,20 +17,27 @@ public class Scale : MonoBehaviour {
 
     // Timer and spawn variables
     public float timer;
-    private float perfectTime = 1.2f; // The perfect time to hit the hit object/max scale size for inner
+    private float perfectTime; // The perfect time to hit the hit object/max scale size for inner
 
     public Vector3 objectScale;
 
     public float positionX;
 
+    // Reference to the player skills manager to get the scale speed for the hit objects
+    private PlayerSkillsManager playerSkillsManager;
+
+
 	// Use this for initialization
 	void Start () {
         timeStartedLerping = 0;
-        lerpTime = 1;
         timeToStartLerping = 0;
         objectScale = transform.localScale;
         maxScale = new Vector3(5, 1, 5);
         minScale = new Vector3(0, 0, 0);
+
+        playerSkillsManager = FindObjectOfType<PlayerSkillsManager>(); // Get the reference for scale speed
+        lerpTime = playerSkillsManager.GetFadeSpeedSelected(); // Get the fade speed selected such as 2 for slow, 1 for normal and 0.5f for fast
+        perfectTime = (lerpTime + 0.2f); // Perfect time is the time the object is destroyed, this is 0.2 seconds from the hit time
     }
 
     // Update is called once per frame
