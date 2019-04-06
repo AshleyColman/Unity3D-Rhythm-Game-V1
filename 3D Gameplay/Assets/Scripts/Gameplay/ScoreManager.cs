@@ -6,14 +6,17 @@ using TMPro;
 
 public class ScoreManager : MonoBehaviour {
 
-    public int score;
+    public int currentScore;
+    public int scoreToLerpTo;
     public TextMeshProUGUI scoreText;
     public int combo;
     public TextMeshProUGUI comboText;
+    public TextMeshProUGUI largeComboText;
     public string judgement;
     public TextMeshProUGUI judgementText;
     public Animator scoreAnimation; // Animate the score text
     public Animator comboAnimation; // Animate the combo text
+    public Animator largeComboAnimation; // Animate the large combo text
     public Animator judgementAnimation; // Animate the judgement text
 
     public int highestCombo;
@@ -25,12 +28,15 @@ public class ScoreManager : MonoBehaviour {
     public float totalScorePossible;
     public float totalHit;
     public float totalSpecial;
+    private int pointIncreasePerSecond;
 
     // Use this for initialization
     void Start () {
 
         highestCombo = 0;
-        
+
+        pointIncreasePerSecond = 100;
+
         //scoreText.text = score.ToString();
         comboText.text = combo.ToString() + "x";
         judgementText.text = judgement.ToString();
@@ -38,6 +44,9 @@ public class ScoreManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        // Lerp the score overtime with the timer 
+        LerpScore();
 
 
         // Check the current combo and see if it's the highest so far;
@@ -52,6 +61,7 @@ public class ScoreManager : MonoBehaviour {
     {
         combo = 0;
         comboText.text = "   " + combo.ToString() + "x";
+        largeComboText.text = "   " + combo.ToString() + "x";
     }
 
     // Update the score text
@@ -68,38 +78,47 @@ public class ScoreManager : MonoBehaviour {
             totalSpecial++;
         }
 
+        // Play the score animation
         scoreAnimation.Play("GameplayUITextAnimation");
 
-        score += scorePass;
+        // Increase the score to lerp to
+        scoreToLerpTo += scorePass;
+    }
+
+    // Lerp the score to increase over time
+    private void LerpScore()
+    {
+        if (currentScore < scoreToLerpTo)
+        {
+            // Increase the current score by the timer each time so that it does increase to the scoreToLerpTo
+            currentScore += pointIncreasePerSecond;
 
             // Check the score and add the 0's according to the type
-            if (score < 1000)
+            if (currentScore < 1000)
             {
-                scoreText.text = "00000" + score.ToString();
+                scoreText.text = "00000" + currentScore.ToString();
             }
-            if (score >= 1000 && score < 10000)
+            if (currentScore >= 1000 && currentScore < 10000)
             {
-                scoreText.text = "0000" + score.ToString();
+                scoreText.text = "0000" + currentScore.ToString();
             }
-            if (score >= 10000 && score < 100000)
+            if (currentScore >= 10000 && currentScore < 100000)
             {
-                scoreText.text = "000" + score.ToString();
+                scoreText.text = "000" + currentScore.ToString();
             }
-            if (score >= 100000 && score < 1000000)
+            if (currentScore >= 100000 && currentScore < 1000000)
             {
-                scoreText.text = "00" + score.ToString();
+                scoreText.text = "00" + currentScore.ToString();
             }
-            if (score >= 1000000 && score < 10000000)
+            if (currentScore >= 1000000 && currentScore < 10000000)
             {
-                scoreText.text = "0" + score.ToString();
+                scoreText.text = "0" + currentScore.ToString();
             }
-            if (score >= 10000000 && score < 100000000)
+            if (currentScore >= 10000000 && currentScore < 100000000)
             {
-                scoreText.text = score.ToString();
+                scoreText.text = currentScore.ToString();
             }
-
- 
-
+        }
     }
 
     // Update combo text
@@ -111,21 +130,26 @@ public class ScoreManager : MonoBehaviour {
         if (combo < 10)
         {
             comboText.text = "   " + combo.ToString() + "x";
+            largeComboText.text = "   " + combo.ToString() + "x";
         }
         if (combo >= 10 && combo < 100)
         {
             comboText.text = "  " + combo.ToString() + "x";
+            largeComboText.text = "  " + combo.ToString() + "x";
         }
         if (combo >= 100 && combo < 1000)
         {
             comboText.text = " " + combo.ToString() + "x";
+            largeComboText.text = " " + combo.ToString() + "x";
         }
         if (combo >= 1000 && combo < 10000)
         {
             comboText.text = " " + combo.ToString() + "x";
+            largeComboText.text = " " + combo.ToString() + "x";
         }
 
         comboAnimation.Play("GameplayUITextAnimation");
+        largeComboAnimation.Play("LargeComboTextAnimation");
     }
 
     // Update judgement text
@@ -133,30 +157,28 @@ public class ScoreManager : MonoBehaviour {
     {
         judgementText.text = judgementPass.ToString();
 
-        judgementAnimation.Play("GameplayUITextAnimation");
-
         if (judgementPass == "EARLY")
         {
-            judgementText.color = Color.red;
+            judgementAnimation.Play("EARLYAnimation");
 
             // Hit so we add 1 to the total for the results screen
             totalEarly++;
         }
         else if (judgementPass == "GOOD")
         {
-            judgementText.color = Color.blue;
+            judgementAnimation.Play("GOODAnimation");
             // Hit so we add 1 to the total for the results screen
             totalGood++;
         }
         else if (judgementPass == "PERFECT")
         {
-            judgementText.color = Color.yellow;
+            judgementAnimation.Play("PERFECTAnimation");
             // Hit so we add 1 to the total for the results screen
             totalPerfect++;
         }
         else if (judgementPass == "MISS")
         {
-            judgementText.color = Color.red;
+            judgementAnimation.Play("MISSAnimation");
             // Hit so we add 1 to the total for the results screen
             totalMiss++;
         }

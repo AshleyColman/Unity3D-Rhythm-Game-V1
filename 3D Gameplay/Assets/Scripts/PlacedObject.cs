@@ -27,8 +27,25 @@ public class PlacedObject : MonoBehaviour {
     // Used for tracking when the spacebar has been pressed to start the song and timer
     private bool hasPressedSpacebar;
 
+    // Used for only allowing the user to create a leaderboard once
+    private bool hasCreatedLeaderboard;
+
+    // Used for only allowing the user to save the beatmap once
+    private bool hasSaved;
+
+    // Save button for enabling and disabling when a leaderboard has been created
+    public Button saveButton;
+
+    // Other UI elements for disabling during live mapping
+    public Button instructionButton;
+    public Button resetButton;
+    public Button placeButton;
+
+    private bool uiActive; // Used for controlling the UI hide and show
+
     // Use this for initialization
     void Start () {
+        uiActive = true;
         hasPressedSpacebar = false;
         startSongTimer = false;
         songTimer = 0f;
@@ -67,7 +84,29 @@ public class PlacedObject : MonoBehaviour {
             songTimer += Time.deltaTime;
         }
 
-
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (uiActive == true)
+            {
+                // If the tab key has been pressed disable all UI buttons to increase the charting area space
+                placeButton.gameObject.SetActive(false);
+                saveButton.gameObject.SetActive(false);
+                instructionButton.gameObject.SetActive(false);
+                resetButton.gameObject.SetActive(false);
+                // Set uiActive to false
+                uiActive = false;
+            }
+            else if (uiActive == false)
+            {
+                // If the tab key has been pressed enable all UI buttons
+                placeButton.gameObject.SetActive(true);
+                saveButton.gameObject.SetActive(true);
+                instructionButton.gameObject.SetActive(true);
+                resetButton.gameObject.SetActive(true);
+                // Set uiActive to true
+                uiActive = true;
+            }
+        }
 
         // Place a hit object only if the mouse has been clicked and the UI button has been clicked
         if (hasClickedUIButton == true)
@@ -133,12 +172,16 @@ public class PlacedObject : MonoBehaviour {
                 editorSoundController.PlayPlacedSound();
             }
 
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Q) && hasCreatedLeaderboard == false)
             {
-                // Update the instruction button text that a leaderboard has been created
-                UpdateInstructionButtonText("Leaderboard created");
+                // Set created leaderboard to true
+                hasCreatedLeaderboard = true;
+                // Update the instruction button text and play animation
+                UpdateInstructionButtonText("LeaderboardCreated");
                 // Play the specialTimeFirstPlaced sound effect
                 editorSoundController.PlaySpecialTimeStartPlacedSound();
+                // Set the save button to interactable
+                saveButton.interactable = true;
             }
 
             // Special Time Key Press Set Times
@@ -251,6 +294,13 @@ public class PlacedObject : MonoBehaviour {
             instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
         }
         else if (actionPass == "HKeyPressedTwice")
+        {
+            // Update the instruction button text
+            instructionButtonText.text = "Press Q to create a leaderboard";
+            // Do instruction button animation
+            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
+        }
+        else if (actionPass == "LeaderboardCreated")
         {
             // Update the instruction button text
             instructionButtonText.text = "Save Your Beatmap When Finished";

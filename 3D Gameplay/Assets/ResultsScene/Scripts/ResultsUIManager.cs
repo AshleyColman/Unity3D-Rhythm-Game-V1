@@ -13,7 +13,6 @@ public class ResultsUIManager : MonoBehaviour {
     public TextMeshProUGUI GoodText;
     public TextMeshProUGUI EarlyText;
     public TextMeshProUGUI MissText;
-    public TextMeshProUGUI TotalHitText;
     public TextMeshProUGUI SpecialText;
     public TextMeshProUGUI ComboText;
     public TextMeshProUGUI PercentageText;
@@ -46,15 +45,30 @@ public class ResultsUIManager : MonoBehaviour {
         GoodText.text = gameplayToResultsManager.totalGood.ToString();
         EarlyText.text = gameplayToResultsManager.totalEarly.ToString();
         MissText.text = gameplayToResultsManager.totalMiss.ToString();
-        ScoreText.text = gameplayToResultsManager.score.ToString();
         ComboText.text = gameplayToResultsManager.highestCombo.ToString();
-        UsernameText.text = MySQLDBManager.username.ToString();
-        PercentageText.text = gameplayToResultsManager.Percentage.ToString() + "%";
+        PercentageText.text = gameplayToResultsManager.Percentage.ToString();
         gradePercentage = gameplayToResultsManager.Percentage;
-        TotalHitText.text = gameplayToResultsManager.totalHit.ToString();
         SpecialText.text = gameplayToResultsManager.totalSpecial.ToString();
         SongTitleText.text = gameplayToResultsManager.songTitle.ToString();
         BeatmapCreatorText.text = gameplayToResultsManager.beatmapCreator.ToString();
+
+        // If logged in get the username
+        if (MySQLDBManager.loggedIn)
+        {
+            UsernameText.text = MySQLDBManager.username.ToString();
+        }
+        else
+        {
+            UsernameText.text = "GUEST";
+        }
+
+        // Check score for 0's adding on
+        CheckScore();
+
+
+
+
+
 
         // Enable the grade achieved
         if (gameplayToResultsManager.gradeAchieved == "SS")
@@ -88,6 +102,39 @@ public class ResultsUIManager : MonoBehaviour {
         else if (gameplayToResultsManager.gradeAchieved == "F")
         {
             GradeTextF.gameObject.SetActive(true);
+        }
+    }
+    
+    // Check score and add 0's
+    private void CheckScore()
+    {
+        // Get the score
+        int score = gameplayToResultsManager.score;
+
+        // Check the score and add the 0's according to the type
+        if (score < 1000)
+        {
+            ScoreText.text = "00000" + score.ToString();
+        }
+        if (score >= 1000 && score < 10000)
+        {
+            ScoreText.text = "0000" + score.ToString();
+        }
+        if (score >= 10000 && score < 100000)
+        {
+            ScoreText.text = "000" + score.ToString();
+        }
+        if (score >= 100000 && score < 1000000)
+        {
+            ScoreText.text = "00" + score.ToString();
+        }
+        if (score >= 1000000 && score < 10000000)
+        {
+            ScoreText.text = "0" + score.ToString();
+        }
+        if (score >= 10000000 && score < 100000000)
+        {
+            ScoreText.text = score.ToString();
         }
     }
 }

@@ -19,7 +19,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4231931414654328}
-  - component: {fileID: 114587649991288068}
   - component: {fileID: 114177932996790134}
   m_Layer: 0
   m_Name: SpecialOrangeHitObject
@@ -108,7 +107,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1621575285466232}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: -8, z: 0}
   m_LocalScale: {x: 5, y: 1, z: 5}
   m_Children: []
   m_Father: {fileID: 4231931414654328}
@@ -121,7 +120,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1732014067424004}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -9, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4231931414654328}
@@ -317,6 +316,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timer: 0
+  perfectJudgementTime: 0
+  earlyJudgementTime: 0
+  destroyedTime: 0
   playerTotalScore: 0
   hitObjectHit: 0
   hitObjectPosition: {x: 0, y: 0, z: 0}
@@ -335,18 +337,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeSpeed: 0
   timer: 0
---- !u!114 &114587649991288068
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1067109896884718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23b3db52fb99ed04aaa6ed51d4773e23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114695633486907718
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -373,4 +365,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeSpeed: 0
   timer: 0

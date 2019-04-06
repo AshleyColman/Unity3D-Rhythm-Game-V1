@@ -53,6 +53,8 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
     public bool[] hitObjectSpawned;
 
+    private int startingYPosition; // The y position that is decremented each time a diamond is spawned to make the earliest appear ontop of later spawning diamonds
+
     PlayerSkillsManager playerSkillsManager; // Reference required for getting the fade speed and adjusting the spawn times based on the speed chosen
     private float fadeSpeedSelected; // The fade speed selected
 
@@ -77,6 +79,9 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         nextIndex = 0;
         hitObjectID = 0;
 
+        // Set the startYPosition to the highest range of the camera
+        startingYPosition = 100000;
+
         // Get the fade speed selected
         fadeSpeedSelected = playerSkillsManager.GetFadeSpeedSelected();
 
@@ -85,6 +90,17 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         hitObjectPositionsY = Database.database.LoadedPositionY;
         hitObjectPositionsZ = Database.database.LoadedPositionZ;
         totalHitObjects = hitObjectPositionsX.Count;
+
+        // For all y positions calculate the new positions to prevent overlap in the gameplay
+        for (int i = 0; i < hitObjectPositionsY.Count; i++)
+        {
+            // Decrement startYPosition so each note has a differnt Y position sorting the layer
+            startingYPosition -= 10;
+
+            // Assign
+            hitObjectPositionsY[i] = startingYPosition;
+        }
+
         // Now merge together for vector3 positions
         for (int i = 0; i < hitObjectPositionsX.Count; i++)
         {

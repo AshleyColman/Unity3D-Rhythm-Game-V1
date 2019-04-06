@@ -39,7 +39,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4809778447507568}
-  - component: {fileID: 114091797035287076}
   - component: {fileID: 114199919100747478}
   m_Layer: 0
   m_Name: OrangeHitObject
@@ -92,7 +91,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1077159304452136}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -9, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4809778447507568}
@@ -105,7 +104,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1314622334081950}
   m_LocalRotation: {x: 0, y: 0.92387956, z: 0, w: 0.38268343}
-  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalPosition: {x: 0, y: -8, z: 0}
   m_LocalScale: {x: 2, y: 0, z: 3}
   m_Children: []
   m_Father: {fileID: 4809778447507568}
@@ -331,18 +330,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeSpeed: 0
   timer: 0
---- !u!114 &114091797035287076
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1154397954264660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23b3db52fb99ed04aaa6ed51d4773e23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114199919100747478
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -355,12 +344,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timer: 0
+  perfectJudgementTime: 0
+  earlyJudgementTime: 0
+  destroyedTime: 0
   playerTotalScore: 0
   hitObjectHit: 0
   hitObjectPosition: {x: 0, y: 0, z: 0}
   canBeHit: 0
   isSpecial: 0
   objectEarliestIndex: 0
+  objectScoreType: 
 --- !u!114 &114298241609139610
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -372,4 +365,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeSpeed: 0
   timer: 0

@@ -93,7 +93,7 @@ public class GameplayToResultsManager : MonoBehaviour {
         totalGood = scoreManager.totalGood;
         totalEarly = scoreManager.totalEarly;
         totalMiss = scoreManager.totalMiss;
-        score = scoreManager.score;
+        score = scoreManager.currentScore;
         totalScorePossible = scoreManager.totalScorePossible;
         totalHit = scoreManager.totalHit;
         totalSpecial = scoreManager.totalSpecial;
@@ -106,6 +106,7 @@ public class GameplayToResultsManager : MonoBehaviour {
 
         if (Percentage < 50)
         {
+            // The grade achieved
             gradeAchieved = "F";
         }
         else if (Percentage >= 50 && Percentage < 60)

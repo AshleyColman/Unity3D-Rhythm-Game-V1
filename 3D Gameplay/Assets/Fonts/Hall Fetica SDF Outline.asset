@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: -667331979, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
   m_Name: Hall Fetica SDF Outline
   m_EditorClassIdentifier: 
-  hashCode: 515507524
+  hashCode: 164472836
   material: {fileID: 21022493717758286}
   materialHashCode: 1048154447
   fontAssetType: 1
@@ -1032,7 +1032,7 @@ Material:
     - _OutlineSoftness: 0
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 0.296
+    - _OutlineWidth: 0.29
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
     - _ScaleRatioA: 0.8333333
