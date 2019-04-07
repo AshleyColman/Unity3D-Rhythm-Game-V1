@@ -139,6 +139,7 @@ public class Database : MonoBehaviour {
         // Save leaderboard table name
         beatmap.leaderboardTableName = leaderboardTableName;
 
+
         bf.Serialize(stream, beatmap);
         stream.Close();
     }
@@ -188,6 +189,7 @@ public class Database : MonoBehaviour {
         loadedbeatmapAdvancedDifficultyLevel = beatmap.beatmapAdvancedDifficultyLevel;
         loadedbeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
         loadedSongClipChosenIndex = beatmap.songClipChosenIndex;
+
 
         // Load beatmap table name for leaderboards
         loadedLeaderboardTableName = beatmap.leaderboardTableName;

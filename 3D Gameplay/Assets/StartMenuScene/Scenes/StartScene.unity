@@ -5020,7 +5020,7 @@ Prefab:
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.size
-      value: 30
+      value: 31
       objectReference: {fileID: 0}
     - target: {fileID: 4178306738267400, guid: d377f2b4f2a68c449b392f8d9c3e4edf, type: 2}
       propertyPath: m_LocalPosition.x
@@ -5189,6 +5189,11 @@ Prefab:
       propertyPath: songClip.Array.data[29]
       value: 
       objectReference: {fileID: 8300000, guid: 1e2b23b8d11325f4284d86327e2237b4, type: 3}
+    - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
+        type: 2}
+      propertyPath: songClip.Array.data[30]
+      value: 
+      objectReference: {fileID: 8300000, guid: 2c6bee200b3c7de49adbd9377e89d275, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d377f2b4f2a68c449b392f8d9c3e4edf, type: 2}
   m_IsPrefabParent: 0

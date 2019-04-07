@@ -14,14 +14,6 @@ public class BeatmapSetup : MonoBehaviour {
     public string beatmapFolderName;
     public string folderDirectory;
 
-    /*
-    // Create difficulty file variables
-    public InputField difficultyNameInputField;
-    public Button createDifficultyFileButton;
-    public string beatmapDifficultyName;
-    public string fileDirectory;
-    */
-
     // Beatmap song select panel
     public Button songSelectPanel;
     public int songClipChosenIndex;
@@ -50,11 +42,15 @@ public class BeatmapSetup : MonoBehaviour {
 
     // Beatmap creator
     public string beatmapCreator;
-    public InputField beatmapCreatorInputField;
-    public Button beatmapCreatorSaveButton;
 
     // Beatmap setup panel shown during the setup
     public Image beatmapSetupPanel;
+    public InputField beatmapImageURLInputField;
+    public Button beatmapImageURLSaveButton;
+
+
+    // Beatmap image url
+    public string imageURL;
 
     public static Beatmap beatmap;
     string FILE_EXTENSION = ".dia";
@@ -74,6 +70,12 @@ public class BeatmapSetup : MonoBehaviour {
     // Is true when in the setup screen, used for allowing keyboard press without starting the editor
     public bool settingUp;
 
+    // Get reference to the background manager
+    private BackgroundManager backgroundManager;
+    // Get the editor background image
+    public Image backgroundImage;
+
+
     private void Awake()
     {
         beatmap = new Beatmap();
@@ -81,7 +83,21 @@ public class BeatmapSetup : MonoBehaviour {
 
     private void Start()
     {
+        // Setting up at the start 
         settingUp = true;
+
+        // Get the user logged in and set the creator to that user
+        if (MySQLDBManager.loggedIn)
+        {
+            beatmapCreator = MySQLDBManager.username;
+        }
+        else
+        {
+            beatmapCreator = "GUEST";
+        }
+
+        // Get the reference to the background image manager
+        backgroundManager = FindObjectOfType<BackgroundManager>();
     }
 
 
@@ -142,20 +158,20 @@ public class BeatmapSetup : MonoBehaviour {
         songArtistSaveButton.gameObject.SetActive(false);
         songArtistInputField.gameObject.SetActive(false);
         // Enable the next input field and button
-        beatmapCreatorSaveButton.gameObject.SetActive(true);
-        beatmapCreatorInputField.gameObject.SetActive(true);
+        beatmapImageURLSaveButton.gameObject.SetActive(true);
+        beatmapImageURLInputField.gameObject.SetActive(true);
         // Change the color of the third progress block 
         SetupProgressBlock3.GetComponent<Image>().color = SetupProgressBlockCompletedColor;
     }
 
-    // Insert the chart creator
-    public void InsertBeatmapCreator()
+    // Insert the image URL
+    public void InsertImageURL()
     {
         // Save
-        beatmapCreator = beatmapCreatorInputField.text;
+        imageURL = beatmapImageURLInputField.text;
         // Disable the button and textfield and enable the next buttons
-        beatmapCreatorSaveButton.gameObject.SetActive(false);
-        beatmapCreatorInputField.gameObject.SetActive(false);
+        beatmapImageURLSaveButton.gameObject.SetActive(false);
+        beatmapImageURLInputField.gameObject.SetActive(false);
         // Disable the button and textfield and enable the next buttons
         beatmapDifficultyAdvancedButton.gameObject.SetActive(true);
         beatmapDifficultyExtraButton.gameObject.SetActive(true);
@@ -163,6 +179,9 @@ public class BeatmapSetup : MonoBehaviour {
 
         // Change the color of the fourth progress block 
         SetupProgressBlock4.GetComponent<Image>().color = SetupProgressBlockCompletedColor;
+
+        // Update the editor background image 
+        UpdateEditorBackgroundImage();
     }
 
     // Insert beatmap difficulty
@@ -225,21 +244,10 @@ public class BeatmapSetup : MonoBehaviour {
         editorTitle.text = songName + " [ " + songArtist + " ] " + " [ " + beatmapDifficulty.ToUpper() + " ] ";
     }
 
-    /*
-    // Create the difficulty file
-    public void CreateDifficultyFile()
+    // Update the background image for the editor
+    private void UpdateEditorBackgroundImage()
     {
-        // Get the difficulty name that the user has inputted
-        beatmapDifficultyName = difficultyNameInputField.text;
-
-        Debug.Log("saving to: " + folderDirectory + FILE_EXTENSION);
-        Stream stream = File.Open(folderDirectory + beatmapDifficultyName + FILE_EXTENSION, FileMode.OpenOrCreate);
-        BinaryFormatter bf = new BinaryFormatter();
-
-        beatmap.PositionX.Add(1.5f);
-        bf.Serialize(stream, beatmap);
-        stream.Close();
-
+        //backgroundManager.LoadEditorBeatmapImage(imageURL);
     }
-    */
+
 }

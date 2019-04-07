@@ -25,7 +25,7 @@ public class SongSelectManager : MonoBehaviour {
     private string beatmapCreator;
     private string advancedDifficultyLevel;
     private string extraDifficultyLevel;
-    private int totalDiamonds; 
+    private int totalDiamonds;
 
     // References to the difficulty buttons
     public Button DifficultyOptionAdvancedButton;
@@ -44,10 +44,14 @@ public class SongSelectManager : MonoBehaviour {
     private int songClipChosenIndex;
 
 
+    // Reference to the background image manager for loading the beatmap image
+    private BackgroundManager backgroundManager;
+
     // Use this for initialization
     void Start () {
         songClipChosenIndex = 0;
         songSelectPreview = FindObjectOfType<SongSelectPreview>();
+        backgroundManager = FindObjectOfType<BackgroundManager>();
         beatmapDirectories = Directory.GetDirectories(@"c:\Beatmaps");
         selectedDirectoryIndex = 0; // Set the first song when entering the screen to the first one in the directory
         previousDirectoryIndex = selectedDirectoryIndex;
@@ -125,6 +129,9 @@ public class SongSelectManager : MonoBehaviour {
             extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
             songClipChosenIndex = Database.database.loadedSongClipChosenIndex;
             totalDiamonds = Database.database.LoadedPositionX.Count;
+
+            // Load the image by passing the current beatmap directory
+            backgroundManager.LoadEditorBeatmapImage(beatmapDirectories[selectedDirectoryIndexPass]);
 
             // Change the current song selected text to the information loaded from the current directory
             songTitleText.text = songName + " [ " + songArtist + " ] ";
