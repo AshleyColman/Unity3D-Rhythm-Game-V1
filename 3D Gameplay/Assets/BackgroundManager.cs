@@ -23,8 +23,13 @@ public class BackgroundManager : MonoBehaviour {
     {
         levelChanger = FindObjectOfType<LevelChanger>();
 
+
+    }
+
+    void Update()
+    {
         // If on gameplay scene load the image in awake
-        if (levelChanger.currentLevelIndex == 3)
+        if (levelChanger.currentLevelIndex == 4)
         {
             LoadBeatmapImage();
         }
@@ -42,7 +47,8 @@ public class BackgroundManager : MonoBehaviour {
     // Get the image url from the database
     public void LoadBeatmapImage()
     {
-        filePath = Database.database.loadedBeatmapFolderDirectory; // Get the image filepath from the beatmap file
+        filePath = Database.database.beatmapFolderDirectory; // Get the image filepath from the beatmap file
+        completePath = filePath + imageName + imageType;
 
         // Load the image from the URL
         StartCoroutine(LoadImg());

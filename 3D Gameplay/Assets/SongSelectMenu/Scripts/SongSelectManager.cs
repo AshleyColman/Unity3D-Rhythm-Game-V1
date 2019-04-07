@@ -14,6 +14,7 @@ public class SongSelectManager : MonoBehaviour {
     public int previousDirectoryIndex;
     private string defaultBeatmapDifficulty = "advanced";
     private string extraBeatmapDifficuly = "extra";
+
     // Song select menu UI elements
     public TextMeshProUGUI songTitleText;
     public TextMeshProUGUI beatmapCreatorText;

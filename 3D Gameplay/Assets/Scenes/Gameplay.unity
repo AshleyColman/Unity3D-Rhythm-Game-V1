@@ -355,7 +355,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 82938cfb5b9a6134483fc8c436119875, type: 3}
+  m_Sprite: {fileID: 21300000, guid: dfc703839dc01b94b9b6803564f683ec, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1210,15 +1210,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4763130636801714, guid: 6443b109147ecb54287f7c5f5a73df4a, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 125.36896
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4763130636801714, guid: 6443b109147ecb54287f7c5f5a73df4a, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 56.536377
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4763130636801714, guid: 6443b109147ecb54287f7c5f5a73df4a, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -79.43588
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4763130636801714, guid: 6443b109147ecb54287f7c5f5a73df4a, type: 2}
       propertyPath: m_LocalRotation.x
