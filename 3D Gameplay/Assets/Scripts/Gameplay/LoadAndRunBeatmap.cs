@@ -6,7 +6,6 @@ using TMPro;
 
 public class LoadAndRunBeatmap : MonoBehaviour {
 
-    
     public SongProgressBar songProgressBar; // Required for song time for spawning
 
     float timer = 0f;
@@ -46,25 +45,19 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     public string songArtist;
     public string beatmapDifficulty;
     private bool hasPressedSpacebar; // Used for tracking if the song has been started, if it has then we disable the song from restarting when the spacebar is pressed again
-    private int totalHitObjects; 
+    private int totalHitObjects;
     bool hasSpawnedAllHitObjects; // Has the game spawned all hit objects?
     int totalHitObjectListSize; // The total hit amount of hit objects to be spawned
     bool checkObjectsThatCanBeHit = false;
-
     public bool[] hitObjectSpawned;
-
     private int startingYPosition; // The y position that is decremented each time a diamond is spawned to make the earliest appear ontop of later spawning diamonds
-
     PlayerSkillsManager playerSkillsManager; // Reference required for getting the fade speed and adjusting the spawn times based on the speed chosen
     private float fadeSpeedSelected; // The fade speed selected
 
-    void Awake()
-    {
-
-    }
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
 
         songProgressBar = FindObjectOfType<SongProgressBar>();
         specialTimeManager = FindObjectOfType<SpecialTimeManager>();
@@ -112,7 +105,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         // Get the spawn times and insert into the list
         hitObjectSpawnTimes = Database.database.LoadedHitObjectSpawnTime;
 
-        
+
         // Update the spawn times to match when they should be clicked (1 second earlier)
         for (int i = 0; i < hitObjectSpawnTimes.Count; i++)
         {
@@ -139,17 +132,21 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         totalHitObjectListSize = Database.database.LoadedPositionX.Count;
 
         hitObjectSpawned = new bool[totalHitObjectListSize];
-}
+
+    }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
+
+        Debug.Log("working");
 
         // Load special time start
         specialTimeStart = specialTimeManager.specialTimeStart;
         // Load special time end
         specialTimeEnd = specialTimeManager.specialTimeEnd;
 
-        
+
         // If the space key has been pressed we start the song and song timer
         if (Input.GetKeyDown(KeyCode.Space) && hasPressedSpacebar == false)
         {
@@ -169,73 +166,74 @@ public class LoadAndRunBeatmap : MonoBehaviour {
             songTimer += Time.deltaTime;
         }
 
-
         // Check if it's special time 
         CheckSpecialTime();
 
-        if (hasSpawnedAllHitObjects == false && hitObjectID < totalHitObjectListSize)
+        if (hitObjectID == (totalHitObjectListSize))
         {
-            // Spawn normal notes if not special time
-            if (isSpecialTime == false)
-            {
-                if (songTimer >= hitObjectSpawnTimes[hitObjectID])
-                {
-                    SpawnHitObject(hitObjectPositions[hitObjectID], hitObjectType[hitObjectID], hitObjectID);
-                    hitObjectID++;
-                }
-            }
-            // Spawn special notes if special time
-            else if (isSpecialTime == true)
-            {
-                if (songTimer >= hitObjectSpawnTimes[hitObjectID])
-                {
-                    SpawnSpecialHitObject(hitObjectPositions[hitObjectID], hitObjectType[hitObjectID]);
-                    hitObjectID++;
-                }
-            }
+            hasSpawnedAllHitObjects = true;
+        }
 
-            if (startCheck == true)
+        if (isSpecialTime == false && hasSpawnedAllHitObjects == false)
+        {
+            if (songTimer >= hitObjectSpawnTimes[hitObjectID])
             {
-                if (spawnedList[0] != null)
-                {
-                    if (objectThatCanBeHitIndex == 0)
-                    {
-                        spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().canBeHit = true;
-                    }
-                }
+                SpawnHitObject(hitObjectPositions[hitObjectID], hitObjectType[hitObjectID], hitObjectID);
+                hitObjectID++;
+            }
+        }
+        // Spawn special notes if special time
+        else if (isSpecialTime == true && hasSpawnedAllHitObjects == false)
+        {
+            if (songTimer >= hitObjectSpawnTimes[hitObjectID])
+            {
+                SpawnSpecialHitObject(hitObjectPositions[hitObjectID], hitObjectType[hitObjectID]);
+                hitObjectID++;
+            }
+        }
 
+
+        if (startCheck == true)
+        {
+            Debug.Log("working inbetween");
+            if (spawnedList.Count != 0)
+            {
                 if (spawnedList[objectThatCanBeHitIndex] == null)
                 {
+                    Debug.Log("object destroyed");
                     // Object has been destroyed
-                    // assign canBeHit to the next one in the list IF the next one has spawned
-
-                    if (hitObjectSpawned[objectThatCanBeHitIndex + 1] == true)
+                    // && objectThatCanBeHitIndex < nextIndex
+                    if (objectThatCanBeHitIndex < totalHitObjectListSize && objectThatCanBeHitIndex < nextIndex)
                     {
                         objectThatCanBeHitIndex++;
-                        // A new object has spawned assign it to be hit and increment objectThatCanBeHitIndex
-                        spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().canBeHit = true;
                     }
+                    else
+                    {
+                        // Do not increment
+                    }
+                }
+                else
+                {
+                    spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().CanBeHit();
                 }
             }
         }
+
     }
 
-
-
     // Spawn the hit object
-    public void SpawnHitObject(Vector3 positionPass, int hitObjectTypePass, int hitObjectID)
+    private void SpawnHitObject(Vector3 positionPass, int hitObjectTypePass, int hitObjectID)
     {
         spawnedList.Add(Instantiate(hitObject[hitObjectTypePass], positionPass, Quaternion.Euler(0, 45, 0)));
         startCheck = true;
         nextIndex++;
-        checkObjectsThatCanBeHit = true;
 
         // Add to the list of spawned
         hitObjectSpawned[hitObjectID] = true;
     }
 
     // Spawn special hit object during special time
-    public void SpawnSpecialHitObject(Vector3 positionPass, int hitObjectTypePass)
+    private void SpawnSpecialHitObject(Vector3 positionPass, int hitObjectTypePass)
     {
         spawnedList.Add(Instantiate(specialHitObject[hitObjectTypePass], positionPass, Quaternion.Euler(0, 45, 0)));
         startCheck = true;
@@ -247,7 +245,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     }
 
     // Check if it's special time, if it is we spawn special time notes
-    public void CheckSpecialTime()
+    private void CheckSpecialTime()
     {
         if (specialTimeManager.isSpecialTime == true)
         {
