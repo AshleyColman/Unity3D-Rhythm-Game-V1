@@ -48,16 +48,23 @@ public class SongSelectManager : MonoBehaviour {
     // Reference to the background image manager for loading the beatmap image
     private BackgroundManager backgroundManager;
 
+
+    // Reference to the loadLastSong manager for loading the last song in the song select screen
+    private LoadLastSelectedSong loadLastSelectedSong;
+    
     // Use this for initialization
     void Start () {
         songClipChosenIndex = 0;
         songSelectPreview = FindObjectOfType<SongSelectPreview>();
         backgroundManager = FindObjectOfType<BackgroundManager>();
+        loadLastSelectedSong = FindObjectOfType<LoadLastSelectedSong>();
         beatmapDirectories = Directory.GetDirectories(@"c:\Beatmaps");
-        selectedDirectoryIndex = 0; // Set the first song when entering the screen to the first one in the directory
-        previousDirectoryIndex = selectedDirectoryIndex;
         CheckIfAdvancedDifficultyExists();
         CheckIfExtraDifficultyExists();
+
+        // Load the lastSelectedSongIndex
+        selectedDirectoryIndex = loadLastSelectedSong.LoadSelectedDirectoryIndex();
+        previousDirectoryIndex = selectedDirectoryIndex;
 
         if (advancedDifficultyExist)
         {
@@ -71,6 +78,7 @@ public class SongSelectManager : MonoBehaviour {
         {
             // Do not load any new song
         }
+
 
     }
 	
@@ -147,6 +155,12 @@ public class SongSelectManager : MonoBehaviour {
             {
                 DifficultyOptionAdvancedLevelText.text = advancedDifficultyLevel;
             }
+
+            // Save the selected song index
+            loadLastSelectedSong.SaveSelectedDirectoryIndex(selectedDirectoryIndex);
+
+
+
             // Update the previous index to be the current index
             previousDirectoryIndex = selectedDirectoryIndex;
         }

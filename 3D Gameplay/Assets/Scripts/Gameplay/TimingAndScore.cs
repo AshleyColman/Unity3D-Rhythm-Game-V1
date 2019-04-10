@@ -110,7 +110,6 @@ public class TimingAndScore : MonoBehaviour {
             scoreManager.AddJudgement("MISS"); // Sets judgement to early
             scoreManager.ResetCombo(); // Reset combo as missed
             DestroyHitObject(); // Destroy the hit object
-            hitSoundPreview.PlayMissSound(); // Play the miss sound effect
         }
 
         // If the user has pressed the right object key enable hit 
@@ -289,19 +288,16 @@ public class TimingAndScore : MonoBehaviour {
         switch (fadeSpeedSelected)
         {
             case "SLOW":
-                Debug.Log("SLOW SPEED SET");
                 earlyJudgementTime = 1f;
                 perfectJudgementTime = 1.8f;
                 destroyedTime = 2.2f;
                 break;
             case "NORMAL":
-                Debug.Log("NORMAL");
                 earlyJudgementTime = 0.4f;
                 perfectJudgementTime = 0.8f;
                 destroyedTime = 1.2f;
                 break;
             case "FAST":
-                Debug.Log("FAST");
                 earlyJudgementTime = 0.2f;
                 perfectJudgementTime = 0.4f;
                 destroyedTime = 0.7f;

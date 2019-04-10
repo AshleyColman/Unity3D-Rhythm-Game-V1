@@ -104,14 +104,12 @@ public class HitSoundPreview : MonoBehaviour {
     // Play the hit sound chosen
     public void PlayHitSound()
     {
-        Debug.Log("play hit sound");
         hitSoundAudioSource.PlayOneShot(hitSoundDatabase.hitSoundClip[hitSoundChosenIndex], hitSoundVolume);
     }
 
     // Play miss sound
     public void PlayMissSound()
     {
-        Debug.Log("play miss sound");
         hitSoundAudioSource.PlayOneShot(hitSoundDatabase.missSoundClip, hitSoundVolume);
     }
 }

@@ -45,12 +45,6 @@ public class BeatmapSetup : MonoBehaviour {
 
     // Beatmap setup panel shown during the setup
     public Image beatmapSetupPanel;
-    public InputField beatmapImageURLInputField;
-    public Button beatmapImageURLSaveButton;
-
-
-    // Beatmap image url
-    public string imageURL;
 
     public static Beatmap beatmap;
     string FILE_EXTENSION = ".dia";
@@ -157,31 +151,12 @@ public class BeatmapSetup : MonoBehaviour {
         // Disable the button and textfield and enable the next buttons
         songArtistSaveButton.gameObject.SetActive(false);
         songArtistInputField.gameObject.SetActive(false);
-        // Enable the next input field and button
-        beatmapImageURLSaveButton.gameObject.SetActive(true);
-        beatmapImageURLInputField.gameObject.SetActive(true);
-        // Change the color of the third progress block 
-        SetupProgressBlock3.GetComponent<Image>().color = SetupProgressBlockCompletedColor;
-    }
-
-    // Insert the image URL
-    public void InsertImageURL()
-    {
-        // Save
-        imageURL = beatmapImageURLInputField.text;
-        // Disable the button and textfield and enable the next buttons
-        beatmapImageURLSaveButton.gameObject.SetActive(false);
-        beatmapImageURLInputField.gameObject.SetActive(false);
         // Disable the button and textfield and enable the next buttons
         beatmapDifficultyAdvancedButton.gameObject.SetActive(true);
         beatmapDifficultyExtraButton.gameObject.SetActive(true);
         beatmapDifficultyInputField.gameObject.SetActive(true);
-
-        // Change the color of the fourth progress block 
-        SetupProgressBlock4.GetComponent<Image>().color = SetupProgressBlockCompletedColor;
-
-        // Update the editor background image 
-        UpdateEditorBackgroundImage();
+        // Change the color of the third progress block 
+        SetupProgressBlock3.GetComponent<Image>().color = SetupProgressBlockCompletedColor;
     }
 
     // Insert beatmap difficulty
@@ -237,17 +212,10 @@ public class BeatmapSetup : MonoBehaviour {
         UpdateEditorUI();
     }
 
-
     // Update the song name, artist and difficulty with the values entered
     public void UpdateEditorUI()
     {
         editorTitle.text = songName + " [ " + songArtist + " ] " + " [ " + beatmapDifficulty.ToUpper() + " ] ";
-    }
-
-    // Update the background image for the editor
-    private void UpdateEditorBackgroundImage()
-    {
-        //backgroundManager.LoadEditorBeatmapImage(imageURL);
     }
 
 }

@@ -34,12 +34,17 @@ public class SongSelectMenuFlash : MonoBehaviour {
 		
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
+            // Stop beatmap leaderboard ranking loads
+            beatmapRankingManager.StopAllCoroutines();
             // Load next song
             LoadNextSong();
+
         }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            // Stop beatmap leaderboard ranking loads
+            beatmapRankingManager.StopAllCoroutines();
             // Load the previous song
             LoadPreviousSong();
         }

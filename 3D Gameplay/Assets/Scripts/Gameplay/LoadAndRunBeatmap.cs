@@ -139,8 +139,6 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     void Update()
     {
 
-        Debug.Log("working");
-
         // Load special time start
         specialTimeStart = specialTimeManager.specialTimeStart;
         // Load special time end
@@ -195,17 +193,23 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
         if (startCheck == true)
         {
-            Debug.Log("working inbetween");
             if (spawnedList.Count != 0)
             {
                 if (spawnedList[objectThatCanBeHitIndex] == null)
                 {
-                    Debug.Log("object destroyed");
                     // Object has been destroyed
                     // && objectThatCanBeHitIndex < nextIndex
-                    if (objectThatCanBeHitIndex < totalHitObjectListSize && objectThatCanBeHitIndex < nextIndex)
+                    if (objectThatCanBeHitIndex < totalHitObjectListSize && nextIndex > objectThatCanBeHitIndex) 
                     {
-                        objectThatCanBeHitIndex++;
+                        if (objectThatCanBeHitIndex == (totalHitObjectListSize - 1))
+                        {
+                            // Do not increment
+                        }
+                        else
+                        {
+                            objectThatCanBeHitIndex++;
+                        }
+                        
                     }
                     else
                     {

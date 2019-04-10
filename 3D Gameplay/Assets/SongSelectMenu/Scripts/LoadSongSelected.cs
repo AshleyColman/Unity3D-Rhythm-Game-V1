@@ -16,6 +16,16 @@ public class LoadSongSelected : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        // Get all the game objects called songLoadToGameplay and put into an array
+        GameObject[] songLoadToGameplay = GameObject.FindGameObjectsWithTag("SongLoadToGameplay");
+
+        // If there is more than 1 songLoadToGameplay delete
+        if (songLoadToGameplay.Length > 1)
+        {
+            Destroy(songLoadToGameplay[1].gameObject);
+        }
+
+
         // Get the reference when in the gameplay scene
         levelChanger = FindObjectOfType<LevelChanger>();
 
