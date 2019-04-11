@@ -13,14 +13,10 @@ public class LeaderboardCreate : MonoBehaviour {
         beatmapSetup = FindObjectOfType<BeatmapSetup>();
     }
 
-    void Update()
+    // Create a leaderboard for the beatmap
+    public void CreateLeaderboard()
     {
-        // If the q key is pressed create a leaderboard for this beatmap
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Debug.Log("qpressed");
-            StartCoroutine(CreateNewBeatmapLeaderboard());
-        }
+        StartCoroutine(CreateNewBeatmapLeaderboard());
     }
 
     IEnumerator CreateNewBeatmapLeaderboard()

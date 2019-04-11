@@ -56,4 +56,10 @@ public class LoadLastSelectedSong : MonoBehaviour
     {
         timesEnteredGameplayScene++;
     }
+
+    // index is at 0
+    // increase index when selecting song
+    // game loads song instantly with value of 0
+    // replaces the saved one with 0
+
 }
