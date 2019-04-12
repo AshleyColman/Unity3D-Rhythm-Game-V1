@@ -30,7 +30,7 @@ public class TimingAndScore : MonoBehaviour {
     private string objectTag; // The tag of the object
     private KeyCode objectKey = KeyCode.None;
 
-    public bool canBeHit = false;
+    public bool canBeHit;
     public bool isSpecial = false; // Is it a special note during special time?
 
     private int earlyHealthValue; // The amount of health given when hitting early
@@ -110,6 +110,7 @@ public class TimingAndScore : MonoBehaviour {
             scoreManager.AddJudgement("MISS"); // Sets judgement to early
             scoreManager.ResetCombo(); // Reset combo as missed
             DestroyHitObject(); // Destroy the hit object
+            hitSoundPreview.PlayMissSound(); // Play the miss sound effect
         }
 
         // If the user has pressed the right object key enable hit 
@@ -257,6 +258,7 @@ public class TimingAndScore : MonoBehaviour {
     // Set as earliest note
     public void CanBeHit()
     {
+        Debug.Log("can be hit = " + canBeHit);
         canBeHit = true;
     }
 

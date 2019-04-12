@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MouseFollow : MonoBehaviour {
 
-    private float distance = 500f;
+    public float distance = 10f;
     public Vector3 pos;
 
     public void Update()

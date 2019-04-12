@@ -16,25 +16,26 @@ public class BackgroundManager : MonoBehaviour {
     // The image to change
     public Image img;
 
-    bool hasLoadedImage; 
-
     // Get the reference, load the image on start only if the gameplay scene is active
-    private LevelChanger levelChanger; 
+    private LevelChanger levelChanger;
+
+    bool hasSetBackground;
 
     void Awake()
     {
         levelChanger = FindObjectOfType<LevelChanger>();
-        hasLoadedImage = false;
+
+        hasSetBackground = false;
 
     }
-
+    
     void Update()
     {
         // If on gameplay scene load the image in awake
-        if (levelChanger.currentLevelIndex == 4 && hasLoadedImage == false || levelChanger.currentLevelIndex == 5 && hasLoadedImage == false)
+        if (levelChanger.currentLevelIndex == 4 && hasSetBackground == false || levelChanger.currentLevelIndex == 5 && hasSetBackground == false)
         {
             LoadBeatmapImage();
-            hasLoadedImage = true;
+            hasSetBackground = true;
         }
     }
 
