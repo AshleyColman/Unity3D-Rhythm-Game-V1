@@ -1,19 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerSkillsManager : MonoBehaviour {
 
-    // Fade speed skill
+    // FADE SPEED SKILL
     public float fadeSpeedSlow = 2f, fadeSpeedNormal = 1f, fadeSpeedFast = 0.5f;
     public int fadeSpeedSelectedIndex = 0;
     public string fadeSpeedSelected;
+    public Animator fadeSpeedAnimator;
 
+    // FADE SKILL
+    public bool fadeSkillSelected;
+    private GameObject fadeSkillImage;
+
+    // DISCO SKILL
+    public bool discoSkillSelected;
+    private GameObject discoSkillCamera; // The disco animated camera
+    private AudioListener discoSkillCameraAudioListener;
+    private GameObject mainCamera; // The main default camera if the disco skill isn't selected
+    private AudioListener mainCameraAudioListener;
     // Level changer
     public LevelChanger levelChanger;
 
-    // Fade speed animation
-    public Animator fadeSpeedAnimator;
+
 
     void Update()
     {
@@ -30,6 +41,45 @@ public class PlayerSkillsManager : MonoBehaviour {
             // Dont destroy the manager
             DontDestroyOnLoad(this.gameObject);
         }
+
+        // If in the gameplay scene
+        if (levelChanger.currentLevelIndex == 4)
+        {
+            // FADE SKILL
+            if (fadeSkillImage == null)
+            {
+                fadeSkillImage = GameObject.FindGameObjectWithTag("FadeSkillBackground");
+                fadeSkillImage.gameObject.SetActive(false);
+            }
+
+            if (fadeSkillSelected == true && Input.GetKeyDown(KeyCode.Space))
+            {
+                fadeSkillImage.gameObject.SetActive(true);
+            }
+
+            // DISCO SKILL
+            if (discoSkillCamera == null)
+            {
+                discoSkillCamera = GameObject.FindGameObjectWithTag("DiscoSkillCamera");
+                discoSkillCameraAudioListener = discoSkillCamera.GetComponent<AudioListener>();
+                discoSkillCameraAudioListener.enabled = false;
+                discoSkillCamera.gameObject.SetActive(false);
+            }
+
+            if (discoSkillSelected == true && Input.GetKeyDown(KeyCode.Space))
+            {
+                // Disable the main camera
+                mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+                mainCameraAudioListener = mainCamera.GetComponent<AudioListener>();
+                mainCameraAudioListener.enabled = false;
+                mainCamera.gameObject.SetActive(false);
+
+                // Enable the disco camera
+                discoSkillCamera.gameObject.SetActive(true);
+                discoSkillCameraAudioListener.enabled = true;
+            }
+        }
+
 
         // However if escape is pressed delete the manager
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -51,6 +101,24 @@ public class PlayerSkillsManager : MonoBehaviour {
         }
     }
 
+    // Reset equiped skills
+    public void ResetEquipedSkills()
+    {
+        fadeSkillSelected = false;
+        discoSkillSelected = false;
+    }
+
+    // Equip the disco skill
+    public void EquipDiscoSkill()
+    {
+        discoSkillSelected = true;
+    }
+
+    // Equip the fade skill
+    public void EquipFadeSkill()
+    {
+        fadeSkillSelected = true;
+    }
 
 
     // Increase the fade speed selected as the button preview has been pressed +

@@ -25,6 +25,8 @@ TagManager:
   - SongLoadToGameplay
   - LoadLastSelectedSong
   - EditorHitObject
+  - FadeSkillBackground
+  - DiscoSkillCamera
   layers:
   - Default
   - TransparentFX

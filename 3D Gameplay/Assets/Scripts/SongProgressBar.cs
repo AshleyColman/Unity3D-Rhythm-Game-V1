@@ -76,37 +76,34 @@ public class SongProgressBar : MonoBehaviour {
                     active = true;
                 }
 
-                // Do not destroy the song player 
+                // Dont destroy the song audio source in gameplay to results page to continue the song playing after the gameplay has ended
                 DontDestroyOnLoad(this.gameObject);
-            }
-
-            // Hide progress bar if in the results scene
-            if (levelChanger.currentLevelIndex == 5)
-            {
-                HideProgressBar();
             }
 
         }
         
-
-
-        if (active)
+        // If the song player bar exists update it, if not (such as on results scene) don't update
+        if (songPlayerBar != null)
         {
-            if (playing)
+            if (active)
             {
-                if (songAudioSource.isPlaying)
+                if (playing)
                 {
-                    amount = (songAudioSource.time) / (songAudioSource.clip.length);
-                    songPlayerBar.fillAmount = amount;
-                    actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
-                    songTotalDuration.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.clip.length);
-                }
-                else
-                {
-                    
+                    if (songAudioSource.isPlaying)
+                    {
+                        amount = (songAudioSource.time) / (songAudioSource.clip.length);
+                        songPlayerBar.fillAmount = amount;
+                        actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
+                        songTotalDuration.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.clip.length);
+                    }
+                    else
+                    {
+
+                    }
                 }
             }
         }
+
 
     }
 
@@ -156,15 +153,6 @@ public class SongProgressBar : MonoBehaviour {
         actualPosition.text = "0:00";
     }
 
-    // Disable song player bar visually in the results page
-    private void HideProgressBar()
-    {
-        actualPosition.gameObject.SetActive(false);
-        songTotalDuration.gameObject.SetActive(false);
-        playAndPauseButton.gameObject.SetActive(false);
-        songPlayerBar.gameObject.SetActive(false);
-        songPlayerSlider.gameObject.SetActive(false);
-    }
 }
 
 
