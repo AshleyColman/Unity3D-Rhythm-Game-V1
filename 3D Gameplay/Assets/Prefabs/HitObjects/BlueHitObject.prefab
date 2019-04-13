@@ -322,6 +322,7 @@ MonoBehaviour:
   playerTotalScore: 0
   hitObjectHit: 0
   hitObjectPosition: {x: 0, y: 0, z: 0}
+  canBeHit: 0
   isSpecial: 0
   objectEarliestIndex: 0
   objectScoreType: 

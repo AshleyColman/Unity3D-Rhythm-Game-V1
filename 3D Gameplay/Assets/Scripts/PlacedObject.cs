@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlacedObject : MonoBehaviour {
 
@@ -15,11 +16,13 @@ public class PlacedObject : MonoBehaviour {
     public int editorPlacedHitObjectType;
     private int specialTimeKeyPresses;
     public Image backgroundImage; // To spawn during special time
-    public Text instructionButtonText; // The instruction button text
+    public TextMeshProUGUI instructionButtonText; // The instruction button text
     public Animator instructionButtonAnimation; // Animate the instruction button text
     public bool startSongTimer;
     public float songTimer;
     private EditorSoundController editorSoundController; // The editorSoundController
+
+    public GameObject editorHitObject; // Editor hit object used for tracking the position and saving the position
 
     // Get the reference to the beatmap setup to disable starting the song when space is pressed whilst in the editor
     public BeatmapSetup beatmapSetup;
@@ -41,11 +44,8 @@ public class PlacedObject : MonoBehaviour {
     public Button resetButton;
     public Button placeButton;
 
-    private bool uiActive; // Used for controlling the UI hide and show
-
     // Use this for initialization
     void Start () {
-        uiActive = true;
         hasPressedSpacebar = false;
         startSongTimer = false;
         songTimer = 0f;
@@ -60,6 +60,12 @@ public class PlacedObject : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        // Find the editor hit object in the editor scene once instantiated
+        if (editorHitObject == null)
+        {
+            editorHitObject = GameObject.FindGameObjectWithTag("EditorHitObject");
+
+        }
 
         if (beatmapSetup.settingUp == false && hasPressedSpacebar == false)
         {
@@ -82,30 +88,6 @@ public class PlacedObject : MonoBehaviour {
         if (startSongTimer == true)
         {
             songTimer += Time.deltaTime;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            if (uiActive == true)
-            {
-                // If the tab key has been pressed disable all UI buttons to increase the charting area space
-                placeButton.gameObject.SetActive(false);
-                saveButton.gameObject.SetActive(false);
-                instructionButton.gameObject.SetActive(false);
-                resetButton.gameObject.SetActive(false);
-                // Set uiActive to false
-                uiActive = false;
-            }
-            else if (uiActive == false)
-            {
-                // If the tab key has been pressed enable all UI buttons
-                placeButton.gameObject.SetActive(true);
-                saveButton.gameObject.SetActive(true);
-                instructionButton.gameObject.SetActive(true);
-                resetButton.gameObject.SetActive(true);
-                // Set uiActive to true
-                uiActive = true;
-            }
         }
 
         // Place a hit object only if the mouse has been clicked and the UI button has been clicked
@@ -172,18 +154,6 @@ public class PlacedObject : MonoBehaviour {
                 editorSoundController.PlayPlacedSound();
             }
 
-            if (Input.GetKeyDown(KeyCode.Q) && hasCreatedLeaderboard == false)
-            {
-                // Set created leaderboard to true
-                hasCreatedLeaderboard = true;
-                // Update the instruction button text and play animation
-                UpdateInstructionButtonText("LeaderboardCreated");
-                // Play the specialTimeFirstPlaced sound effect
-                editorSoundController.PlaySpecialTimeStartPlacedSound();
-                // Set the save button to interactable
-                saveButton.interactable = true;
-            }
-
             // Special Time Key Press Set Times
             if (Input.GetKeyDown(KeyCode.H))
             {
@@ -232,18 +202,25 @@ public class PlacedObject : MonoBehaviour {
 
     public void SpawnAndSavePlacedObject(int editorPlacedHitObjectType)
     {
-        instantiatePosition = mouseFollow.pos;
+        // Set a new vector 3 based off the editor hit object position in the scene
+        float x = editorHitObject.transform.position.x;
+        float y = 10;
+        float z = editorHitObject.transform.position.z;
+
+
+        // Set the instantiate position to the editor hit object position but with a Y of 0
+        instantiatePosition = new Vector3(x, y, z);
         InstantiateEditorPlacedHitObject(instantiatePosition, editorPlacedHitObjectType);
         // Store the time spawned and position of the object
-        editorHitObjectPositions.Add(mouseFollow.pos);
+        editorHitObjectPositions.Add(instantiatePosition);
         // Add to total
         totalEditorHitObjects += 1;
 
 
         // Save object position to the list?
-        Database.database.PositionX.Add(mouseFollow.pos.x);
-        Database.database.PositionY.Add(mouseFollow.pos.y);
-        Database.database.PositionZ.Add(mouseFollow.pos.z);
+        Database.database.PositionX.Add(instantiatePosition.x);
+        Database.database.PositionY.Add(instantiatePosition.y);
+        Database.database.PositionZ.Add(instantiatePosition.z);
 
         // Save object spawn time
         Database.database.HitObjectSpawnTime.Add(songTimer);
@@ -282,35 +259,49 @@ public class PlacedObject : MonoBehaviour {
         if (actionPass == "SpacebarPressed")
         {
             // Update the instruction button text
-            instructionButtonText.text = "Press H to Start Special Time";
+            instructionButtonText.text = "PRESS H TO START SPECIAL TIME";
             // Do instruction button animation
             instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
         }
         else if (actionPass == "HKeyPressedOnce")
         {
             // Update the instruction button text
-            instructionButtonText.text = "Press H to End Special Time";
+            instructionButtonText.text = "Press H TO END SPECIAL TIME";
             // Do instruction button animation
             instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
         }
         else if (actionPass == "HKeyPressedTwice")
         {
             // Update the instruction button text
-            instructionButtonText.text = "Press Q to create a leaderboard";
+            instructionButtonText.text = "PRESS 'FINISHED' WHEN COMPLETE";
             // Do instruction button animation
             instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
         }
         else if (actionPass == "LeaderboardCreated")
         {
             // Update the instruction button text
-            instructionButtonText.text = "Save Your Beatmap When Finished";
+            instructionButtonText.text = "SELECT A DIFFICULTY TYPE";
+            // Do instruction button animation
+            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
+        }
+        else if (actionPass == "DifficultyTypeSelected")
+        {
+            // Update the instruction button text
+            instructionButtonText.text = "SELECT A DIFFICULTY LEVEL";
+            // Do instruction button animation
+            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
+        }
+        else if (actionPass == "DifficultyLevelSelected")
+        {
+            // Update the instruction button text
+            instructionButtonText.text = "SAVE YOUR BEATMAP";
             // Do instruction button animation
             instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
         }
         else if (actionPass == "SaveButtonPressed")
         {
             // Update the instruction button text
-            instructionButtonText.text = "Beatmap is Saved";
+            instructionButtonText.text = "BEATMAP SAVED";
             // Do instruction button animation
             instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
         }
@@ -324,10 +315,16 @@ public class PlacedObject : MonoBehaviour {
         songTimer = 0f;
         startSongTimer = false;
         // Update the instruction button text
-        instructionButtonText.text = "Press Space to Start Live Mapping";
+        instructionButtonText.text = "PRESS SPACE TO START LIVE MAPPING";
         // Do instruction button animation
         instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
         // Reset specialTimeKeyPresses
         specialTimeKeyPresses = 0;
+    }
+
+    // Disable the save button
+    public void DisableSaveButton()
+    {
+        saveButton.interactable = false;
     }
 }

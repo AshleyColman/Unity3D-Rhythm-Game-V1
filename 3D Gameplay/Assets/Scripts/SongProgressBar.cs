@@ -59,7 +59,7 @@ public class SongProgressBar : MonoBehaviour {
         else
         {
             // Play song when user press Space button in gameplay
-            if (levelChanger.currentLevelIndex == 4)
+            if (levelChanger.currentLevelIndex == 4 || levelChanger.currentLevelIndex == 5)
             {
                 // Set the song to the song loaded
                 songClipChosenIndex = Database.database.loadedSongClipChosenIndex;
@@ -75,6 +75,15 @@ public class SongProgressBar : MonoBehaviour {
                     playing = true;
                     active = true;
                 }
+
+                // Do not destroy the song player 
+                DontDestroyOnLoad(this.gameObject);
+            }
+
+            // Hide progress bar if in the results scene
+            if (levelChanger.currentLevelIndex == 5)
+            {
+                HideProgressBar();
             }
 
         }
@@ -145,6 +154,16 @@ public class SongProgressBar : MonoBehaviour {
         songPlayerBar.fillAmount = amount;
         // Reset actual position text on playbar
         actualPosition.text = "0:00";
+    }
+
+    // Disable song player bar visually in the results page
+    private void HideProgressBar()
+    {
+        actualPosition.gameObject.SetActive(false);
+        songTotalDuration.gameObject.SetActive(false);
+        playAndPauseButton.gameObject.SetActive(false);
+        songPlayerBar.gameObject.SetActive(false);
+        songPlayerSlider.gameObject.SetActive(false);
     }
 }
 

@@ -316,7 +316,7 @@ public class BeatmapRankingManager : MonoBehaviour
         }
     }
 
-    IEnumerator RetrieveBeatmapLeaderboard(int leaderboardPlaceToGetPass)
+    public IEnumerator RetrieveBeatmapLeaderboard(int leaderboardPlaceToGetPass)
     {
         GetLeaderboardTableName();
 
@@ -522,7 +522,7 @@ public class BeatmapRankingManager : MonoBehaviour
 
 
     // Retrieve the users personal best score
-    IEnumerator RetrievePersonalBest()
+    public IEnumerator RetrievePersonalBest()
     {
         GetLeaderboardTableName();
 

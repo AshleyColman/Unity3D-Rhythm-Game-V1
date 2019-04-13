@@ -7,7 +7,7 @@ public class GameplayToResultsManager : MonoBehaviour {
 
     private ScoreManager scoreManager;
     public LevelChanger levelChanger;
-    public SongProgressBar songProgressBar;
+    private LoadAndRunBeatmap loadAndRunBeatmap;
 
     // UI variables
     public int highestCombo;
@@ -29,10 +29,12 @@ public class GameplayToResultsManager : MonoBehaviour {
     public string songTitle;
     public string beatmapCreator;
 
+    private bool allHitObjectsHaveBeenHit; // Have all the hit objects been hit? Used for going to the results screen if they have
 
     // Use this for initialization
     void Start () {
         scoreManager = FindObjectOfType<ScoreManager>();
+        loadAndRunBeatmap = FindObjectOfType<LoadAndRunBeatmap>();
     }
 	
 	// Update is called once per frame
@@ -44,15 +46,17 @@ public class GameplayToResultsManager : MonoBehaviour {
 
         if (levelChanger.currentLevelIndex == 4)
         {
-            AudioSourceTime = songProgressBar.songAudioSource.time;
-            AudioSourceLength = songProgressBar.songAudioSource.clip.length;
+            // Check if the last hit object has been hit
+            allHitObjectsHaveBeenHit = loadAndRunBeatmap.CheckIfAllHitObjectsHaveBeenHit();
 
-            if (AudioSourceTime >= AudioSourceLength)
+            if (allHitObjectsHaveBeenHit == true)
             {
                 // Get the results from the score manager before transitioning
                 GetResults();
                 TransitionToResultsPage();
             }
+
+
         }
 
         if (levelChanger.currentLevelIndex == 4 || levelChanger.currentLevelIndex == 5)

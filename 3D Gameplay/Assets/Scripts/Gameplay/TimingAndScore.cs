@@ -30,7 +30,7 @@ public class TimingAndScore : MonoBehaviour {
     private string objectTag; // The tag of the object
     private KeyCode objectKey = KeyCode.None;
 
-    public bool canBeHit;
+    public bool canBeHit = false;
     public bool isSpecial = false; // Is it a special note during special time?
 
     private int earlyHealthValue; // The amount of health given when hitting early
@@ -67,7 +67,7 @@ public class TimingAndScore : MonoBehaviour {
         // Initialize scores
         earlyScore = 100; 
         perfectScore = 500; 
-        goodScore = 250; 
+        goodScore = 200; 
 
         playerTotalScore = 0;
         timeWhenHit = 0;
@@ -76,9 +76,9 @@ public class TimingAndScore : MonoBehaviour {
         objectTag = gameObject.tag;
 
         // Initialize health bar values when hit
-        earlyHealthValue = 5;
-        perfectHealthValue = 15;
-        goodHealthValue = 10;
+        earlyHealthValue = -5;
+        perfectHealthValue = 10;
+        goodHealthValue = 5;
         missHealthValue = -10;
 
         // Get and set the fade speed for the hit object
@@ -100,106 +100,127 @@ public class TimingAndScore : MonoBehaviour {
         // The timer increments per frame
         timer += Time.deltaTime;
 
-        // Spawn miss explosion
+        // Missed object, spawn the miss explosion, set the healthbar to miss value and play sound effect
         if (timer >= destroyedTime)
         {
-            healthbar.healthBarValue = missHealthValue; // Update the healthbar with the miss value
-            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
-            hitObjectPosition = transform.position; // Get the position of the object
-            explosionController.SpawnExplosion(hitObjectPosition, "Miss"); // Pass the position and spawn a miss particle system
-            scoreManager.AddJudgement("MISS"); // Sets judgement to early
-            scoreManager.ResetCombo(); // Reset combo as missed
-            DestroyHitObject(); // Destroy the hit object
-            hitSoundPreview.PlayMissSound(); // Play the miss sound effect
+            MissedObject();
         }
 
-        // If the user has pressed the right object key enable hit 
-        if (Input.GetKeyDown(objectKey) && canBeHit == true)
+
+        if (Input.anyKeyDown)
         {
-            // Timing check to calculate the type of hit on timing (perfect, miss)
-
-            if (hitObjectHit == false)
+            if (canBeHit == true)
             {
-                // CHECK IF PLAYER HIT EARLY
-                if (timer >= hitObjectStartTime && timer <= earlyJudgementTime)
+                // If the user has pressed the right object key enable hit 
+                if (Input.GetKeyDown(objectKey))
                 {
-                    CheckIsSpecial(); // Check if the note is special
+                    // Timing check to calculate the type of hit on timing (perfect, miss)
 
-                    hitObjectPosition = transform.position; // Get the position of the object
+                    if (hitObjectHit == false)
+                    {
+                        // CHECK IF PLAYER HIT EARLY
+                        if (timer >= hitObjectStartTime && timer <= earlyJudgementTime)
+                        {
+                            CheckIsSpecial(); // Check if the note is special
 
-                    explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
+                            hitObjectPosition = transform.position; // Get the position of the object
 
-                    hitSoundPreview.PlayHitSound(); // Play the hitsound
+                            explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
-                    scoreManager.AddJudgement("EARLY"); // Sets judgement to early
+                            hitSoundPreview.PlayHitSound(); // Play the hitsound
 
-                    combo++; // Increase combo
-                    scoreManager.AddCombo(combo); // Send current combo to update the UI text
+                            scoreManager.AddJudgement("EARLY"); // Sets judgement to early
 
-                    playerTotalScore += earlyScore; // Increase score
-                    scoreManager.AddScore(playerTotalScore, objectScoreType); // Pass to score manager to update text
+                            combo++; // Increase combo
+                            scoreManager.AddCombo(combo); // Send current combo to update the UI text
 
-                    timeWhenHit = timer; // Get the time when hit
+                            playerTotalScore += earlyScore; // Increase score
+                            scoreManager.AddScore(playerTotalScore, objectScoreType); // Pass to score manager to update text
 
-                    healthbar.healthBarValue = earlyHealthValue; // Update the healthbar with the miss value
-                    healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+                            timeWhenHit = timer; // Get the time when hit
 
-                    DestroyHitObject(); // Destroy hit object
+                            healthbar.healthBarValue = earlyHealthValue; // Update the healthbar with the miss value
+                            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+
+                            DestroyHitObject(); // Destroy hit object
+                        }
+
+                        // CHECK IF PLAYER HIT GOOD
+                        if (timer >= earlyJudgementTime && timer <= perfectJudgementTime)
+                        {
+                            CheckIsSpecial(); // Check if the note is special
+
+                            hitObjectPosition = transform.position; // Get the position of the object
+                            explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
+
+                            hitSoundPreview.PlayHitSound(); // Play the hit sound
+
+                            scoreManager.AddJudgement("GOOD"); // Sets judgement to early
+
+                            combo++; // Increase combo
+                            scoreManager.AddCombo(combo); // Send current combo to update the UI text
+
+                            playerTotalScore += goodScore; // Add early score value to the players current score
+                            scoreManager.AddScore(playerTotalScore, objectScoreType); // Pass to score manager to update text
+
+                            timeWhenHit = timer; // Get the time when hit
+
+                            healthbar.healthBarValue = goodHealthValue; // Update the healthbar with the miss value
+                            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+
+                            DestroyHitObject(); // Destroy hit object
+                        }
+
+                        // CHECK IF PLAYER HIT GOOD
+                        if (timer >= perfectJudgementTime && timer <= destroyedTime)
+                        {
+                            CheckIsSpecial(); // Check if the note is special
+
+                            hitObjectPosition = transform.position; // Get the position of the object
+                            explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
+
+                            hitSoundPreview.PlayHitSound(); // Play the hitsound
+
+                            scoreManager.AddJudgement("PERFECT");
+
+                            combo++; // Increase combo
+                            scoreManager.AddCombo(combo); // Send current combo to update the UI text
+
+                            playerTotalScore += perfectScore; // Add early score value to the players current score
+                            scoreManager.AddScore(playerTotalScore, objectScoreType); // Pass to score manager to update text
+
+                            timeWhenHit = timer; // Get the time when hit
+
+                            healthbar.healthBarValue = perfectHealthValue; // Update the healthbar with the miss value
+                            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+
+                            DestroyHitObject(); // Destroy hit object
+                        }
+                    }
                 }
-
-                // CHECK IF PLAYER HIT GOOD
-                if (timer >= earlyJudgementTime && timer <= perfectJudgementTime)
+                else
                 {
-                    CheckIsSpecial(); // Check if the note is special
-
-                    hitObjectPosition = transform.position; // Get the position of the object
-                    explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
-
-                    hitSoundPreview.PlayHitSound(); // Play the hit sound
-
-                    scoreManager.AddJudgement("GOOD"); // Sets judgement to early
-
-                    combo++; // Increase combo
-                    scoreManager.AddCombo(combo); // Send current combo to update the UI text
-
-                    playerTotalScore += goodScore; // Add early score value to the players current score
-                    scoreManager.AddScore(playerTotalScore, objectScoreType); // Pass to score manager to update text
-
-                    timeWhenHit = timer; // Get the time when hit
-
-                    healthbar.healthBarValue = goodHealthValue; // Update the healthbar with the miss value
-                    healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
-
-                    DestroyHitObject(); // Destroy hit object
-                }
-
-                // CHECK IF PLAYER HIT GOOD
-                if (timer >= perfectJudgementTime && timer <= destroyedTime)
-                {
-                    CheckIsSpecial(); // Check if the note is special
-
-                    hitObjectPosition = transform.position; // Get the position of the object
-                    explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
-
-                    hitSoundPreview.PlayHitSound(); // Play the hitsound
-
-                    scoreManager.AddJudgement("PERFECT");
-
-                    combo++; // Increase combo
-                    scoreManager.AddCombo(combo); // Send current combo to update the UI text
-
-                    playerTotalScore += perfectScore; // Add early score value to the players current score
-                    scoreManager.AddScore(playerTotalScore, objectScoreType); // Pass to score manager to update text
-
-                    timeWhenHit = timer; // Get the time when hit
-
-                    healthbar.healthBarValue = perfectHealthValue; // Update the healthbar with the miss value
-                    healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
-
-                    DestroyHitObject(); // Destroy hit object
+                    // Pressed incorrect key, counts as a miss, destroy the diamond to hit
+                    MissedObject();
                 }
             }
+
+
         }
+
+
+    }
+
+    // Do the miss object functions
+    private void MissedObject()
+    {
+        healthbar.healthBarValue = missHealthValue; // Update the healthbar with the miss value
+        healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+        hitObjectPosition = transform.position; // Get the position of the object
+        explosionController.SpawnExplosion(hitObjectPosition, "Miss"); // Pass the position and spawn a miss particle system
+        scoreManager.AddJudgement("MISS"); // Sets judgement to early
+        scoreManager.ResetCombo(); // Reset combo as missed
+        DestroyHitObject(); // Destroy the hit object
     }
 
     // Check object score type
@@ -258,7 +279,6 @@ public class TimingAndScore : MonoBehaviour {
     // Set as earliest note
     public void CanBeHit()
     {
-        Debug.Log("can be hit = " + canBeHit);
         canBeHit = true;
     }
 

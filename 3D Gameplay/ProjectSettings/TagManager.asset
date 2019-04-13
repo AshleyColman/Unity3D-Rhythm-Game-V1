@@ -21,6 +21,10 @@ TagManager:
   - ScoreText
   - HitSoundManager
   - PlayerSkillsManager
+  - SongSelectManager
+  - SongLoadToGameplay
+  - LoadLastSelectedSong
+  - EditorHitObject
   layers:
   - Default
   - TransparentFX

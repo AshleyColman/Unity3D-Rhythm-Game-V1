@@ -15,7 +15,12 @@ public class LoadSongSelected : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Destroy(this.gameObject);
+        }
+                    
         // Get the reference when in the gameplay scene
         levelChanger = FindObjectOfType<LevelChanger>();
 
@@ -41,5 +46,6 @@ public class LoadSongSelected : MonoBehaviour {
                 Destroy(this.gameObject);
             }
         }
+
     }
 }

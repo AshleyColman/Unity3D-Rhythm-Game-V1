@@ -30,8 +30,13 @@ public class ScoreManager : MonoBehaviour {
     public float totalSpecial;
     private int pointIncreasePerSecond;
 
+    private HitSoundPreview hitSoundPreview;
+
     // Use this for initialization
     void Start () {
+
+        // Reference to the hitSoundPreview for playing the miss combo break sound
+        hitSoundPreview = FindObjectOfType<HitSoundPreview>();
 
         highestCombo = 0;
 
@@ -59,9 +64,18 @@ public class ScoreManager : MonoBehaviour {
     // Reset combo
     public void ResetCombo()
     {
+        // Play the miss sound if a combo break
+        if (combo >= 5)
+        {
+            hitSoundPreview.PlayMissSound();
+            comboAnimation.Play("ComboBreakTextAnimation");
+            largeComboAnimation.Play("LargeComboBreakTextAnimation");
+        }
+
         combo = 0;
         comboText.text = "   " + combo.ToString() + "x";
         largeComboText.text = "   " + combo.ToString() + "x";
+
     }
 
     // Update the score text
