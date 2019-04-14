@@ -18,13 +18,15 @@ public class PlayerSkillsManager : MonoBehaviour {
     // DISCO SKILL
     public bool discoSkillSelected;
     private GameObject discoSkillCamera; // The disco animated camera
-    private AudioListener discoSkillCameraAudioListener;
     private GameObject mainCamera; // The main default camera if the disco skill isn't selected
-    private AudioListener mainCameraAudioListener;
     // Level changer
     public LevelChanger levelChanger;
 
-
+    private void Start()
+    {
+        discoSkillSelected = false;
+        fadeSkillSelected = false;
+    }
 
     void Update()
     {
@@ -42,6 +44,12 @@ public class PlayerSkillsManager : MonoBehaviour {
             DontDestroyOnLoad(this.gameObject);
         }
 
+        // Destroy this game object if escape key is pressed
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Destroy(this.gameObject);
+        }
+
         // If in the gameplay scene
         if (levelChanger.currentLevelIndex == 4)
         {
@@ -57,26 +65,31 @@ public class PlayerSkillsManager : MonoBehaviour {
                 fadeSkillImage.gameObject.SetActive(true);
             }
 
+
             // DISCO SKILL
+
+            // Find the disco camera
             if (discoSkillCamera == null)
             {
                 discoSkillCamera = GameObject.FindGameObjectWithTag("DiscoSkillCamera");
-                discoSkillCameraAudioListener = discoSkillCamera.GetComponent<AudioListener>();
-                discoSkillCameraAudioListener.enabled = false;
-                discoSkillCamera.gameObject.SetActive(false);
             }
 
-            if (discoSkillSelected == true && Input.GetKeyDown(KeyCode.Space))
+            // Find the normal camera
+            if (mainCamera == null)
             {
                 // Disable the main camera
                 mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-                mainCameraAudioListener = mainCamera.GetComponent<AudioListener>();
-                mainCameraAudioListener.enabled = false;
-                mainCamera.gameObject.SetActive(false);
+            }
 
-                // Enable the disco camera
-                discoSkillCamera.gameObject.SetActive(true);
-                discoSkillCameraAudioListener.enabled = true;
+            if (discoSkillSelected == true)
+            {
+                // Destroy the normal camera
+                Destroy(mainCamera);
+            }
+            else
+            {
+                // Destroy the disco camera
+                Destroy(discoSkillCamera);
             }
         }
 

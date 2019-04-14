@@ -11,6 +11,8 @@ public class Database : MonoBehaviour {
     public static Database database;
     public BeatmapSetup beatmapSetup;
     public LeaderboardCreate leaderboardCreate;
+    public PlacedObject placedObject;
+
 
     string FILE_EXTENSION = ".dia";
 
@@ -71,6 +73,22 @@ public class Database : MonoBehaviour {
     public string loadedbeatmapExtraDifficultyLevel;
     public int loadedSongClipChosenIndex;
 
+    // Keys pressed for beatmap
+    public bool pressedKeyS;
+    public bool pressedKeyD;
+    public bool pressedKeyF;
+    public bool pressedKeyJ;
+    public bool pressedKeyK;
+    public bool pressedKeyL;
+
+    // Loaded keys pressed for beatmap
+    public bool loadedPressedKeyS;
+    public bool loadedPressedKeyD;
+    public bool loadedPressedKeyF;
+    public bool loadedPressedKeyJ;
+    public bool loadedPressedKeyK;
+    public bool loadedPressedKeyL;
+
     private void Awake()
     {
         database = this;
@@ -80,6 +98,7 @@ public class Database : MonoBehaviour {
     private void Start()
     {
         beatmapSetup = FindObjectOfType<BeatmapSetup>();
+        placedObject = FindObjectOfType<PlacedObject>();
     }
     public void Save()
     {
@@ -139,6 +158,21 @@ public class Database : MonoBehaviour {
         // Save leaderboard table name
         beatmap.leaderboardTableName = leaderboardTableName;
 
+        // Get the keys pressed for the beatmap
+        pressedKeyS = placedObject.pressedKeyS;
+        pressedKeyD = placedObject.pressedKeyD;
+        pressedKeyF = placedObject.pressedKeyF;
+        pressedKeyJ = placedObject.pressedKeyJ;
+        pressedKeyK = placedObject.pressedKeyK;
+        pressedKeyL = placedObject.pressedKeyL;
+        // Save the keys used for the map
+        beatmap.pressedKeyS = pressedKeyS;
+        beatmap.pressedKeyD = pressedKeyD;
+        beatmap.pressedKeyF = pressedKeyF;
+        beatmap.pressedKeyJ = pressedKeyJ;
+        beatmap.pressedKeyK = pressedKeyK;
+        beatmap.pressedKeyL = pressedKeyL;
+
 
         bf.Serialize(stream, beatmap);
         stream.Close();
@@ -190,6 +224,13 @@ public class Database : MonoBehaviour {
         loadedbeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
         loadedSongClipChosenIndex = beatmap.songClipChosenIndex;
 
+        // Load keys pressed
+        loadedPressedKeyS = beatmap.pressedKeyS;
+        loadedPressedKeyD = beatmap.pressedKeyD;
+        loadedPressedKeyF = beatmap.pressedKeyF;
+        loadedPressedKeyJ = beatmap.pressedKeyJ;
+        loadedPressedKeyK = beatmap.pressedKeyK;
+        loadedPressedKeyL = beatmap.pressedKeyL;
 
         // Load beatmap table name for leaderboards
         loadedLeaderboardTableName = beatmap.leaderboardTableName;
@@ -215,6 +256,13 @@ public class Database : MonoBehaviour {
 
         loadedSongClipChosenIndex = 0;
         loadedLeaderboardTableName = "";
+
+        loadedPressedKeyS = false;
+        loadedPressedKeyD = false;
+        loadedPressedKeyF = false;
+        loadedPressedKeyJ = false;
+        loadedPressedKeyK = false;
+        loadedPressedKeyL = false;
     }
 
     // Clear all placed objects in the editor
@@ -228,5 +276,12 @@ public class Database : MonoBehaviour {
 
         SpecialTimeStart = 0;
         SpecialTimeEnd = 0;
+
+        pressedKeyS = false;
+        pressedKeyD = false;
+        pressedKeyF = false;
+        pressedKeyJ = false;
+        pressedKeyK = false;
+        pressedKeyL = false;
     }
 }

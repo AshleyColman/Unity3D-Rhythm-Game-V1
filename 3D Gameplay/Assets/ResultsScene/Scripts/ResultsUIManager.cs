@@ -13,7 +13,6 @@ public class ResultsUIManager : MonoBehaviour {
     public TextMeshProUGUI GoodText;
     public TextMeshProUGUI EarlyText;
     public TextMeshProUGUI MissText;
-    public TextMeshProUGUI SpecialText;
     public TextMeshProUGUI ComboText;
     public TextMeshProUGUI PercentageText;
     public TextMeshProUGUI UsernameText;
@@ -45,10 +44,9 @@ public class ResultsUIManager : MonoBehaviour {
         GoodText.text = gameplayToResultsManager.totalGood.ToString();
         EarlyText.text = gameplayToResultsManager.totalEarly.ToString();
         MissText.text = gameplayToResultsManager.totalMiss.ToString();
-        ComboText.text = gameplayToResultsManager.highestCombo.ToString();
+        ComboText.text = gameplayToResultsManager.highestCombo.ToString() + "/" + gameplayToResultsManager.totalHitObjects;
         PercentageText.text = gameplayToResultsManager.Percentage.ToString();
         gradePercentage = gameplayToResultsManager.Percentage;
-        SpecialText.text = gameplayToResultsManager.totalSpecial.ToString();
         SongTitleText.text = gameplayToResultsManager.songTitle.ToString();
         BeatmapCreatorText.text = gameplayToResultsManager.beatmapCreator.ToString();
 

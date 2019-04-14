@@ -56,6 +56,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
     {
         // Clear all loaded beatmaps
         ClearBeatmapLoaded();
+        // Disable the keys required for the beatmap
+        songSelectManager.DisableKeysRequiredForBeatmap();
         // Reset leaderboard rankings
         beatmapRankingManager.ResetLeaderboard();
         // Has pressed arrow key
@@ -80,6 +82,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
     {
         // Clear all loaded beatmaps
         ClearBeatmapLoaded();
+        // Disable the keys required for the beatmap
+        songSelectManager.DisableKeysRequiredForBeatmap();
         // Reset leaderboard rankings
         beatmapRankingManager.ResetLeaderboard();
         // Has pressed arrow key

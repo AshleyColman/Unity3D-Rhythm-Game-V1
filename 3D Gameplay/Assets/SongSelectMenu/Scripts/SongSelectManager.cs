@@ -40,6 +40,28 @@ public class SongSelectManager : MonoBehaviour {
     private bool advancedDifficultyExist;
     private bool extraDifficultyExist;
 
+    // Key pressed variables and image references, the keys used in the beatmap
+    private bool pressedKeyS;
+    private bool pressedKeyD;
+    private bool pressedKeyF;
+    private bool pressedKeyJ;
+    private bool pressedKeyK;
+    private bool pressedKeyL;
+
+    public Image pressedKeySImage;
+    public Image pressedKeyDImage;
+    public Image pressedKeyFImage;
+    public Image pressedKeyJImage;
+    public Image pressedKeyKImage;
+    public Image pressedKeyLImage;
+
+    public Image disabledPressedKeySImage;
+    public Image disabledPressedKeyDImage;
+    public Image disabledPressedKeyFImage;
+    public Image disabledPressedKeyJImage;
+    public Image disabledPressedKeyKImage;
+    public Image disabledPressedKeyLImage;
+
     // Get reference to song select preview to control playing the song previews
     private SongSelectPreview songSelectPreview;
     private int songClipChosenIndex;
@@ -138,6 +160,13 @@ public class SongSelectManager : MonoBehaviour {
             extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
             songClipChosenIndex = Database.database.loadedSongClipChosenIndex;
             totalDiamonds = Database.database.LoadedPositionX.Count;
+            pressedKeyS = Database.database.loadedPressedKeyS;
+            pressedKeyD = Database.database.loadedPressedKeyD;
+            pressedKeyF = Database.database.loadedPressedKeyF;
+            pressedKeyJ = Database.database.loadedPressedKeyJ;
+            pressedKeyK = Database.database.loadedPressedKeyK;
+            pressedKeyL = Database.database.loadedPressedKeyL;
+
 
             // Load the image by passing the current beatmap directory
             backgroundManager.LoadEditorBeatmapImage(beatmapDirectories[selectedDirectoryIndexPass]);
@@ -145,7 +174,11 @@ public class SongSelectManager : MonoBehaviour {
             // Change the current song selected text to the information loaded from the current directory
             songTitleText.text = songName + " [ " + songArtist + " ] ";
             beatmapCreatorText.text = "Beatmap Created By: " + beatmapCreator;
-            beatmapStatisticsText.text = "Total Diamonds: " + totalDiamonds.ToString() + " Max Possible Score: " + (totalDiamonds * 500);
+            beatmapStatisticsText.text = "Total Diamonds: " + totalDiamonds.ToString() + "   Keys Required:";
+
+            // Enable the required keys for the beatmap images
+            EnableKeysRequiredForBeatmap();
+
             // Do a check to ensure the level is outputted if exists, and if it doesn't output the missing difficulty text
             if (extraDifficultyExist == true)
             {
@@ -236,5 +269,87 @@ public class SongSelectManager : MonoBehaviour {
             // Set bool to exist
             extraDifficultyExist = false;
         }
+    }
+
+    // Enable the keys required for the beatmap
+    public void EnableKeysRequiredForBeatmap()
+    {
+        if (pressedKeyS == true)
+        {
+            pressedKeySImage.gameObject.SetActive(true);
+            disabledPressedKeySImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            disabledPressedKeySImage.gameObject.SetActive(true);
+        }
+
+        if (pressedKeyD == true)
+        {
+            pressedKeyDImage.gameObject.SetActive(true);
+            disabledPressedKeyDImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            disabledPressedKeyDImage.gameObject.SetActive(true);
+        }
+
+        if (pressedKeyF == true)
+        {
+            pressedKeyFImage.gameObject.SetActive(true);
+            disabledPressedKeyFImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            disabledPressedKeyFImage.gameObject.SetActive(true);
+        }
+
+        if (pressedKeyJ == true)
+        {
+            pressedKeyJImage.gameObject.SetActive(true);
+            disabledPressedKeyJImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            disabledPressedKeyJImage.gameObject.SetActive(true);
+        }
+
+        if (pressedKeyK == true)
+        {
+            pressedKeyKImage.gameObject.SetActive(true);
+            disabledPressedKeyKImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            disabledPressedKeyKImage.gameObject.SetActive(true);
+        }
+
+        if (pressedKeyL == true)
+        {
+            pressedKeyLImage.gameObject.SetActive(true);
+            disabledPressedKeyLImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            disabledPressedKeyLImage.gameObject.SetActive(true);
+        }
+    }
+
+    // Disable all keys required for beatmap
+    public void DisableKeysRequiredForBeatmap()
+    {
+        pressedKeySImage.gameObject.SetActive(false);
+        pressedKeyDImage.gameObject.SetActive(false);
+        pressedKeyFImage.gameObject.SetActive(false);
+        pressedKeyJImage.gameObject.SetActive(false);
+        pressedKeyKImage.gameObject.SetActive(false);
+        pressedKeyLImage.gameObject.SetActive(false);
+
+        disabledPressedKeySImage.gameObject.SetActive(false);
+        disabledPressedKeyDImage.gameObject.SetActive(false);
+        disabledPressedKeyFImage.gameObject.SetActive(false);
+        disabledPressedKeyJImage.gameObject.SetActive(false);
+        disabledPressedKeyKImage.gameObject.SetActive(false);
+        disabledPressedKeyLImage.gameObject.SetActive(false);
     }
 }

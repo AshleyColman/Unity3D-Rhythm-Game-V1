@@ -25,4 +25,11 @@ public class Beatmap
     public int songClipChosenIndex;
 
     public string leaderboardTableName;
+
+    public bool pressedKeyS;
+    public bool pressedKeyD;
+    public bool pressedKeyF;
+    public bool pressedKeyJ;
+    public bool pressedKeyK;
+    public bool pressedKeyL;
 }

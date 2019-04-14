@@ -44,8 +44,27 @@ public class PlacedObject : MonoBehaviour {
     public Button resetButton;
     public Button placeButton;
 
+    // Keys used bools
+    public bool pressedKeyS;
+    public bool pressedKeyD;
+    public bool pressedKeyF;
+    public bool pressedKeyJ;
+    public bool pressedKeyK;
+    public bool pressedKeyL;
+
+
+
     // Use this for initialization
     void Start () {
+
+        pressedKeyS = false;
+        pressedKeyD = false;
+        pressedKeyF = false;
+        pressedKeyJ = false;
+        pressedKeyK = false;
+        pressedKeyL = false;
+
+
         hasPressedSpacebar = false;
         startSongTimer = false;
         songTimer = 0f;
@@ -96,6 +115,9 @@ public class PlacedObject : MonoBehaviour {
             // Blue Key Pressed
             if (Input.GetKeyDown(KeyCode.J))
             {
+                // Set has pressed J to true
+                pressedKeyJ = true;
+
                 // Set the type to BLUE as the J key has been pressed
                 editorPlacedHitObjectType = 0;
                 // Spawn and save the placed object information in the beatmap file
@@ -106,6 +128,9 @@ public class PlacedObject : MonoBehaviour {
             // Purple Key Pressed
             else if (Input.GetKeyDown(KeyCode.K))
             {
+                // Set has pressed K to true
+                pressedKeyK = true;
+
                 // Set the type to PURPLE as the K key has been pressed
                 editorPlacedHitObjectType = 1;
                 // Spawn and save the placed object information in the beatmap file
@@ -116,6 +141,9 @@ public class PlacedObject : MonoBehaviour {
             // Red Key Pressed
             else if (Input.GetKeyDown(KeyCode.L))
             {
+                // Set has pressed L to true
+                pressedKeyL = true;
+
                 // Set the type to RED as the L key has been pressed
                 editorPlacedHitObjectType = 2;
                 // Spawn and save the placed object information in the beatmap file
@@ -126,6 +154,9 @@ public class PlacedObject : MonoBehaviour {
             // Green Key Pressed
             if (Input.GetKeyDown(KeyCode.U))
             {
+                // Set has pressed S to true
+                pressedKeyS = true;
+
                 // Set the type to GREEN as the U key has been pressed
                 editorPlacedHitObjectType = 3;
                 // Spawn and save the placed object information in the beatmap file
@@ -136,6 +167,9 @@ public class PlacedObject : MonoBehaviour {
             // Yellow Key Pressed
             if (Input.GetKeyDown(KeyCode.I))
             {
+                // Set has pressed D to true
+                pressedKeyD = true;
+
                 // Set the type to YELLOW as the I key has been pressed
                 editorPlacedHitObjectType = 4;
                 // Spawn and save the placed object information in the beatmap file
@@ -146,6 +180,9 @@ public class PlacedObject : MonoBehaviour {
             // Orange Key Pressed
             if (Input.GetKeyDown(KeyCode.O))
             {
+                // Set has pressed F to true
+                pressedKeyF = true;
+
                 // Set the type to ORANGE as the O key has been pressed
                 editorPlacedHitObjectType = 5;
                 // Spawn and save the placed object information in the beatmap file
@@ -326,5 +363,16 @@ public class PlacedObject : MonoBehaviour {
     public void DisableSaveButton()
     {
         saveButton.interactable = false;
+    }
+
+    // Reset keys pressed if the map has been reset
+    public void ResetKeysPressed()
+    {
+        pressedKeyS = false;
+        pressedKeyD = false;
+        pressedKeyF = false;
+        pressedKeyJ = false;
+        pressedKeyK = false;
+        pressedKeyL = false;
     }
 }

@@ -21,6 +21,7 @@ public class GameplayToResultsManager : MonoBehaviour {
     public float Percentage;
     public float totalHit;
     public float totalSpecial;
+    public float totalHitObjects;
 
     float AudioSourceLength;
     float AudioSourceTime;
@@ -101,6 +102,7 @@ public class GameplayToResultsManager : MonoBehaviour {
         totalScorePossible = scoreManager.totalScorePossible;
         totalHit = scoreManager.totalHit;
         totalSpecial = scoreManager.totalSpecial;
+        totalHitObjects = scoreManager.totalHitObjects;
     }
 
     public void CalculateGradeAchieved()

@@ -29,7 +29,7 @@ public class ScoreManager : MonoBehaviour {
     public float totalHit;
     public float totalSpecial;
     private int pointIncreasePerSecond;
-
+    public float totalHitObjects;
     private HitSoundPreview hitSoundPreview;
 
     // Use this for initialization
@@ -212,7 +212,7 @@ public class ScoreManager : MonoBehaviour {
     public void CalculateHighestScoreForBeatmap()
     {
         // Get the total number of hit objects possible in the map
-        float totalHitObjects = Database.database.LoadedPositionX.Count;
+        totalHitObjects = Database.database.LoadedPositionX.Count;
         float scorePerPerfect = 500;
         totalScorePossible = totalHitObjects * scorePerPerfect;
 
