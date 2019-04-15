@@ -27,22 +27,28 @@ public class BeatmapRankingManager : MonoBehaviour
     public TextMeshProUGUI RankedButtonFirstGradeText;
     public TextMeshProUGUI RankedButtonFirstRankAndUsernameAndScoreText;
     public TextMeshProUGUI RankedButtonFirstPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonFirstPlayCount;
 
     public TextMeshProUGUI RankedButtonSecondGradeText;
     public TextMeshProUGUI RankedButtonSecondRankAndUsernameAndScoreText;
     public TextMeshProUGUI RankedButtonSecondPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonSecondPlayCount;
 
     public TextMeshProUGUI RankedButtonThirdGradeText;
     public TextMeshProUGUI RankedButtonThirdRankAndUsernameAndScoreText;
     public TextMeshProUGUI RankedButtonThirdPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonThirdPlayCount;
 
     public TextMeshProUGUI RankedButtonFourthGradeText;
     public TextMeshProUGUI RankedButtonFourthRankAndUsernameAndScoreText;
     public TextMeshProUGUI RankedButtonFourthPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonFourthPlayCount;
 
     public TextMeshProUGUI RankedButtonFifthGradeText;
     public TextMeshProUGUI RankedButtonFifthRankAndUsernameAndScoreText;
     public TextMeshProUGUI RankedButtonFifthPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonFifthPlayCount;
+
 
     public TextMeshProUGUI RankedButtonPersonalBestGradeText;
     public TextMeshProUGUI RankedButtonPersonalBestRankAndUsernameAndScoreText;
@@ -61,7 +67,7 @@ public class BeatmapRankingManager : MonoBehaviour
     string firstButtonUsername;
     string firstButtonGrade;
     string firstButtonPercentage;
-
+    string firstButtonPlayCount;
 
     string secondButtonScore;
     string secondButtonPerfect;
@@ -72,6 +78,7 @@ public class BeatmapRankingManager : MonoBehaviour
     string secondButtonUsername;
     string secondButtonGrade;
     string secondButtonPercentage;
+    string secondButtonPlayCount;
 
     string thirdButtonScore;
     string thirdButtonPerfect;
@@ -82,6 +89,7 @@ public class BeatmapRankingManager : MonoBehaviour
     string thirdButtonUsername;
     string thirdButtonGrade;
     string thirdButtonPercentage;
+    string thirdButtonPlayCount;
 
     string fourthButtonScore;
     string fourthButtonPerfect;
@@ -92,6 +100,7 @@ public class BeatmapRankingManager : MonoBehaviour
     string fourthButtonUsername;
     string fourthButtonGrade;
     string fourthButtonPercentage;
+    string fourthButtonPlayCount;
 
     string fifthButtonScore;
     string fifthButtonPerfect;
@@ -102,6 +111,7 @@ public class BeatmapRankingManager : MonoBehaviour
     string fifthButtonUsername;
     string fifthButtonGrade;
     string fifthButtonPercentage;
+    string fifthButtonPlayCount;
 
     string personalBestButtonScore;
     string personalBestButtonPerfect;
@@ -142,6 +152,10 @@ public class BeatmapRankingManager : MonoBehaviour
 
             notChecked = false;
         }
+
+      
+
+
 
         if (notChecked == false && hasCheckedPersonalBest == true)
         {
@@ -313,7 +327,12 @@ public class BeatmapRankingManager : MonoBehaviour
                 // Disable character used image
                 fifthPlaceCharacterImage.gameObject.SetActive(false);
             }
+
+
         }
+
+
+
     }
 
     public IEnumerator RetrieveBeatmapLeaderboard(int leaderboardPlaceToGetPass)
@@ -566,5 +585,6 @@ public class BeatmapRankingManager : MonoBehaviour
             yield return null;
         }
     }
+
 }
 

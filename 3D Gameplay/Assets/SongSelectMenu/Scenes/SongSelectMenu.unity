@@ -4412,18 +4412,23 @@ MonoBehaviour:
   RankedButtonFirstGradeText: {fileID: 1522173486}
   RankedButtonFirstRankAndUsernameAndScoreText: {fileID: 532765232}
   RankedButtonFirstPlayStatisticsText: {fileID: 322569688}
+  RankedButtonFirstPlayCount: {fileID: 0}
   RankedButtonSecondGradeText: {fileID: 104732934}
   RankedButtonSecondRankAndUsernameAndScoreText: {fileID: 560310444}
   RankedButtonSecondPlayStatisticsText: {fileID: 2017310206}
+  RankedButtonSecondPlayCount: {fileID: 0}
   RankedButtonThirdGradeText: {fileID: 2037052437}
   RankedButtonThirdRankAndUsernameAndScoreText: {fileID: 652983981}
   RankedButtonThirdPlayStatisticsText: {fileID: 1080401245}
+  RankedButtonThirdPlayCount: {fileID: 0}
   RankedButtonFourthGradeText: {fileID: 312060135}
   RankedButtonFourthRankAndUsernameAndScoreText: {fileID: 1806805809}
   RankedButtonFourthPlayStatisticsText: {fileID: 1510769397}
+  RankedButtonFourthPlayCount: {fileID: 0}
   RankedButtonFifthGradeText: {fileID: 267311093}
   RankedButtonFifthRankAndUsernameAndScoreText: {fileID: 2092545717}
   RankedButtonFifthPlayStatisticsText: {fileID: 2071864814}
+  RankedButtonFifthPlayCount: {fileID: 0}
   RankedButtonPersonalBestGradeText: {fileID: 880530714}
   RankedButtonPersonalBestRankAndUsernameAndScoreText: {fileID: 1956109181}
   RankedButtonPersonalBestPlayStatisticsText: {fileID: 544698287}

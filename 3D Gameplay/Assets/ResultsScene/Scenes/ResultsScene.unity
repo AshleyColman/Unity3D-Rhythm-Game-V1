@@ -1853,7 +1853,7 @@ Prefab:
         type: 2}
       propertyPath: img
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 943889160}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6443b109147ecb54287f7c5f5a73df4a, type: 2}
   m_IsPrefabParent: 0
@@ -1886,10 +1886,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SongTitleText: {fileID: 1588145542}
   BeatmapCreatorText: {fileID: 1275777498}
-  PerfectText: {fileID: 654636637}
-  GoodText: {fileID: 1480504011}
-  EarlyText: {fileID: 1197228080}
-  MissText: {fileID: 1301032348}
+  PerfectText: {fileID: 623198608}
+  GoodText: {fileID: 1600295491}
+  EarlyText: {fileID: 193420503}
+  MissText: {fileID: 1305300699}
   ComboText: {fileID: 1857162382}
   PercentageText: {fileID: 1542106144}
   UsernameText: {fileID: 1228332821}

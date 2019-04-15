@@ -8,7 +8,7 @@ public class HitSoundPreview : MonoBehaviour {
     public HitSoundDatabase hitSoundDatabase; // Required for loading all the hit sounds in the game
     public AudioSource hitSoundAudioSource; // The audio source that plays the hit sounds
     public int hitSoundChosenIndex; // The hit sound selected
-    private float hitSoundVolume = 0.4f; // Volume of the hit sound
+    private float hitSoundVolume = 0.5f; // Volume of the hit sound
 
     // Song Select Menu UI 
     public TextMeshProUGUI hitSoundSelectedNumberText; // The number of the hit sound selected
