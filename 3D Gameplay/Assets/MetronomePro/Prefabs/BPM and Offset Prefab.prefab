@@ -455,7 +455,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: SetNewBPM
+        m_MethodName: UpdateBPM
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -526,7 +526,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: SetNewOffset
+        m_MethodName: UpdateOffset
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -10,7 +10,7 @@ public class MetronomePro_Player : MonoBehaviour {
 	[Header ("Variables")]
 	public bool active;
 	bool playing = false;
-    float songVolume = 0.4f;
+
 	[Space(5)]
 
 	public AudioSource songAudioSource;
@@ -42,13 +42,31 @@ public class MetronomePro_Player : MonoBehaviour {
 
 	float amount;
 
-	void Start () {
+    // Reference for the songDatabase for selecting and getting the song selected
+    private SongDatabase songDatabase;
 
-		// Assign the clip to the AudioSource
-		songAudioSource.clip = songClip;
+    // The song selected
+    private int songSelectedIndex = 0;
 
-		// Display Song Data
-		DisplaySongDuration ();
+
+    // HIT OBJECT TESTING
+    public GameObject timelineRedHitObject;
+    public Vector3 timelineRedHitObjectPosition;
+
+    private GameObject instantiatedTimelineObject;
+
+    public GameObject songPointSliderHandle;
+
+    public Vector3 handlePosition;
+    public Slider handleSlider;
+
+
+    float x;
+
+    void Start () {
+
+        // Find the reference to the songDatabase
+        songDatabase = FindObjectOfType<SongDatabase>();
 
 		// Stop any song and reset values
 		StopSong ();
@@ -56,6 +74,15 @@ public class MetronomePro_Player : MonoBehaviour {
 		// Send Song Data to Metronome
 		SendSongData();
 	}
+
+    // Gets the song selected from the song button list
+    public void GetSongSelected(int songSelectedIndexPass)
+    {
+        songSelectedIndex = songSelectedIndexPass;
+        // Assign the clip to the AudioSource
+        songClip = songDatabase.songClip[songSelectedIndex];
+        songAudioSource.clip = songClip;
+    }
 
 	// Sends Song Data to Metronome Pro script
 	public void SendSongData () {
@@ -93,13 +120,14 @@ public class MetronomePro_Player : MonoBehaviour {
 	// Sets a New Song Position if the user clicked on Song Player Slider
 	public void SetNewSongPosition () {
 		active = false;
+
 		if (songPlayerSlider.value * songAudioSource.clip.length < songAudioSource.clip.length) {
 			songAudioSource.time = (songPlayerSlider.value * songAudioSource.clip.length);
 		} else if ((songPlayerSlider.value * songAudioSource.clip.length >= songAudioSource.clip.length)) {
 			StopSong ();
 		}
 
-		if (FindObjectOfType<MetronomePro> ().neverPlayed) {
+        if (FindObjectOfType<MetronomePro> ().neverPlayed) {
 			FindObjectOfType<MetronomePro> ().CalculateIntervals ();
 		}
 
@@ -133,10 +161,10 @@ public class MetronomePro_Player : MonoBehaviour {
 			playAndPauseButton.sprite = playSprite;
 
 		} else {
-			songAudioSource.Play();
-            songAudioSource.volume = songVolume;
+			songAudioSource.Play ();
 			FindObjectOfType<MetronomePro> ().Play ();
 			Debug.Log ("Song Playing");
+			playAndPauseButton.sprite = pauseSprite;
 			playing = true;
 			active = true;
 		}
@@ -152,6 +180,7 @@ public class MetronomePro_Player : MonoBehaviour {
 
 		songAudioSource.Stop ();
 		songAudioSource.time = 0;
+		playAndPauseButton.sprite = playSprite;
 		amount = 0f;
 		songPlayerSlider.value = 0f;
 		songPlayerBar.fillAmount = 0f;
@@ -191,6 +220,7 @@ public class MetronomePro_Player : MonoBehaviour {
 				if (songAudioSource.isPlaying) {
 					amount = (songAudioSource.time) / (songAudioSource.clip.length);
 					songPlayerBar.fillAmount = amount;
+                    handleSlider.value = amount;
 					actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds (songAudioSource.time);
 				} else {
 					StopSong ();
@@ -202,7 +232,23 @@ public class MetronomePro_Player : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			PlayOrPauseSong ();
 		}
-	}
+
+
+
+        // Testing
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            handlePosition = songPointSliderHandle.transform.position;
+
+
+
+            GameObject timelineObject = GameObject.Instantiate(timelineRedHitObject, handlePosition, Quaternion.Euler(0, 45, 0), GameObject.FindGameObjectWithTag("Timeline").transform);
+
+
+            Debug.Log(handlePosition);
+        }
+    }
 }
 	
 public static class UtilityMethods {
