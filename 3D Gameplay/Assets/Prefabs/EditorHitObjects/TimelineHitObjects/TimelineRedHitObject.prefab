@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 64466286754213028}
   - component: {fileID: 23134525245725836}
   m_Layer: 0
-  m_Name: Outline
+  m_Name: Outlines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38,6 +38,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4470185282909814}
   - component: {fileID: 114293886308477420}
+  - component: {fileID: 114336315336630778}
   m_Layer: 0
   m_Name: TimelineRedHitObject
   m_TagString: TimelineObject
@@ -82,8 +83,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1268730293519606}
-  m_LocalRotation: {x: -0.6532815, y: 0.27059805, z: -0.27059805, w: 0.6532815}
-  m_LocalPosition: {x: 0, y: 0, z: -100}
+  m_LocalRotation: {x: -0, y: 0.38268346, z: -0, w: 0.9238796}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
   m_LocalScale: {x: 1, y: 2, z: 1}
   m_Children:
   - {fileID: 4020942898267000}
@@ -225,3 +226,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 200aa2ea60184d143a6bfee7bccd1105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  raycastObject: {fileID: 0}
+  pos: {x: 0, y: 0, z: 0}
+--- !u!114 &114336315336630778
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1268730293519606}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99af58b36b066684eb32254032de2974, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pos: {x: 0, y: 0, z: 0}

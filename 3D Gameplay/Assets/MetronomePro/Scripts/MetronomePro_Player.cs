@@ -63,6 +63,8 @@ public class MetronomePro_Player : MonoBehaviour {
     float handlePositionZ;
     float x;
 
+    public GameObject test;
+
     void Start () {
 
         // Find the reference to the songDatabase
@@ -268,7 +270,7 @@ public class MetronomePro_Player : MonoBehaviour {
         // Get the handle position currently in the song to spawn the timeline object at
         handlePositionX = songPointSliderHandle.transform.position.x;
         // Decrease the Y position to prevent overlap
-        handlePositionY -= 10;
+        handlePositionY = 0;
         handlePositionZ = songPointSliderHandle.transform.position.z;
 
         // Assign the new position
@@ -276,7 +278,13 @@ public class MetronomePro_Player : MonoBehaviour {
 
         // Instantiate the type of object
         GameObject timelineObject = GameObject.Instantiate(instantiatedTimelineObject[instantiatedTimelineObjectTypePass], handlePosition,
-        Quaternion.Euler(0, 45, 0), GameObject.FindGameObjectWithTag("Timeline").transform);
+        Quaternion.Euler(90, 0, 0), GameObject.FindGameObjectWithTag("Timeline").transform);
+
+        Slider timelineSlider = timelineObject.GetComponent<Slider>();
+        timelineSlider.value = handleSlider.value;
+        //GameObject timelineObjectHandle = timelineObject.transform.GetChild(0).GetChild(0).gameObject;
+        //timelineObjectHandle.transform.position = handlePosition;
+        Debug.Log(timelineObject.transform.position);
     }
 }
 	
