@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Runtime.InteropServices;
+using TMPro;
 
 public class MetronomePro : MonoBehaviour {
 	
@@ -26,11 +27,10 @@ public class MetronomePro : MonoBehaviour {
 	public Image imgBeat4;
 
 	[Space(5)]
-	public Text txtBPM;
-	public Text txtOffsetMS;
-	public InputField BPMInputField;
-	public InputField OffsetInputField;
-	public Text txtState;
+	public TextMeshProUGUI txtBPM;
+	public TextMeshProUGUI txtOffsetMS;
+	public TMP_InputField BPMInputField;
+	public TMP_InputField OffsetInputField;
 
 	[Space(5)]
 
@@ -163,7 +163,6 @@ public class MetronomePro : MonoBehaviour {
 
 			active = true;
 		} catch {
-			txtState.text = "There isn't an Audio Clip assigned in the Player.";
 			Debug.LogWarning ("There isn't an Audio Clip assigned in the Player.");
 		}
 	}

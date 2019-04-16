@@ -29,6 +29,7 @@ TagManager:
   - DiscoSkillCamera
   - Canvas
   - Timeline
+  - TimelineObject
   layers:
   - Default
   - TransparentFX

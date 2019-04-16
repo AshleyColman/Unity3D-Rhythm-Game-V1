@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using TMPro;
 
 public class MetronomePro_Player : MonoBehaviour {
 
@@ -18,12 +19,10 @@ public class MetronomePro_Player : MonoBehaviour {
 	public Sprite pauseSprite;
 
 	[Space (5)]
-	public Text txtSongName;
-	public Text actualPosition;
-	public Text songTotalDuration;
+	public TextMeshProUGUI actualPosition;
 	public Image playAndPauseButton;
 	public Image songPlayerBar;
-	public Dropdown velocityScale;
+	public TMP_Dropdown velocityScale;
 	public Slider songPlayerSlider;
 
 	[Header ("Song Data")]
@@ -50,17 +49,18 @@ public class MetronomePro_Player : MonoBehaviour {
 
 
     // HIT OBJECT TESTING
-    public GameObject timelineRedHitObject;
-    public Vector3 timelineRedHitObjectPosition;
+    public Vector3 timelineObjectPosition;
 
-    private GameObject instantiatedTimelineObject;
-
+    public GameObject[] instantiatedTimelineObject = new GameObject[6];
+    private int instantiatedTimelineObjectType;
     public GameObject songPointSliderHandle;
 
     public Vector3 handlePosition;
     public Slider handleSlider;
 
-
+    float handlePositionX;
+    float handlePositionY = 9999;
+    float handlePositionZ;
     float x;
 
     void Start () {
@@ -89,10 +89,6 @@ public class MetronomePro_Player : MonoBehaviour {
 		FindObjectOfType<MetronomePro> ().GetSongData (Bpm, OffsetMS, Base, Step);
 	}
 
-	// Set New Song Name and Artist
-	public void SetSongName (string SongName, string SongArtist) {
-		txtSongName.text = SongName + " - " + SongArtist;
-	}
 
 	// Sets a New Song and Metronome Velocity using Velocity Scale Dropdown Value
 	public void SetNewVelocity () {
@@ -137,16 +133,6 @@ public class MetronomePro_Player : MonoBehaviour {
 
 		songPlayerBar.fillAmount = songPlayerSlider.value;
 		active = true;
-	}
-
-	// Calculate Song Total Duration
-	public void DisplaySongDuration () {
-		try {
-		songTotalDuration.text = UtilityMethods.FromSecondsToMinutesAndSeconds (songAudioSource.clip.length);
-		} catch {
-			FindObjectOfType<MetronomePro>().txtState.text = "Please assign an Audio Clip to the Player!";
-			Debug.LogWarning ("Please assign an Audio Clip to the Player!");
-		}
 	}
 
 
@@ -237,17 +223,60 @@ public class MetronomePro_Player : MonoBehaviour {
 
         // Testing
 
+
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            // Assign the type of GREEN
+            instantiatedTimelineObjectType = 0;
+            InstantiateTimelineObject(instantiatedTimelineObjectType);
+        }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            // Assign the type of YELLOW
+            instantiatedTimelineObjectType = 1;
+            InstantiateTimelineObject(instantiatedTimelineObjectType);
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            // Assign the type of ORANGE
+            instantiatedTimelineObjectType = 2;
+            InstantiateTimelineObject(instantiatedTimelineObjectType);
+        }
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            // Assign the type of BLUE
+            instantiatedTimelineObjectType = 3;
+            InstantiateTimelineObject(instantiatedTimelineObjectType);
+        }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            // Assign the type of PURPLE
+            instantiatedTimelineObjectType = 4;
+            InstantiateTimelineObject(instantiatedTimelineObjectType);
+        }
         if (Input.GetKeyDown(KeyCode.L))
         {
-            handlePosition = songPointSliderHandle.transform.position;
-
-
-
-            GameObject timelineObject = GameObject.Instantiate(timelineRedHitObject, handlePosition, Quaternion.Euler(0, 45, 0), GameObject.FindGameObjectWithTag("Timeline").transform);
-
-
-            Debug.Log(handlePosition);
+            // Assign the type of RED
+            instantiatedTimelineObjectType = 5;
+            InstantiateTimelineObject(instantiatedTimelineObjectType);
         }
+    }
+
+    // Instantiate a timeline object at the current song time
+    public void InstantiateTimelineObject(int instantiatedTimelineObjectTypePass)
+    {
+        // Get the handle position currently in the song to spawn the timeline object at
+        handlePositionX = songPointSliderHandle.transform.position.x;
+        // Decrease the Y position to prevent overlap
+        handlePositionY -= 10;
+        handlePositionZ = songPointSliderHandle.transform.position.z;
+
+        // Assign the new position
+        handlePosition = new Vector3(handlePositionX, handlePositionY, handlePositionZ);
+
+        // Instantiate the type of object
+        GameObject timelineObject = GameObject.Instantiate(instantiatedTimelineObject[instantiatedTimelineObjectTypePass], handlePosition,
+        Quaternion.Euler(0, 45, 0), GameObject.FindGameObjectWithTag("Timeline").transform);
     }
 }
 	
