@@ -32,6 +32,9 @@ public class PlacedObject : MonoBehaviour {
     // Get the reference to the beatmap setup to disable starting the song when space is pressed whilst in the editor
     public BeatmapSetup beatmapSetup;
 
+    // Get the reference to the PlaceObject script, used for disabling the spawned editor hit object ghost
+    private PlaceObject placeObject;
+
     // Used for tracking when the spacebar has been pressed to start the song and timer
     private bool hasPressedSpacebar;
 
@@ -67,7 +70,7 @@ public class PlacedObject : MonoBehaviour {
     // The index for all editor objects, increases by 1 everytime one is instantiated
     private int timelineObjectIndex;
 
-
+    // The handle position on the current song play bar
     float handlePositionX;
     float handlePositionY = 9999;
     float handlePositionZ;
@@ -82,20 +85,19 @@ public class PlacedObject : MonoBehaviour {
     // The timeline object that was clicked on in the timeline bar
     private GameObject raycastTimelineObject;
 
-    // The hit object that appears in the editor when the timeline bar has been clicked on
-    private GameObject raycastHitObjectObject;
-
-    // Is true when the hit object is following the mouse, false when it isn't
-    private bool raycastObjectDragActive;
-
-    // The mouse follow script attached to the editor hit objects
-    EditorHitObjectMouseFollow editorHitObjectMouseFollow;
-
     // The index of the timeline bar clicked in the editor, used to delete and update existing notes spawn times, position etc by getting the index on click
     public int raycastTimelineObjectListIndex;
 
+    // Used to check if a timeline bar has been clicked, instantiating a hitobject to appear on screen, if another timeline bar is pressed
+    public bool instantiatedEditorHitObjectExists;
+
+    // The instantiated editor hit object that is added to the scene when a timeline bar has been clicked
+    GameObject instantiatedEditorHitObject;
+
     // Use this for initialization
     void Start () {
+
+        placeObject = FindObjectOfType<PlaceObject>();
 
         metronomePro_Player = FindObjectOfType<MetronomePro_Player>();
 
@@ -168,7 +170,7 @@ public class PlacedObject : MonoBehaviour {
                 editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
-                instantiatedTimelineObjectType = 3;
+                instantiatedTimelineObjectType = 0;
                 InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
             // Purple Key Pressed
@@ -185,7 +187,7 @@ public class PlacedObject : MonoBehaviour {
                 editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
-                instantiatedTimelineObjectType = 4;
+                instantiatedTimelineObjectType = 1;
                 InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
             // Red Key Pressed
@@ -202,7 +204,7 @@ public class PlacedObject : MonoBehaviour {
                 editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
-                instantiatedTimelineObjectType = 5;
+                instantiatedTimelineObjectType = 2;
                 InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
             // Green Key Pressed
@@ -212,14 +214,14 @@ public class PlacedObject : MonoBehaviour {
                 pressedKeyS = true;
 
                 // Set the type to GREEN as the U key has been pressed
-                editorPlacedHitObjectType = 1;
+                editorPlacedHitObjectType = 3;
                 // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
                 editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
-                instantiatedTimelineObjectType = 0;
+                instantiatedTimelineObjectType = 3;
                 InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
             // Yellow Key Pressed
@@ -236,7 +238,7 @@ public class PlacedObject : MonoBehaviour {
                 editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
-                instantiatedTimelineObjectType = 1;
+                instantiatedTimelineObjectType = 4;
                 InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
             // Orange Key Pressed
@@ -253,7 +255,7 @@ public class PlacedObject : MonoBehaviour {
                 editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
-                instantiatedTimelineObjectType = 2;
+                instantiatedTimelineObjectType = 5;
                 InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
 
@@ -295,6 +297,15 @@ public class PlacedObject : MonoBehaviour {
     // Get the index of the timeline object clicked on
     public void GetIndexOfRaycastTimelineObject(GameObject gameObjectPass)
     {
+        // Check if an editor hit object already exists on the map, if it does delete it before adding a new one to the scene to edit
+        if (instantiatedEditorHitObjectExists == true)
+        {
+            // Destroy the current hit editor object
+            Destroy(instantiatedEditorHitObject);
+            // Set back to false
+            instantiatedEditorHitObjectExists = false;
+        }
+
         // The timeline object reference is passed and assigned
         raycastTimelineObject = gameObjectPass;
 
@@ -372,7 +383,7 @@ public class PlacedObject : MonoBehaviour {
         int hitObjectSavedType = GetHitObjectTypeInformation();
 
         // Instantiate the editor hit object with its loaded information previously saved
-        GameObject instantiatedEditorHitObject = Instantiate(editorPlacedHitObjects[hitObjectSavedType], hitObjectSavedPosition, Quaternion.Euler(0, 45, 0));
+        instantiatedEditorHitObject = Instantiate(editorPlacedHitObjects[hitObjectSavedType], hitObjectSavedPosition, Quaternion.Euler(0, 45, 0));
         // Get the fadeout script attached to the child of the editor hit object and disable it so it remains on screen
         FadeOut fadeOut = instantiatedEditorHitObject.GetComponentInChildren<FadeOut>();
         // Get the destroyEditorPlacedHitObject script and disable it so it doesn't get destroyed
@@ -381,51 +392,11 @@ public class PlacedObject : MonoBehaviour {
         fadeOut.enabled = false;
         // Disable destroyEditorPlacedHitObject script for the hit object
         destroyEditorPlacedHitObject.enabled = false;
+
+        instantiatedEditorHitObjectExists = true;
     }
 
-        // NEW PLAN
-        // Spawn diamond when clicking on timeline bar
-        // Spawns at position saved
-        // If clicked
-        // Change the color of the black cursor diamond to the note color
-        // Destry the instantiated "preview" diamond
-        // Move cursor snap note and when clicked update the position for that note.
-
-        /*
-        // Get the object detected from the raycast hit
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            raycastObject = hit.transform.parent.gameObject;
-
-            if (raycastObject.tag == "EditorHitObject")
-            {
-                if (Input.GetMouseButtonDown(0) && raycastObjectDragActive == false)
-                {
-                    editorHitObjectMouseFollow = raycastObject.GetComponent<EditorHitObjectMouseFollow>();
-                    editorHitObjectMouseFollow.enabled = true;
-                    raycastObjectDragActive = true;
-                }
-                else if (Input.GetMouseButtonDown(0) && raycastObjectDragActive == true)
-                {
-                    editorHitObjectMouseFollow.enabled = false;
-                    raycastObjectDragActive = false;
-                }
-            }
-        }
-        */
-
-        // Get the index of the timeline object selected
-
-        // Get the position for this object
-
-        // Instantiate the editor hit object
-
-        // Disable the fade script for the hit object
-    
-
+   
 
     // Instantiate a timeline object at the current song time
     public void InstantiateTimelineObject(int instantiatedTimelineObjectTypePass)

@@ -26,7 +26,7 @@ public class EditorButtonObjectFix : MonoBehaviour {
         if (placeObject.hasInstantiated == true)
         {
             // If it has assign the reference to the object
-            editorHitObject = placeObject.spawnedEditorHitObject[0];
+            editorHitObject = placeObject.instantiatedEditorHitObjectGhost;
 
             // Get the reference to the editorHitObject material (from the child)
             editorHitObjectMaterial = editorHitObject.GetComponentInChildren<Renderer>().material;

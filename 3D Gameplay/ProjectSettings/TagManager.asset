@@ -30,6 +30,7 @@ TagManager:
   - Canvas
   - Timeline
   - TimelineObject
+  - InstantiatedEditorHitObject
   layers:
   - Default
   - TransparentFX
@@ -39,7 +40,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - GridSnapRayCastObject
   - 
   - 
   - 
