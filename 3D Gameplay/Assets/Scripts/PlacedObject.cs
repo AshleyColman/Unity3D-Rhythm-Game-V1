@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class PlacedObject : MonoBehaviour {
 
@@ -78,7 +79,20 @@ public class PlacedObject : MonoBehaviour {
     // Reference to the metronome player to get the current song time, position of the handle and slide value for placed diamond bars on the timeline
     MetronomePro_Player metronomePro_Player;
 
+    // The timeline object that was clicked on in the timeline bar
+    private GameObject raycastTimelineObject;
 
+    // The hit object that appears in the editor when the timeline bar has been clicked on
+    private GameObject raycastHitObjectObject;
+
+    // Is true when the hit object is following the mouse, false when it isn't
+    private bool raycastObjectDragActive;
+
+    // The mouse follow script attached to the editor hit objects
+    EditorHitObjectMouseFollow editorHitObjectMouseFollow;
+
+    // The index of the timeline bar clicked in the editor, used to delete and update existing notes spawn times, position etc by getting the index on click
+    public int raycastTimelineObjectListIndex;
 
     // Use this for initialization
     void Start () {
@@ -275,6 +289,22 @@ public class PlacedObject : MonoBehaviour {
                 }
             }
         }
+
+    }
+
+    // Get the index of the timeline object clicked on
+    public void GetIndexOfRaycastTimelineObject(GameObject gameObjectPass)
+    {
+        // The timeline object reference is passed and assigned
+        raycastTimelineObject = gameObjectPass;
+
+        // Get the index number for the timeline object passed in the instantiated list it was inserted into when instantiated
+        raycastTimelineObjectListIndex = instantiatedTimelineObjectList.IndexOf(raycastTimelineObject);
+        Debug.Log(raycastTimelineObject.transform.name);
+        Debug.Log(raycastTimelineObjectListIndex);
+
+        // Instantiate the hit object saved with this timeline index
+        InstantiateEditorHitObject();
     }
 
 
@@ -314,6 +344,88 @@ public class PlacedObject : MonoBehaviour {
             Debug.Log("Removed at: " + nullTimelineObjectIndex);
         }
     }
+
+    // Get the information for the editor hit object which is instantiated when the timeline bar has been clicked
+    public Vector3 GetHitObjectPositionInformation()
+    {
+        // Get the position for the hit object saved
+        Vector3 hitObjectSavedPosition = editorHitObjectPositions[raycastTimelineObjectListIndex];
+        // Return the position back to the instantiation function for the hit object
+        return hitObjectSavedPosition;
+    }
+
+    public int GetHitObjectTypeInformation()
+    {
+        // Get the object type for the hit object saved
+        int hitObjectSavedType = editorPlacedHitObjectTypeList[raycastTimelineObjectListIndex];
+        // Return the type back to the instantiation function for the hit object
+        return hitObjectSavedType;
+    }
+
+    // Instantiate the editor hit object in the editor scene for the timeline object selected with its correct positioning, disable the fade script
+    public void InstantiateEditorHitObject()
+    {
+        // Run functions to get the position, type and spawn time of this editor object based off the timelineobjectindex
+        // Get the hit object position saved
+        Vector3 hitObjectSavedPosition = GetHitObjectPositionInformation();
+        // Get the hit object type saved
+        int hitObjectSavedType = GetHitObjectTypeInformation();
+
+        // Instantiate the editor hit object with its loaded information previously saved
+        GameObject instantiatedEditorHitObject = Instantiate(editorPlacedHitObjects[hitObjectSavedType], hitObjectSavedPosition, Quaternion.Euler(0, 45, 0));
+        // Get the fadeout script attached to the child of the editor hit object and disable it so it remains on screen
+        FadeOut fadeOut = instantiatedEditorHitObject.GetComponentInChildren<FadeOut>();
+        // Get the destroyEditorPlacedHitObject script and disable it so it doesn't get destroyed
+        DestroyEditorPlacedHitObject destroyEditorPlacedHitObject = instantiatedEditorHitObject.GetComponentInChildren<DestroyEditorPlacedHitObject>();
+        // Disable fadeout script for the hit object
+        fadeOut.enabled = false;
+        // Disable destroyEditorPlacedHitObject script for the hit object
+        destroyEditorPlacedHitObject.enabled = false;
+    }
+
+        // NEW PLAN
+        // Spawn diamond when clicking on timeline bar
+        // Spawns at position saved
+        // If clicked
+        // Change the color of the black cursor diamond to the note color
+        // Destry the instantiated "preview" diamond
+        // Move cursor snap note and when clicked update the position for that note.
+
+        /*
+        // Get the object detected from the raycast hit
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            raycastObject = hit.transform.parent.gameObject;
+
+            if (raycastObject.tag == "EditorHitObject")
+            {
+                if (Input.GetMouseButtonDown(0) && raycastObjectDragActive == false)
+                {
+                    editorHitObjectMouseFollow = raycastObject.GetComponent<EditorHitObjectMouseFollow>();
+                    editorHitObjectMouseFollow.enabled = true;
+                    raycastObjectDragActive = true;
+                }
+                else if (Input.GetMouseButtonDown(0) && raycastObjectDragActive == true)
+                {
+                    editorHitObjectMouseFollow.enabled = false;
+                    raycastObjectDragActive = false;
+                }
+            }
+        }
+        */
+
+        // Get the index of the timeline object selected
+
+        // Get the position for this object
+
+        // Instantiate the editor hit object
+
+        // Disable the fade script for the hit object
+    
+
 
     // Instantiate a timeline object at the current song time
     public void InstantiateTimelineObject(int instantiatedTimelineObjectTypePass)

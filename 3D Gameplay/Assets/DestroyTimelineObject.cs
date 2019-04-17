@@ -18,7 +18,12 @@ public class DestroyTimelineObject : MonoBehaviour {
             // Destroy the game object
             Destroy(this.gameObject);
         }
-        
     }
     
+    public void FindIndexOfTimelineObject()
+    {
+        // Pass this game object
+        placedObject.GetIndexOfRaycastTimelineObject(this.gameObject);
+    }
+
 }

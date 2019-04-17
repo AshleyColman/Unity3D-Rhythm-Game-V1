@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114815788882403350}
   m_Layer: 0
   m_Name: EditorPlacedHitObjectGreen
-  m_TagString: Blue
+  m_TagString: EditorHitObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
