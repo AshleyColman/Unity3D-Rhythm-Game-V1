@@ -10,10 +10,14 @@ public class PlacedObject : MonoBehaviour {
     public MouseFollow mouseFollow; // Get the position of the mouse when pressed for placement
     int totalEditorHitObjects = 0;
     List<Vector3> editorHitObjectPositions = new List<Vector3>();
+    List<float> editorHitObjectSpawnTimes = new List<float>();
+    List<int> editorPlacedHitObjectTypeList = new List<int>();
+    int editorPlacedHitObjectType;
+    
     Vector3 instantiatePosition;
     public bool hasClickedUIButton = false;
     public SongProgressBar songProgressBar;
-    public int editorPlacedHitObjectType;
+    
     private int specialTimeKeyPresses;
     public Image backgroundImage; // To spawn during special time
     public TextMeshProUGUI instructionButtonText; // The instruction button text
@@ -53,9 +57,33 @@ public class PlacedObject : MonoBehaviour {
     public bool pressedKeyL;
 
 
+    public Vector3 timelineObjectPosition;
+
+    public GameObject[] instantiatedTimelineObject = new GameObject[6];
+    // List of instantiated timeline objects that are added to the list when instantiated
+    public List<GameObject> instantiatedTimelineObjectList = new List<GameObject>();
+    private int instantiatedTimelineObjectType;
+    // The index for all editor objects, increases by 1 everytime one is instantiated
+    private int timelineObjectIndex;
+
+
+    float handlePositionX;
+    float handlePositionY = 9999;
+    float handlePositionZ;
+    private Vector3 handlePosition;
+
+    // Reference to the destroy timeline script for assigning the index to the timeline object and removing it 
+    DestroyTimelineObject destroyTimelineObject;
+
+    // Reference to the metronome player to get the current song time, position of the handle and slide value for placed diamond bars on the timeline
+    MetronomePro_Player metronomePro_Player;
+
+
 
     // Use this for initialization
     void Start () {
+
+        metronomePro_Player = FindObjectOfType<MetronomePro_Player>();
 
         pressedKeyS = false;
         pressedKeyD = false;
@@ -124,6 +152,10 @@ public class PlacedObject : MonoBehaviour {
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
                 editorSoundController.PlayPlacedSound();
+
+                // Assign the timeline type and instantiate it on the timeline
+                instantiatedTimelineObjectType = 3;
+                InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
             // Purple Key Pressed
             else if (Input.GetKeyDown(KeyCode.K))
@@ -137,6 +169,10 @@ public class PlacedObject : MonoBehaviour {
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
                 editorSoundController.PlayPlacedSound();
+
+                // Assign the timeline type and instantiate it on the timeline
+                instantiatedTimelineObjectType = 4;
+                InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
             // Red Key Pressed
             else if (Input.GetKeyDown(KeyCode.L))
@@ -150,6 +186,10 @@ public class PlacedObject : MonoBehaviour {
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
                 editorSoundController.PlayPlacedSound();
+
+                // Assign the timeline type and instantiate it on the timeline
+                instantiatedTimelineObjectType = 5;
+                InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
             // Green Key Pressed
             if (Input.GetKeyDown(KeyCode.U))
@@ -158,11 +198,15 @@ public class PlacedObject : MonoBehaviour {
                 pressedKeyS = true;
 
                 // Set the type to GREEN as the U key has been pressed
-                editorPlacedHitObjectType = 3;
+                editorPlacedHitObjectType = 1;
                 // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
                 editorSoundController.PlayPlacedSound();
+
+                // Assign the timeline type and instantiate it on the timeline
+                instantiatedTimelineObjectType = 0;
+                InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
             // Yellow Key Pressed
             if (Input.GetKeyDown(KeyCode.I))
@@ -176,6 +220,10 @@ public class PlacedObject : MonoBehaviour {
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
                 editorSoundController.PlayPlacedSound();
+
+                // Assign the timeline type and instantiate it on the timeline
+                instantiatedTimelineObjectType = 1;
+                InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
             // Orange Key Pressed
             if (Input.GetKeyDown(KeyCode.O))
@@ -189,6 +237,10 @@ public class PlacedObject : MonoBehaviour {
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
                 editorSoundController.PlayPlacedSound();
+
+                // Assign the timeline type and instantiate it on the timeline
+                instantiatedTimelineObjectType = 2;
+                InstantiateTimelineObject(instantiatedTimelineObjectType);
             }
 
             // Special Time Key Press Set Times
@@ -225,6 +277,73 @@ public class PlacedObject : MonoBehaviour {
         }
     }
 
+
+    // Removes the timeline object from the list
+    public void RemoveTimelineObject()
+    {
+
+        // Do a check on the list and find the null object, store the index and remove from all the lists
+        int nullTimelineObjectIndex = 0;
+        bool nullWasFound = false; 
+
+        for (int i = 0; i < instantiatedTimelineObjectList.Count; i++)
+        {
+
+            // Check if any objects are null in the list
+            if (instantiatedTimelineObjectList[i] == null)
+            {
+                // Set the index to the null object index found
+                nullTimelineObjectIndex = i;
+                // Set null was found to true
+                nullWasFound = true;
+            }
+        }
+
+        // If a null object was found remove from the list
+        if (nullWasFound == true)
+        {
+            // Remove the
+            instantiatedTimelineObjectList.RemoveAt(nullTimelineObjectIndex);
+            // Remove the object positions tied to the timeline object
+            editorHitObjectPositions.RemoveAt(nullTimelineObjectIndex);
+            // Remove the spawn time tied to the timeline object
+            editorHitObjectSpawnTimes.RemoveAt(nullTimelineObjectIndex);
+            // Remove the type tied to the timeline object
+            editorPlacedHitObjectTypeList.RemoveAt(nullTimelineObjectIndex);
+
+            Debug.Log("Removed at: " + nullTimelineObjectIndex);
+        }
+    }
+
+    // Instantiate a timeline object at the current song time
+    public void InstantiateTimelineObject(int instantiatedTimelineObjectTypePass)
+    {
+        // Get the handle position currently in the song to spawn the timeline object at
+        handlePositionX = metronomePro_Player.songPointSliderHandle.transform.position.x;
+        // Decrease the Y position to prevent overlap
+        handlePositionY = 0;
+        handlePositionZ = metronomePro_Player.songPointSliderHandle.transform.position.z;
+
+        // Assign the new position
+        handlePosition = new Vector3(handlePositionX, handlePositionY, handlePositionZ);
+
+        // Instantiate the type of object
+        GameObject timelineObject = Instantiate(instantiatedTimelineObject[instantiatedTimelineObjectTypePass], handlePosition,
+        Quaternion.Euler(90, 0, 0), GameObject.FindGameObjectWithTag("Timeline").transform);
+
+        Slider timelineSlider = timelineObject.GetComponent<Slider>();
+
+        
+        // Add the instantiated timeline object to the list of instantiated timeline objects
+        instantiatedTimelineObjectList.Add(timelineObject);
+        timelineSlider.value = metronomePro_Player.handleSlider.value;
+
+        // Increase the timeline object index
+        timelineObjectIndex++;
+
+
+    }
+
     // Instantiate placed hit object at the position on the mouse
     public void InstantiateEditorPlacedHitObject(Vector3 instantiatePositionPass, int editorHitObjectTypePass)
     {
@@ -253,17 +372,25 @@ public class PlacedObject : MonoBehaviour {
         // Add to total
         totalEditorHitObjects += 1;
 
+        // Add the current song timer (when the user clicked) as the spawn time for the instantiated editor object
+        editorHitObjectSpawnTimes.Add(songTimer);
+
+        // Add the object type to the object type list
+        editorPlacedHitObjectTypeList.Add(editorPlacedHitObjectType);
+
+
+
 
         // Save object position to the list?
-        Database.database.PositionX.Add(instantiatePosition.x);
-        Database.database.PositionY.Add(instantiatePosition.y);
-        Database.database.PositionZ.Add(instantiatePosition.z);
+        // Database.database.PositionX.Add(instantiatePosition.x);
+        // Database.database.PositionY.Add(instantiatePosition.y);
+        // Database.database.PositionZ.Add(instantiatePosition.z);
 
         // Save object spawn time
-        Database.database.HitObjectSpawnTime.Add(songTimer);
+        //Database.database.HitObjectSpawnTime.Add(songTimer);
 
         // Save object type
-        Database.database.ObjectType.Add(editorPlacedHitObjectType);
+        //Database.database.ObjectType.Add(editorPlacedHitObjectType);
     }
 
     // Set the special time start when the key has been pressed at the current time of the song when pressed

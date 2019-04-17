@@ -6,40 +6,41 @@ using System.Collections;
 using System;
 using TMPro;
 
-public class MetronomePro_Player : MonoBehaviour {
+public class MetronomePro_Player : MonoBehaviour
+{
 
-	[Header ("Variables")]
-	public bool active;
-	bool playing = false;
+    [Header("Variables")]
+    public bool active;
+    bool playing = false;
 
-	[Space(5)]
+    [Space(5)]
 
-	public AudioSource songAudioSource;
-	public Sprite playSprite;
-	public Sprite pauseSprite;
+    public AudioSource songAudioSource;
+    public Sprite playSprite;
+    public Sprite pauseSprite;
 
-	[Space (5)]
-	public TextMeshProUGUI actualPosition;
-	public Image playAndPauseButton;
-	public Image songPlayerBar;
-	public TMP_Dropdown velocityScale;
-	public Slider songPlayerSlider;
+    [Space(5)]
+    public TextMeshProUGUI actualPosition;
+    public Image playAndPauseButton;
+    public Image songPlayerBar;
+    public TMP_Dropdown velocityScale;
+    public Slider songPlayerSlider;
 
-	[Header ("Song Data")]
-	public AudioClip songClip;
+    [Header("Song Data")]
+    public AudioClip songClip;
 
-	public string songName;
-	public string songArtist;
+    public string songName;
+    public string songArtist;
 
-	[Space(5)]
+    [Space(5)]
 
-	public double Bpm = 128;
-	public double OffsetMS = 100;
+    public double Bpm = 128;
+    public double OffsetMS = 100;
 
-	public int Step = 4;
-	public int Base = 4;
+    public int Step = 4;
+    public int Base = 4;
 
-	float amount;
+    float amount;
 
     // Reference for the songDatabase for selecting and getting the song selected
     private SongDatabase songDatabase;
@@ -48,34 +49,21 @@ public class MetronomePro_Player : MonoBehaviour {
     private int songSelectedIndex = 0;
 
 
-    // HIT OBJECT TESTING
-    public Vector3 timelineObjectPosition;
-
-    public GameObject[] instantiatedTimelineObject = new GameObject[6];
-    private int instantiatedTimelineObjectType;
     public GameObject songPointSliderHandle;
-
-    public Vector3 handlePosition;
     public Slider handleSlider;
 
-    float handlePositionX;
-    float handlePositionY = 9999;
-    float handlePositionZ;
-    float x;
-
-    public GameObject test;
-
-    void Start () {
+    void Start()
+    {
 
         // Find the reference to the songDatabase
         songDatabase = FindObjectOfType<SongDatabase>();
 
-		// Stop any song and reset values
-		StopSong ();
+        // Stop any song and reset values
+        StopSong();
 
-		// Send Song Data to Metronome
-		SendSongData();
-	}
+        // Send Song Data to Metronome
+        SendSongData();
+    }
 
     // Gets the song selected from the song button list
     public void GetSongSelected(int songSelectedIndexPass)
@@ -86,207 +74,182 @@ public class MetronomePro_Player : MonoBehaviour {
         songAudioSource.clip = songClip;
     }
 
-	// Sends Song Data to Metronome Pro script
-	public void SendSongData () {
-		FindObjectOfType<MetronomePro> ().GetSongData (Bpm, OffsetMS, Base, Step);
-	}
+    // Sends Song Data to Metronome Pro script
+    public void SendSongData()
+    {
+        FindObjectOfType<MetronomePro>().GetSongData(Bpm, OffsetMS, Base, Step);
+    }
 
 
-	// Sets a New Song and Metronome Velocity using Velocity Scale Dropdown Value
-	public void SetNewVelocity () {
-		if (velocityScale.value == 4) {
-			songAudioSource.pitch = 1;
-		} else if (velocityScale.value == 5) {
-			songAudioSource.pitch = 0.75f;
-		} else if (velocityScale.value == 6) {
-			songAudioSource.pitch = 0.50f;
-		} else if (velocityScale.value == 7) {
-			songAudioSource.pitch = 0.25f;
-		} else if (velocityScale.value == 3) {
-			songAudioSource.pitch = 1.25f;
-		} else if (velocityScale.value == 2) {
-			songAudioSource.pitch = 1.50f;
-		} else if (velocityScale.value == 1) {
-			songAudioSource.pitch = 1.75f;
-		} else if (velocityScale.value == 0) {
-			songAudioSource.pitch = 2.00f;
-		} else {
-			songAudioSource.pitch = 1;
-		}
-	}
-
-	// Sets a New Song Position if the user clicked on Song Player Slider
-	public void SetNewSongPosition () {
-		active = false;
-
-		if (songPlayerSlider.value * songAudioSource.clip.length < songAudioSource.clip.length) {
-			songAudioSource.time = (songPlayerSlider.value * songAudioSource.clip.length);
-		} else if ((songPlayerSlider.value * songAudioSource.clip.length >= songAudioSource.clip.length)) {
-			StopSong ();
-		}
-
-        if (FindObjectOfType<MetronomePro> ().neverPlayed) {
-			FindObjectOfType<MetronomePro> ().CalculateIntervals ();
-		}
-
-		FindObjectOfType<MetronomePro> ().CalculateActualStep ();
-
-		actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds (songAudioSource.time);
-
-		songPlayerBar.fillAmount = songPlayerSlider.value;
-		active = true;
-	}
-
-
-	// Play or Pause the Song and Metronome
-	public void PlayOrPauseSong() {
-		if (playing) {
-			Debug.Log ("Song Paused");
-			active = false;
-			playing = false;
-			songAudioSource.Pause ();
-			FindObjectOfType<MetronomePro> ().Pause ();
-			playAndPauseButton.sprite = playSprite;
-
-		} else {
-			songAudioSource.Play ();
-			FindObjectOfType<MetronomePro> ().Play ();
-			Debug.Log ("Song Playing");
-			playAndPauseButton.sprite = pauseSprite;
-			playing = true;
-			active = true;
-		}
-	}
-
-
-	// Stop Song and Metronome, Resets all too.
-	public void StopSong () {
-		Debug.Log ("Song Stoped");
-		StopAllCoroutines ();
-		active = false;
-		playing = false;
-
-		songAudioSource.Stop ();
-		songAudioSource.time = 0;
-		playAndPauseButton.sprite = playSprite;
-		amount = 0f;
-		songPlayerSlider.value = 0f;
-		songPlayerBar.fillAmount = 0f;
-		actualPosition.text = "00:00";
-
-		FindObjectOfType<MetronomePro> ().Stop ();
-	}
-
-	// Next Song
-	public void NextSong () {
-		StopSong ();
-
-		// Load next song data
-		// //
-
-		// songAudioSource.clip = songClip;
-		// SendSongData ();
-		// PlayOrPauseSong();
-	}
-
-	// Previous Song
-	public void PreviousSong () {
-		StopSong ();
-
-		// Load previous song data
-		// //
-
-		// songAudioSource.clip = songClip;
-		// SendSongData ();
-		// PlayOrPauseSong();
-	}
-
-	// Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
-	void Update () {
-		if (active) {
-			if (playing) {
-				if (songAudioSource.isPlaying) {
-					amount = (songAudioSource.time) / (songAudioSource.clip.length);
-					songPlayerBar.fillAmount = amount;
-                    handleSlider.value = amount;
-					actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds (songAudioSource.time);
-				} else {
-					StopSong ();
-				}
-			}
-		}
-
-		// Play song when user press Space button
-		if (Input.GetKeyDown(KeyCode.Space)) {
-			PlayOrPauseSong ();
-		}
-
-
-
-        // Testing
-
-
-        if (Input.GetKeyDown(KeyCode.U))
+    // Sets a New Song and Metronome Velocity using Velocity Scale Dropdown Value
+    public void SetNewVelocity()
+    {
+        if (velocityScale.value == 4)
         {
-            // Assign the type of GREEN
-            instantiatedTimelineObjectType = 0;
-            InstantiateTimelineObject(instantiatedTimelineObjectType);
+            songAudioSource.pitch = 1;
         }
-        if (Input.GetKeyDown(KeyCode.I))
+        else if (velocityScale.value == 5)
         {
-            // Assign the type of YELLOW
-            instantiatedTimelineObjectType = 1;
-            InstantiateTimelineObject(instantiatedTimelineObjectType);
+            songAudioSource.pitch = 0.75f;
         }
-        if (Input.GetKeyDown(KeyCode.O))
+        else if (velocityScale.value == 6)
         {
-            // Assign the type of ORANGE
-            instantiatedTimelineObjectType = 2;
-            InstantiateTimelineObject(instantiatedTimelineObjectType);
+            songAudioSource.pitch = 0.50f;
         }
-        if (Input.GetKeyDown(KeyCode.J))
+        else if (velocityScale.value == 7)
         {
-            // Assign the type of BLUE
-            instantiatedTimelineObjectType = 3;
-            InstantiateTimelineObject(instantiatedTimelineObjectType);
+            songAudioSource.pitch = 0.25f;
         }
-        if (Input.GetKeyDown(KeyCode.K))
+        else if (velocityScale.value == 3)
         {
-            // Assign the type of PURPLE
-            instantiatedTimelineObjectType = 4;
-            InstantiateTimelineObject(instantiatedTimelineObjectType);
+            songAudioSource.pitch = 1.25f;
         }
-        if (Input.GetKeyDown(KeyCode.L))
+        else if (velocityScale.value == 2)
         {
-            // Assign the type of RED
-            instantiatedTimelineObjectType = 5;
-            InstantiateTimelineObject(instantiatedTimelineObjectType);
+            songAudioSource.pitch = 1.50f;
+        }
+        else if (velocityScale.value == 1)
+        {
+            songAudioSource.pitch = 1.75f;
+        }
+        else if (velocityScale.value == 0)
+        {
+            songAudioSource.pitch = 2.00f;
+        }
+        else
+        {
+            songAudioSource.pitch = 1;
         }
     }
 
-    // Instantiate a timeline object at the current song time
-    public void InstantiateTimelineObject(int instantiatedTimelineObjectTypePass)
+    // Sets a New Song Position if the user clicked on Song Player Slider
+    public void SetNewSongPosition()
     {
-        // Get the handle position currently in the song to spawn the timeline object at
-        handlePositionX = songPointSliderHandle.transform.position.x;
-        // Decrease the Y position to prevent overlap
-        handlePositionY = 0;
-        handlePositionZ = songPointSliderHandle.transform.position.z;
+        active = false;
 
-        // Assign the new position
-        handlePosition = new Vector3(handlePositionX, handlePositionY, handlePositionZ);
+        if (songPlayerSlider.value * songAudioSource.clip.length < songAudioSource.clip.length)
+        {
+            songAudioSource.time = (songPlayerSlider.value * songAudioSource.clip.length);
+        }
+        else if ((songPlayerSlider.value * songAudioSource.clip.length >= songAudioSource.clip.length))
+        {
+            StopSong();
+        }
 
-        // Instantiate the type of object
-        GameObject timelineObject = GameObject.Instantiate(instantiatedTimelineObject[instantiatedTimelineObjectTypePass], handlePosition,
-        Quaternion.Euler(90, 0, 0), GameObject.FindGameObjectWithTag("Timeline").transform);
+        if (FindObjectOfType<MetronomePro>().neverPlayed)
+        {
+            FindObjectOfType<MetronomePro>().CalculateIntervals();
+        }
 
-        Slider timelineSlider = timelineObject.GetComponent<Slider>();
-        timelineSlider.value = handleSlider.value;
-        //GameObject timelineObjectHandle = timelineObject.transform.GetChild(0).GetChild(0).gameObject;
-        //timelineObjectHandle.transform.position = handlePosition;
-        Debug.Log(timelineObject.transform.position);
+        FindObjectOfType<MetronomePro>().CalculateActualStep();
+
+        actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
+
+        songPlayerBar.fillAmount = songPlayerSlider.value;
+        active = true;
+    }
+
+
+    // Play or Pause the Song and Metronome
+    public void PlayOrPauseSong()
+    {
+        if (playing)
+        {
+            Debug.Log("Song Paused");
+            active = false;
+            playing = false;
+            songAudioSource.Pause();
+            FindObjectOfType<MetronomePro>().Pause();
+            playAndPauseButton.sprite = playSprite;
+
+        }
+        else
+        {
+            songAudioSource.Play();
+            FindObjectOfType<MetronomePro>().Play();
+            Debug.Log("Song Playing");
+            playAndPauseButton.sprite = pauseSprite;
+            playing = true;
+            active = true;
+        }
+    }
+
+
+    // Stop Song and Metronome, Resets all too.
+    public void StopSong()
+    {
+        Debug.Log("Song Stoped");
+        StopAllCoroutines();
+        active = false;
+        playing = false;
+
+        songAudioSource.Stop();
+        songAudioSource.time = 0;
+        playAndPauseButton.sprite = playSprite;
+        amount = 0f;
+        songPlayerSlider.value = 0f;
+        songPlayerBar.fillAmount = 0f;
+        actualPosition.text = "00:00";
+
+        FindObjectOfType<MetronomePro>().Stop();
+    }
+
+    // Next Song
+    public void NextSong()
+    {
+        StopSong();
+
+        // Load next song data
+        // //
+
+        // songAudioSource.clip = songClip;
+        // SendSongData ();
+        // PlayOrPauseSong();
+    }
+
+    // Previous Song
+    public void PreviousSong()
+    {
+        StopSong();
+
+        // Load previous song data
+        // //
+
+        // songAudioSource.clip = songClip;
+        // SendSongData ();
+        // PlayOrPauseSong();
+    }
+
+    // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
+    void Update()
+    {
+        if (active)
+        {
+            if (playing)
+            {
+                if (songAudioSource.isPlaying)
+                {
+                    amount = (songAudioSource.time) / (songAudioSource.clip.length);
+                    songPlayerBar.fillAmount = amount;
+                    handleSlider.value = amount;
+                    actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
+                }
+                else
+                {
+                    StopSong();
+                }
+            }
+        }
+
+        // Play song when user press Space button
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            PlayOrPauseSong();
+        }
     }
 }
+
+
 	
 public static class UtilityMethods {
 	public static string FromSecondsToMinutesAndSeconds (float seconds) {
@@ -297,3 +260,4 @@ public static class UtilityMethods {
 		return minSec;
 	}
 }
+
