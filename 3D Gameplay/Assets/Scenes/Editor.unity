@@ -3861,7 +3861,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1221984675857880, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114591839356208324, guid: a51493b45fbdfd04fbc2aa55be7c8a67,
         type: 2}
@@ -5496,7 +5496,7 @@ Transform:
   m_LocalScale: {x: 1000, y: 1, z: 1000}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &344302317
 GameObject:
@@ -17373,17 +17373,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 435480789}
-        m_MethodName: UpdateInstructionButtonText
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: LeaderboardCreated
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 435480789}
         m_MethodName: RemoveTimelineObject
         m_Mode: 1
         m_Arguments:
@@ -22755,7 +22744,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1362870048
 GameObject:
@@ -25711,17 +25700,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 435480789}
-        m_MethodName: UpdateInstructionButtonText
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: SaveButtonPressed
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 435480792}
         m_MethodName: CreateBeatmapFolder
         m_Mode: 1
@@ -26181,7 +26159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   editorGhostObject: {fileID: 0}
   editorGhostPosition: {x: 0, y: 0, z: 0}
-  editorCursor: {fileID: 1615380629}
+  editorCursor: {fileID: 0}
   editorCursorPosition: {x: 0, y: 0, z: 0}
   snappingEnabled: 0
   pos: {x: 0, y: 0, z: 0}
@@ -28057,23 +28035,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1609138678}
---- !u!1 &1615380629 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1880505404341086, guid: e3432afe52dfa534a90a6d6c2fc5a59c,
-    type: 2}
-  m_PrefabInternal: {fileID: 1903346922}
---- !u!114 &1615380630
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1615380629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd02828db88a0d94db5e523edd331f50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pos: {x: 0, y: 0, z: 0}
 --- !u!1 &1632814456
 GameObject:
   m_ObjectHideFlags: 0
@@ -31439,70 +31400,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1897134198}
---- !u!1001 &1903346922
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0.38268343
-      objectReference: {fileID: 0}
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 0.92387956
-      objectReference: {fileID: 0}
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_RootOrder
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_LocalScale.z
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1880505404341086, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_Name
-      value: EditorCursor
-      objectReference: {fileID: 0}
-    - target: {fileID: 4864046690821754, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1880505404341086, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 114572347515472314, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-    - {fileID: 114022536119363378, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-  m_ParentPrefab: {fileID: 100100000, guid: e3432afe52dfa534a90a6d6c2fc5a59c, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &1910918749
 GameObject:
   m_ObjectHideFlags: 0
@@ -32198,7 +32095,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4541951074255542, guid: d7eb27be34359214e8280ddf06bf3151, type: 2}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1414538622695490, guid: d7eb27be34359214e8280ddf06bf3151, type: 2}
       propertyPath: m_Name
@@ -33519,7 +33416,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4788916807437670, guid: 4d109a1a369c0684ca2db8fc10cbcbf7, type: 2}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 1400411118853212, guid: 4d109a1a369c0684ca2db8fc10cbcbf7, type: 2}
       propertyPath: m_Name

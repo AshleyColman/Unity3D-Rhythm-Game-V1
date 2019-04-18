@@ -135,9 +135,6 @@ public class PlacedObject : MonoBehaviour {
                 // Has pressed the spacebar
                 hasPressedSpacebar = true;
 
-                // Update the instruction button text and play animation
-                UpdateInstructionButtonText("SpacebarPressed");
-
                 // If the space key has been pressed we start the song and song timer
                 startSongTimer = true;
             }
@@ -269,8 +266,6 @@ public class PlacedObject : MonoBehaviour {
                     ActivateBorder();
                     // Mark the special time start
                     SetSpecialTimeStart();
-                    // Update the instruction button text and play animation
-                    UpdateInstructionButtonText("HKeyPressedOnce");
                     // Play the specialTimeFirstPlaced sound effect
                     editorSoundController.PlaySpecialTimeStartPlacedSound();
                 }
@@ -281,8 +276,6 @@ public class PlacedObject : MonoBehaviour {
                     DeActivateBorder();
                     // Mark the special time end
                     SetSpecialTimeEnd();
-                    // Update the instruction button text and play animation
-                    UpdateInstructionButtonText("HKeyPressedTwice");
                     // Play the second specialTimeSecondPlaced sound effect
                     editorSoundController.PlaySpecialTimeEndPlacedSound();
                 }
@@ -561,59 +554,6 @@ public class PlacedObject : MonoBehaviour {
         backgroundImage.enabled = false;
     }
 
-    // When the save button has been clicked update the instruction button text and play animation
-    public void UpdateInstructionButtonText(string actionPass)
-    {
-        if (actionPass == "SpacebarPressed")
-        {
-            // Update the instruction button text
-            instructionButtonText.text = "PRESS H TO START SPECIAL TIME";
-            // Do instruction button animation
-            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
-        }
-        else if (actionPass == "HKeyPressedOnce")
-        {
-            // Update the instruction button text
-            instructionButtonText.text = "Press H TO END SPECIAL TIME";
-            // Do instruction button animation
-            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
-        }
-        else if (actionPass == "HKeyPressedTwice")
-        {
-            // Update the instruction button text
-            instructionButtonText.text = "PRESS 'FINISHED' WHEN COMPLETE";
-            // Do instruction button animation
-            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
-        }
-        else if (actionPass == "LeaderboardCreated")
-        {
-            // Update the instruction button text
-            instructionButtonText.text = "SELECT A DIFFICULTY TYPE";
-            // Do instruction button animation
-            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
-        }
-        else if (actionPass == "DifficultyTypeSelected")
-        {
-            // Update the instruction button text
-            instructionButtonText.text = "SELECT A DIFFICULTY LEVEL";
-            // Do instruction button animation
-            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
-        }
-        else if (actionPass == "DifficultyLevelSelected")
-        {
-            // Update the instruction button text
-            instructionButtonText.text = "SAVE YOUR BEATMAP";
-            // Do instruction button animation
-            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
-        }
-        else if (actionPass == "SaveButtonPressed")
-        {
-            // Update the instruction button text
-            instructionButtonText.text = "BEATMAP SAVED";
-            // Do instruction button animation
-            instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
-        }
-    }
 
     // Reset the song timer when clear button has been pressed in the editor
     public void ResetSongTimer()
@@ -622,10 +562,6 @@ public class PlacedObject : MonoBehaviour {
         hasPressedSpacebar = false;
         songTimer = 0f;
         startSongTimer = false;
-        // Update the instruction button text
-        instructionButtonText.text = "PRESS SPACE TO START LIVE MAPPING";
-        // Do instruction button animation
-        instructionButtonAnimation.Play("EditorInstructionButtonAnimation");
         // Reset specialTimeKeyPresses
         specialTimeKeyPresses = 0;
     }
