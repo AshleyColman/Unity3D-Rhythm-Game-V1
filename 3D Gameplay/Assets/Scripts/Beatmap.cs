@@ -32,4 +32,6 @@ public class Beatmap
     public bool pressedKeyJ;
     public bool pressedKeyK;
     public bool pressedKeyL;
+
+    public float songPreviewStartTime;
 }

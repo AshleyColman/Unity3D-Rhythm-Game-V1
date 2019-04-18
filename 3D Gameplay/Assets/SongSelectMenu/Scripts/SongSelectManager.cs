@@ -27,6 +27,7 @@ public class SongSelectManager : MonoBehaviour {
     private string advancedDifficultyLevel;
     private string extraDifficultyLevel;
     private int totalDiamonds;
+    private float songPreviewStartTime;
 
     // References to the difficulty buttons
     public Button DifficultyOptionAdvancedButton;
@@ -166,7 +167,10 @@ public class SongSelectManager : MonoBehaviour {
             pressedKeyJ = Database.database.loadedPressedKeyJ;
             pressedKeyK = Database.database.loadedPressedKeyK;
             pressedKeyL = Database.database.loadedPressedKeyL;
+            songPreviewStartTime = Database.database.loadedSongPreviewStartTime;
 
+            // Start the song preview as it has now been loaded
+            songSelectPreview.PlaySongSelectScenePreview(songPreviewStartTime);
 
             // Load the image by passing the current beatmap directory
             backgroundManager.LoadEditorBeatmapImage(beatmapDirectories[selectedDirectoryIndexPass]);

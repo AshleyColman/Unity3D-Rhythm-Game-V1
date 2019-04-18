@@ -51,11 +51,6 @@ public class SongSelectPreview : MonoBehaviour
             }
         }
 
-        // Plays song when chosen
-        if (choseSong == true)
-        {
-            PlaySongPreview();
-        }
 
        
 
@@ -89,6 +84,19 @@ public class SongSelectPreview : MonoBehaviour
         songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
         songAudioSource.volume = songVolume;
         songAudioSource.Play();
+        playing = true;
+        active = true;
+        choseSong = false;
+    }
+
+    // Play the song preview
+    public void PlaySongSelectScenePreview(float songPreviewStartTimePass)
+    {
+        // Play song
+        songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
+        songAudioSource.volume = songVolume;
+        songAudioSource.Play();
+        songAudioSource.time = songPreviewStartTimePass;
         playing = true;
         active = true;
         choseSong = false;

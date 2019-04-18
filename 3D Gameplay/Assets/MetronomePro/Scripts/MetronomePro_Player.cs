@@ -11,7 +11,7 @@ public class MetronomePro_Player : MonoBehaviour
 
     [Header("Variables")]
     public bool active;
-    bool playing = false;
+    public bool playing = false;
 
     [Space(5)]
 

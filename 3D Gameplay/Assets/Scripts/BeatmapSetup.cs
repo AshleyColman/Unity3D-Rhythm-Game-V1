@@ -22,6 +22,13 @@ public class BeatmapSetup : MonoBehaviour {
     public Button beatmapDifficultyExtraButton;
     public string beatmapDifficulty;
 
+    // Song preview start time in th song select screen
+    public float songPreviewStartTime;
+    // The textbox to get the vlaue of the start time
+    public TMP_InputField songPreviewStartTimeInputField;
+    // The submit button for songPreviewStartTime
+    public Button songPreviewStartTimeSetButton;
+
     // Song name
     public string songName;
 
@@ -83,6 +90,30 @@ public class BeatmapSetup : MonoBehaviour {
 
         // Get the reference to the background image manager
         backgroundManager = FindObjectOfType<BackgroundManager>();
+    }
+
+    // Get the song preview time from the input field box
+    public void ActivateSongPreviewStartTimePanel()
+    {
+        // Enable the text field
+        songPreviewStartTimeInputField.gameObject.SetActive(true);
+        // Enable the button
+        songPreviewStartTimeSetButton.gameObject.SetActive(true);
+    }
+
+    // Save the text field information then disable
+    public void GetSongPreviewStartTime()
+    {
+        // Get the time from the input field
+        songPreviewStartTime = float.Parse(songPreviewStartTimeInputField.text);
+
+        // Disable the text field
+        songPreviewStartTimeInputField.gameObject.SetActive(false);
+        // Disable the button
+        songPreviewStartTimeSetButton.gameObject.SetActive(false);
+
+        // Enable the save button
+        saveButton.interactable = true;
     }
 
     // Insert all song information when the song selected has been clicked
@@ -167,8 +198,8 @@ public class BeatmapSetup : MonoBehaviour {
         // Disable the difficulty level panel
         difficultyLevelPanel.gameObject.SetActive(false);
 
-        // Enable the save button
-        saveButton.interactable = true;
+        // Activate the song preview start time input field and button
+        ActivateSongPreviewStartTimePanel();
     }
 
     // Update the song name, artist and difficulty with the values entered

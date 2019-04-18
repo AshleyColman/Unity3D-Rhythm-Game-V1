@@ -62,6 +62,7 @@ public class Database : MonoBehaviour {
     public string beatmapAdvancedDifficultyLevel;
     public string beatmapExtraDifficultyLevel;
     public int songClipChosenIndex;
+    public float songPreviewStartTime;
 
     // Loaded beatmap variables
     public string loadedSongName;
@@ -72,6 +73,7 @@ public class Database : MonoBehaviour {
     public string loadedbeatmapAdvancedDifficultyLevel;
     public string loadedbeatmapExtraDifficultyLevel;
     public int loadedSongClipChosenIndex;
+    public float loadedSongPreviewStartTime;
 
     // Keys pressed for beatmap
     public bool pressedKeyS;
@@ -88,6 +90,8 @@ public class Database : MonoBehaviour {
     public bool loadedPressedKeyJ;
     public bool loadedPressedKeyK;
     public bool loadedPressedKeyL;
+
+    
 
     private void Awake()
     {
@@ -144,6 +148,7 @@ public class Database : MonoBehaviour {
         beatmapAdvancedDifficultyLevel = beatmapSetup.beatmapAdvancedDifficultyLevel;
         beatmapExtraDifficultyLevel = beatmapSetup.beatmapExtraDifficultyLevel;
         songClipChosenIndex = beatmapSetup.songClipChosenIndex;
+        songPreviewStartTime = beatmapSetup.songPreviewStartTime;
 
         // Save beatmap information
         beatmap.songName = songName;
@@ -154,6 +159,7 @@ public class Database : MonoBehaviour {
         beatmap.beatmapAdvancedDifficultyLevel = beatmapAdvancedDifficultyLevel;
         beatmap.beatmapExtraDifficultyLevel = beatmapExtraDifficultyLevel;
         beatmap.songClipChosenIndex = songClipChosenIndex;
+        beatmap.songPreviewStartTime = songPreviewStartTime;
 
         // Save leaderboard table name
         beatmap.leaderboardTableName = leaderboardTableName;
@@ -223,6 +229,7 @@ public class Database : MonoBehaviour {
         loadedbeatmapAdvancedDifficultyLevel = beatmap.beatmapAdvancedDifficultyLevel;
         loadedbeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
         loadedSongClipChosenIndex = beatmap.songClipChosenIndex;
+        loadedSongPreviewStartTime = beatmap.songPreviewStartTime;
 
         // Load keys pressed
         loadedPressedKeyS = beatmap.pressedKeyS;
@@ -253,6 +260,7 @@ public class Database : MonoBehaviour {
         loadedBeatmapCreator = "";
         loadedbeatmapAdvancedDifficultyLevel = "";
         loadedbeatmapExtraDifficultyLevel = "";
+        loadedSongPreviewStartTime = 0;
 
         loadedSongClipChosenIndex = 0;
         loadedLeaderboardTableName = "";
@@ -276,6 +284,7 @@ public class Database : MonoBehaviour {
 
         SpecialTimeStart = 0;
         SpecialTimeEnd = 0;
+
 
         pressedKeyS = false;
         pressedKeyD = false;
