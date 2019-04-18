@@ -200,6 +200,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timelineHitObjectSpawnTime: 0
+  timelineSlider: {fileID: 0}
+  metronome_Player: {fileID: 0}
 --- !u!222 &222103595641116644
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -223,7 +225,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 684, y: 50}
+  m_SizeDelta: {x: 10000, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224796403792333342
 RectTransform:
@@ -257,8 +259,8 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 10000, y: 40}
+  m_Pivot: {x: 0, y: 0.5}
