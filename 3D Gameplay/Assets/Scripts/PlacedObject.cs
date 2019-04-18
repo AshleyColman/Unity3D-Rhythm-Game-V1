@@ -10,9 +10,9 @@ public class PlacedObject : MonoBehaviour {
     public GameObject[] editorPlacedHitObjects = new GameObject[3];
     public MouseFollow mouseFollow; // Get the position of the mouse when pressed for placement
     int totalEditorHitObjects = 0;
-    List<Vector3> editorHitObjectPositions = new List<Vector3>();
-    List<float> editorHitObjectSpawnTimes = new List<float>();
-    List<int> editorPlacedHitObjectTypeList = new List<int>();
+    private List<Vector3> editorHitObjectPositions = new List<Vector3>();
+    private List<float> editorHitObjectSpawnTimesList = new List<float>();
+    private List<int> editorPlacedHitObjectTypeList = new List<int>();
     int editorPlacedHitObjectType;
     
     Vector3 instantiatePosition;
@@ -75,9 +75,6 @@ public class PlacedObject : MonoBehaviour {
     float handlePositionY = 9999;
     float handlePositionZ;
     private Vector3 handlePosition;
-
-    // Reference to the destroy timeline script for assigning the index to the timeline object and removing it 
-    DestroyTimelineObject destroyTimelineObject;
 
     // Reference to the metronome player to get the current song time, position of the handle and slide value for placed diamond bars on the timeline
     MetronomePro_Player metronomePro_Player;
@@ -294,6 +291,40 @@ public class PlacedObject : MonoBehaviour {
 
     }
 
+    // Reset the editor
+    public void ResetEditor()
+    {
+        // Reset lists
+        editorHitObjectSpawnTimesList.Clear();
+        editorHitObjectPositions.Clear();
+        editorPlacedHitObjectTypeList.Clear();
+        
+        // Delete all objects in the instantiated timeline list then clear it
+        for (int i = 0; i < instantiatedTimelineObjectList.Count; i++)
+        {
+            Destroy(instantiatedTimelineObjectList[i]);
+        }
+
+        // Clear the instantaitedTimelineObjectList also
+        instantiatedTimelineObjectList.Clear();
+
+        raycastTimelineObjectListIndex = 0;
+
+        // Reset the song to 0 and the metronome
+        metronomePro_Player.StopSong();
+
+
+        // Reset keys pressed
+        ResetKeysPressed();
+
+        // Reset the song timer
+        ResetSongTimer();
+
+        // Deactivate the border
+        DeActivateBorder();
+    }
+
+
     // Get the index of the timeline object clicked on
     public void GetIndexOfRaycastTimelineObject(GameObject gameObjectPass)
     {
@@ -318,14 +349,22 @@ public class PlacedObject : MonoBehaviour {
         InstantiateEditorHitObject();
     }
 
+    // Save the changed instantiated editor objects position
+    public void SaveNewInstantiatedEditorObjectsPosition()
+    {
+        // Set the saved editor position to the new position of the current object/replace the old value
+        editorHitObjectPositions[raycastTimelineObjectListIndex] = instantiatedEditorHitObject.transform.position;
+    }
+
 
     // Removes the timeline object from the list
     public void RemoveTimelineObject()
     {
-
-        // Do a check on the list and find the null object, store the index and remove from all the lists
+        // The index of null objects found
         int nullTimelineObjectIndex = 0;
-        bool nullWasFound = false; 
+
+        // Create a list for holding all the indexes of null objects found
+        List<int> nullObjectsList = new List<int>();
 
         for (int i = 0; i < instantiatedTimelineObjectList.Count; i++)
         {
@@ -335,20 +374,23 @@ public class PlacedObject : MonoBehaviour {
             {
                 // Set the index to the null object index found
                 nullTimelineObjectIndex = i;
-                // Set null was found to true
-                nullWasFound = true;
+                // Add the index of a null object to the null object list
+                nullObjectsList.Add(nullTimelineObjectIndex);
             }
         }
-
-        // If a null object was found remove from the list
-        if (nullWasFound == true)
+    
+        // Remove all null objects and their associated information lists for the hit objects
+        for (int i = nullObjectsList.Count - 1; i > -1; i--)
         {
-            // Remove the
+            // Get the null object index from the list
+            nullTimelineObjectIndex = nullObjectsList[i];
+
+            // Remove the timeline object from the list
             instantiatedTimelineObjectList.RemoveAt(nullTimelineObjectIndex);
             // Remove the object positions tied to the timeline object
             editorHitObjectPositions.RemoveAt(nullTimelineObjectIndex);
             // Remove the spawn time tied to the timeline object
-            editorHitObjectSpawnTimes.RemoveAt(nullTimelineObjectIndex);
+            editorHitObjectSpawnTimesList.RemoveAt(nullTimelineObjectIndex);
             // Remove the type tied to the timeline object
             editorPlacedHitObjectTypeList.RemoveAt(nullTimelineObjectIndex);
 
@@ -421,6 +463,17 @@ public class PlacedObject : MonoBehaviour {
         instantiatedTimelineObjectList.Add(timelineObject);
         timelineSlider.value = metronomePro_Player.handleSlider.value;
 
+        // Get the reference to the destroy timeline object script attached to the timeline object
+        DestroyTimelineObject destroyTimelineObject = timelineObject.GetComponent<DestroyTimelineObject>();
+
+        
+        // Set the timeline objects spawn time to the current time in the song
+        destroyTimelineObject.timelineHitObjectSpawnTime = metronomePro_Player.songAudioSource.time;
+
+        // Add the current song timer (when the user clicked) as the spawn time for the instantiated editor object
+        editorHitObjectSpawnTimesList.Add(destroyTimelineObject.timelineHitObjectSpawnTime);
+
+
         // Increase the timeline object index
         timelineObjectIndex++;
 
@@ -446,7 +499,6 @@ public class PlacedObject : MonoBehaviour {
         float y = 10;
         float z = editorHitObject.transform.position.z;
 
-
         // Set the instantiate position to the editor hit object position but with a Y of 0
         instantiatePosition = new Vector3(x, y, z);
         InstantiateEditorPlacedHitObject(instantiatePosition, editorPlacedHitObjectType);
@@ -455,37 +507,46 @@ public class PlacedObject : MonoBehaviour {
         // Add to total
         totalEditorHitObjects += 1;
 
-        // Add the current song timer (when the user clicked) as the spawn time for the instantiated editor object
-        editorHitObjectSpawnTimes.Add(songTimer);
-
         // Add the object type to the object type list
         editorPlacedHitObjectTypeList.Add(editorPlacedHitObjectType);
+    }
 
+    // Sort all lists based on spawn time so they're in order before saving
+    public void SortListOrders()
+    {
 
+    }
 
+    public void SaveListsToDatabase()
+    {
+        // Sorting code to sort
+        // SortListOrders()
 
-        // Save object position to the list?
-        // Database.database.PositionX.Add(instantiatePosition.x);
-        // Database.database.PositionY.Add(instantiatePosition.y);
-        // Database.database.PositionZ.Add(instantiatePosition.z);
+        // Save to the database everything
+        for (int i = 0; i < editorHitObjectPositions.Count; i++)
+        {
+            // Add the positions to the database
+            Database.database.PositionX.Add(editorHitObjectPositions[i].x);
+            Database.database.PositionY.Add(editorHitObjectPositions[i].y);
+            Database.database.PositionZ.Add(editorHitObjectPositions[i].z);
+            // Add the object type to the database
+            Database.database.ObjectType.Add(editorPlacedHitObjectTypeList[i]);
+            // Add the spawn times to the database
+            Database.database.HitObjectSpawnTime.Add(editorHitObjectSpawnTimesList[i]);
+        }
 
-        // Save object spawn time
-        //Database.database.HitObjectSpawnTime.Add(songTimer);
-
-        // Save object type
-        //Database.database.ObjectType.Add(editorPlacedHitObjectType);
     }
 
     // Set the special time start when the key has been pressed at the current time of the song when pressed
     public void SetSpecialTimeStart()
     {
-        Database.database.SpecialTimeStart = songTimer;
+        Database.database.SpecialTimeStart = metronomePro_Player.songAudioSource.time;
     }
 
     // Set the special time end when the key has been pressed at the current time of the song when pressed
     public void SetSpecialTimeEnd()
     {
-        Database.database.SpecialTimeEnd = songTimer;
+        Database.database.SpecialTimeEnd = metronomePro_Player.songAudioSource.time;
     }
 
     // Display the special time border during mapping when the key has been pressed

@@ -149,6 +149,15 @@ public class MetronomePro_Player : MonoBehaviour
         active = true;
     }
 
+    // Update the hit objects time from the slider passed and set it to a song time
+    public float UpdateTimelineHitObjectSpawnTimes(Slider timelineSliderPass)
+    {
+        float newTimelineHitObjectSpawnTime = 0;
+        // Set the new objects spawn time based on the slider value
+        newTimelineHitObjectSpawnTime = (timelineSliderPass.value* songAudioSource.clip.length);
+
+        return newTimelineHitObjectSpawnTime;
+    }
 
     // Play or Pause the Song and Metronome
     public void PlayOrPauseSong()

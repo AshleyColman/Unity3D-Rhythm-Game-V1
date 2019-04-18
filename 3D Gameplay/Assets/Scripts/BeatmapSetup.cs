@@ -176,8 +176,6 @@ public class BeatmapSetup : MonoBehaviour {
     {
         // Disable the song select menu
         songSelectPanel.gameObject.SetActive(false);
-
-        editorTitle.text = songName + " [ " + songArtist + " ] " + " [ " + beatmapDifficulty.ToUpper() + " ] ";
     }
 
     // Change the beatmap song selected

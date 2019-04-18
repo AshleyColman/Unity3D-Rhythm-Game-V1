@@ -10,6 +10,14 @@ public class EditorHitObjectMouseFollow : MonoBehaviour {
     // Is true when the hit object is following the mouse, false when it isn't
     private bool raycastObjectDragActive;
 
+    // Get the reference to the placedObject script
+    private PlacedObject placedObject;
+
+    private void Start()
+    {
+        placedObject = FindObjectOfType<PlacedObject>();
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -38,6 +46,7 @@ public class EditorHitObjectMouseFollow : MonoBehaviour {
                 raycastObjectDragActive = false;
 
                 // Save the current position of the instantiated hit object?
+                placedObject.SaveNewInstantiatedEditorObjectsPosition();
             }
 
 
