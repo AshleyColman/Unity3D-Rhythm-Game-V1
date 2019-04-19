@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33880647043961836}
   - component: {fileID: 64936643339009164}
   - component: {fileID: 23900785045987922}
-  - component: {fileID: 114022536119363378}
+  - component: {fileID: 114376664223934672}
   m_Layer: 0
   m_Name: Diamond
   m_TagString: Untagged
@@ -38,9 +38,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4864046690821754}
-  - component: {fileID: 114552300546532818}
+  - component: {fileID: 114280593667503982}
   m_Layer: 0
-  m_Name: EditorPlacedHitObjectBlue
+  m_Name: PreviewHitObjectBlue
   m_TagString: InstantiatedEditorHitObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,7 +87,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 00aa78a3c44641b479f4c8fce5b48e59, type: 2}
+  - {fileID: 2100000, guid: 4c85caffb5a49604581a07a14303b64b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -128,19 +128,7 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114022536119363378
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1641534576012134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e38299af9cbaa1f41b7137d11eea2cb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timer: 0
---- !u!114 &114552300546532818
+--- !u!114 &114280593667503982
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -148,6 +136,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1880505404341086}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4537855f2fda154da0b1decb4d38b31, type: 3}
+  m_Script: {fileID: 11500000, guid: 76d8748b8055497469fbd7fec058c582, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114376664223934672
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1641534576012134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeSpeed: 0
+  timer: 0

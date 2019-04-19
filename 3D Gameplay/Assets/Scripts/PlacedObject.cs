@@ -91,6 +91,24 @@ public class PlacedObject : MonoBehaviour {
     // The instantiated editor hit object that is added to the scene when a timeline bar has been clicked
     GameObject instantiatedEditorHitObject;
 
+
+
+
+    // The list of preview hit objects that have been spawned when the preview button has been pressed and the song timer has reached the spawn time for the hit object
+    private List<GameObject> previewHitObjectList = new List<GameObject>();
+    // The preview hit objects to instantiate
+    public GameObject[] previewHitObjects = new GameObject[6];
+    // Index used for tracking and spawning the preview hit objects
+    private int previewHitObjectIndex;
+    // The type of the preview hit object to be spawned
+    private int previewHitObjectType;
+    // The position of the preview hit object to be spawned
+    private Vector3 previewHitObjectPosition;
+    // The spawn time of the preview hit object to be spawned
+    private float previewHitObjectSpawnTime;
+    // Used for controlling when to play the beatmap preview
+    public bool playBeatmapPreview;
+
     // Use this for initialization
     void Start () {
 
@@ -281,6 +299,14 @@ public class PlacedObject : MonoBehaviour {
                 }
             }
         }
+
+
+        if (playBeatmapPreview == true)
+        {
+            // Play the beatmap preview
+            PlayBeatmapPreview();
+        }
+        
 
     }
 
@@ -582,4 +608,68 @@ public class PlacedObject : MonoBehaviour {
         pressedKeyK = false;
         pressedKeyL = false;
     }
+
+    // Enable the beatmap preview starting with note 0
+    public void EnableBeatmapPreview()
+    {
+        // Reset the beatmap preview starting index
+        ResetBeatmapPreview();
+        // Start the beatmap preview
+        playBeatmapPreview = true;
+    }
+
+    // Start the beatmap preview from where it last was left at
+    public void StartBeatmapPreview()
+    {
+        // Start the beatmap preview
+        playBeatmapPreview = true;
+    }
+
+    // Reset beatmap preview
+    public void ResetBeatmapPreview()
+    {
+        previewHitObjectIndex = 0;
+    }
+
+    // Stop the beatmap preview
+    public void StopBeatmapPreview()
+    {
+        playBeatmapPreview = false;
+    }
+
+    // Play a preview of the beatmap from start to finish
+    public void PlayBeatmapPreview()
+    {
+        // Reset the song time to 0
+        // if the play button has been pressed
+        // Spawn the 1's hit object
+        // add the spawn to a list of preview objects
+        // with fade
+        // if the pause button is pressed disable the fade script on the object
+
+        if (metronomePro_Player.playing == true)
+        {
+            // Get the preview hit object spawn time by getting the saved spawn times from the placed editor hit objects
+            previewHitObjectSpawnTime = (editorHitObjectSpawnTimesList[previewHitObjectIndex] - 1);
+
+            // Check if it's time to spawn the preview hit object
+            if (metronomePro_Player.songAudioSource.time >= previewHitObjectSpawnTime)
+            {
+                // Set the preview hit object type by getting the saved type from the placed editor hit objects
+                previewHitObjectType = editorPlacedHitObjectTypeList[previewHitObjectIndex];
+
+                // Set the preview hit object position by getting the saved position from the placed editor hit object
+                previewHitObjectPosition = editorHitObjectPositions[previewHitObjectIndex];
+
+                // Instantiate the preview hit object and add to the previewHitObjectList
+                previewHitObjectList.Add(Instantiate(previewHitObjects[previewHitObjectType], previewHitObjectPosition, Quaternion.Euler(0, 45, 0)));
+
+                // Increase the hit object index
+                previewHitObjectIndex++;
+            }
+
+        }
+
+    }
+
 }

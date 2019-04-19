@@ -16,7 +16,16 @@ public class Fade : MonoBehaviour {
     // Reference to the player skills manager to get the fade speed selected from the song select scene
     private PlayerSkillsManager playerSkillsManager;
     // The fade speed selected from the song select screen, required for doing fade calculations
-    private float fadeSpeedSelected; 
+    private float fadeSpeedSelected;
+
+    // Reference to the level changer script
+    private LevelChanger levelChanger;
+
+    // Reference to the PlacedObject script
+    private PlacedObject placedObject;
+
+    // Used to control whether to fade or pause the fade at the current fade value
+    private bool pauseFadeTransition;
 
     // Use this for initialization
     void Start()
@@ -26,8 +35,26 @@ public class Fade : MonoBehaviour {
         spawnTime = 0f;
         timer = 0f;
 
-        playerSkillsManager = FindObjectOfType<PlayerSkillsManager>(); // Get the reference for scale speed
-        fadeSpeedSelected = playerSkillsManager.GetFadeSpeedSelected(); // Get the fade speed selected such as 2 for slow, 1 for normal and 0.5f for fast
+        // Get the reference to the level changer
+        levelChanger = FindObjectOfType<LevelChanger>();
+
+        // Do a check on the level changer index, if in gameplay get the fade speed selected otherwise set the fade speed to default of normal
+        if (levelChanger.currentLevelIndex == 4)
+        {
+            playerSkillsManager = FindObjectOfType<PlayerSkillsManager>(); // Get the reference for scale speed
+            fadeSpeedSelected = playerSkillsManager.GetFadeSpeedSelected(); // Get the fade speed selected such as 2 for slow, 1 for normal and 0.5f for fast
+        }
+        else
+        {
+            // Set fade speed to default "normal"
+            fadeSpeedSelected = 1f;
+        }
+
+        // Get the PlacedObject script in the scene if in the Editor scene
+        if (levelChanger.currentLevelIndex == 2)
+        {
+            placedObject = FindObjectOfType<PlacedObject>();
+        }
 
         // Set the fade speed for this hit object
         SetFadeSpeed();
@@ -36,11 +63,48 @@ public class Fade : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // Increment timer
-        timer += Time.deltaTime;
 
-        // Set the alpha according to the current time and the time the object has spawned
-        SetAlpha((timer - spawnTime) * fadeSpeed);
+        // If in the Editor scene check if the preview beatmap is false
+        if (levelChanger.currentLevelIndex == 2)
+        {
+            // If the beatmap preview is paused and no longer running
+            if (placedObject.playBeatmapPreview == false)
+            {
+                // Pause the fade at the current value
+                pauseFadeTransition = true;
+            }
+            else
+            {
+                pauseFadeTransition = false;
+            }
+
+            if (pauseFadeTransition == true)
+            {
+                // Do not continue fading and keep the fade at the current value
+            }
+            else
+            {
+                // Increment timer
+                timer += Time.deltaTime;
+
+                // Allow the preview hit object to continue to fade
+                SetAlpha((timer - spawnTime) * fadeSpeed);
+            }
+        }
+
+
+
+        // If on the gameplay scene fade when the note appears
+        if (levelChanger.currentLevelIndex == 4)
+        {
+            // Increment timer
+            timer += Time.deltaTime;
+
+            // Set the alpha according to the current time and the time the object has spawned
+            SetAlpha((timer - spawnTime) * fadeSpeed);
+        }
+
+
     }
 
     // Fade in
