@@ -25,6 +25,15 @@ public class MetronomePro_Player : MonoBehaviour
     public Image songPlayerBar;
     public TMP_Dropdown velocityScale;
     public Slider songPlayerSlider;
+    public GameObject songPointSliderHandle;
+    public Slider handleSlider;
+
+
+    // Timeline position slider 
+    public Slider timelinePositionSlider;
+    public Image timelinePositionSliderImage;
+    public GameObject timelinePositionSliderHandle;
+    public Slider timelinePositionHandleSlider;
 
     [Header("Song Data")]
     public AudioClip songClip;
@@ -49,8 +58,7 @@ public class MetronomePro_Player : MonoBehaviour
     private int songSelectedIndex = 0;
 
 
-    public GameObject songPointSliderHandle;
-    public Slider handleSlider;
+
 
     void Start()
     {
@@ -127,11 +135,11 @@ public class MetronomePro_Player : MonoBehaviour
     {
         active = false;
 
-        if (songPlayerSlider.value * songAudioSource.clip.length < songAudioSource.clip.length)
+        if (timelinePositionSlider.value * songAudioSource.clip.length < songAudioSource.clip.length)
         {
-            songAudioSource.time = (songPlayerSlider.value * songAudioSource.clip.length);
+            songAudioSource.time = (timelinePositionSlider.value * songAudioSource.clip.length);
         }
-        else if ((songPlayerSlider.value * songAudioSource.clip.length >= songAudioSource.clip.length))
+        else if ((timelinePositionSlider.value * songAudioSource.clip.length >= songAudioSource.clip.length))
         {
             StopSong();
         }
@@ -145,7 +153,9 @@ public class MetronomePro_Player : MonoBehaviour
 
         actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
 
-        songPlayerBar.fillAmount = songPlayerSlider.value;
+        songPlayerBar.fillAmount = timelinePositionSlider.value;
+        timelinePositionSliderImage.fillAmount = timelinePositionSlider.value;
+
         active = true;
     }
 
@@ -198,6 +208,9 @@ public class MetronomePro_Player : MonoBehaviour
         amount = 0f;
         songPlayerSlider.value = 0f;
         songPlayerBar.fillAmount = 0f;
+        timelinePositionSlider.value = 0f;
+        timelinePositionSliderImage.fillAmount = 0f;
+
         actualPosition.text = "00:00";
 
         FindObjectOfType<MetronomePro>().Stop();
@@ -240,7 +253,9 @@ public class MetronomePro_Player : MonoBehaviour
                 {
                     amount = (songAudioSource.time) / (songAudioSource.clip.length);
                     songPlayerBar.fillAmount = amount;
+                    timelinePositionSliderImage.fillAmount = amount;
                     handleSlider.value = amount;
+                    timelinePositionHandleSlider.value = amount;
                     actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
                 }
                 else

@@ -10,6 +10,13 @@ public class LeaderboardManager : MonoBehaviour {
     public GameplayToResultsManager gameplayToResultsManager; // Reference required to get the users play data from to upload to the leaderboard
     public string username; // The username of the current user signed in
 
+    private int currentUserScore;
+    private bool hasRetrievedCurrentUserScore;
+    private int newUserScoreToUpload;
+    private bool hasUpdatedUserOverallTotalScore;
+    private bool hasIncrementedScore;
+    
+
     void Start()
     {
         // For checking if scores have uploaded or attempted once
@@ -24,6 +31,28 @@ public class LeaderboardManager : MonoBehaviour {
         {
             StartCoroutine(UploadUserScore());
             notChecked = false;
+        }
+
+        if (hasRetrievedCurrentUserScore == false)
+        {
+            // Retrieve the user current total score from the database
+            StartCoroutine(RetrieveUserCurrentTotalScore());
+        }
+        else
+        {
+            // If the user score has been retrieved
+            if (hasUpdatedUserOverallTotalScore == false)
+            {
+                if (hasIncrementedScore == false)
+                {
+                    // Add the just played score to the score retrieved
+                    newUserScoreToUpload += gameplayToResultsManager.score;
+                    hasIncrementedScore = true;
+                }
+
+                StartCoroutine(UpdateOverallLeaderboardTotalScore());
+            }
+
         }
     }
 
@@ -78,5 +107,89 @@ public class LeaderboardManager : MonoBehaviour {
     public void GetLeaderboardTableName()
     {
         leaderboardTableName = Database.database.loadedLeaderboardTableName;
+    }
+
+
+
+
+    IEnumerator RetrieveUserCurrentTotalScore()
+    {
+        // Set the username to upload as the current user logged in
+        if (MySQLDBManager.loggedIn)
+        {
+            username = MySQLDBManager.username;
+        }
+        else
+        {
+            username = "Guest";
+        }
+
+
+        WWWForm form = new WWWForm();
+
+        // Send the username
+        form.AddField("player_id", username);
+
+        UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/retrievepersonalbestoverallranking.php", form);
+        www.chunkedTransfer = false;
+        yield return www.SendWebRequest();
+
+
+        // Check if the score retrieve was a success or failure
+        if (www.downloadHandler.text != "1")
+        {
+            Debug.Log("Retrieved overall ranking current total score");
+            // Assign the retrieved score
+            currentUserScore = int.Parse(www.downloadHandler.text);
+            // Set to true as we have retrieved the score
+            hasRetrievedCurrentUserScore = true;
+        }
+        // Error
+        else
+        {
+            Debug.Log("Error with retrieving user overall ranking current total score");
+            hasRetrievedCurrentUserScore = true;
+        }
+
+    }
+
+    // Update the overall leaderboard total score for the player
+    IEnumerator UpdateOverallLeaderboardTotalScore()
+    {
+        // Set the username to upload as the current user logged in
+        if (MySQLDBManager.loggedIn)
+        {
+            username = MySQLDBManager.username;
+        }
+        else
+        {
+            username = "Guest";
+        }
+
+
+        WWWForm form = new WWWForm();
+
+        // Send the username and new user score to upload
+        form.AddField("player_id", username);
+        form.AddField("new_user_score_to_upload", newUserScoreToUpload);
+
+        UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/updateuseroverallleaderboardtotalscore.php", form);
+        www.chunkedTransfer = false;
+        yield return www.SendWebRequest();
+
+
+        // Success
+        if (www.downloadHandler.text == "1")
+        {
+            Debug.Log("User score uploaded");
+            hasUpdatedUserOverallTotalScore = true;
+        }
+        // Error
+        if (www.downloadHandler.text == "0")
+        {
+            Debug.Log("Error");
+            hasUpdatedUserOverallTotalScore = true;
+        }
+
     }
 }

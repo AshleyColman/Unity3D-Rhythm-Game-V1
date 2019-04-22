@@ -44,6 +44,7 @@ public class ScoreManager : MonoBehaviour {
 
         //scoreText.text = score.ToString();
         comboText.text = combo.ToString() + "x";
+        largeComboText.text = combo.ToString() + "x";
         judgementText.text = judgement.ToString();
     }
 	

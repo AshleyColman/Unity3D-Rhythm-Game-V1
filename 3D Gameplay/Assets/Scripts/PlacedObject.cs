@@ -109,6 +109,11 @@ public class PlacedObject : MonoBehaviour {
     // Used for controlling when to play the beatmap preview
     public bool playBeatmapPreview;
 
+    // The special start time timeline object that is instantiated
+    public GameObject instantiatedSpecialTimeStartObject;
+    // The special end time timeline object that is instantiated 
+    public GameObject instantiatedSpecialTimeEndObject;
+
     // Use this for initialization
     void Start () {
 
@@ -179,7 +184,7 @@ public class PlacedObject : MonoBehaviour {
                 // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
-                editorSoundController.PlayPlacedSound();
+                //editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
                 instantiatedTimelineObjectType = 0;
@@ -196,7 +201,7 @@ public class PlacedObject : MonoBehaviour {
                 // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
-                editorSoundController.PlayPlacedSound();
+                //editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
                 instantiatedTimelineObjectType = 1;
@@ -213,7 +218,7 @@ public class PlacedObject : MonoBehaviour {
                 // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
-                editorSoundController.PlayPlacedSound();
+                //editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
                 instantiatedTimelineObjectType = 2;
@@ -230,7 +235,7 @@ public class PlacedObject : MonoBehaviour {
                 // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
-                editorSoundController.PlayPlacedSound();
+                //editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
                 instantiatedTimelineObjectType = 3;
@@ -247,7 +252,7 @@ public class PlacedObject : MonoBehaviour {
                 // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
-                editorSoundController.PlayPlacedSound();
+                //editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
                 instantiatedTimelineObjectType = 4;
@@ -264,7 +269,7 @@ public class PlacedObject : MonoBehaviour {
                 // Spawn and save the placed object information in the beatmap file
                 SpawnAndSavePlacedObject(editorPlacedHitObjectType);
                 // Play the placed sound effect
-                editorSoundController.PlayPlacedSound();
+                //editorSoundController.PlayPlacedSound();
 
                 // Assign the timeline type and instantiate it on the timeline
                 instantiatedTimelineObjectType = 5;
@@ -282,6 +287,8 @@ public class PlacedObject : MonoBehaviour {
                 {
                     // Activate the border image
                     ActivateBorder();
+                    // Instantiate the start time timeline object on the timeline at the current song position
+                    InstantiateSpecialTimeTimelineObject("START");
                     // Mark the special time start
                     SetSpecialTimeStart();
                     // Play the specialTimeFirstPlaced sound effect
@@ -292,6 +299,8 @@ public class PlacedObject : MonoBehaviour {
                 {
                     // Deactive the border image
                     DeActivateBorder();
+                    // Instantiate the end time timeline object on the timeline at the current song position
+                    InstantiateSpecialTimeTimelineObject("END");
                     // Mark the special time end
                     SetSpecialTimeEnd();
                     // Play the second specialTimeSecondPlaced sound effect
@@ -499,6 +508,68 @@ public class PlacedObject : MonoBehaviour {
 
     }
 
+
+
+
+    // Instantiate a special time start timeline object on the timeline
+    public void InstantiateSpecialTimeTimelineObject(string specialTimeTypePass)
+    {
+
+        // Get the handle position currently in the song to spawn the timeline object at
+        handlePositionX = metronomePro_Player.songPointSliderHandle.transform.position.x;
+        // Decrease the Y position to prevent overlap
+        handlePositionY = 0;
+        handlePositionZ = metronomePro_Player.songPointSliderHandle.transform.position.z;
+
+        // Assign the new position
+        handlePosition = new Vector3(handlePositionX, handlePositionY, handlePositionZ);
+
+
+        if (specialTimeTypePass == "START")
+        {
+            // Instantiate the start time object on the timeline
+            instantiatedSpecialTimeStartObject = Instantiate(instantiatedSpecialTimeStartObject, handlePosition,
+            Quaternion.Euler(90, 0, 0), GameObject.FindGameObjectWithTag("Timeline").transform);
+
+            // Get the slider component from the game object instantiated
+            Slider timelineSlider = instantiatedSpecialTimeStartObject.GetComponent<Slider>();
+
+            // Get the reference to the destroy timeline object script attached to the timeline object
+            DestroyTimelineObject destroyTimelineObject = instantiatedSpecialTimeStartObject.GetComponent<DestroyTimelineObject>();
+
+
+            // Set the timeline slider value to the current song time handles value
+            timelineSlider.value = metronomePro_Player.handleSlider.value;
+
+            // Set the timeline objects spawn time to the current time in the song
+            destroyTimelineObject.timelineHitObjectSpawnTime = metronomePro_Player.songAudioSource.time;
+        }
+        
+        if (specialTimeTypePass == "END")
+        {
+            // Instantiate the end time object on the timeline
+            instantiatedSpecialTimeEndObject = Instantiate(instantiatedSpecialTimeEndObject, handlePosition,
+            Quaternion.Euler(90, 0, 0), GameObject.FindGameObjectWithTag("Timeline").transform);
+
+            // Get the slider component from the game object instantiated
+            Slider timelineSlider = instantiatedSpecialTimeEndObject.GetComponent<Slider>();
+
+            // Get the reference to the destroy timeline object script attached to the timeline object
+            DestroyTimelineObject destroyTimelineObject = instantiatedSpecialTimeEndObject.GetComponent<DestroyTimelineObject>();
+
+
+            // Set the timeline slider value to the current song time handles value
+            timelineSlider.value = metronomePro_Player.handleSlider.value;
+
+            // Set the timeline objects spawn time to the current time in the song
+            destroyTimelineObject.timelineHitObjectSpawnTime = metronomePro_Player.songAudioSource.time;
+        }
+
+    }
+
+
+
+
     // Instantiate placed hit object at the position on the mouse
     public void InstantiateEditorPlacedHitObject(Vector3 instantiatePositionPass, int editorHitObjectTypePass)
     {
@@ -562,11 +633,24 @@ public class PlacedObject : MonoBehaviour {
         Database.database.SpecialTimeStart = metronomePro_Player.songAudioSource.time;
     }
 
+    // Update the special time start if the instantiated special time start timeline slider has been changed
+    public void UpdateSpecialTimeStart(float newSpecialTimeStartPass)
+    {
+        Database.database.SpecialTimeStart = newSpecialTimeStartPass;
+    }
+
     // Set the special time end when the key has been pressed at the current time of the song when pressed
     public void SetSpecialTimeEnd()
     {
         Database.database.SpecialTimeEnd = metronomePro_Player.songAudioSource.time;
     }
+
+    // Update the special time start if the instantiated special time start timeline slider has been changed
+    public void UpdateSpecialTimeEnd(float newSpecialTimeEndPass)
+    {
+        Database.database.SpecialTimeStart = newSpecialTimeEndPass;
+    }
+
 
     // Display the special time border during mapping when the key has been pressed
     public void ActivateBorder()

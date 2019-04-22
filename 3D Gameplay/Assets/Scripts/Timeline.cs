@@ -18,7 +18,7 @@ public class Timeline : MonoBehaviour {
             float y = timeline.transform.position.y;
             float z = timeline.transform.position.z;
 
-            x -= 100;
+            x += 684;
             Vector3 newTimelinePosition = new Vector3(x, y, z);
             timeline.transform.position = newTimelinePosition;
         }
@@ -29,7 +29,7 @@ public class Timeline : MonoBehaviour {
             float y = timeline.transform.position.y;
             float z = timeline.transform.position.z;
 
-            x += 100;
+            x -= 684;
             Vector3 newTimelinePosition = new Vector3(x, y, z);
             timeline.transform.position = newTimelinePosition;
         }

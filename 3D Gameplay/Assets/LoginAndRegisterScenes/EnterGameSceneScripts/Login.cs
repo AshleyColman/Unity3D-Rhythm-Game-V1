@@ -22,13 +22,11 @@ public class Login : MonoBehaviour {
     {
         if (usernameInputField.isFocused)
         {
-            usernameFieldDescription.gameObject.SetActive(true);
-            passwordFieldDescription.gameObject.SetActive(false);
+
         }
         else if (passwordInputField.isFocused)
         {
-            usernameFieldDescription.gameObject.SetActive(false);
-            passwordFieldDescription.gameObject.SetActive(true);
+
         }
     }
 
@@ -63,6 +61,7 @@ public class Login : MonoBehaviour {
         // Error
         if (www.downloadHandler.text == "1")
         {
+            usernameFieldDescription.gameObject.SetActive(true);
             Debug.Log("error");
         }
 

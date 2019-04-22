@@ -26,3 +26,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/LoginAndRegisterScenes/Scenes/EnterGameScene.unity
     guid: 4b5e2de5eafe72d458de17f0630d63ce
+  - enabled: 1
+    path: Assets/OverallLeaderboardScene/Scenes/OverallLeaderboardScene.unity
+    guid: 042ef9a5f3221a5498f9e2dc2844b92b
