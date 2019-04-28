@@ -23,6 +23,7 @@ public class EnterGameScene : MonoBehaviour {
         {
             usernameDisplayText.text = "Signed in as: " + MySQLDBManager.username;
             loggedInCanvas.gameObject.SetActive(true);
+            enterGameCanvas.gameObject.SetActive(false);
         }
     }
     public void GoToRegister()

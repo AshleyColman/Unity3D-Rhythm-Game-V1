@@ -13,6 +13,8 @@ public class MetronomePro : MonoBehaviour {
 	[Header("Variables")]
 	public bool active = false;
 
+    public bool metronomeMuted = false;
+
 	[Space(5)]
 
 	public AudioSource metronomeAudioSource;
@@ -237,7 +239,11 @@ public class MetronomePro : MonoBehaviour {
 	IEnumerator OnTick () {
 
 		// Play Audio Tick
-		metronomeAudioSource.Play ();
+        if (metronomeMuted == false)
+        {
+            metronomeAudioSource.Play();
+        }
+
 
 		// Change all colors in the UI to gray
 		imgBeat1.color = Color.gray;
@@ -272,4 +278,16 @@ public class MetronomePro : MonoBehaviour {
 		Debug.Log ("Current Step: " + CurrentStep + "/" + Step);
 		yield return null;
 	}
+
+    // Mute the metronome so no sound plays on click
+    public void MuteMetronome()
+    {
+        metronomeMuted = true;
+    }
+
+    // Unmute the metronome so sound plays on click
+    public void UnmuteMetronome()
+    {
+        metronomeMuted = false;
+    }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System;
 
 public class LeaderboardManager : MonoBehaviour {
 
@@ -41,12 +42,12 @@ public class LeaderboardManager : MonoBehaviour {
         else
         {
             // If the user score has been retrieved
-            if (hasUpdatedUserOverallTotalScore == false)
+            if (hasUpdatedUserOverallTotalScore == false && hasRetrievedCurrentUserScore == true)
             {
                 if (hasIncrementedScore == false)
                 {
                     // Add the just played score to the score retrieved
-                    newUserScoreToUpload += gameplayToResultsManager.score;
+                    newUserScoreToUpload = gameplayToResultsManager.score + currentUserScore;
                     hasIncrementedScore = true;
                 }
 
@@ -140,7 +141,8 @@ public class LeaderboardManager : MonoBehaviour {
         {
             Debug.Log("Retrieved overall ranking current total score");
             // Assign the retrieved score
-            currentUserScore = int.Parse(www.downloadHandler.text);
+            string currentUserScoreString = www.downloadHandler.text;
+            currentUserScore = Convert.ToInt32(currentUserScoreString);
             // Set to true as we have retrieved the score
             hasRetrievedCurrentUserScore = true;
         }
@@ -148,7 +150,6 @@ public class LeaderboardManager : MonoBehaviour {
         else
         {
             Debug.Log("Error with retrieving user overall ranking current total score");
-            hasRetrievedCurrentUserScore = true;
         }
 
     }

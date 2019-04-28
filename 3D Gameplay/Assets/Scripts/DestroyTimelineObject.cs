@@ -9,9 +9,12 @@ public class DestroyTimelineObject : MonoBehaviour {
     public float timelineHitObjectSpawnTime;
     public Slider timelineSlider;
     public MetronomePro_Player metronome_Player;
+    private int timelineObjectListIndex;
 
     private void Start()
     {
+        timelineObjectListIndex = 0;
+
         placedObject = FindObjectOfType<PlacedObject>();
 
         // Get the reference to the timelines own slider
@@ -34,7 +37,7 @@ public class DestroyTimelineObject : MonoBehaviour {
     public void FindIndexOfTimelineObject()
     {
         // Pass this game object
-        placedObject.GetIndexOfRaycastTimelineObject(this.gameObject);
+        timelineObjectListIndex = placedObject.GetIndexOfRaycastTimelineObject(this.gameObject);
     }
 
     // Update the timelines spawn time
@@ -43,6 +46,8 @@ public class DestroyTimelineObject : MonoBehaviour {
         if (metronome_Player != null)
         {
             timelineHitObjectSpawnTime = metronome_Player.UpdateTimelineHitObjectSpawnTimes(timelineSlider);
+            // Send the new spawn time and the editorHitObject index to update
+            placedObject.UpdateEditorHitObjectSpawnTime(timelineHitObjectSpawnTime, timelineObjectListIndex);
         }
     }
 

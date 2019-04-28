@@ -7,7 +7,7 @@ public class PreviewHitObject : MonoBehaviour {
     // Timer 
     private float timer;
     // Preview hit object destroy time
-    private float destroyTime = 1f; 
+    private float destroyTime = 0.9f; 
     // Editor sound controller
     private EditorSoundController editorSoundController;
 

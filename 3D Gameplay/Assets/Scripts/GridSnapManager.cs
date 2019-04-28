@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GridSnapManager : MonoBehaviour {
 
-    public float size = 10f;
-    private float gridPointSize = 350f;
+    public float size = 5f;
+    private float gridPointSize = 320f;
     public GameObject gridPointObject;
     public bool snappingEnabled;
     private GridObjectPlacer gridObjectPlacer;
@@ -82,7 +82,7 @@ public class GridSnapManager : MonoBehaviour {
     {
         for (float x = transform.position.x; x < gridPointSize; x += size)
         {
-            for (float z = transform.position.z; z < 130; z += size)
+            for (float z = transform.position.z; z < 100; z += size)
             {
                 var point = GetNearestPointOnGrid(new Vector3(x, 0f, z));
                 Instantiate(gridPointObject, point, Quaternion.Euler(0, 45, 0));
@@ -93,12 +93,12 @@ public class GridSnapManager : MonoBehaviour {
     // Increase the grid point size
     private void IncreaseGridPointSize()
     {
-        size = size + 10;
+        size = size + 5;
 
         // Check if it's 0, if it is set to 10
-        if (size >= 100)
+        if (size >= 120)
         {
-            size = 100;
+            size = 120;
         }
 
     }
@@ -107,10 +107,10 @@ public class GridSnapManager : MonoBehaviour {
     // Decrease the grid point size
     private void DecreaseGridPointSize()
     {
-        size = size - 10;
+        size = size - 5;
 
         // Check if it's 0, if it is set to 10
-        if (size <= 0)
+        if (size <= 5)
         {
             size = 10;
         }

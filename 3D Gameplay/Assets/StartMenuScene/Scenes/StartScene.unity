@@ -871,7 +871,7 @@ MonoBehaviour:
         m_MethodName: PlayOneShot
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: 972614f45300eff49a41294be7a36485,
+          m_ObjectArgument: {fileID: 8300000, guid: 3aa4c5cf92a9e2a4eaeea789e8be8677,
             type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
           m_IntArgument: 0
@@ -2520,7 +2520,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MenuSFXAudioSource: {fileID: 1383452417}
-  MenuSFXMenuSourceClip: {fileID: 8300000, guid: 972614f45300eff49a41294be7a36485,
+  MenuSFXMenuSourceClip: {fileID: 8300000, guid: 3aa4c5cf92a9e2a4eaeea789e8be8677,
     type: 3}
 --- !u!1001 &1877597461
 Prefab:
@@ -2532,7 +2532,7 @@ Prefab:
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.size
-      value: 100
+      value: 101
       objectReference: {fileID: 0}
     - target: {fileID: 4178306738267400, guid: d377f2b4f2a68c449b392f8d9c3e4edf, type: 2}
       propertyPath: m_LocalPosition.x
@@ -2721,6 +2721,11 @@ Prefab:
       propertyPath: songClip.Array.data[99]
       value: 
       objectReference: {fileID: 8300000, guid: ff8c85858c25f5146be67a553f2915ed, type: 3}
+    - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
+        type: 2}
+      propertyPath: songClip.Array.data[100]
+      value: 
+      objectReference: {fileID: 8300000, guid: dec1948e26c94d945a335af776322d4e, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d377f2b4f2a68c449b392f8d9c3e4edf, type: 2}
   m_IsPrefabParent: 0

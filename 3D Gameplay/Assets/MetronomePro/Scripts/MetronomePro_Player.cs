@@ -35,6 +35,11 @@ public class MetronomePro_Player : MonoBehaviour
     public GameObject timelinePositionSliderHandle;
     public Slider timelinePositionHandleSlider;
 
+    // Reversed timeline slider
+    public Slider reversedTimelineSlider;
+    public GameObject reversedTimelineSliderHandle;
+    public Slider reversedTimelineHandleSlider;
+
     [Header("Song Data")]
     public AudioClip songClip;
 
@@ -210,6 +215,8 @@ public class MetronomePro_Player : MonoBehaviour
         songPlayerBar.fillAmount = 0f;
         timelinePositionSlider.value = 0f;
         timelinePositionSliderImage.fillAmount = 0f;
+        reversedTimelineSlider.value = 0f;
+
 
         actualPosition.text = "00:00";
 
@@ -256,6 +263,8 @@ public class MetronomePro_Player : MonoBehaviour
                     timelinePositionSliderImage.fillAmount = amount;
                     handleSlider.value = amount;
                     timelinePositionHandleSlider.value = amount;
+                    reversedTimelineHandleSlider.value = amount;
+
                     actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
                 }
                 else
