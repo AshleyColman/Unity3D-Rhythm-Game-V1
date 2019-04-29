@@ -9,7 +9,7 @@ using TMPro;
 public class SongSelectManager : MonoBehaviour {
 
     // Get the directories and folder names of all songs in the beatmap folder
-    string[] beatmapDirectories;
+    public string[] beatmapDirectories;
     public int selectedDirectoryIndex;
     public int previousDirectoryIndex;
     private string defaultBeatmapDifficulty = "advanced";
@@ -79,9 +79,14 @@ public class SongSelectManager : MonoBehaviour {
     private string nextSongButtonDirectoryPath;
     private string nextNextSongButtonDirectoryPath;
 
+    // Reference to the SongSelectPanel for loading the song beatmap buttons with the directories found
+    private SongSelectPanel songSelectPanel;
+
     
     // Use this for initialization
     void Start () {
+
+        songSelectPanel = FindObjectOfType<SongSelectPanel>();
         songClipChosenIndex = 0;
         songSelectPreview = FindObjectOfType<SongSelectPreview>();
         backgroundManager = FindObjectOfType<BackgroundManager>();
@@ -89,6 +94,16 @@ public class SongSelectManager : MonoBehaviour {
         beatmapDirectories = Directory.GetDirectories(@"c:\Beatmaps");
         CheckIfAdvancedDifficultyExists();
         CheckIfExtraDifficultyExists();
+
+        // Load the beatmap directories found for the songSelectPanel
+        // Get the amount of beatmap folders in the beatmap directory
+        songSelectPanel.GetBeatmapFolderCount();
+        // Get the directory paths for all the beatmap folders in the beatmap directory
+        songSelectPanel.GetBeatmapDirectoryPaths();
+    
+
+       
+
 
         // Load the lastSelectedSongIndex
         selectedDirectoryIndex = loadLastSelectedSong.LoadSelectedDirectoryIndex();
@@ -179,6 +194,8 @@ public class SongSelectManager : MonoBehaviour {
 
             // Load the image by passing the current beatmap directory
             backgroundManager.LoadEditorBeatmapImage(beatmapDirectories[selectedDirectoryIndexPass]);
+
+            /*
             // Load the selectedSongImage in the song select list
             StartCoroutine(backgroundManager.LoadSongSelectCurrentImg(beatmapDirectories[selectedDirectoryIndexPass])); 
 
@@ -232,7 +249,7 @@ public class SongSelectManager : MonoBehaviour {
                 // Add 2 to the current index for loading the next next image
                 StartCoroutine(backgroundManager.LoadSelectNextNextImg(beatmapDirectories[nextNextSongImageDirectoryIndexPass])); 
             }
-            
+            */
 
 
             // Change the current song selected text to the information loaded from the current directory

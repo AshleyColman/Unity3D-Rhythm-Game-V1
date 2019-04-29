@@ -33,6 +33,7 @@ TagManager:
   - InstantiatedEditorHitObject
   - SpecialTimeStartTimelineObject
   - SpecialTimeEndTimelineObject
+  - ButtonListContent
   layers:
   - Default
   - TransparentFX
