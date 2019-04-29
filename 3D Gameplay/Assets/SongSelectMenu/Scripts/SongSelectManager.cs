@@ -32,8 +32,6 @@ public class SongSelectManager : MonoBehaviour {
     // References to the difficulty buttons
     public Button DifficultyOptionAdvancedButton;
     public Button DifficultyOptionExtraButton;
-    public Button DifficultyOptionAdvancedLevelButton;
-    public Button DifficultyOptionExtraLevelButton;
     public TextMeshProUGUI DifficultyOptionAdvancedLevelText;
     public TextMeshProUGUI DifficultyOptionExtraLevelText;
     public string disabledText = "X";
@@ -74,6 +72,13 @@ public class SongSelectManager : MonoBehaviour {
 
     // Reference to the loadLastSong manager for loading the last song in the song select screen
     private LoadLastSelectedSong loadLastSelectedSong;
+
+
+    // Song List Images and directories for loading the images
+    private string previousSongButtonDirectoryPath;
+    private string nextSongButtonDirectoryPath;
+    private string nextNextSongButtonDirectoryPath;
+
     
     // Use this for initialization
     void Start () {
@@ -174,11 +179,66 @@ public class SongSelectManager : MonoBehaviour {
 
             // Load the image by passing the current beatmap directory
             backgroundManager.LoadEditorBeatmapImage(beatmapDirectories[selectedDirectoryIndexPass]);
+            // Load the selectedSongImage in the song select list
+            StartCoroutine(backgroundManager.LoadSongSelectCurrentImg(beatmapDirectories[selectedDirectoryIndexPass])); 
+
+            
+            // Load the previousSongImage in the song select list
+            int previousSongImageDirectoryIndexPass;
+            if (selectedDirectoryIndexPass == 0)
+            {
+                // Do a check and see if we're at the first index for image loading, if we are set it to the end of the list for loop
+                previousSongImageDirectoryIndexPass = (beatmapDirectories.Length - 1);
+                // Load the previous image by taking 1 off the current index
+                StartCoroutine(backgroundManager.LoadSongSelectPreviousImg(beatmapDirectories[previousSongImageDirectoryIndexPass])); 
+            }
+            else
+            {
+                // Else set it to the current index
+                previousSongImageDirectoryIndexPass = selectedDirectoryIndexPass;
+                // Load the previous image by taking 1 off the current index
+                StartCoroutine(backgroundManager.LoadSongSelectPreviousImg(beatmapDirectories[previousSongImageDirectoryIndexPass - 1])); 
+            }
+
+            
+            // Load the next song image in the song select list
+            int nextSongImageDirectoryIndexPass;
+            if (selectedDirectoryIndexPass == (beatmapDirectories.Length - 1))
+            {
+                // If the current selected index is at the end of the list, set the next image to the start of hte list
+                nextSongImageDirectoryIndexPass = 0;
+                // Load the previous image by taking 1 off the current index
+                StartCoroutine(backgroundManager.LoadSongSelectNextImg(beatmapDirectories[nextSongImageDirectoryIndexPass])); 
+            }
+            else
+            {
+                // Add 1 to the current index for loading the next image
+                StartCoroutine(backgroundManager.LoadSongSelectNextImg(beatmapDirectories[selectedDirectoryIndexPass + 1])); 
+            }
+
+
+            // Load the next next song image in the song select list (2 ahead on the list)
+            int nextNextSongImageDirectoryIndexPass;
+            if (selectedDirectoryIndexPass == (beatmapDirectories.Length - 1))
+            {
+                // If the current selected index is at the end of the list, set the next image to the start of hte list
+                nextNextSongImageDirectoryIndexPass = 1;
+                // Load the previous image by taking 1 off the current index
+                StartCoroutine(backgroundManager.LoadSelectNextNextImg(beatmapDirectories[nextNextSongImageDirectoryIndexPass])); 
+            }
+            else
+            {
+                nextNextSongImageDirectoryIndexPass = (selectedDirectoryIndexPass + 2);
+                // Add 2 to the current index for loading the next next image
+                StartCoroutine(backgroundManager.LoadSelectNextNextImg(beatmapDirectories[nextNextSongImageDirectoryIndexPass])); 
+            }
+            
+
 
             // Change the current song selected text to the information loaded from the current directory
             songTitleText.text = songName + " [ " + songArtist + " ] ";
             beatmapCreatorText.text = "Beatmap Created By: " + beatmapCreator;
-            beatmapStatisticsText.text = "Total Diamonds: " + totalDiamonds.ToString() + "   Keys Required:";
+            beatmapStatisticsText.text = "Total Diamonds: " + totalDiamonds.ToString();
 
             // Enable the required keys for the beatmap images
             EnableKeysRequiredForBeatmap();
@@ -225,8 +285,6 @@ public class SongSelectManager : MonoBehaviour {
             DifficultyOptionAdvancedButton.GetComponent<Button>().interactable = true;
             // Enable the event trigger 
             DifficultyOptionAdvancedButton.GetComponent<EventTrigger>().enabled = true;
-            // Enable the level button
-            DifficultyOptionAdvancedLevelButton.GetComponent<Button>().interactable = true;
         }
         else
         {
@@ -234,8 +292,6 @@ public class SongSelectManager : MonoBehaviour {
             DifficultyOptionAdvancedButton.GetComponent<Button>().interactable = false;
             // Disable the event trigger to prevent it trying to load the advanced file that doesn't exist
             DifficultyOptionAdvancedButton.GetComponent<EventTrigger>().enabled = false;
-            // Disable the level button
-            DifficultyOptionAdvancedLevelButton.GetComponent<Button>().interactable = false;
             // Print disabled text on the level
             DifficultyOptionAdvancedLevelText.text = disabledText;
             // Set bool to not exist
@@ -256,8 +312,6 @@ public class SongSelectManager : MonoBehaviour {
             DifficultyOptionExtraButton.GetComponent<Button>().interactable = true;
             // Enable the event trigger 
             DifficultyOptionExtraButton.GetComponent<EventTrigger>().enabled = true;
-            // Enable the level button
-            DifficultyOptionExtraLevelButton.GetComponent<Button>().interactable = true;
         }
         else
         {
@@ -265,8 +319,6 @@ public class SongSelectManager : MonoBehaviour {
             DifficultyOptionExtraButton.GetComponent<Button>().interactable = false;
             // Disable the event trigger to prevent it trying to load the extra file that doesn't exist
             DifficultyOptionExtraButton.GetComponent<EventTrigger>().enabled = false;
-            // Disable the level button
-            DifficultyOptionExtraLevelButton.GetComponent<Button>().interactable = false;
             // Print disabled text on the level
             DifficultyOptionExtraLevelText.text = disabledText;
 

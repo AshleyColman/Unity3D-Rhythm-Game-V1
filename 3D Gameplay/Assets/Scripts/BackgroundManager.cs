@@ -19,7 +19,18 @@ public class BackgroundManager : MonoBehaviour {
     bool hasLoadedImage; 
 
     // Get the reference, load the image on start only if the gameplay scene is active
-    private LevelChanger levelChanger; 
+    private LevelChanger levelChanger;
+
+    // Song select preview images
+    public Image selectedSongImage;
+    public Image previousSongImage;
+    public Image nextSongImage;
+    public Image nextNextSongImage;
+
+    private string selectedSongImageCompletePath;
+    private string previousSongImageCompletePath;
+    private string nextSongImageCompletePath;
+    private string nextNextSongImageCompletePath;
 
     void Awake()
     {
@@ -67,6 +78,52 @@ public class BackgroundManager : MonoBehaviour {
         StartCoroutine(LoadImg());
     }
 
+    // Load current song preview list image
+    public IEnumerator LoadSongSelectCurrentImg(string imgFilePathPass)
+    {
+        selectedSongImageCompletePath = imgFilePathPass + @"\" + imageName + imageType;
+        Debug.Log(completePath);
+        // Recieves the image from the song list passed from the load beatmap script
+        yield return 0;
+        WWW imgLink = new WWW("file://" + selectedSongImageCompletePath);
+        yield return imgLink;
+        imgLink.LoadImageIntoTexture(selectedSongImage.mainTexture as Texture2D);
+    }
 
+    // Load previous song preview list image
+    public IEnumerator LoadSongSelectPreviousImg(string imgFilePathPass)
+    {
+        previousSongImageCompletePath = imgFilePathPass + @"\" + imageName + imageType;
+        Debug.Log(completePath);
+        // Recieves the image from the song list passed from the load beatmap script
+        yield return 0;
+        WWW imgLink = new WWW("file://" + previousSongImageCompletePath);
+        yield return imgLink;
+        imgLink.LoadImageIntoTexture(previousSongImage.mainTexture as Texture2D);
+    }
+
+    // Load next song preview list image
+    public IEnumerator LoadSongSelectNextImg(string imgFilePathPass)
+    {
+        nextSongImageCompletePath = imgFilePathPass + @"\" + imageName + imageType;
+        Debug.Log(completePath);
+        // Recieves the image from the song list passed from the load beatmap script
+        yield return 0;
+        WWW imgLink = new WWW("file://" + nextSongImageCompletePath);
+        yield return imgLink;
+        imgLink.LoadImageIntoTexture(nextSongImage.mainTexture as Texture2D);
+    }
+
+    // Load next next  song preview list image
+    public IEnumerator LoadSelectNextNextImg(string imgFilePathPass)
+    {
+        nextNextSongImageCompletePath = imgFilePathPass + @"\" + imageName + imageType;
+        Debug.Log(completePath);
+        // Recieves the image from the song list passed from the load beatmap script
+        yield return 0;
+        WWW imgLink = new WWW("file://" + nextNextSongImageCompletePath);
+        yield return imgLink;
+        imgLink.LoadImageIntoTexture(nextNextSongImage.mainTexture as Texture2D);
+    }
 
 }
