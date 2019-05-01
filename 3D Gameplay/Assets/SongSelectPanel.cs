@@ -106,6 +106,7 @@ public class SongSelectPanel : MonoBehaviour
         // Get the image component of the instantiated button
         Image instantiatedBeatmapButtonImage = beatmapButtonInstantiateChildImage.GetComponent<Image>();
 
+
         // Store in the list so we can change it later
         instantiatedBeatmapButtonImageList.Add(instantiatedBeatmapButtonImage);
 
@@ -116,7 +117,7 @@ public class SongSelectPanel : MonoBehaviour
 
         Sprite newSprite;
 
-        newSprite = Sprite.Create(beatmapButtonNewImageTexture, new Rect(0.0f, 0.0f, 400, 400), new Vector2(0.5f, 0.5f), 100.0f);
+        newSprite = Sprite.Create(beatmapButtonNewImageTexture, new Rect(0.0f, 0.0f, beatmapButtonNewImageTexture.width, beatmapButtonNewImageTexture.height), new Vector2(0.5f, 0.5f), 100.0f);
 
         instantiatedBeatmapButtonImage.sprite = newSprite;
 
@@ -161,7 +162,7 @@ public class SongSelectPanel : MonoBehaviour
     private Texture2D CreateNewTextureForBeatmapButton()
     {
         // Create a new 2x2 texture ARGB32 (32 bit with alpha) and no mipmaps
-        var texture = new Texture2D(400, 400, TextureFormat.ARGB32, false);
+        var texture = new Texture2D(1080, 720, TextureFormat.ARGB32, false);
 
         // set the pixel values
         texture.SetPixel(0, 0, new Color(1.0f, 1.0f, 1.0f, 0.5f));

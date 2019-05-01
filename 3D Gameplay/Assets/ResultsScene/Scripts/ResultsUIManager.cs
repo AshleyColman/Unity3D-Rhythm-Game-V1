@@ -16,7 +16,7 @@ public class ResultsUIManager : MonoBehaviour {
     public TextMeshProUGUI ComboText;
     public TextMeshProUGUI PercentageText;
     public TextMeshProUGUI UsernameText;
-    public TextMeshProUGUI GradeTextSS;
+    public TextMeshProUGUI GradeTextP;
     public TextMeshProUGUI GradeTextS;
     public TextMeshProUGUI GradeTextA;
     public TextMeshProUGUI GradeTextB;
@@ -25,9 +25,22 @@ public class ResultsUIManager : MonoBehaviour {
     public TextMeshProUGUI GradeTextE;
     public TextMeshProUGUI GradeTextF;
     public TextMeshProUGUI ScoreText;
-    public float gradePercentage;
+    private float gradePercentage;
     public GameplayToResultsManager gameplayToResultsManager;
-   
+
+    public float GradePercentage
+    {
+        get
+        {
+            return gradePercentage;
+        }
+
+        set
+        {
+            gradePercentage = value;
+        }
+    }
+
     void Start()
     {
         gameplayToResultsManager = FindObjectOfType<GameplayToResultsManager>();
@@ -46,7 +59,7 @@ public class ResultsUIManager : MonoBehaviour {
         MissText.text = gameplayToResultsManager.totalMiss.ToString();
         ComboText.text = gameplayToResultsManager.highestCombo.ToString() + "/" + gameplayToResultsManager.totalHitObjects;
         PercentageText.text = gameplayToResultsManager.Percentage.ToString();
-        gradePercentage = gameplayToResultsManager.Percentage;
+        GradePercentage = gameplayToResultsManager.Percentage;
         SongTitleText.text = gameplayToResultsManager.songTitle.ToString();
         BeatmapCreatorText.text = gameplayToResultsManager.beatmapCreator.ToString();
 
@@ -69,9 +82,9 @@ public class ResultsUIManager : MonoBehaviour {
 
 
         // Enable the grade achieved
-        if (gameplayToResultsManager.gradeAchieved == "SS")
+        if (gameplayToResultsManager.gradeAchieved == "P")
         {
-            GradeTextSS.gameObject.SetActive(true);
+            GradeTextP.gameObject.SetActive(true);
         }
         else if (gameplayToResultsManager.gradeAchieved == "S")
         {

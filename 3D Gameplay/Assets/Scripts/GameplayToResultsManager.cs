@@ -110,38 +110,38 @@ public class GameplayToResultsManager : MonoBehaviour {
         //Percentage = ((totalScorePossible - score) * 100) / score;
         Percentage = (score / totalScorePossible) * 100;
 
+
         if (Percentage < 50)
         {
-            // The grade achieved
             gradeAchieved = "F";
-        }
-        else if (Percentage >= 50 && Percentage < 60)
-        {
-            gradeAchieved = "E";
         }
         else if (Percentage >= 60 && Percentage < 70)
         {
-            gradeAchieved = "D";
+            gradeAchieved = "E";
         }
         else if (Percentage >= 70 && Percentage < 80)
         {
-            gradeAchieved = "C";
+            gradeAchieved = "D";
         }
         else if (Percentage >= 80 && Percentage < 90)
         {
-            gradeAchieved = "B";
+            gradeAchieved = "C";
         }
         else if (Percentage >= 90 && Percentage < 95)
         {
+            gradeAchieved = "B";
+        }
+        else if (Percentage >= 95 && Percentage < 98)
+        {
             gradeAchieved = "A";
         }
-        else if (Percentage >= 95 && Percentage < 100)
+        else if (Percentage >= 98 && Percentage < 100)
         {
             gradeAchieved = "S";
         }
         else if (Percentage == 100)
         {
-            gradeAchieved = "SS";
+            gradeAchieved = "P";
         }
 
     }

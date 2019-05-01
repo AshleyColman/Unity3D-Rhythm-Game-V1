@@ -125,11 +125,18 @@ public class BeatmapRankingManager : MonoBehaviour
 
     bool firstExists = false, secondExists = false, thirdExists = false, fourthExists = false, fifthExists = false;
     bool hasCheckedPersonalBest = false;
-    public Color ssColor, sColor, aColor, bColor, cColor, dColor, eColor, fColor, defaultColor;
+    public Color pColor, sColor, aColor, bColor, cColor, dColor, eColor, fColor, defaultColor;
 
     string player_id;
 
     public Image personalBestCharacterImage, firstPlaceCharacterImage, secondPlaceCharacterImage, thirdPlaceCharacterImage, fourthPlaceCharacterImage, fifthPlaceCharacterImage;
+
+    public ParticleSystem firstButtonGradeParticles;
+    public ParticleSystem secondButtonGradeParticles;
+    public ParticleSystem thirdButtonGradeParticles;
+    public ParticleSystem fourthButtonGradeParticles;
+    public ParticleSystem fifthButtonGradeParticles;
+    public ParticleSystem personalBestButtonGradeParticles;
 
     void Start()
     {
@@ -173,6 +180,12 @@ public class BeatmapRankingManager : MonoBehaviour
                 personalBestButtonGrade = personalBestLeaderboardData[7];
                 personalBestButtonPercentage = personalBestLeaderboardData[8];
 
+                // Check if P or S rank has been achieved, if it has enable the grade particle system
+                if (personalBestButtonGrade == "S" || personalBestButtonGrade == "P")
+                {
+                    personalBestButtonGradeParticles.gameObject.SetActive(true);
+                }
+
                 // Assign the text to leaderboard place button
                 RankedButtonPersonalBestGradeText.text = personalBestButtonGrade;
                 RankedButtonPersonalBestGradeText.color = SetGradeColor(personalBestButtonGrade);
@@ -200,6 +213,12 @@ public class BeatmapRankingManager : MonoBehaviour
                 firstButtonUsername = firstPlaceLeaderboardData[6];
                 firstButtonGrade = firstPlaceLeaderboardData[7];
                 firstButtonPercentage = firstPlaceLeaderboardData[8];
+
+                // Check if P or S rank has been achieved, if it has enable the grade particle system
+                if (firstButtonGrade == "S" || firstButtonGrade == "P")
+                {
+                    firstButtonGradeParticles.gameObject.SetActive(true);
+                }
 
                 // Assign the text to leaderboard place button
                 RankedButtonFirstGradeText.text = firstButtonGrade;
@@ -229,6 +248,12 @@ public class BeatmapRankingManager : MonoBehaviour
                 secondButtonGrade = secondPlaceLeaderboardData[7];
                 secondButtonPercentage = secondPlaceLeaderboardData[8];
 
+                // Check if P or S rank has been achieved, if it has enable the grade particle system
+                if (secondButtonGrade == "S" || secondButtonGrade == "P")
+                {
+                    secondButtonGradeParticles.gameObject.SetActive(true);
+                }
+
                 // Assign the text to leaderboard place button
                 RankedButtonSecondGradeText.text = secondButtonGrade;
                 RankedButtonSecondGradeText.color = SetGradeColor(secondButtonGrade);
@@ -256,6 +281,12 @@ public class BeatmapRankingManager : MonoBehaviour
                 thirdButtonUsername = thirdPlaceLeaderboardData[6];
                 thirdButtonGrade = thirdPlaceLeaderboardData[7];
                 thirdButtonPercentage = thirdPlaceLeaderboardData[8];
+
+                // Check if P or S rank has been achieved, if it has enable the grade particle system
+                if (thirdButtonGrade == "S" || thirdButtonGrade == "P")
+                {
+                    thirdButtonGradeParticles.gameObject.SetActive(true);
+                }
 
                 // Assign the text to leaderboard place button
                 RankedButtonThirdGradeText.text = thirdButtonGrade;
@@ -285,6 +316,12 @@ public class BeatmapRankingManager : MonoBehaviour
                 fourthButtonGrade = fourthPlaceLeaderboardData[7];
                 fourthButtonPercentage = fourthPlaceLeaderboardData[8];
 
+                // Check if P or S rank has been achieved, if it has enable the grade particle system
+                if (fourthButtonGrade == "S" || fourthButtonGrade == "P")
+                {
+                    fourthButtonGradeParticles.gameObject.SetActive(true);
+                }
+
                 // Assign the text to leaderboard place button
                 RankedButtonFourthGradeText.text = fourthButtonGrade;
                 RankedButtonFourthGradeText.color = SetGradeColor(fourthButtonGrade);
@@ -312,6 +349,12 @@ public class BeatmapRankingManager : MonoBehaviour
                 fifthButtonUsername = fifthPlaceLeaderboardData[6];
                 fifthButtonGrade = fifthPlaceLeaderboardData[7];
                 fifthButtonPercentage = fifthPlaceLeaderboardData[8];
+
+                // Check if P or S rank has been achieved, if it has enable the grade particle system
+                if (fifthButtonGrade == "S" || fifthButtonGrade == "P")
+                {
+                    fifthButtonGradeParticles.gameObject.SetActive(true);
+                }
 
                 // Assign the text to leaderboard place button
                 RankedButtonFifthGradeText.text = fifthButtonGrade;
@@ -489,7 +532,15 @@ public class BeatmapRankingManager : MonoBehaviour
         thirdPlaceCharacterImage.gameObject.SetActive(false);
         fourthPlaceCharacterImage.gameObject.SetActive(false);
         fifthPlaceCharacterImage.gameObject.SetActive(false);
+        personalBestCharacterImage.gameObject.SetActive(false);
 
+        // Reset grade particles
+        firstButtonGradeParticles.gameObject.SetActive(false);
+        secondButtonGradeParticles.gameObject.SetActive(false);
+        thirdButtonGradeParticles.gameObject.SetActive(false);
+        fourthButtonGradeParticles.gameObject.SetActive(false);
+        fifthButtonGradeParticles.gameObject.SetActive(false);
+        personalBestButtonGradeParticles.gameObject.SetActive(false);
     }
 
     public void ResetNotChecked()
@@ -501,9 +552,9 @@ public class BeatmapRankingManager : MonoBehaviour
 
     public Color SetGradeColor(string gradePass)
     {
-        if (gradePass == "SS")
+        if (gradePass == "P")
         {
-            return ssColor;
+            return pColor;
         }
         else if (gradePass == "S")
         {
