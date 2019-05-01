@@ -77,6 +77,32 @@ public class SongSelectMenuFlash : MonoBehaviour {
         beatmapRankingManager.ResetNotChecked();
     }
 
+    // Load the next song
+    public void LoadBeatmapButtonSong(int beatmapToLoadIndexPass)
+    {
+        // Clear all loaded beatmaps
+        ClearBeatmapLoaded();
+        // Disable the keys required for the beatmap
+        songSelectManager.DisableKeysRequiredForBeatmap();
+        // Reset leaderboard rankings
+        beatmapRankingManager.ResetLeaderboard();
+        // Has pressed arrow key
+        hasPressedArrowKey = true;
+        // Flash the image
+        FlashImage();
+        // Load the next beatmap in the song select menu
+        // Assign the beatmap to load index to the beatmap to load index pass from the button clicked in the song select scene
+        songSelectManager.selectedDirectoryIndex = beatmapToLoadIndexPass;
+        songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.selectedDirectoryIndex, defaultBeatmapDifficulty, hasPressedArrowKey);
+        // Set the last selected difficulty to advanced
+        lastSelectedDifficulty = defaultBeatmapDifficulty;
+        // Set back to false
+        hasPressedArrowKey = false;
+        // Load the beatmap rankings
+        beatmapRankingManager.leaderboardPlaceToGet = 1;
+        beatmapRankingManager.ResetNotChecked();
+    }
+
     // Load the previous song
     public void LoadPreviousSong()
     {

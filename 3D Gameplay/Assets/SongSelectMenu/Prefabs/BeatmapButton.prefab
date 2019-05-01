@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 114866807962487384}
   - component: {fileID: 114189347584388698}
   - component: {fileID: 95234813174151684}
+  - component: {fileID: 114672035181123796}
   m_Layer: 5
   m_Name: BeatmapButton
   m_TagString: Untagged
@@ -94,6 +95,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
+--- !u!114 &114672035181123796
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1591882483047188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b9aff47ab3c1db4fa99ddce74aa0a29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  click: {fileID: 8300000, guid: a307a0d9a76a4e74db2cecb4c59910fe, type: 3}
+  onPointerEnter: {fileID: 8300000, guid: ff24afdd2ca902d46952a74b4fb30ad8, type: 3}
 --- !u!114 &114695538504291402
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -186,7 +200,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114695538504291402}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114672035181123796}
+        m_MethodName: LoadBeatmap
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114871176724759284

@@ -58,11 +58,6 @@ public class LevelChanger : MonoBehaviour {
         {
             hasBackLevel = false;
         }
-        if (currentLevelIndex == 1)
-        {
-            levelToLoad = 0;
-            hasBackLevel = true;
-        }
         if (currentLevelIndex == 2)
         {
             levelToLoad = 1;

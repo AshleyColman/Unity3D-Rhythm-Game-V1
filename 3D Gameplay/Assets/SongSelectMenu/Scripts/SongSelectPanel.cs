@@ -106,11 +106,8 @@ public class SongSelectPanel : MonoBehaviour
         // Get the image component of the instantiated button
         Image instantiatedBeatmapButtonImage = beatmapButtonInstantiateChildImage.GetComponent<Image>();
 
-
         // Store in the list so we can change it later
         instantiatedBeatmapButtonImageList.Add(instantiatedBeatmapButtonImage);
-
-
 
         // Create a new texture for the beatmap image
         beatmapButtonNewImageTexture = CreateNewTextureForBeatmapButton();
@@ -123,6 +120,12 @@ public class SongSelectPanel : MonoBehaviour
 
         // Connect texture to material of GameObject this script is attached to
         //instantiatedBeatmapButtonImage.material.mainTexture = beatmapButtonNewImageTexture;
+
+
+        // Get the beatmap button script component attached to the newly instantiated button
+        // Assign the beatmap index to load inside the script
+        BeatmapButton instantiatedBeatmapButtonScript = beatmapButtonInstantiate.GetComponent<BeatmapButton>();
+        instantiatedBeatmapButtonScript.SetBeatmapButtonIndex(beatmapButtonIndexPass);
     }
 
 
