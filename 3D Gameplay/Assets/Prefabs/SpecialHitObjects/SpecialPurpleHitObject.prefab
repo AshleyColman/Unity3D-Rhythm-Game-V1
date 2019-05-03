@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: 64129373978899914}
   - component: {fileID: 23196373986474398}
   - component: {fileID: 114050291043305038}
-  - component: {fileID: 114298241609139610}
   m_Layer: 0
   m_Name: Inner
   m_TagString: Untagged
@@ -153,7 +152,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: ce1964af65e6c1e439dc459e96c1f68e, type: 2}
+  - {fileID: 2100000, guid: 0a93c4ab9db66f24fbecf409eefe90e6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -187,7 +186,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: cf089f87b93ea8441b59d7c4dc0bc625, type: 2}
+  - {fileID: 2100000, guid: 786704168e2bfc14bbde3767b05e413d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -325,19 +324,6 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1543266810717534}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeSpeed: 0
-  timer: 0
---- !u!114 &114298241609139610
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1077159304452136}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}

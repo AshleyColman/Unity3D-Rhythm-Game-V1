@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: 64761901389828724}
   - component: {fileID: 23563469211776322}
   - component: {fileID: 114410836738757000}
-  - component: {fileID: 114407227101763414}
   m_Layer: 0
   m_Name: Inner
   m_TagString: Untagged
@@ -153,7 +152,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: f6af8c52ebfb7224a91e7503a02a259b, type: 2}
+  - {fileID: 2100000, guid: 12bc003939827ef458c186f6e38948b7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -187,7 +186,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: c65c57c38b55b6a419d5bb8ceca6191f, type: 2}
+  - {fileID: 2100000, guid: 0a93c4ab9db66f24fbecf409eefe90e6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -304,19 +303,6 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114407227101763414
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1026610622912544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeSpeed: 0
-  timer: 0
 --- !u!114 &114410836738757000
 MonoBehaviour:
   m_ObjectHideFlags: 1

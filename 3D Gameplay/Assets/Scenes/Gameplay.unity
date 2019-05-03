@@ -123,12 +123,12 @@ GameObject:
   m_Component:
   - component: {fileID: 22666222}
   m_Layer: 5
-  m_Name: 250ComboParticles
+  m_Name: 500ComboParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &22666222
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1233,8 +1233,8 @@ MonoBehaviour:
   totalHit: 0
   totalSpecial: 0
   totalHitObjects: 0
-  comboParticlesWhite: {fileID: 0}
-  comboParticlesRainbow: {fileID: 0}
+  comboParticlesWhite: {fileID: 1273012653}
+  comboParticlesRainbow: {fileID: 1688905429}
 --- !u!95 &366058146
 Animator:
   serializedVersion: 3
@@ -12699,7 +12699,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1757856502
 RectTransform:
   m_ObjectHideFlags: 0
