@@ -32,6 +32,9 @@ public class ScoreManager : MonoBehaviour {
     public float totalHitObjects;
     private HitSoundPreview hitSoundPreview;
 
+    public ParticleSystem comboParticlesWhite;
+    public ParticleSystem comboParticlesRainbow;
+
     // Use this for initialization
     void Start () {
 
@@ -58,9 +61,57 @@ public class ScoreManager : MonoBehaviour {
         // Check the current combo and see if it's the highest so far;
         CheckHighestCombo();
 
+        // Check the combo for spawning the correct particle effect
+        CheckComboParticles();
+
         // Calculate the highest score possible in the beatmap
         CalculateHighestScoreForBeatmap();
 	}
+
+    // Activate white combo particles
+    private void ActivateWhiteComboParticles()
+    {
+        comboParticlesWhite.gameObject.SetActive(true);
+    }
+
+    // Deactivate white combo particles
+    private void DeactivateWhiteComboParticles()
+    {
+        comboParticlesWhite.gameObject.SetActive(false);
+    }
+
+    // Activate rainbow combo particles
+    private void ActivateRainbowComboParticles()
+    {
+        comboParticlesRainbow.gameObject.SetActive(true);
+    }
+
+    // Deactivate rainbow combo particles
+    private void DeactivateRainbowComboParticles()
+    {
+        comboParticlesRainbow.gameObject.SetActive(false);
+    }
+
+    // Check combo for particles
+    private void CheckComboParticles()
+    {
+        if (combo < 100)
+        {
+            DeactivateWhiteComboParticles();
+            DeactivateRainbowComboParticles();
+        }
+        
+        if (combo >= 100 && combo < 500)
+        {
+            ActivateWhiteComboParticles();
+        }
+
+        if (combo >= 500)
+        {
+            DeactivateWhiteComboParticles();
+            ActivateRainbowComboParticles();
+        }
+    }
 
     // Reset combo
     public void ResetCombo()

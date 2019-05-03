@@ -512,7 +512,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   active: 0
-  metronomeEffectsCanvasAnimator: {fileID: 0}
   metronomeAudioSource: {fileID: 82004018500087818}
   highClip: {fileID: 8300000, guid: 0ad66f5abf65b5049abb53eba56b47af, type: 3}
   lowClip: {fileID: 8300000, guid: ac0e40992949af54b8ec30a777c0aff7, type: 3}

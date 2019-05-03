@@ -82,7 +82,9 @@ public class SongSelectManager : MonoBehaviour {
     // Reference to the SongSelectPanel for loading the song beatmap buttons with the directories found
     private SongSelectPanel songSelectPanel;
 
-    
+    // Used to play the start preview once upon entering the song select screen for the first time so the song plays at the current set time once.
+    bool hasPlayedSongPreviewOnce;
+
     // Use this for initialization
     void Start () {
 
@@ -122,6 +124,8 @@ public class SongSelectManager : MonoBehaviour {
             // Do not load any new song
         }
 
+        // Set to false at the start
+        hasPlayedSongPreviewOnce = false;
 
     }
 	
@@ -189,67 +193,18 @@ public class SongSelectManager : MonoBehaviour {
             pressedKeyL = Database.database.loadedPressedKeyL;
             songPreviewStartTime = Database.database.loadedSongPreviewStartTime;
 
-            // Start the song preview as it has now been loaded
-            songSelectPreview.PlaySongSelectScenePreview(songPreviewStartTime);
+        
+            // Check if the first song preview when entering the song select menu has played once, if it hasn't play the song preview at the correct set time
+            if (hasPlayedSongPreviewOnce == false)
+            {
+                // Play the song preview for the first song when entering at the correct set time in the beatmap information
+                PlaySongPreview();
+                // Set to true
+                hasPlayedSongPreviewOnce = true;
+            }
 
             // Load the image by passing the current beatmap directory
             backgroundManager.LoadEditorBeatmapImage(beatmapDirectories[selectedDirectoryIndexPass]);
-
-            /*
-            // Load the selectedSongImage in the song select list
-            StartCoroutine(backgroundManager.LoadSongSelectCurrentImg(beatmapDirectories[selectedDirectoryIndexPass])); 
-
-            
-            // Load the previousSongImage in the song select list
-            int previousSongImageDirectoryIndexPass;
-            if (selectedDirectoryIndexPass == 0)
-            {
-                // Do a check and see if we're at the first index for image loading, if we are set it to the end of the list for loop
-                previousSongImageDirectoryIndexPass = (beatmapDirectories.Length - 1);
-                // Load the previous image by taking 1 off the current index
-                StartCoroutine(backgroundManager.LoadSongSelectPreviousImg(beatmapDirectories[previousSongImageDirectoryIndexPass])); 
-            }
-            else
-            {
-                // Else set it to the current index
-                previousSongImageDirectoryIndexPass = selectedDirectoryIndexPass;
-                // Load the previous image by taking 1 off the current index
-                StartCoroutine(backgroundManager.LoadSongSelectPreviousImg(beatmapDirectories[previousSongImageDirectoryIndexPass - 1])); 
-            }
-
-            
-            // Load the next song image in the song select list
-            int nextSongImageDirectoryIndexPass;
-            if (selectedDirectoryIndexPass == (beatmapDirectories.Length - 1))
-            {
-                // If the current selected index is at the end of the list, set the next image to the start of hte list
-                nextSongImageDirectoryIndexPass = 0;
-                // Load the previous image by taking 1 off the current index
-                StartCoroutine(backgroundManager.LoadSongSelectNextImg(beatmapDirectories[nextSongImageDirectoryIndexPass])); 
-            }
-            else
-            {
-                // Add 1 to the current index for loading the next image
-                StartCoroutine(backgroundManager.LoadSongSelectNextImg(beatmapDirectories[selectedDirectoryIndexPass + 1])); 
-            }
-
-
-            // Load the next next song image in the song select list (2 ahead on the list)
-            int nextNextSongImageDirectoryIndexPass;
-            if (selectedDirectoryIndexPass == (beatmapDirectories.Length - 1))
-            {
-                // If the current selected index is at the end of the list, set the next image to the start of hte list
-                nextNextSongImageDirectoryIndexPass = 1;
-                // Load the previous image by taking 1 off the current index
-                StartCoroutine(backgroundManager.LoadSelectNextNextImg(beatmapDirectories[nextNextSongImageDirectoryIndexPass])); 
-            }
-            else
-            {
-                nextNextSongImageDirectoryIndexPass = (selectedDirectoryIndexPass + 2);
-                // Add 2 to the current index for loading the next next image
-                StartCoroutine(backgroundManager.LoadSelectNextNextImg(beatmapDirectories[nextNextSongImageDirectoryIndexPass])); 
-            }
-            */
 
 
             // Change the current song selected text to the information loaded from the current directory
@@ -288,6 +243,13 @@ public class SongSelectManager : MonoBehaviour {
         {
             songSelectPreview.GetSongChosen(songClipChosenIndex);
         }
+    }
+
+    // Play the song preview at the saved preview time
+    public void PlaySongPreview()
+    {
+        // Start the song preview as it has now been loaded
+        songSelectPreview.PlaySongSelectScenePreview(songPreviewStartTime);
     }
 
     // Check if advanced difficulty exists

@@ -34,7 +34,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1049618177557604}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 125.36896, y: 56.536377, z: -79.43588}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -51,4 +51,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ded3e4312d5ccc4a8abbd7e2462b274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  filePath: 
+  completePath: 
   img: {fileID: 0}
+  selectedSongImage: {fileID: 0}
+  previousSongImage: {fileID: 0}
+  nextSongImage: {fileID: 0}
+  nextNextSongImage: {fileID: 0}
