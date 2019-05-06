@@ -143,6 +143,8 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         // Load special time end
         specialTimeEnd = specialTimeManager.specialTimeEnd;
 
+        // Check if it's special time 
+        CheckSpecialTime();
 
         // If the space key has been pressed we start the song and song timer
         if (Input.GetKeyDown(KeyCode.Space) && hasPressedSpacebar == false)
@@ -162,9 +164,6 @@ public class LoadAndRunBeatmap : MonoBehaviour {
             // Update the song timer with the current song time
             songTimer += Time.deltaTime;
         }
-
-        // Check if it's special time 
-        CheckSpecialTime();
 
         if (hitObjectID == (totalHitObjectListSize))
         {

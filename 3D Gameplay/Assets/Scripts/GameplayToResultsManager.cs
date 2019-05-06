@@ -111,7 +111,7 @@ public class GameplayToResultsManager : MonoBehaviour {
         Percentage = (score / totalScorePossible) * 100;
 
 
-        if (Percentage < 50)
+        if (Percentage < 60)
         {
             gradeAchieved = "F";
         }

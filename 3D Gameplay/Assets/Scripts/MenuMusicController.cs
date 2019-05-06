@@ -15,6 +15,7 @@ public class MenuMusicController : MonoBehaviour
 
     void Update()
     {
+        
         GameObject[] metronomeEffectsController = GameObject.FindGameObjectsWithTag("MetronomeEffects");
 
 
@@ -26,11 +27,12 @@ public class MenuMusicController : MonoBehaviour
         {
             DontDestroyOnLoad(this.gameObject);
         }
+        
 
         LevelChanger levelChanger = FindObjectOfType<LevelChanger>();
 
         // destroy to stop playing on certain scenes
-        if (levelChanger.currentLevelIndex > 2)
+        if (levelChanger.currentLevelIndex > 1)
         {
             Destroy(gameObject);
         }

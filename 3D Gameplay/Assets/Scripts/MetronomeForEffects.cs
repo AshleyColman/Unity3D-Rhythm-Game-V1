@@ -176,32 +176,36 @@ public class MetronomeForEffects : MonoBehaviour
         if (!active)
             yield return null;
 
-        // Check if the song time is greater than the current tick Time
-        if (songAudioSource.time >= songTickTimes[CurrentTick])
+        if (songAudioSource != null)
         {
 
-            CurrentTick++;
-
-            if (CurrentTick >= songTickTimes.Count)
+            // Check if the song time is greater than the current tick Time
+            if (songAudioSource.time >= songTickTimes[CurrentTick])
             {
-                active = false;
-            }
 
-            // If the Current Step is greater than the Step, reset it and increment the Measure
-            if (CurrentStep >= Step)
-            {
-                CurrentStep = 1;
-                CurrentMeasure++;
-                //metronomeAudioSource.clip = highClip;
-            }
-            else
-            {
-                CurrentStep++;
-                //metronomeAudioSource.clip = lowClip;
-            }
+                CurrentTick++;
 
-            // Call OnTick functions
-            StartCoroutine(OnTick());
+                if (CurrentTick >= songTickTimes.Count)
+                {
+                    active = false;
+                }
+
+                // If the Current Step is greater than the Step, reset it and increment the Measure
+                if (CurrentStep >= Step)
+                {
+                    CurrentStep = 1;
+                    CurrentMeasure++;
+                    //metronomeAudioSource.clip = highClip;
+                }
+                else
+                {
+                    CurrentStep++;
+                    //metronomeAudioSource.clip = lowClip;
+                }
+
+                // Call OnTick functions
+                StartCoroutine(OnTick());
+            }
         }
 
         yield return null;
@@ -243,6 +247,7 @@ public class MetronomeForEffects : MonoBehaviour
         }
         else if (levelChanger.currentLevelIndex == 3)
         {
+            /*
             metronomeEffectsBeatmapKeysAnimator = GameObject.FindWithTag("BeatmapKeys").GetComponent<Animator>();
             // Only play beatmapKeys animation if the animator is not null
             if (metronomeEffectsBeatmapKeysAnimator != null)
@@ -250,7 +255,7 @@ public class MetronomeForEffects : MonoBehaviour
                 // Play beatmapKeys animation on start scene
                 metronomeEffectsBeatmapKeysAnimator.Play("MetronomeEffectsBeatmapKeysAnimation");
             }
-
+            */
         }
 
         Debug.Log("Current Step: " + CurrentStep + "/" + Step);

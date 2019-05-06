@@ -12,11 +12,11 @@ public class LeaderboardManager : MonoBehaviour {
     public string username; // The username of the current user signed in
 
     private int currentUserScore;
-    private bool hasRetrievedCurrentUserScore;
+    private bool hasCheckedCurrentUserScore;
     private int newUserScoreToUpload;
     private bool hasUpdatedUserOverallTotalScore;
     private bool hasIncrementedScore;
-    
+    private bool hasExistingScoreInOverallRankings;
 
     void Start()
     {
@@ -34,7 +34,7 @@ public class LeaderboardManager : MonoBehaviour {
             notChecked = false;
         }
 
-        if (hasRetrievedCurrentUserScore == false)
+        if (hasCheckedCurrentUserScore == false)
         {
             // Retrieve the user current total score from the database
             StartCoroutine(RetrieveUserCurrentTotalScore());
@@ -42,18 +42,27 @@ public class LeaderboardManager : MonoBehaviour {
         else
         {
             // If the user score has been retrieved
-            if (hasUpdatedUserOverallTotalScore == false && hasRetrievedCurrentUserScore == true)
+            if (hasUpdatedUserOverallTotalScore == false && hasCheckedCurrentUserScore == true)
             {
-                if (hasIncrementedScore == false)
+                if (hasExistingScoreInOverallRankings == true)
+                {
+                    if (hasIncrementedScore == false)
+                    {
+                        // Add the just played score to the score retrieved
+                        newUserScoreToUpload = gameplayToResultsManager.score + currentUserScore;
+                        hasIncrementedScore = true;
+                    }
+
+                    StartCoroutine(UpdateOverallLeaderboardTotalScore());
+                }
+                else
                 {
                     // Add the just played score to the score retrieved
-                    newUserScoreToUpload = gameplayToResultsManager.score + currentUserScore;
-                    hasIncrementedScore = true;
+                    newUserScoreToUpload = gameplayToResultsManager.score;
+
+                    StartCoroutine(UpdateOverallLeaderboardTotalScore());
                 }
-
-                StartCoroutine(UpdateOverallLeaderboardTotalScore());
             }
-
         }
     }
 
@@ -137,19 +146,22 @@ public class LeaderboardManager : MonoBehaviour {
 
 
         // Check if the score retrieve was a success or failure
-        if (www.downloadHandler.text != "1")
+        if (www.downloadHandler.text != "0")
         {
             Debug.Log("Retrieved overall ranking current total score");
             // Assign the retrieved score
             string currentUserScoreString = www.downloadHandler.text;
             currentUserScore = Convert.ToInt32(currentUserScoreString);
             // Set to true as we have retrieved the score
-            hasRetrievedCurrentUserScore = true;
+            hasCheckedCurrentUserScore = true;
+            hasExistingScoreInOverallRankings = true;
         }
         // Error
         else
         {
             Debug.Log("Error with retrieving user overall ranking current total score");
+            hasCheckedCurrentUserScore = true;
+            hasExistingScoreInOverallRankings = false;
         }
 
     }

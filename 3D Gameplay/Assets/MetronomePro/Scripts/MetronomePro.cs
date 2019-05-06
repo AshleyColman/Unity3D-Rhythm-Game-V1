@@ -209,28 +209,37 @@ public class MetronomePro : MonoBehaviour {
 		if (!active)
 			yield return null;
 
-		// Check if the song time is greater than the current tick Time
-		if (songAudioSource.time >= songTickTimes [CurrentTick]) {
+        if (songAudioSource != null)
+        {
+            // Check if the song time is greater than the current tick Time
+            if (songAudioSource.time >= songTickTimes[CurrentTick])
+            {
 
-			CurrentTick++;
+                CurrentTick++;
 
-			if (CurrentTick >= songTickTimes.Count) {
-				active = false;
-			}
+                if (CurrentTick >= songTickTimes.Count)
+                {
+                    active = false;
+                }
 
-			// If the Current Step is greater than the Step, reset it and increment the Measure
-			if (CurrentStep >= Step) {
-				CurrentStep = 1;
-				CurrentMeasure++;
-				metronomeAudioSource.clip = highClip;
-			} else {
-				CurrentStep++;
-				metronomeAudioSource.clip = lowClip;
-			}
+                // If the Current Step is greater than the Step, reset it and increment the Measure
+                if (CurrentStep >= Step)
+                {
+                    CurrentStep = 1;
+                    CurrentMeasure++;
+                    metronomeAudioSource.clip = highClip;
+                }
+                else
+                {
+                    CurrentStep++;
+                    metronomeAudioSource.clip = lowClip;
+                }
 
-			// Call OnTick functions
-			StartCoroutine (OnTick ());
-		}
+                // Call OnTick functions
+                StartCoroutine(OnTick());
+            }
+        }
+		
 
 		yield return null;
 	}

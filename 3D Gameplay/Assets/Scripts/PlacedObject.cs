@@ -547,14 +547,15 @@ public class PlacedObject : MonoBehaviour {
             Slider timelineSlider = instantiatedSpecialTimeStartObject.GetComponent<Slider>();
 
             // Get the reference to the destroy timeline object script attached to the timeline object
-            DestroyTimelineObject destroyTimelineObject = instantiatedSpecialTimeStartObject.GetComponent<DestroyTimelineObject>();
+            SpecialTimelineObject specialTimelineObject = instantiatedSpecialTimeStartObject.GetComponent<SpecialTimelineObject>();
 
 
             // Set the timeline slider value to the current song time handles value
             timelineSlider.value = metronomePro_Player.handleSlider.value;
 
+
             // Set the timeline objects spawn time to the current time in the song
-            destroyTimelineObject.timelineHitObjectSpawnTime = metronomePro_Player.songAudioSource.time;
+           specialTimelineObject.timelineHitObjectSpawnTime = metronomePro_Player.songAudioSource.time;
         }
         
         if (specialTimeTypePass == "END")
@@ -567,14 +568,14 @@ public class PlacedObject : MonoBehaviour {
             Slider timelineSlider = instantiatedSpecialTimeEndObject.GetComponent<Slider>();
 
             // Get the reference to the destroy timeline object script attached to the timeline object
-            DestroyTimelineObject destroyTimelineObject = instantiatedSpecialTimeEndObject.GetComponent<DestroyTimelineObject>();
+            SpecialTimelineObject specialTimelineObject = instantiatedSpecialTimeEndObject.GetComponent<SpecialTimelineObject>();
 
 
             // Set the timeline slider value to the current song time handles value
             timelineSlider.value = metronomePro_Player.handleSlider.value;
 
             // Set the timeline objects spawn time to the current time in the song
-            destroyTimelineObject.timelineHitObjectSpawnTime = metronomePro_Player.songAudioSource.time;
+            specialTimelineObject.timelineHitObjectSpawnTime = metronomePro_Player.songAudioSource.time;
         }
 
     }
@@ -708,7 +709,7 @@ public class PlacedObject : MonoBehaviour {
     // Update the special time start if the instantiated special time start timeline slider has been changed
     public void UpdateSpecialTimeEnd(float newSpecialTimeEndPass)
     {
-        Database.database.SpecialTimeStart = newSpecialTimeEndPass;
+        Database.database.SpecialTimeEnd = newSpecialTimeEndPass;
     }
 
     // Display the special time border during mapping when the key has been pressed

@@ -35,8 +35,8 @@ GameObject:
   m_Component:
   - component: {fileID: 224891167524219384}
   - component: {fileID: 114835342679370472}
-  - component: {fileID: 114651815013079172}
   - component: {fileID: 114598268107982656}
+  - component: {fileID: 114737840468409852}
   m_Layer: 5
   m_Name: TimelineSpecialTimeEndObject
   m_TagString: SpecialTimeEndTimelineObject
@@ -80,7 +80,7 @@ MonoBehaviour:
       m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
         Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   delegates: []
---- !u!114 &114651815013079172
+--- !u!114 &114737840468409852
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1302748249697744}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78ae9d6c5fcfbf4439249a2f8d70c2be, type: 3}
+  m_Script: {fileID: 11500000, guid: ebf1a68cdce487f4bade97b9486402f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   timelineHitObjectSpawnTime: 0
@@ -167,7 +167,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114651815013079172}
+      - m_Target: {fileID: 114737840468409852}
         m_MethodName: UpdateTimelineHitObjectSpawnTime
         m_Mode: 1
         m_Arguments:
@@ -178,7 +178,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 114651815013079172}
+      - m_Target: {fileID: 114737840468409852}
         m_MethodName: UpdateSpecialTimeValues
         m_Mode: 1
         m_Arguments:

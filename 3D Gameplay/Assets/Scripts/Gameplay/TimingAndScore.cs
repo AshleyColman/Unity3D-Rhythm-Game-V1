@@ -54,6 +54,9 @@ public class TimingAndScore : MonoBehaviour {
         hitSoundPreview = FindObjectOfType<HitSoundPreview>();
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
 
+        // Check if its special time
+        CheckIsSpecialTime();
+
         // Initalize hit object
         hitObjectStartTime = 0f; 
 

@@ -5509,7 +5509,7 @@ MonoBehaviour:
   ComboText: {fileID: 1857162382}
   PercentageText: {fileID: 1542106144}
   UsernameText: {fileID: 1228332821}
-  GradeTextP: {fileID: 0}
+  GradeTextP: {fileID: 441519131}
   GradeTextS: {fileID: 1477162565}
   GradeTextA: {fileID: 348212343}
   GradeTextB: {fileID: 1464027836}

@@ -22514,6 +22514,7 @@ MonoBehaviour:
   thirdPlaceLeaderboardData: []
   fourthPlaceLeaderboardData: []
   fifthPlaceLeaderboardData: []
+  sixthPlaceLeaderboardData: []
   personalBestLeaderboardData: []
   teststring: 
   leaderboardPlaceToGet: 0
@@ -22538,10 +22539,14 @@ MonoBehaviour:
   RankedButtonFifthRankAndUsernameAndScoreText: {fileID: 2092545717}
   RankedButtonFifthPlayStatisticsText: {fileID: 2071864814}
   RankedButtonFifthPlayCount: {fileID: 0}
+  RankedButtonSixthGradeText: {fileID: 1793672488}
+  RankedButtonSixthRankAndUsernameAndScoreText: {fileID: 616786237}
+  RankedButtonSixthPlayStatisticsText: {fileID: 858271285}
+  RankedButtonSixthPlayCount: {fileID: 0}
   RankedButtonPersonalBestGradeText: {fileID: 638987586}
   RankedButtonPersonalBestRankAndUsernameAndScoreText: {fileID: 2055798855}
   RankedButtonPersonalBestPlayStatisticsText: {fileID: 264147545}
-  pColor: {r: 0, g: 0, b: 0, a: 0}
+  pColor: {r: 0, g: 0, b: 0, a: 1}
   sColor: {r: 1, g: 0.61960787, b: 0, a: 1}
   aColor: {r: 0.14509805, g: 1, b: 0, a: 1}
   bColor: {r: 0, g: 0.86800003, b: 1, a: 1}
@@ -22556,11 +22561,13 @@ MonoBehaviour:
   thirdPlaceCharacterImage: {fileID: 405680717}
   fourthPlaceCharacterImage: {fileID: 1011022262}
   fifthPlaceCharacterImage: {fileID: 1876718740}
+  sixthPlaceCharacterImage: {fileID: 1738465261}
   firstButtonGradeParticles: {fileID: 1898484075}
   secondButtonGradeParticles: {fileID: 1594771591}
   thirdButtonGradeParticles: {fileID: 1804492851}
   fourthButtonGradeParticles: {fileID: 525611523}
   fifthButtonGradeParticles: {fileID: 1309691397}
+  sixthButtonGradeParticles: {fileID: 354447645}
   personalBestButtonGradeParticles: {fileID: 1318537016}
 --- !u!114 &593936949
 MonoBehaviour:

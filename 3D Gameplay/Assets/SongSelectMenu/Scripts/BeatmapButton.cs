@@ -10,6 +10,7 @@ public class BeatmapButton : MonoBehaviour
 
     private SongSelectMenuFlash songSelectMenuFlash;
     private SongSelectManager songSelectManager;
+    private BeatmapRankingManager beatmapRankingManager;
 
     public AudioClip click;
     public AudioClip onPointerEnter;
@@ -17,9 +18,12 @@ public class BeatmapButton : MonoBehaviour
     private GameObject menuSFXGameObject;
     private AudioSource menuSFXAudioSource;
 
+
+
     // Use this for initialization
     void Start () {
         songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
+        beatmapRankingManager = FindObjectOfType<BeatmapRankingManager>();
         menuSFXGameObject = GameObject.FindGameObjectWithTag("MenuSFXAudioSource");
         menuSFXAudioSource = menuSFXGameObject.GetComponent<AudioSource>();
         songSelectManager = FindObjectOfType<SongSelectManager>();
@@ -54,5 +58,12 @@ public class BeatmapButton : MonoBehaviour
     {
         menuSFXAudioSource.PlayOneShot(click);
     }
+
+    public void StopBeatmapRankingCoroutines()
+    {
+        // Stop beatmap leaderboard ranking loads
+        beatmapRankingManager.StopAllCoroutines();
+    }
+
 
 }

@@ -18,6 +18,7 @@ public class BeatmapRankingManager : MonoBehaviour
     public List<string> thirdPlaceLeaderboardData = new List<string>();
     public List<string> fourthPlaceLeaderboardData = new List<string>();
     public List<string> fifthPlaceLeaderboardData = new List<string>();
+    public List<string> sixthPlaceLeaderboardData = new List<string>();
     public List<string> personalBestLeaderboardData = new List<string>();
     public string teststring;
     public int leaderboardPlaceToGet;
@@ -49,6 +50,10 @@ public class BeatmapRankingManager : MonoBehaviour
     public TextMeshProUGUI RankedButtonFifthPlayStatisticsText;
     public TextMeshProUGUI RankedButtonFifthPlayCount;
 
+    public TextMeshProUGUI RankedButtonSixthGradeText;
+    public TextMeshProUGUI RankedButtonSixthRankAndUsernameAndScoreText;
+    public TextMeshProUGUI RankedButtonSixthPlayStatisticsText;
+    public TextMeshProUGUI RankedButtonSixthPlayCount;
 
     public TextMeshProUGUI RankedButtonPersonalBestGradeText;
     public TextMeshProUGUI RankedButtonPersonalBestRankAndUsernameAndScoreText;
@@ -113,6 +118,18 @@ public class BeatmapRankingManager : MonoBehaviour
     string fifthButtonPercentage;
     string fifthButtonPlayCount;
 
+    string sixthButtonScore;
+    string sixthButtonPerfect;
+    string sixthButtonGood;
+    string sixthButtonEarly;
+    string sixthButtonMiss;
+    string sixthButtonCombo;
+    string sixthButtonUsername;
+    string sixthButtonGrade;
+    string sixthButtonPercentage;
+    string sixthButtonPlayCount;
+
+
     string personalBestButtonScore;
     string personalBestButtonPerfect;
     string personalBestButtonGood;
@@ -123,19 +140,21 @@ public class BeatmapRankingManager : MonoBehaviour
     string personalBestButtonGrade;
     string personalBestButtonPercentage;
 
-    bool firstExists = false, secondExists = false, thirdExists = false, fourthExists = false, fifthExists = false;
+    bool firstExists = false, secondExists = false, thirdExists = false, fourthExists = false, fifthExists = false, sixthExists = false;
     bool hasCheckedPersonalBest = false;
     public Color pColor, sColor, aColor, bColor, cColor, dColor, eColor, fColor, defaultColor;
 
     string player_id;
 
-    public Image personalBestCharacterImage, firstPlaceCharacterImage, secondPlaceCharacterImage, thirdPlaceCharacterImage, fourthPlaceCharacterImage, fifthPlaceCharacterImage;
+    public Image personalBestCharacterImage, firstPlaceCharacterImage, secondPlaceCharacterImage, thirdPlaceCharacterImage, fourthPlaceCharacterImage,
+        fifthPlaceCharacterImage, sixthPlaceCharacterImage;
 
     public ParticleSystem firstButtonGradeParticles;
     public ParticleSystem secondButtonGradeParticles;
     public ParticleSystem thirdButtonGradeParticles;
     public ParticleSystem fourthButtonGradeParticles;
     public ParticleSystem fifthButtonGradeParticles;
+    public ParticleSystem sixthButtonGradeParticles;
     public ParticleSystem personalBestButtonGradeParticles;
 
     void Start()
@@ -148,7 +167,7 @@ public class BeatmapRankingManager : MonoBehaviour
 
         if (notChecked == true && hasCheckedPersonalBest == false)
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
             { 
                 // Retrieve the top 5 scores
                 StartCoroutine(RetrieveBeatmapLeaderboard(leaderboardPlaceToGet));
@@ -371,6 +390,40 @@ public class BeatmapRankingManager : MonoBehaviour
                 fifthPlaceCharacterImage.gameObject.SetActive(false);
             }
 
+            if (sixthExists == true)
+            {
+                // Assign the database information to the variables
+                sixthButtonScore = sixthPlaceLeaderboardData[0];
+                sixthButtonPerfect = sixthPlaceLeaderboardData[1]; ;
+                sixthButtonGood = sixthPlaceLeaderboardData[2];
+                sixthButtonEarly = sixthPlaceLeaderboardData[3];
+                sixthButtonMiss = sixthPlaceLeaderboardData[4];
+                sixthButtonCombo = sixthPlaceLeaderboardData[5];
+                sixthButtonUsername = sixthPlaceLeaderboardData[6];
+                sixthButtonGrade = sixthPlaceLeaderboardData[7];
+                sixthButtonPercentage = sixthPlaceLeaderboardData[8];
+
+                // Check if P or S rank has been achieved, if it has enable the grade particle system
+                if (sixthButtonGrade == "S" || sixthButtonGrade == "P")
+                {
+                    sixthButtonGradeParticles.gameObject.SetActive(true);
+                }
+
+                // Assign the text to leaderboard place button
+                RankedButtonSixthGradeText.text = sixthButtonGrade;
+                RankedButtonSixthGradeText.color = SetGradeColor(sixthButtonGrade);
+                RankedButtonSixthRankAndUsernameAndScoreText.text = "6# " + sixthButtonUsername + ": " + sixthButtonScore;
+                RankedButtonSixthPlayStatisticsText.text = "[" + sixthButtonPercentage + "%] " + "[x" + sixthButtonCombo + "] " + "[" + CharacterUsed + "]";
+
+                // Enable character used image
+                sixthPlaceCharacterImage.gameObject.SetActive(true);
+            }
+            else
+            {
+                // Disable character used image
+                sixthPlaceCharacterImage.gameObject.SetActive(false);
+            }
+
 
         }
 
@@ -471,6 +524,18 @@ public class BeatmapRankingManager : MonoBehaviour
                     fifthExists = false;
                 }
             }
+            else if (leaderboardPlaceToGetPass == 6)
+            {
+                if (www.downloadHandler.text != "1")
+                {
+                    sixthPlaceLeaderboardData.Add(placeList[dataType].ToString());
+                    sixthExists = true;
+                }
+                else
+                {
+                    sixthExists = false;
+                }
+            }
 
         }
 
@@ -505,6 +570,10 @@ public class BeatmapRankingManager : MonoBehaviour
         RankedButtonFifthRankAndUsernameAndScoreText.text = "";
         RankedButtonFifthPlayStatisticsText.text = "";
 
+        RankedButtonSixthGradeText.text = "";
+        RankedButtonSixthRankAndUsernameAndScoreText.text = "";
+        RankedButtonSixthPlayStatisticsText.text = "";
+
         RankedButtonPersonalBestGradeText.text = "";
         RankedButtonPersonalBestRankAndUsernameAndScoreText.text = "";
         RankedButtonPersonalBestPlayStatisticsText.text = "";
@@ -514,6 +583,7 @@ public class BeatmapRankingManager : MonoBehaviour
         thirdPlaceLeaderboardData.Clear();
         fourthPlaceLeaderboardData.Clear();
         fifthPlaceLeaderboardData.Clear();
+        sixthPlaceLeaderboardData.Clear();
         personalBestLeaderboardData.Clear();
 
         // Reset Exists bools
@@ -522,6 +592,7 @@ public class BeatmapRankingManager : MonoBehaviour
         thirdExists = false;
         fourthExists = false;
         fifthExists = false;
+        sixthExists = false;
 
         // Reset Not Checked for leaderboard
         ResetNotChecked();
@@ -532,6 +603,7 @@ public class BeatmapRankingManager : MonoBehaviour
         thirdPlaceCharacterImage.gameObject.SetActive(false);
         fourthPlaceCharacterImage.gameObject.SetActive(false);
         fifthPlaceCharacterImage.gameObject.SetActive(false);
+        sixthPlaceCharacterImage.gameObject.SetActive(false);
         personalBestCharacterImage.gameObject.SetActive(false);
 
         // Reset grade particles
@@ -540,6 +612,7 @@ public class BeatmapRankingManager : MonoBehaviour
         thirdButtonGradeParticles.gameObject.SetActive(false);
         fourthButtonGradeParticles.gameObject.SetActive(false);
         fifthButtonGradeParticles.gameObject.SetActive(false);
+        sixthButtonGradeParticles.gameObject.SetActive(false);
         personalBestButtonGradeParticles.gameObject.SetActive(false);
     }
 

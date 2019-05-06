@@ -51,24 +51,4 @@ public class DestroyTimelineObject : MonoBehaviour {
         }
     }
 
-    // Update the special time start/end times
-    public void UpdateSpecialTimeValues()
-    {
-        if (metronome_Player != null)
-        {
-            // Update the start time if the timeline objects tag is the start timeline object
-            if (gameObject.tag == "SpecialTimeStartTimelineObject")
-            {
-                placedObject.UpdateSpecialTimeStart(timelineHitObjectSpawnTime);
-            }
-
-            // Update the end time if the timeline objects tag is the end timeline object
-            if (gameObject.tag == "SpecialTimeEndTimelineObject")
-            {
-                placedObject.UpdateSpecialTimeEnd(timelineHitObjectSpawnTime);
-            }
-            
-        }
-    }
-
 }

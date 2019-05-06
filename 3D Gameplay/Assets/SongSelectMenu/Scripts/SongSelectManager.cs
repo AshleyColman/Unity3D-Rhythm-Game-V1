@@ -83,10 +83,13 @@ public class SongSelectManager : MonoBehaviour {
     private SongSelectPanel songSelectPanel;
 
     // Used to play the start preview once upon entering the song select screen for the first time so the song plays at the current set time once.
-    bool hasPlayedSongPreviewOnce;
+    public bool hasPlayedSongPreviewOnce;
 
     // Use this for initialization
     void Start () {
+
+        // Set to false at the start
+        hasPlayedSongPreviewOnce = false;
 
         songSelectPanel = FindObjectOfType<SongSelectPanel>();
         songClipChosenIndex = 0;
@@ -125,7 +128,7 @@ public class SongSelectManager : MonoBehaviour {
         }
 
         // Set to false at the start
-        hasPlayedSongPreviewOnce = false;
+        hasPlayedSongPreviewOnce = true;
 
     }
 	

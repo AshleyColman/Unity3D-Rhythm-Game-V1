@@ -29,7 +29,7 @@ public class SpecialTimeManager : MonoBehaviour {
         specialTimeWarningActivateTime = 0;
         backgroundImage.enabled = false;
         songProgressBar = FindObjectOfType<SongProgressBar>();
-        specialTimeWarningText.enabled = false; // Deactivate the specialTimeWarningText at the start
+        specialTimeWarningText.gameObject.SetActive(false); // Deactivate the specialTimeWarningText at the start
     }
 	
 	// Update is called once per frame
@@ -44,7 +44,7 @@ public class SpecialTimeManager : MonoBehaviour {
             // Make the border disable 1.2 seconds after special time has ended
             borderDisableTime = (specialTimeEnd + 1.5f);
             // Assign the specialWarningActivateTime to be 3 seconds before special time begins
-            specialTimeWarningActivateTime = (specialTimeStart - 3);
+            specialTimeWarningActivateTime = (specialTimeStart - 4);
             // Assign the specialWarningDeactivateTime to be at the time special time begins
             specialTimeWarningDeactivateTime = specialTimeStart;
         }
@@ -72,19 +72,21 @@ public class SpecialTimeManager : MonoBehaviour {
         if (songTime >= specialTimeWarningActivateTime && songTime <= specialTimeWarningDeactivateTime)
         {
             // Enable the warning text
-            specialTimeWarningText.enabled = true;
+            specialTimeWarningText.gameObject.SetActive(true);
             // Play the animation for the warning text
             StartCoroutine(AnimateSpecialTimeWarningText());
         }
         else
         {
             // Disable the text
-            specialTimeWarningText.enabled = false;
+            specialTimeWarningText.gameObject.SetActive(false);
         }
 
         // If it is the special time 
         if (specialTimesLoaded == true && songTime >= specialTimeStart && songTime <= specialTimeEnd)
         {
+            Debug.Log("is special time set: " + songTime);
+
             isSpecialTime = true;
         }
         // Activate the border if within special time and below the additional 1 second borderDisableTime
@@ -129,6 +131,6 @@ public class SpecialTimeManager : MonoBehaviour {
         // Wait for the animation to end before disabling
         yield return new WaitForSeconds(4f);
         // Disable the text
-        specialTimeWarningText.enabled = false;
+        specialTimeWarningText.gameObject.SetActive(false);
     }
 }
