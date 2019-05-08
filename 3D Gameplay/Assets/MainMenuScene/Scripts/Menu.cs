@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class Menu : MonoBehaviour {
 
@@ -16,6 +17,14 @@ public class Menu : MonoBehaviour {
     public float fadeRate = 8f;
     public float growRate = 0.5f;
 
+    public TextMeshProUGUI modeDescriptionText;
+    public Animator modeDescriptionTextAnimator;
+
+    string playTextValue = "PLAY: Complete against others on community created Beatmaps";
+    string createTextValue = "CREATE: Create your very own Beatmap for others to play";
+    string optionTextValue = "OPTIONS: Coming soon";
+    string discordTextValue = "DISCORD: Join the Discord community <3";
+    string exitTextValue = "EXIT: Thanks for playing!";
 
     void Start()
     {
@@ -86,24 +95,28 @@ public class Menu : MonoBehaviour {
     {
         if (buttonSelectedPass == "PLAY")
         {
-            newPage(0);
+            modeDescriptionText.text = playTextValue;
         }
-        if (buttonSelectedPass == "MULTIPLAYER")
+        if (buttonSelectedPass == "DISCORD")
         {
-            newPage(1);
+            modeDescriptionText.text = discordTextValue;
         }
-        if (buttonSelectedPass == "EDITOR")
+        if (buttonSelectedPass == "CREATE")
         {
-            newPage(2);
+            modeDescriptionText.text = createTextValue;
+
         }
-        if (buttonSelectedPass == "SETTINGS")
+        if (buttonSelectedPass == "OPTIONS")
         {
-            newPage(3);
+            modeDescriptionText.text = optionTextValue;
         }
         if (buttonSelectedPass == "EXIT")
         {
-            newPage(4);
+            modeDescriptionText.text = exitTextValue;
         }
+
+        // Play text animation
+        modeDescriptionTextAnimator.Play("ModeDescriptionTextAnimation");
     }
 
     // Close the game

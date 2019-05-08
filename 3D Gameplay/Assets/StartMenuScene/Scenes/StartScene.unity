@@ -221,7 +221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &267621882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2221,6 +2221,11 @@ Prefab:
       propertyPath: hitSoundClip.Array.data[49]
       value: 
       objectReference: {fileID: 8300000, guid: 14ef11a5fa3014047b679f4f53c2a3ed, type: 3}
+    - target: {fileID: 82366600945544050, guid: 0030454a5bee6524e96dcb38d828fb70,
+        type: 2}
+      propertyPath: spreadCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0030454a5bee6524e96dcb38d828fb70, type: 2}
   m_IsPrefabParent: 0

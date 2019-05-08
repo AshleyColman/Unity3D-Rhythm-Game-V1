@@ -9,6 +9,10 @@ public class MetronomeForEffects : MonoBehaviour
 {
 
     [Header("Variables")]
+
+    public GameObject mainMenuCanvas;
+    public GameObject startMenuCanvas;
+
     public bool active = false;
 
     private Animator metronomeEffectsCanvasAnimator;
@@ -221,10 +225,10 @@ public class MetronomeForEffects : MonoBehaviour
 
         // YOUR FUNCTIONS HERE
 
-        if (levelChanger.currentLevelIndex == 0)
+        if (levelChanger.currentLevelIndex == 1 && startMenuCanvas.activeSelf == true && mainMenuCanvas.activeSelf == false)
         {
             // Find the animator game object
-            metronomeEffectsCanvasAnimator = GameObject.FindWithTag("Canvas").GetComponent<Animator>();
+            metronomeEffectsCanvasAnimator = startMenuCanvas.GetComponent<Animator>();
 
             // Only play if animator is not null
             if (metronomeEffectsCanvasAnimator != null)
@@ -233,10 +237,10 @@ public class MetronomeForEffects : MonoBehaviour
                 metronomeEffectsCanvasAnimator.Play("MetronomeEffectsCanvasAnimation");
             }
         }
-        else if (levelChanger.currentLevelIndex == 1)
+        else if (levelChanger.currentLevelIndex == 1 && startMenuCanvas.activeSelf == false && mainMenuCanvas.activeSelf == true)
         {
             // Find the animator game object
-            metronomeEffectsMainMenuCanvasAnimator = GameObject.FindWithTag("Canvas").GetComponent<Animator>();
+            metronomeEffectsMainMenuCanvasAnimator = mainMenuCanvas.GetComponent<Animator>();
 
             // Only play canvas animation if the animator is not null
             if (metronomeEffectsMainMenuCanvasAnimator != null)

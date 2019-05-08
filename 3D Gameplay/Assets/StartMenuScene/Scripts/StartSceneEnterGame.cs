@@ -4,25 +4,43 @@ using UnityEngine;
 
 public class StartSceneEnterGame : MonoBehaviour {
 
-    LevelChanger levelChanger;
+    public GameObject MainMenuCanvas;
+    public GameObject StartMenuCanvas;
     public AudioSource MenuSFXAudioSource;
     public AudioClip MenuSFXMenuSourceClip;
     bool hasPressedEnter;
+    public Animator StartMenuCanvasAnimator;
+    private MetronomeForEffects metronomeForEffects;
     // Use this for initialization
     void Start () {
+        metronomeForEffects = FindObjectOfType<MetronomeForEffects>();
         hasPressedEnter = false;
-        levelChanger = FindObjectOfType<LevelChanger>();
         MenuSFXAudioSource.clip = MenuSFXMenuSourceClip;
     }
 
     void Update()
     {
+
         // If enter is pressed load the next scene and play sound
-        if (Input.GetKey("return") && hasPressedEnter == false)
+        if (Input.GetKey("return") && hasPressedEnter == false || Input.GetMouseButtonDown(0))
         {
             MenuSFXAudioSource.PlayOneShot(MenuSFXMenuSourceClip);
-            levelChanger.FadeToLevel(1);
+            StartCoroutine(PlayCanvasSwipAnimation());
             hasPressedEnter = true;
         }
+    }
+
+    private IEnumerator PlayCanvasSwipAnimation()
+    {
+        metronomeForEffects.enabled = false;
+        StartMenuCanvasAnimator.Play("CanvasSwipAnimation");
+
+        MainMenuCanvas.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(1f);
+
+        StartMenuCanvas.gameObject.SetActive(false);
+
+        metronomeForEffects.enabled = true;
     }
 }
