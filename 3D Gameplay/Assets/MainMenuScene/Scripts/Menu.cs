@@ -25,6 +25,8 @@ public class Menu : MonoBehaviour {
     string optionTextValue = "OPTIONS: Coming soon";
     string discordTextValue = "DISCORD: Join the Discord community <3";
     string exitTextValue = "EXIT: Thanks for playing!";
+    string registerTextValue = "REGISTER: Create an account to track progress and compete on the leaderboards";
+    string loginTextValue = "LOGIN: Login to your existing account";
 
     void Start()
     {
@@ -113,6 +115,14 @@ public class Menu : MonoBehaviour {
         if (buttonSelectedPass == "EXIT")
         {
             modeDescriptionText.text = exitTextValue;
+        }
+        if (buttonSelectedPass == "REGISTER")
+        {
+            modeDescriptionText.text = registerTextValue;
+        }
+        if (buttonSelectedPass == "LOGIN")
+        {
+            modeDescriptionText.text = loginTextValue;
         }
 
         // Play text animation

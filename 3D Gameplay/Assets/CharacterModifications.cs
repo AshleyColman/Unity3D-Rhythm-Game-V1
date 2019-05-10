@@ -27,22 +27,21 @@ public class CharacterModifications : MonoBehaviour {
     {
         if (characterModificationsPanelActive == false)
         {
-            characterModifcationAnimator.Play("CharacterModificationsPanelActivateAnimation");
+            //characterModifcationAnimator.Play("CharacterModificationsPanelActivateAnimation");
             characterModificationsPanel.gameObject.SetActive(true);
             characterModificationsPanelActive = true;
         }
         else if (characterModificationsPanelActive == true)
         {
-            StartCoroutine(DeactivateCharacterModificationPanel());
+            //StartCoroutine(DeactivateCharacterModificationPanel());
+            characterModificationsPanel.gameObject.SetActive(false);
+            characterModificationsPanelActive = false;
         }
     }
 
     IEnumerator DeactivateCharacterModificationPanel()
     {
         characterModifcationAnimator.Play("CharacterModificationsPanelDeactivateAnimation");
-
         yield return new WaitForSeconds(0.50f);
-        characterModificationsPanel.gameObject.SetActive(false);
-        characterModificationsPanelActive = false;
     }
 }
