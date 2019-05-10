@@ -85,8 +85,20 @@ public class SongSelectManager : MonoBehaviour {
     // Used to play the start preview once upon entering the song select screen for the first time so the song plays at the current set time once.
     public bool hasPlayedSongPreviewOnce;
 
+    // Difficulty Text in song select screen
+    public TextMeshProUGUI difficultyText;
+
+    // PB leaderboard button
+    public Button personalBestLeaderboardButton;
+
+    // Colors for advanced and extra buttons
+    public Color advancedDifficultyButtonColor;
+    public Color extraDifficultyButtonColor;
+
     // Use this for initialization
     void Start () {
+
+        difficultyText.text = "";
 
         // Set to false at the start
         hasPlayedSongPreviewOnce = false;
@@ -167,14 +179,59 @@ public class SongSelectManager : MonoBehaviour {
         {
             // Set the beatmap to be loaded first to be the advanced difficulty
             beatmapDifficulty = defaultBeatmapDifficulty;
+
+            // Load the advanced difficulty level
+            Database.database.Load(beatmapDirectories[selectedDirectoryIndexPass], beatmapDifficulty);
+            advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
+            // Update the UI text with the levels loaded from the files
+            DifficultyOptionAdvancedLevelText.text = advancedDifficultyLevel;
         }
         // If the advanced file does not exist but the extra difficulty does exist
         else if (advancedDifficultyExist == false && extraDifficultyExist == true)
         {
             // Set the beatmap to be loaded first to be the extra difficulty
             beatmapDifficulty = extraBeatmapDifficuly;
+
+            // Load the extra difficulty level
+            Database.database.Load(beatmapDirectories[selectedDirectoryIndexPass], beatmapDifficulty);
+            extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
+            // Update the UI text with the levels loaded from the files
+            DifficultyOptionExtraLevelText.text = extraDifficultyLevel;
         }
 
+        // Check both difficulties is they both exist update BOTH of their levels
+        if (extraDifficultyExist == true && advancedDifficultyExist == true)
+        {
+            // Load the advanced difficulty level
+            Database.database.Load(beatmapDirectories[selectedDirectoryIndexPass], "advanced");
+            advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
+            // Load the extra difficulty level
+            Database.database.Load(beatmapDirectories[selectedDirectoryIndexPass], "extra");
+            extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
+
+            // Update the UI text with the levels loaded from the files
+            DifficultyOptionAdvancedLevelText.text = advancedDifficultyLevel;
+            DifficultyOptionExtraLevelText.text = extraDifficultyLevel;
+        }
+
+
+        // Update the song select scene difficulty text for the difficulty selected
+        difficultyText.text = beatmapDifficulty.ToUpper();
+
+        // Update the personal best leaderboard button color to the difficulty currently selected
+        switch (beatmapDifficulty)
+        {
+            case "advanced":
+                personalBestLeaderboardButton.image.color = advancedDifficultyButtonColor;
+                break;
+            case "extra":
+                personalBestLeaderboardButton.image.color = extraDifficultyButtonColor;
+                break;
+            default:
+                personalBestLeaderboardButton.image.color = advancedDifficultyButtonColor;
+                break;
+        }
+        
         if (advancedDifficultyExist == true || extraDifficultyExist == true)
         {
             // Load the database and beatmap information for the beatmap directory selected
@@ -184,8 +241,8 @@ public class SongSelectManager : MonoBehaviour {
             songName = Database.database.loadedSongName;
             songArtist = Database.database.loadedSongArtist;
             beatmapCreator = Database.database.loadedBeatmapCreator;
-            advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
-            extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
+            //advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
+            //extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
             songClipChosenIndex = Database.database.loadedSongClipChosenIndex;
             totalDiamonds = Database.database.LoadedPositionX.Count;
             pressedKeyS = Database.database.loadedPressedKeyS;
@@ -218,15 +275,8 @@ public class SongSelectManager : MonoBehaviour {
             // Enable the required keys for the beatmap images
             EnableKeysRequiredForBeatmap();
 
-            // Do a check to ensure the level is outputted if exists, and if it doesn't output the missing difficulty text
-            if (extraDifficultyExist == true)
-            {
-                DifficultyOptionExtraLevelText.text = extraDifficultyLevel;
-            }
-            else if (advancedDifficultyExist == true)
-            {
-                DifficultyOptionAdvancedLevelText.text = advancedDifficultyLevel;
-            }
+
+
 
             // Save the selected song index
             loadLastSelectedSong.SaveSelectedDirectoryIndex(selectedDirectoryIndex);

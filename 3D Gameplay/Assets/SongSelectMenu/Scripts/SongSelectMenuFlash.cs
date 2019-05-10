@@ -11,8 +11,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
     public string lastSelectedDifficulty; // The last selected difficulty on the current beatmap, so if extra was last selected allow the flash for advanced
     public bool hasPressedArrowKey; // Passed in the loading function to change the preview song each load but not for when hovering over the difficulties
 
-    // Get reference to beatmap ranking manager to load the leaderboard after loading the beatmap information
-    private BeatmapRankingManager beatmapRankingManager;
+    // Used for loading the beatmap leaderboard information
+    private BeatmapRanking beatmapRanking;
 
     // Use this for initialization
     void Start () {
@@ -25,8 +25,9 @@ public class SongSelectMenuFlash : MonoBehaviour {
 
         // Get the reference
         songSelectManager = FindObjectOfType<SongSelectManager>();
+
         // Get the reference
-        beatmapRankingManager = FindObjectOfType<BeatmapRankingManager>();
+        beatmapRanking = FindObjectOfType<BeatmapRanking>();
 	}
 	
 	// Update is called once per frame
@@ -35,7 +36,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             // Stop beatmap leaderboard ranking loads
-            beatmapRankingManager.StopAllCoroutines();
+            beatmapRanking.StopAllCoroutines();
             // Load next song
             LoadNextSong();
 
@@ -44,7 +45,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             // Stop beatmap leaderboard ranking loads
-            beatmapRankingManager.StopAllCoroutines();
+            beatmapRanking.StopAllCoroutines();
             // Load the previous song
             LoadPreviousSong();
         }
@@ -59,7 +60,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
         // Disable the keys required for the beatmap
         songSelectManager.DisableKeysRequiredForBeatmap();
         // Reset leaderboard rankings
-        beatmapRankingManager.ResetLeaderboard();
+        beatmapRanking.ResetLeaderboard();
         // Has pressed arrow key
         hasPressedArrowKey = true;
         // Flash the image
@@ -73,8 +74,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
         // Set back to false
         hasPressedArrowKey = false;
         // Load the beatmap rankings
-        beatmapRankingManager.leaderboardPlaceToGet = 1;
-        beatmapRankingManager.ResetNotChecked();
+        beatmapRanking.leaderboardPlaceToGet = 1;
+        beatmapRanking.ResetNotChecked();
     }
 
     // Load the next song
@@ -85,7 +86,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
         // Disable the keys required for the beatmap
         songSelectManager.DisableKeysRequiredForBeatmap();
         // Reset leaderboard rankings
-        beatmapRankingManager.ResetLeaderboard();
+        beatmapRanking.ResetLeaderboard();
         // Has pressed arrow key
         hasPressedArrowKey = true;
         // Flash the image
@@ -99,8 +100,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
         // Set back to false
         hasPressedArrowKey = false;
         // Load the beatmap rankings
-        beatmapRankingManager.leaderboardPlaceToGet = 1;
-        beatmapRankingManager.ResetNotChecked();
+        beatmapRanking.leaderboardPlaceToGet = 1;
+        beatmapRanking.ResetNotChecked();
     }
 
     // Load the previous song
@@ -111,7 +112,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
         // Disable the keys required for the beatmap
         songSelectManager.DisableKeysRequiredForBeatmap();
         // Reset leaderboard rankings
-        beatmapRankingManager.ResetLeaderboard();
+        beatmapRanking.ResetLeaderboard();
         // Has pressed arrow key
         hasPressedArrowKey = true;
         // Flash the image
@@ -125,8 +126,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
         // Set back to false
         hasPressedArrowKey = false;
         // Load the beatmap rankings
-        beatmapRankingManager.leaderboardPlaceToGet = 1;
-        beatmapRankingManager.ResetNotChecked();
+        beatmapRanking.leaderboardPlaceToGet = 1;
+        beatmapRanking.ResetNotChecked();
     }
 
     // Animate the flash on screen
