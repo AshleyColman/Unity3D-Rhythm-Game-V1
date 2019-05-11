@@ -25,7 +25,7 @@ public class LoadSongSelected : MonoBehaviour {
         levelChanger = FindObjectOfType<LevelChanger>();
 
         // Dont destroy this object when in the song select scene or gameplay scene so we can load the level selected
-        if (levelChanger.currentLevelIndex == 3 || levelChanger.currentLevelIndex == 4 || levelChanger.currentLevelIndex == 5)
+        if (levelChanger.currentLevelIndex == levelChanger.songSelectSceneIndex || levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex || levelChanger.currentLevelIndex == levelChanger.resultsSceneIndex)
         {
             DontDestroyOnLoad(this.gameObject);
         }
@@ -35,7 +35,7 @@ public class LoadSongSelected : MonoBehaviour {
         }
 
         // If on the results screen and score has uploaded delete game object so it doesn't have another spawn when back to song select screen
-        if (levelChanger.currentLevelIndex == 5)
+        if (levelChanger.currentLevelIndex == levelChanger.resultsSceneIndex)
         {
             // Get the reference
             leaderboardManager = FindObjectOfType<LeaderboardManager>();

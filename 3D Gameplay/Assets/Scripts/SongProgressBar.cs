@@ -45,7 +45,7 @@ public class SongProgressBar : MonoBehaviour {
     void Update()
     {
     
-        if (levelChanger.currentLevelIndex == 2)
+        if (levelChanger.currentLevelIndex == levelChanger.editorSceneIndex)
         {
             if (beatmapSetup.settingUp == false && hasPressedSpacebar == false)
             {
@@ -59,7 +59,7 @@ public class SongProgressBar : MonoBehaviour {
         else
         {
             // Play song when user press Space button in gameplay
-            if (levelChanger.currentLevelIndex == 4 || levelChanger.currentLevelIndex == 5)
+            if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex || levelChanger.currentLevelIndex == levelChanger.resultsSceneIndex)
             {
                 // Set the song to the song loaded
                 songClipChosenIndex = Database.database.loadedSongClipChosenIndex;

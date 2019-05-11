@@ -39,7 +39,7 @@ public class Fade : MonoBehaviour {
         levelChanger = FindObjectOfType<LevelChanger>();
 
         // Do a check on the level changer index, if in gameplay get the fade speed selected otherwise set the fade speed to default of normal
-        if (levelChanger.currentLevelIndex == 4)
+        if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex)
         {
             playerSkillsManager = FindObjectOfType<PlayerSkillsManager>(); // Get the reference for scale speed
             fadeSpeedSelected = playerSkillsManager.GetFadeSpeedSelected(); // Get the fade speed selected such as 2 for slow, 1 for normal and 0.5f for fast
@@ -51,7 +51,7 @@ public class Fade : MonoBehaviour {
         }
 
         // Get the PlacedObject script in the scene if in the Editor scene
-        if (levelChanger.currentLevelIndex == 2)
+        if (levelChanger.currentLevelIndex == levelChanger.editorSceneIndex)
         {
             placedObject = FindObjectOfType<PlacedObject>();
         }
@@ -65,7 +65,7 @@ public class Fade : MonoBehaviour {
     {
 
         // If in the Editor scene check if the preview beatmap is false
-        if (levelChanger.currentLevelIndex == 2)
+        if (levelChanger.currentLevelIndex == levelChanger.editorSceneIndex)
         {
             // If the beatmap preview is paused and no longer running
             if (placedObject.playBeatmapPreview == false)
@@ -95,7 +95,7 @@ public class Fade : MonoBehaviour {
 
 
         // If on the gameplay scene fade when the note appears
-        if (levelChanger.currentLevelIndex == 4)
+        if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex)
         {
             // Increment timer
             timer += Time.deltaTime;

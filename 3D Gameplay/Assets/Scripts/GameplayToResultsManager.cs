@@ -45,7 +45,7 @@ public class GameplayToResultsManager : MonoBehaviour {
 
         GetBeatmapInformation();
 
-        if (levelChanger.currentLevelIndex == 4)
+        if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex)
         {
             // Check if the last hit object has been hit
             allHitObjectsHaveBeenHit = loadAndRunBeatmap.CheckIfAllHitObjectsHaveBeenHit();
@@ -60,7 +60,7 @@ public class GameplayToResultsManager : MonoBehaviour {
 
         }
 
-        if (levelChanger.currentLevelIndex == 4 || levelChanger.currentLevelIndex == 5)
+        if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex || levelChanger.currentLevelIndex == levelChanger.resultsSceneIndex)
         {
             DontDestroyOnLoad(this.gameObject);
         }
@@ -71,7 +71,7 @@ public class GameplayToResultsManager : MonoBehaviour {
 
 
 
-        if (levelChanger.currentLevelIndex == 5)
+        if (levelChanger.currentLevelIndex == levelChanger.resultsSceneIndex)
         {
             CalculateGradeAchieved();
         }
@@ -87,7 +87,7 @@ public class GameplayToResultsManager : MonoBehaviour {
 
     private void TransitionToResultsPage()
     {
-        levelChanger.FadeToLevel(5);
+        levelChanger.FadeToLevel(levelChanger.resultsSceneIndex);
     }
 
     // Get the results from the scoreManager just before the game ends

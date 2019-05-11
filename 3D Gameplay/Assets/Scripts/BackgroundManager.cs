@@ -42,7 +42,7 @@ public class BackgroundManager : MonoBehaviour {
     void Update()
     {
         // If on gameplay scene load the image in awake
-        if (levelChanger.currentLevelIndex == 4 && hasLoadedImage == false || levelChanger.currentLevelIndex == 5 && hasLoadedImage == false)
+        if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex && hasLoadedImage == false || levelChanger.currentLevelIndex == levelChanger.resultsSceneIndex && hasLoadedImage == false)
         {
             LoadBeatmapImage();
             hasLoadedImage = true;

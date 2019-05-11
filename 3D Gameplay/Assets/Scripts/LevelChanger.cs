@@ -9,6 +9,14 @@ public class LevelChanger : MonoBehaviour {
     private bool hasBackLevel;
     public AudioClip backSound;
 
+    // Level indexes
+    public int mainMenuSceneIndex = 0;
+    public int editorSceneIndex = 1;
+    public int songSelectSceneIndex = 2;
+    public int gameplaySceneIndex = 3;
+    public int resultsSceneIndex = 4;
+    public int overallLeaderboardSceneIndex = 5;
+
     void Start()
     {
         hasBackLevel = false;
@@ -54,38 +62,34 @@ public class LevelChanger : MonoBehaviour {
 
     public void BackLevelToLoad()
     {
-        if (currentLevelIndex == 0)
+        if (currentLevelIndex == mainMenuSceneIndex)
         {
             hasBackLevel = false;
         }
-        if (currentLevelIndex == 2)
+
+        if (currentLevelIndex == editorSceneIndex)
         {
-            levelToLoad = 1;
+            levelToLoad = mainMenuSceneIndex;
             hasBackLevel = true;
         }
-        if (currentLevelIndex == 3)
+        if (currentLevelIndex == songSelectSceneIndex)
         {
-            levelToLoad = 1;
+            levelToLoad = mainMenuSceneIndex;
             hasBackLevel = true;
         }
-        if (currentLevelIndex == 4)
+        if (currentLevelIndex == gameplaySceneIndex)
         {
-            levelToLoad = 3;
+            levelToLoad = songSelectSceneIndex;
             hasBackLevel = true;
         }
-        if (currentLevelIndex == 5)
+        if (currentLevelIndex == resultsSceneIndex)
         {
-            levelToLoad = 3;
+            levelToLoad = songSelectSceneIndex;
             hasBackLevel = true;
         }
-        if (currentLevelIndex == 6)
+        if (currentLevelIndex == overallLeaderboardSceneIndex)
         {
-            levelToLoad = 0;
-            hasBackLevel = true;
-        }
-        if (currentLevelIndex == 7)
-        {
-            levelToLoad = 3;
+            levelToLoad = songSelectSceneIndex;
             hasBackLevel = true;
         }
     }

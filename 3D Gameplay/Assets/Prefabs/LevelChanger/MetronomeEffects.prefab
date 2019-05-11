@@ -69,7 +69,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4895518076923718}
-  - component: {fileID: 114270078744269304}
   m_Layer: 0
   m_Name: MetronomeEffects
   m_TagString: MetronomeEffects
@@ -283,7 +282,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -470,18 +469,6 @@ MonoBehaviour:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 5
---- !u!114 &114270078744269304
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1782276848296434}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bbe0ba77202a744cb1bd4d80fc6fc83, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  songAudioSource: {fileID: 0}
 --- !u!114 &114275320825585854
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -511,6 +498,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b78eb11bc44fa4abecf32d2ab8158a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainMenuCanvas: {fileID: 0}
+  startMenuCanvas: {fileID: 0}
   active: 0
   metronomeAudioSource: {fileID: 82004018500087818}
   highClip: {fileID: 8300000, guid: 0ad66f5abf65b5049abb53eba56b47af, type: 3}

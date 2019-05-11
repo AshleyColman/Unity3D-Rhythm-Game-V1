@@ -10,16 +10,19 @@ public class HitSoundPreview : MonoBehaviour {
     public int hitSoundChosenIndex; // The hit sound selected
     private float hitSoundVolume = 0.5f; // Volume of the hit sound
 
-    // Song Select Menu UI 
-    public TextMeshProUGUI hitSoundSelectedNumberText; // The number of the hit sound selected
-
     // Level changer
     public LevelChanger levelChanger; // The level changer
+
+    // The hit sound selected number text
+    public TextMeshProUGUI hitSoundSelectedNumberText;
 
     void Start()
     {
         hitSoundChosenIndex = 0;
         hitSoundDatabase = FindObjectOfType<HitSoundDatabase>();
+
+        // Update the selected number text
+        hitSoundSelectedNumberText.text = hitSoundChosenIndex.ToString();
     }
 
     void Update()
@@ -34,7 +37,7 @@ public class HitSoundPreview : MonoBehaviour {
 
 
         // If the song select, gameplay or results scene do not destroy but destroy for all other scenes
-        if (levelChanger.currentLevelIndex == 3 || levelChanger.currentLevelIndex == 4 || levelChanger.currentLevelIndex == 5)
+        if (levelChanger.currentLevelIndex == levelChanger.songSelectSceneIndex || levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex || levelChanger.currentLevelIndex == levelChanger.resultsSceneIndex)
         {
             // Dont destroy the hit sound manager
             DontDestroyOnLoad(this.gameObject);
@@ -75,7 +78,8 @@ public class HitSoundPreview : MonoBehaviour {
             // Increase the hitsound chosen index
             hitSoundChosenIndex++;
             // Update the selected number text
-            //hitSoundSelectedNumberText.text = (hitSoundChosenIndex + 1).ToString();
+            hitSoundSelectedNumberText.text = hitSoundChosenIndex.ToString();
+
             // Play the new hit sound
             PlayHitSound();
         }
@@ -95,7 +99,7 @@ public class HitSoundPreview : MonoBehaviour {
             // Decrement the chosen hit sound index
             hitSoundChosenIndex--;
             // Update the selected number text
-            //hitSoundSelectedNumberText.text = (hitSoundChosenIndex + 1).ToString();
+            hitSoundSelectedNumberText.text = hitSoundChosenIndex.ToString();
             // Play the hit sound
             PlayHitSound();
         }

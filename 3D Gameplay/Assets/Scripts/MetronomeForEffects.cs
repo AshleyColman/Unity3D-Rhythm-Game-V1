@@ -225,7 +225,7 @@ public class MetronomeForEffects : MonoBehaviour
 
         // YOUR FUNCTIONS HERE
 
-        if (levelChanger.currentLevelIndex == 1 && startMenuCanvas.activeSelf == true && mainMenuCanvas.activeSelf == false)
+        if (levelChanger.currentLevelIndex == levelChanger.mainMenuSceneIndex && startMenuCanvas.activeSelf == true && mainMenuCanvas.activeSelf == false)
         {
             // Find the animator game object
             metronomeEffectsCanvasAnimator = startMenuCanvas.GetComponent<Animator>();
@@ -237,7 +237,7 @@ public class MetronomeForEffects : MonoBehaviour
                 metronomeEffectsCanvasAnimator.Play("MetronomeEffectsCanvasAnimation");
             }
         }
-        else if (levelChanger.currentLevelIndex == 1 && startMenuCanvas.activeSelf == false && mainMenuCanvas.activeSelf == true)
+        else if (levelChanger.currentLevelIndex == levelChanger.mainMenuSceneIndex && startMenuCanvas.activeSelf == false && mainMenuCanvas.activeSelf == true)
         {
             // Find the animator game object
             metronomeEffectsMainMenuCanvasAnimator = mainMenuCanvas.GetComponent<Animator>();
@@ -249,9 +249,10 @@ public class MetronomeForEffects : MonoBehaviour
                 metronomeEffectsMainMenuCanvasAnimator.Play("MetronomeEffectsMainMenuCanvasAnimation");
             }
         }
+
+        /*
         else if (levelChanger.currentLevelIndex == 3)
         {
-            /*
             metronomeEffectsBeatmapKeysAnimator = GameObject.FindWithTag("BeatmapKeys").GetComponent<Animator>();
             // Only play beatmapKeys animation if the animator is not null
             if (metronomeEffectsBeatmapKeysAnimator != null)
@@ -259,8 +260,8 @@ public class MetronomeForEffects : MonoBehaviour
                 // Play beatmapKeys animation on start scene
                 metronomeEffectsBeatmapKeysAnimator.Play("MetronomeEffectsBeatmapKeysAnimation");
             }
-            */
         }
+        */
 
         Debug.Log("Current Step: " + CurrentStep + "/" + Step);
         yield return null;

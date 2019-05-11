@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerSkillsManager : MonoBehaviour {
 
     // FADE SPEED SKILL
     public float fadeSpeedSlow = 2f, fadeSpeedNormal = 1f, fadeSpeedFast = 0.5f;
-    public int fadeSpeedSelectedIndex = 0;
+    public int fadeSpeedSelectedIndex = 1;
     public string fadeSpeedSelected;
     public Animator fadeSpeedAnimator;
 
@@ -22,10 +23,14 @@ public class PlayerSkillsManager : MonoBehaviour {
     // Level changer
     public LevelChanger levelChanger;
 
+    public TextMeshProUGUI fadeSpeedText;
+
     private void Start()
     {
         discoSkillSelected = false;
         fadeSkillSelected = false;
+
+        PlayFadeSpeedSelectedAnimation();
     }
 
     void Update()
@@ -38,7 +43,7 @@ public class PlayerSkillsManager : MonoBehaviour {
 
 
         // If the song select, gameplay or results scene do not destroy but destroy for all other scenes
-        if (levelChanger.currentLevelIndex == 3 || levelChanger.currentLevelIndex == 4 || levelChanger.currentLevelIndex == 5)
+        if (levelChanger.currentLevelIndex == levelChanger.songSelectSceneIndex || levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex || levelChanger.currentLevelIndex == levelChanger.resultsSceneIndex)
         {
             // Dont destroy the manager
             DontDestroyOnLoad(this.gameObject);
@@ -51,7 +56,7 @@ public class PlayerSkillsManager : MonoBehaviour {
         }
 
         // If in the gameplay scene
-        if (levelChanger.currentLevelIndex == 4)
+        if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex)
         {
             // FADE SKILL
             if (fadeSkillImage == null)
@@ -169,14 +174,17 @@ public class PlayerSkillsManager : MonoBehaviour {
         if (fadeSpeedSelectedIndex == 0)
         {
             fadeSpeedAnimator.Play("FadeSpeedSlow");
+            fadeSpeedText.text = "1";
         }
         else if (fadeSpeedSelectedIndex == 1)
         {
             fadeSpeedAnimator.Play("FadeSpeedNormal");
+            fadeSpeedText.text = "2";
         }
         else if (fadeSpeedSelectedIndex == 2)
         {
             fadeSpeedAnimator.Play("FadeSpeedFast");
+            fadeSpeedText.text = "3";
         }
     }
 

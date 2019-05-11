@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System;
+using TMPro;
+using UnityEngine.UI;
 
 public class LeaderboardManager : MonoBehaviour {
 
@@ -17,6 +19,7 @@ public class LeaderboardManager : MonoBehaviour {
     private bool hasUpdatedUserOverallTotalScore;
     private bool hasIncrementedScore;
     private bool hasExistingScoreInOverallRankings;
+    public TextMeshProUGUI uploadStatusText;
 
     void Start()
     {
@@ -24,6 +27,9 @@ public class LeaderboardManager : MonoBehaviour {
         notChecked = true;
         // Get the reference
         gameplayToResultsManager = FindObjectOfType<GameplayToResultsManager>();
+
+        // Update the status text
+        UpdateStatusTextUploading();
     }
 
     void Update()
@@ -196,13 +202,65 @@ public class LeaderboardManager : MonoBehaviour {
         {
             Debug.Log("User score uploaded");
             hasUpdatedUserOverallTotalScore = true;
+
+            // Update status text 
+            UpdateStatusTextUploadSuccessful();
         }
         // Error
         if (www.downloadHandler.text == "0")
         {
             Debug.Log("Error");
             hasUpdatedUserOverallTotalScore = true;
+
+            // Update status text 
+            UpdateStatusTextFailed();
         }
 
+    }
+
+    // Change text to failed to upload
+    private void UpdateStatusTextFailed()
+    {
+        uploadStatusText.text = "Failed to upload score";
+
+        // Set the retry button to active?
+
+        // Play the failed animation - red color
+    }
+
+    // Change text to uploading
+    private void UpdateStatusTextUploading()
+    {
+        uploadStatusText.text = "Uploading score to the game server";
+
+        // Play uploading animation
+    }
+
+    // Change text to upload successful
+    private void UpdateStatusTextUploadSuccessful()
+    {
+        uploadStatusText.text = "Score successfully uploaded";
+
+        // Set the retry button to active?
+
+        // Play the success animation
+    }
+
+    private void RetryUploadingScore()
+    {
+        // Reset all variables so allow checking to happen again
+        leaderboardTableName = "";
+        notChecked = true;
+        currentUserScore = 0;
+        hasCheckedCurrentUserScore = false;
+        newUserScoreToUpload = 0;
+        hasUpdatedUserOverallTotalScore = false;
+        hasIncrementedScore = false;
+        hasExistingScoreInOverallRankings = false;
+
+        // Disable the retry button
+
+        // Update the text to trying to upload
+        UpdateStatusTextUploading();
     }
 }

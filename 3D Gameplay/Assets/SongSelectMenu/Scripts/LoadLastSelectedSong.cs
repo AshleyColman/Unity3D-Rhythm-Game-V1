@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class LoadLastSelectedSong : MonoBehaviour
 {
-
-    private LevelChanger levelChanger;
     private SongSelectManager songSelectManager;
     public int selectedDirectoryIndex; // The index of the last selected song from the song select menu
     public int timesEnteredGameplayScene;
@@ -30,10 +28,6 @@ public class LoadLastSelectedSong : MonoBehaviour
             Destroy(loadLastSelectedSong[1].gameObject);
         }
 
-
-
-        // Get the reference to the level changer
-        levelChanger = FindObjectOfType<LevelChanger>();
         // Get the reference to the song select manager
         songSelectManager = FindObjectOfType<SongSelectManager>();
 
