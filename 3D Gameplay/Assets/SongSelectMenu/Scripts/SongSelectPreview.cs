@@ -90,10 +90,10 @@ public class SongSelectPreview : MonoBehaviour
     }
 
     // Play the song preview
-    public void PlaySongSelectScenePreview(float songPreviewStartTimePass)
+    public void PlaySongSelectScenePreview(float songPreviewStartTimePass, int songClipChosenIndexPass)
     {
         // Play song
-        songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
+        songAudioSource.clip = songDatabase.songClip[songClipChosenIndexPass];
         songAudioSource.volume = songVolume;
         songAudioSource.Play();
         songAudioSource.time = songPreviewStartTimePass;

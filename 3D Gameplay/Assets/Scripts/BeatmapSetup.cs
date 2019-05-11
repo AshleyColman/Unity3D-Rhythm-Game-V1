@@ -14,10 +14,12 @@ public class BeatmapSetup : MonoBehaviour {
 
     public int songClipChosenIndex;
 
+    public string beatmapEasyDifficultyLevel;
     public string beatmapAdvancedDifficultyLevel;
     public string beatmapExtraDifficultyLevel;
 
     // Beatmap difficulty
+    public Button beatmapDifficultyEasyButton;
     public Button beatmapDifficultyAdvancedButton;
     public Button beatmapDifficultyExtraButton;
     public string beatmapDifficulty;
@@ -174,6 +176,7 @@ public class BeatmapSetup : MonoBehaviour {
         difficultySelectText.gameObject.SetActive(false);
         beatmapDifficultyExtraButton.gameObject.SetActive(false);
         beatmapDifficultyAdvancedButton.gameObject.SetActive(false);
+        beatmapDifficultyEasyButton.gameObject.SetActive(false);
 
         // Activate the difficulty level buttons
         difficultyLevelPanel.gameObject.SetActive(true);
@@ -182,8 +185,14 @@ public class BeatmapSetup : MonoBehaviour {
     // Insert the beatmap difficulty level
     public void InsertBeatmapDifficultyLevel(string beatmapDifficultyLevelPass)
     {
+        // If the beatmap difficulty selected previously is easy
+        if (beatmapDifficulty == "easy")
+        {
+            // Insert the advanced difficulty level
+            beatmapEasyDifficultyLevel = beatmapDifficultyLevelPass;
+        }
         // If the beatmap difficulty selected previously is advanced
-        if (beatmapDifficulty == "advanced")
+        else if (beatmapDifficulty == "advanced")
         {
             // Insert the advanced difficulty level
             beatmapAdvancedDifficultyLevel = beatmapDifficultyLevelPass;
@@ -220,6 +229,7 @@ public class BeatmapSetup : MonoBehaviour {
     public void ActivateDifficultyTypeButtons()
     {
         difficultySelectText.gameObject.SetActive(true);
+        beatmapDifficultyEasyButton.gameObject.SetActive(true);
         beatmapDifficultyAdvancedButton.gameObject.SetActive(true);
         beatmapDifficultyExtraButton.gameObject.SetActive(true);
         finishedButton.interactable = false;

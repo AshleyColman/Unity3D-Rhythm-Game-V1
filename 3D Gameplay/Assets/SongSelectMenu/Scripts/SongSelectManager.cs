@@ -12,8 +12,6 @@ public class SongSelectManager : MonoBehaviour {
     public string[] beatmapDirectories;
     public int selectedDirectoryIndex;
     public int previousDirectoryIndex;
-    private string defaultBeatmapDifficulty = "advanced";
-    private string extraBeatmapDifficuly = "extra";
 
     // Song select menu UI elements
     public TextMeshProUGUI songTitleText;
@@ -24,18 +22,22 @@ public class SongSelectManager : MonoBehaviour {
     private string songName;
     private string songArtist;
     private string beatmapCreator;
+    private string easyDifficultyLevel;
     private string advancedDifficultyLevel;
     private string extraDifficultyLevel;
     private int totalDiamonds;
     private float songPreviewStartTime;
 
     // References to the difficulty buttons
+    public Button DifficultyOptionEasyButton;
     public Button DifficultyOptionAdvancedButton;
     public Button DifficultyOptionExtraButton;
+    public TextMeshProUGUI DifficultyOptionEasyLevelText;
     public TextMeshProUGUI DifficultyOptionAdvancedLevelText;
     public TextMeshProUGUI DifficultyOptionExtraLevelText;
     public string disabledText = "X";
     // Bools for checking if the files exist for loading advanced/extra difficulties
+    private bool easyDifficultyExist;
     private bool advancedDifficultyExist;
     private bool extraDifficultyExist;
 
@@ -92,6 +94,7 @@ public class SongSelectManager : MonoBehaviour {
     public Button personalBestLeaderboardButton;
 
     // Colors for advanced and extra buttons
+    public Color easyDifficultyButtonColor;
     public Color advancedDifficultyButtonColor;
     public Color extraDifficultyButtonColor;
 
@@ -109,8 +112,6 @@ public class SongSelectManager : MonoBehaviour {
         backgroundManager = FindObjectOfType<BackgroundManager>();
         loadLastSelectedSong = FindObjectOfType<LoadLastSelectedSong>();
         beatmapDirectories = Directory.GetDirectories(@"c:\Beatmaps");
-        CheckIfAdvancedDifficultyExists();
-        CheckIfExtraDifficultyExists();
 
         // Load the beatmap directories found for the songSelectPanel
         // Get the amount of beatmap folders in the beatmap directory
@@ -119,24 +120,27 @@ public class SongSelectManager : MonoBehaviour {
         songSelectPanel.GetBeatmapDirectoryPaths();
     
 
-       
-
-
         // Load the lastSelectedSongIndex
         selectedDirectoryIndex = loadLastSelectedSong.LoadSelectedDirectoryIndex();
         previousDirectoryIndex = selectedDirectoryIndex;
 
-        if (advancedDifficultyExist)
+        // Check if the last selected difficulty was set or not (first time entering game or not)
+        string lastSelectedDifficulty = loadLastSelectedSong.lastSelectedDifficulty;
+
+
+        if (string.IsNullOrEmpty(lastSelectedDifficulty))
         {
-            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, defaultBeatmapDifficulty, true);
-        }
-        else if (extraDifficultyExist)
-        {
-            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, defaultBeatmapDifficulty, true);
+            // If last selected difficulty cannot be found load a difficulty that does exist
+            LoadBeatmapFileThatExists(selectedDirectoryIndex, false);
         }
         else
         {
-            // Do not load any new song
+            // Load the last selected difficulty
+            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, lastSelectedDifficulty, false);
+
+
+            // Check the difficulty files if they exist and update the levels for each of them
+            UpdateDifficultyLevelText(selectedDirectoryIndex);
         }
 
         // Set to false at the start
@@ -152,68 +156,13 @@ public class SongSelectManager : MonoBehaviour {
     // Load beatmap song select information
     public void LoadBeatmapSongSelectInformation(int selectedDirectoryIndexPass, string beatmapDifficulty, bool hasPressedArrowKey)
     {
-        // Reset difficulty check bools
-        advancedDifficultyExist = false;
-        extraDifficultyExist = false;
 
-        // Do a check on the selectedDirectoryIndexPass, if it's out of the directory range reset back to 0 to loop through the song list
-        if (selectedDirectoryIndexPass == beatmapDirectories.Length)
-        {
-            selectedDirectoryIndexPass = 0; // Reset the variable passed
-            selectedDirectoryIndex = 0; // Also reset the variable that is being sent from SongSelectMenuFlash when arrow key is pressed
-        }
-        // Do a check on the selectedDirectoryIndexPass, if it's out of the directory range go to max range to loop through the song list
-        if (selectedDirectoryIndexPass < 0)
-        {
-            selectedDirectoryIndexPass = beatmapDirectories.Length - 1; // Set the index to the last song in the list
-            selectedDirectoryIndex = beatmapDirectories.Length - 1; // Also set the variable that is being sent from SongSelectMenuFlash when arrow key is pressed
-        }
-
+        // Check if the easy difficulty exists
+        CheckIfEasyDifficultyExists();
         // Check if the advanced difficulty exists
         CheckIfAdvancedDifficultyExists();
         // Check if the extra difficulty exists
         CheckIfExtraDifficultyExists();
-
-        // If the advanced file only exists and the extra difficulty does not exist
-        if (advancedDifficultyExist == true && extraDifficultyExist == false)
-        {
-            // Set the beatmap to be loaded first to be the advanced difficulty
-            beatmapDifficulty = defaultBeatmapDifficulty;
-
-            // Load the advanced difficulty level
-            Database.database.Load(beatmapDirectories[selectedDirectoryIndexPass], beatmapDifficulty);
-            advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
-            // Update the UI text with the levels loaded from the files
-            DifficultyOptionAdvancedLevelText.text = advancedDifficultyLevel;
-        }
-        // If the advanced file does not exist but the extra difficulty does exist
-        else if (advancedDifficultyExist == false && extraDifficultyExist == true)
-        {
-            // Set the beatmap to be loaded first to be the extra difficulty
-            beatmapDifficulty = extraBeatmapDifficuly;
-
-            // Load the extra difficulty level
-            Database.database.Load(beatmapDirectories[selectedDirectoryIndexPass], beatmapDifficulty);
-            extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
-            // Update the UI text with the levels loaded from the files
-            DifficultyOptionExtraLevelText.text = extraDifficultyLevel;
-        }
-
-        // Check both difficulties is they both exist update BOTH of their levels
-        if (extraDifficultyExist == true && advancedDifficultyExist == true)
-        {
-            // Load the advanced difficulty level
-            Database.database.Load(beatmapDirectories[selectedDirectoryIndexPass], "advanced");
-            advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
-            // Load the extra difficulty level
-            Database.database.Load(beatmapDirectories[selectedDirectoryIndexPass], "extra");
-            extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
-
-            // Update the UI text with the levels loaded from the files
-            DifficultyOptionAdvancedLevelText.text = advancedDifficultyLevel;
-            DifficultyOptionExtraLevelText.text = extraDifficultyLevel;
-        }
-
 
         // Update the song select scene difficulty text for the difficulty selected
         difficultyText.text = beatmapDifficulty.ToUpper();
@@ -221,6 +170,9 @@ public class SongSelectManager : MonoBehaviour {
         // Update the personal best leaderboard button color to the difficulty currently selected
         switch (beatmapDifficulty)
         {
+            case "easy":
+                personalBestLeaderboardButton.image.color = easyDifficultyButtonColor;
+                break;
             case "advanced":
                 personalBestLeaderboardButton.image.color = advancedDifficultyButtonColor;
                 break;
@@ -232,7 +184,7 @@ public class SongSelectManager : MonoBehaviour {
                 break;
         }
         
-        if (advancedDifficultyExist == true || extraDifficultyExist == true)
+        if (advancedDifficultyExist == true || extraDifficultyExist == true || easyDifficultyExist == true)
         {
             // Load the database and beatmap information for the beatmap directory selected
             Database.database.Load(beatmapDirectories[selectedDirectoryIndexPass], beatmapDifficulty);
@@ -241,8 +193,6 @@ public class SongSelectManager : MonoBehaviour {
             songName = Database.database.loadedSongName;
             songArtist = Database.database.loadedSongArtist;
             beatmapCreator = Database.database.loadedBeatmapCreator;
-            //advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
-            //extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
             songClipChosenIndex = Database.database.loadedSongClipChosenIndex;
             totalDiamonds = Database.database.LoadedPositionX.Count;
             pressedKeyS = Database.database.loadedPressedKeyS;
@@ -255,12 +205,14 @@ public class SongSelectManager : MonoBehaviour {
 
         
             // Check if the first song preview when entering the song select menu has played once, if it hasn't play the song preview at the correct set time
-            if (hasPlayedSongPreviewOnce == false)
+            if (hasPlayedSongPreviewOnce == false || hasPressedArrowKey == true)
             {
                 // Play the song preview for the first song when entering at the correct set time in the beatmap information
                 PlaySongPreview();
                 // Set to true
                 hasPlayedSongPreviewOnce = true;
+                // Set back to false
+                hasPressedArrowKey = false;
             }
 
             // Load the image by passing the current beatmap directory
@@ -275,16 +227,14 @@ public class SongSelectManager : MonoBehaviour {
             // Enable the required keys for the beatmap images
             EnableKeysRequiredForBeatmap();
 
-
-
-
             // Save the selected song index
             loadLastSelectedSong.SaveSelectedDirectoryIndex(selectedDirectoryIndex);
 
-
-
             // Update the previous index to be the current index
             previousDirectoryIndex = selectedDirectoryIndex;
+
+            // Save the last selected difficulty
+            loadLastSelectedSong.SaveLastSelectedDifficulty(beatmapDifficulty);
         }
         else
         {
@@ -292,17 +242,73 @@ public class SongSelectManager : MonoBehaviour {
             selectedDirectoryIndex = previousDirectoryIndex;
         }
 
+        /*
         if (hasPressedArrowKey == true)
         {
             songSelectPreview.GetSongChosen(songClipChosenIndex);
         }
+        */
+    }
+
+    public void UpdateDifficultyLevelText(int selectedDirectoryIndexPass)
+    {
+        if (easyDifficultyExist == true)
+        {
+            // Load the database and beatmap information for the beatmap directory selected
+            Database.database.LoadBeatmapDifficultyLevel(beatmapDirectories[selectedDirectoryIndexPass], "easy");
+            easyDifficultyLevel = Database.database.loadedbeatmapEasyDifficultyLevel;
+            DifficultyOptionEasyLevelText.text = easyDifficultyLevel;
+        }
+
+        if (advancedDifficultyExist == true)
+        {
+            // Load the database and beatmap information for the beatmap directory selected
+            Database.database.LoadBeatmapDifficultyLevel(beatmapDirectories[selectedDirectoryIndexPass], "advanced");
+            advancedDifficultyLevel = Database.database.loadedbeatmapAdvancedDifficultyLevel;
+            DifficultyOptionAdvancedLevelText.text = advancedDifficultyLevel;
+        }
+
+        if (extraDifficultyExist == true)
+        {
+            // Load the database and beatmap information for the beatmap directory selected
+            Database.database.LoadBeatmapDifficultyLevel(beatmapDirectories[selectedDirectoryIndexPass], "extra");
+            extraDifficultyLevel = Database.database.loadedbeatmapExtraDifficultyLevel;
+            DifficultyOptionExtraLevelText.text = extraDifficultyLevel;
+        }
+
     }
 
     // Play the song preview at the saved preview time
     public void PlaySongPreview()
     {
         // Start the song preview as it has now been loaded
-        songSelectPreview.PlaySongSelectScenePreview(songPreviewStartTime);
+        songSelectPreview.PlaySongSelectScenePreview(songPreviewStartTime, songClipChosenIndex);
+    }
+
+    // Check if easy difficulty exists
+    public void CheckIfEasyDifficultyExists()
+    {
+        if (File.Exists(beatmapDirectories[selectedDirectoryIndex] + @"\" + "easy.dia"))
+        {
+            // Allow gameplay
+            // Set bool to exist
+            easyDifficultyExist = true;
+            // Enable the button
+            DifficultyOptionEasyButton.GetComponent<Button>().interactable = true;
+            // Enable the event trigger 
+            DifficultyOptionEasyButton.GetComponent<EventTrigger>().enabled = true;
+        }
+        else
+        {
+            // Disable the button
+            DifficultyOptionEasyButton.GetComponent<Button>().interactable = false;
+            // Disable the event trigger to prevent it trying to load the advanced file that doesn't exist
+            DifficultyOptionEasyButton.GetComponent<EventTrigger>().enabled = false;
+            // Print disabled text on the level
+            DifficultyOptionEasyLevelText.text = disabledText;
+            // Set bool to not exist
+            easyDifficultyExist = false;
+        }
     }
 
     // Check if advanced difficulty exists
@@ -356,6 +362,43 @@ public class SongSelectManager : MonoBehaviour {
 
             // Set bool to exist
             extraDifficultyExist = false;
+        }
+    }
+
+    // Check the beatmap files that exist (this is requested by songSelectMenuFlash), check what files exist and load the file that exists
+    public void LoadBeatmapFileThatExists(int selectedDirectoryIndexPass, bool hasPressedArrowKeyPass)
+    {
+        // Do a check on the selectedDirectoryIndexPass, if it's out of the directory range reset back to 0 to loop through the song list
+        if (selectedDirectoryIndex == beatmapDirectories.Length)
+        {
+            selectedDirectoryIndex = 0; // Reset the variable passed
+        }
+        // Do a check on the selectedDirectoryIndexPass, if it's out of the directory range go to max range to loop through the song list
+        if (selectedDirectoryIndex < 0)
+        {
+            selectedDirectoryIndex = beatmapDirectories.Length - 1; // Set the index to the last song in the list
+        }
+
+        // Check if the difficulties exist
+        CheckIfEasyDifficultyExists();
+        CheckIfAdvancedDifficultyExists();
+        CheckIfExtraDifficultyExists();
+
+        // Check the difficulty files if they exist and update the levels for each of them
+        UpdateDifficultyLevelText(selectedDirectoryIndexPass);
+
+        // Check which difficulty files exist and load the first one to be found when the arrow key has been pressed in song select
+        if (easyDifficultyExist == true)
+        {
+            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, "easy", hasPressedArrowKeyPass);
+        }
+        else if (advancedDifficultyExist == true)
+        {
+            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, "advanced", hasPressedArrowKeyPass);
+        }
+        else if (extraDifficultyExist == true)
+        {
+            LoadBeatmapSongSelectInformation(selectedDirectoryIndex, "extra", hasPressedArrowKeyPass);
         }
     }
 
@@ -440,4 +483,5 @@ public class SongSelectManager : MonoBehaviour {
         disabledPressedKeyKImage.gameObject.SetActive(false);
         disabledPressedKeyLImage.gameObject.SetActive(false);
     }
+
 }

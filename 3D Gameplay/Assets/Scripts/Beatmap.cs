@@ -20,6 +20,7 @@ public class Beatmap
     public string beatmapDifficulty;
     public string beatmapFolderDirectory;
 
+    public string beatmapEasyDifficultyLevel;
     public string beatmapAdvancedDifficultyLevel;
     public string beatmapExtraDifficultyLevel;
     public int songClipChosenIndex;

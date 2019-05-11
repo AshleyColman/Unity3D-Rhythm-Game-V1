@@ -10,10 +10,13 @@ public class LoadLastSelectedSong : MonoBehaviour
     public int selectedDirectoryIndex; // The index of the last selected song from the song select menu
     public int timesEnteredGameplayScene;
 
+    public string lastSelectedDifficulty; // Last selected difficulty - easy/advanced/extra. Used for loading the last difficulty when returning from gameplay
+
     private void Start()
     {
         timesEnteredGameplayScene = 0;
         selectedDirectoryIndex = 0;
+        lastSelectedDifficulty = "";
     }
     // Update is called once per frame
     void Update()
@@ -49,6 +52,17 @@ public class LoadLastSelectedSong : MonoBehaviour
     public int LoadSelectedDirectoryIndex()
     {
         return selectedDirectoryIndex;
+    }
+
+    // Save last selected difficulty
+    public void SaveLastSelectedDifficulty(string lastSelectedDifficultyPass)
+    {
+        lastSelectedDifficulty = lastSelectedDifficultyPass;
+    }
+    // Return the last selected difficulty in song select such as easy/advanced/extra
+    public string LoadLastSelectedDifficulty()
+    {
+        return lastSelectedDifficulty;
     }
 
     // Increment the times the player has selected a song by going into gameplay

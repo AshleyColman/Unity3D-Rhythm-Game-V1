@@ -7,6 +7,7 @@ public class LeaderboardCreate : MonoBehaviour {
 
     public string leaderboardTableName;
     public BeatmapSetup beatmapSetup;
+    string difficultySelected;
 
     void Start()
     {
@@ -44,6 +45,11 @@ public class LeaderboardCreate : MonoBehaviour {
 
     }
 
+    // Get the beatmap difficulty selected from the buttons easy/advanced/extra, which is used for the leaderbaord table name
+    public void GetBeatmapDifficultySelected(string difficultySelectedPass)
+    {
+        difficultySelected = difficultySelectedPass.ToUpper();
+    }
 
     // Create a leaderboard table for this beatmap
     public void SetLeaderboardTableName()
@@ -56,8 +62,9 @@ public class LeaderboardCreate : MonoBehaviour {
 
         //string beatmapSong = "BLUEDRAGON";
         //string beatmapCreator = "Ashley";
-        // Combine both together to create a unique leaderboard table name
-        leaderboardTableName = beatmapCreator + beatmapSong;
+        // string beatmapDifficulty = advanced
+        // Combine all together to create a unique leaderboard table name
+        leaderboardTableName = beatmapCreator + beatmapSong + difficultySelected;
 
         // Save in the database
         Database.database.leaderboardTableName = leaderboardTableName;

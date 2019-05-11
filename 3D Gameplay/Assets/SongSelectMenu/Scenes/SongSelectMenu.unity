@@ -15147,6 +15147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectedDirectoryIndex: 0
   timesEnteredGameplayScene: 0
+  lastSelectedDifficulty: 
 --- !u!4 &317758583
 Transform:
   m_ObjectHideFlags: 0
@@ -15600,12 +15601,23 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 0}
-          m_MethodName: 
+        - m_Target: {fileID: 1412514928}
+          m_MethodName: LoadBeatmapEasyDifficulty
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1412514928}
+          m_MethodName: LoadDifficultyLeaderboardOnly
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -16355,6 +16367,17 @@ MonoBehaviour:
           m_CallState: 2
         - m_Target: {fileID: 1412514928}
           m_MethodName: LoadBeatmapAdvancedDifficulty
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1412514928}
+          m_MethodName: LoadDifficultyLeaderboardOnly
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -44540,6 +44563,17 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 1412514928}
+          m_MethodName: LoadDifficultyLeaderboardOnly
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
       m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
         Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   - eventID: 1
@@ -66809,7 +66843,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: X
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 627dc67b75c25b74288acf6df0d90f0c, type: 2}
   m_sharedMaterial: {fileID: 21022493717758286, guid: 627dc67b75c25b74288acf6df0d90f0c,
@@ -77349,7 +77383,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -265673893
+  randomSeed: 600397562
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -91639,8 +91673,10 @@ MonoBehaviour:
   songTitleText: {fileID: 949861668}
   beatmapCreatorText: {fileID: 533057490}
   beatmapStatisticsText: {fileID: 701650093}
+  DifficultyOptionEasyButton: {fileID: 327138367}
   DifficultyOptionAdvancedButton: {fileID: 345560570}
   DifficultyOptionExtraButton: {fileID: 715550668}
+  DifficultyOptionEasyLevelText: {fileID: 1074839897}
   DifficultyOptionAdvancedLevelText: {fileID: 772760037}
   DifficultyOptionExtraLevelText: {fileID: 1841762471}
   disabledText: X
@@ -91659,6 +91695,7 @@ MonoBehaviour:
   hasPlayedSongPreviewOnce: 0
   difficultyText: {fileID: 1407740376}
   personalBestLeaderboardButton: {fileID: 750391589}
+  easyDifficultyButtonColor: {r: 0, g: 0.25490198, b: 1, a: 1}
   advancedDifficultyButtonColor: {r: 1, g: 0, b: 0.80784315, a: 1}
   extraDifficultyButtonColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!4 &1412514926
@@ -91687,6 +91724,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   songSelectFlashAnimator: {fileID: 435321079}
   songSelectManager: {fileID: 0}
+  easyBeatmapDifficulty: 
   defaultBeatmapDifficulty: 
   extraBeatmapDifficulty: 
   lastSelectedDifficulty: 
@@ -95965,6 +96003,7 @@ MonoBehaviour:
   beatmapCreator: 
   beatmapDifficulty: 
   beatmapFolderDirectory: 
+  beatmapEasyDifficultyLevel: 
   beatmapAdvancedDifficultyLevel: 
   beatmapExtraDifficultyLevel: 
   songClipChosenIndex: 0
@@ -95974,6 +96013,7 @@ MonoBehaviour:
   loadedBeatmapCreator: 
   loadedBeatmapDifficulty: 
   loadedBeatmapFolderDirectory: 
+  loadedbeatmapEasyDifficultyLevel: 
   loadedbeatmapAdvancedDifficultyLevel: 
   loadedbeatmapExtraDifficultyLevel: 
   loadedSongClipChosenIndex: 0
@@ -111440,7 +111480,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 682498668
+  randomSeed: -1541254638
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -126906,7 +126946,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 1733950773
+  randomSeed: 1239375409
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -137672,7 +137712,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 620803553
+  randomSeed: -2077512636
   InitialModule:
     serializedVersion: 3
     enabled: 1

@@ -59,6 +59,7 @@ public class Database : MonoBehaviour {
     public string beatmapCreator;
     public string beatmapDifficulty;
     public string beatmapFolderDirectory;
+    public string beatmapEasyDifficultyLevel;
     public string beatmapAdvancedDifficultyLevel;
     public string beatmapExtraDifficultyLevel;
     public int songClipChosenIndex;
@@ -70,6 +71,7 @@ public class Database : MonoBehaviour {
     public string loadedBeatmapCreator;
     public string loadedBeatmapDifficulty;
     public string loadedBeatmapFolderDirectory;
+    public string loadedbeatmapEasyDifficultyLevel;
     public string loadedbeatmapAdvancedDifficultyLevel;
     public string loadedbeatmapExtraDifficultyLevel;
     public int loadedSongClipChosenIndex;
@@ -145,6 +147,7 @@ public class Database : MonoBehaviour {
         songName = beatmapSetup.songName;
         songArtist = beatmapSetup.songArtist;
         beatmapCreator = beatmapSetup.beatmapCreator;
+        beatmapEasyDifficultyLevel = beatmapSetup.beatmapEasyDifficultyLevel;
         beatmapAdvancedDifficultyLevel = beatmapSetup.beatmapAdvancedDifficultyLevel;
         beatmapExtraDifficultyLevel = beatmapSetup.beatmapExtraDifficultyLevel;
         songClipChosenIndex = beatmapSetup.songClipChosenIndex;
@@ -156,6 +159,7 @@ public class Database : MonoBehaviour {
         beatmap.beatmapCreator = beatmapCreator;
         beatmap.beatmapDifficulty = beatmapDifficulty;
         beatmap.beatmapFolderDirectory = beatmapFolderDirectory;
+        beatmap.beatmapEasyDifficultyLevel = beatmapEasyDifficultyLevel;
         beatmap.beatmapAdvancedDifficultyLevel = beatmapAdvancedDifficultyLevel;
         beatmap.beatmapExtraDifficultyLevel = beatmapExtraDifficultyLevel;
         beatmap.songClipChosenIndex = songClipChosenIndex;
@@ -183,7 +187,28 @@ public class Database : MonoBehaviour {
         bf.Serialize(stream, beatmap);
         stream.Close();
     }
-    
+
+    // Load the beatmap difficulty level only
+    public void LoadBeatmapDifficultyLevel(string beatmapFolderDirectoryPass, string beatmapDifficultyPass)
+    {
+        // Load the folder directory to load the map 
+        beatmapFolderDirectory = beatmapFolderDirectoryPass + @"\";
+        // Load the beatmap difficulty
+        beatmapDifficulty = beatmapDifficultyPass;
+
+        FileStream stream = File.Open(beatmapFolderDirectory + beatmapDifficulty + FILE_EXTENSION, FileMode.Open);
+        BinaryFormatter bf = new BinaryFormatter();
+
+        beatmap = (Beatmap)bf.Deserialize(stream);
+        stream.Close();
+
+
+        // Load the beatmap difficulty level
+        loadedbeatmapEasyDifficultyLevel = beatmap.beatmapEasyDifficultyLevel;
+        loadedbeatmapAdvancedDifficultyLevel = beatmap.beatmapAdvancedDifficultyLevel;
+        loadedbeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
+    }
+
     public void Load(string beatmapFolderDirectoryPass, string beatmapDifficultyPass)
     {
         // Load the folder directory to load the map 
@@ -194,7 +219,7 @@ public class Database : MonoBehaviour {
             FileStream stream = File.Open(beatmapFolderDirectory + beatmapDifficulty + FILE_EXTENSION, FileMode.Open);
             BinaryFormatter bf = new BinaryFormatter();
 
-            beatmap = (Beatmap)bf.Deserialize(stream);
+        beatmap = (Beatmap)bf.Deserialize(stream);
             stream.Close();
 
         // Load the list of positions for all objects to the file?
@@ -226,6 +251,7 @@ public class Database : MonoBehaviour {
         loadedSongArtist = beatmap.songArtist;
         loadedBeatmapCreator = beatmap.beatmapCreator;
         loadedBeatmapDifficulty = beatmap.beatmapDifficulty;
+        loadedbeatmapEasyDifficultyLevel = beatmap.beatmapEasyDifficultyLevel;
         loadedbeatmapAdvancedDifficultyLevel = beatmap.beatmapAdvancedDifficultyLevel;
         loadedbeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
         loadedSongClipChosenIndex = beatmap.songClipChosenIndex;
@@ -258,6 +284,7 @@ public class Database : MonoBehaviour {
         loadedSongName = "";
         loadedSongArtist = "";
         loadedBeatmapCreator = "";
+        loadedbeatmapEasyDifficultyLevel = "";
         loadedbeatmapAdvancedDifficultyLevel = "";
         loadedbeatmapExtraDifficultyLevel = "";
         loadedSongPreviewStartTime = 0;
