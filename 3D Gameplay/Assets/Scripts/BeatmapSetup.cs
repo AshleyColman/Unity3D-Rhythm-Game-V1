@@ -157,7 +157,7 @@ public class BeatmapSetup : MonoBehaviour {
         saveButton.interactable = false;
 
         // Folder name is based off the user name and the song name charted
-        beatmapFolderName = beatmapCreator + songName;
+        beatmapFolderName = beatmapCreator + "_" +songName + "_" + songArtist;
 
         // Create a new folder for the beatmap
         var folder = Directory.CreateDirectory(@"C:\Beatmaps\" + beatmapFolderName); 

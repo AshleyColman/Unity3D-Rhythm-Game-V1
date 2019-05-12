@@ -18,6 +18,9 @@ public class Login : MonoBehaviour {
     public string password;
     public string error;
 
+    // The loading icon for logging in and signing up
+    public GameObject accountProgressIcon;
+
     void Update()
     {
         if (usernameInputField.isFocused)
@@ -34,6 +37,9 @@ public class Login : MonoBehaviour {
     public void CallLogin()
     {
         StartCoroutine(LoginUser());
+
+        // Enable the loading icon
+        EnableAccountProgressLoadingIcon();
     }
     
     IEnumerator LoginUser()
@@ -57,12 +63,18 @@ public class Login : MonoBehaviour {
             MySQLDBManager.username = usernameInputField.text;
             DisableLoginCanvas();
             EnableLoggedInCanvas();
+
+            // Disable the loading icon
+            DisableAccountProgressLoadingIcon();
         }
         // Error
         if (www.downloadHandler.text == "1")
         {
             usernameFieldDescription.gameObject.SetActive(true);
             Debug.Log("error");
+
+            // Disable the loading icon
+            DisableAccountProgressLoadingIcon();
         }
 
         /*
@@ -91,6 +103,8 @@ public class Login : MonoBehaviour {
     {
         // Disable the register canvas
         loginCanvas.gameObject.SetActive(false);
+        // Disable the loading icon
+        DisableAccountProgressLoadingIcon();
     }
 
     // Enable the enter game canvas
@@ -98,5 +112,17 @@ public class Login : MonoBehaviour {
     {
         // Enable the enter game canvas
         loggedInCanvas.gameObject.SetActive(true);
+    }
+
+    // Disable the loading icon
+    private void DisableAccountProgressLoadingIcon()
+    {
+        accountProgressIcon.gameObject.SetActive(false);
+    }
+
+    // Enable the loading icon
+    private void EnableAccountProgressLoadingIcon()
+    {
+        accountProgressIcon.gameObject.SetActive(true);
     }
 }

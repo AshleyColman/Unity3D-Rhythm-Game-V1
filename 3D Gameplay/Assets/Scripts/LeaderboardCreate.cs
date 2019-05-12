@@ -55,16 +55,19 @@ public class LeaderboardCreate : MonoBehaviour {
     public void SetLeaderboardTableName()
     {
         // Get the name of the user currently logged in
-        string beatmapCreator = MySQLDBManager.username;
+        string beatmapCreator =  MySQLDBManager.username.Replace(' ', '_');
 
         // Get the name of the beatmap song being charted
-        string beatmapSong = beatmapSetup.songName;
+        string beatmapSong = beatmapSetup.songName.Replace(' ', '_');
 
         //string beatmapSong = "BLUEDRAGON";
         //string beatmapCreator = "Ashley";
         // string beatmapDifficulty = advanced
+
+        // Structure: Name_Song_Name_DIFFICULTY
+
         // Combine all together to create a unique leaderboard table name
-        leaderboardTableName = beatmapCreator + beatmapSong + difficultySelected;
+        leaderboardTableName = beatmapCreator + "_" + beatmapSong + "_" + difficultySelected;
 
         // Save in the database
         Database.database.leaderboardTableName = leaderboardTableName;

@@ -18,6 +18,8 @@ public class Registration : MonoBehaviour {
     public string password;
     public string error;
 
+    // The loading icon for logging in and signing up
+    public GameObject accountProgressIcon;
 
     void Update()
     {
@@ -36,6 +38,9 @@ public class Registration : MonoBehaviour {
     public void CallRegister()
     {
         StartCoroutine(Register());
+
+        // Enable the loading icon
+        EnableAccountProgressLoadingIcon();
     }
 
     IEnumerator Register()
@@ -73,12 +78,18 @@ public class Registration : MonoBehaviour {
             Debug.Log("user created successfully");
             DisableRegisterCanvas();
             EnableEnterGameCanvas();
+
+            // Disable the loading icon
+            DisableAccountProgressLoadingIcon();
         }
         else
         {
             error = "error";
             Debug.Log("User creation failed.");
             Debug.Log(www.downloadHandler.text);
+
+            // Disable the loading icon
+            DisableAccountProgressLoadingIcon();
         }
     }
 
@@ -93,6 +104,9 @@ public class Registration : MonoBehaviour {
     {
         // Disable the register canvas
         registerCanvas.gameObject.SetActive(false);
+
+        // Disable the loading icon
+        DisableAccountProgressLoadingIcon();
     }
 
     // Enable the enter game canvas
@@ -100,5 +114,18 @@ public class Registration : MonoBehaviour {
     {
         // Enable the enter game canvas
         enterGameCanvas.gameObject.SetActive(true);
+    }
+
+
+    // Disable the loading icon
+    private void DisableAccountProgressLoadingIcon()
+    {
+        accountProgressIcon.gameObject.SetActive(false);
+    }
+
+    // Enable the loading icon
+    private void EnableAccountProgressLoadingIcon()
+    {
+        accountProgressIcon.gameObject.SetActive(true);
     }
 }

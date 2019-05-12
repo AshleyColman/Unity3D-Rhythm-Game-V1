@@ -22,7 +22,7 @@ public class StartSceneEnterGame : MonoBehaviour {
     {
 
         // If enter is pressed load the next scene and play sound
-        if (Input.GetKey("return") && hasPressedEnter == false || Input.GetMouseButtonDown(0))
+        if (Input.GetKey("return") && hasPressedEnter == false || Input.GetMouseButtonDown(0) && hasPressedEnter == false)
         {
             MenuSFXAudioSource.PlayOneShot(MenuSFXMenuSourceClip);
             StartCoroutine(PlayCanvasSwipAnimation());
