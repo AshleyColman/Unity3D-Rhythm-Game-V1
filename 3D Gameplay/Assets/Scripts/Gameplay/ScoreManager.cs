@@ -35,11 +35,16 @@ public class ScoreManager : MonoBehaviour {
     public ParticleSystem comboParticlesWhite;
     public ParticleSystem comboParticlesRainbow;
 
+    PlayerSkillsManager playerSkillsManager;
+
     // Use this for initialization
     void Start () {
 
         // Reference to the hitSoundPreview for playing the miss combo break sound
         hitSoundPreview = FindObjectOfType<HitSoundPreview>();
+
+        // Reference to the player skills manager for getting the mod used
+        playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
 
         highestCombo = 0;
 
@@ -146,6 +151,9 @@ public class ScoreManager : MonoBehaviour {
 
         // Play the score animation
         scoreAnimation.Play("GameplayUITextAnimation");
+
+        // Multiply the default score per note passed by the mod mutiplier
+        //scorePass = (scorePass * playerSkillsManager.scoreMultiplier);
 
         // Increase the score to lerp to
         scoreToLerpTo += scorePass;
@@ -263,10 +271,24 @@ public class ScoreManager : MonoBehaviour {
     // Check the highest score possible by calculating the total notes in the song x perfect judgement
     public void CalculateHighestScoreForBeatmap()
     {
+        // Check if a mod has been activated
+        // If a mod is activated get its multiplier per note
+        // Multiply each note by that amount bonus to get the max
+        // Get the total score 
+        // Use that score as the highest score
+
+        // Get the total number of hit objects possible in the map
+        totalHitObjects = Database.database.LoadedPositionX.Count;
+        float scorePerPerfect = (500 * playerSkillsManager.scoreMultiplier);
+        totalScorePossible = totalHitObjects * scorePerPerfect;
+
+
+        /*
         // Get the total number of hit objects possible in the map
         totalHitObjects = Database.database.LoadedPositionX.Count;
         float scorePerPerfect = 500;
         totalScorePossible = totalHitObjects * scorePerPerfect;
-
+        */
     }
+
 }

@@ -29,10 +29,11 @@ public class PlayerSkillsManager : MonoBehaviour {
 
     public TextMeshProUGUI fadeSpeedText;
 
+    public TextMeshProUGUI scoreMultiplierText;
 
+    public float scoreMultiplier;
 
-
-
+    public Color goodMultiplierColor, okayMultiplierColor, badMultiplierColor, defaultMultipierColor;
 
     // TRIPLE TIME
     public bool tripleTimeSelected;
@@ -72,6 +73,8 @@ public class PlayerSkillsManager : MonoBehaviour {
     // Reference required to change the song pitch when in gameplay
     SongProgressBar songProgressBar;
 
+
+
     private void Start()
     {
         discoSkillSelected = false;
@@ -84,6 +87,8 @@ public class PlayerSkillsManager : MonoBehaviour {
         instantDeathSelected = false;
 
         PlayFadeSpeedSelectedAnimation();
+
+        scoreMultiplier = 1f;
     }
 
     void Update()
@@ -215,6 +220,54 @@ public class PlayerSkillsManager : MonoBehaviour {
         }
     }
 
+    // Update the scoreMultiplierText
+    private void UpdateScoreMultiplierText(float scoreMultiplierValuePass)
+    {
+        // Add the new score multiplier to the existing multiplier
+        scoreMultiplier = scoreMultiplierValuePass;
+
+        if (scoreMultiplier == 1)
+        {
+            scoreMultiplierText.text = "SCORE: x" + scoreMultiplier.ToString() + "00";
+        }
+        else if (scoreMultiplier == 1.10f)
+        {
+            scoreMultiplierText.text = "SCORE: x" + scoreMultiplier.ToString() + "0";
+        }
+        else
+        {
+            // Update the text
+            scoreMultiplierText.text = "SCORE: x" + scoreMultiplier.ToString();
+
+        }
+
+        // Check the multiplier and update the score color based on how good of an increase it is/ or decrease
+        UpdateScoreMultiplierColor();
+    }
+
+    // Update the score multiplier text color
+    public void UpdateScoreMultiplierColor()
+    {
+        
+        if (scoreMultiplier == 1f)
+        {
+            scoreMultiplierText.color = defaultMultipierColor;
+        }
+        else if (scoreMultiplier == 1.05f)
+        {
+            scoreMultiplierText.color = okayMultiplierColor;
+        }
+        else if (scoreMultiplier == 1.10f)
+        {
+            scoreMultiplierText.color = goodMultiplierColor;
+        }
+        else if (scoreMultiplier == 0.75f)
+        {
+            scoreMultiplierText.color = badMultiplierColor;
+        }
+
+    }
+
     // Reset timescale back to normal
     private void ResetGameSpeedToNormal()
     {
@@ -272,6 +325,8 @@ public class PlayerSkillsManager : MonoBehaviour {
         noFailSelected = false;
         instantDeathSelected = false;
         UpdateModSelectedText("");
+
+        UpdateScoreMultiplierText(1f);
     }
 
     // Equip the disco skill
@@ -304,6 +359,8 @@ public class PlayerSkillsManager : MonoBehaviour {
         halfTimeSelected = true;
 
         UpdateModSelectedText("Half Time");
+
+        UpdateScoreMultiplierText(0.75f);
     }
 
     // Equip double time skill
@@ -318,6 +375,8 @@ public class PlayerSkillsManager : MonoBehaviour {
         doubleTimeSelected = true;
 
         UpdateModSelectedText("Double Time");
+
+        UpdateScoreMultiplierText(1.05f);
     }
 
     // Equip triple time skill
@@ -332,6 +391,8 @@ public class PlayerSkillsManager : MonoBehaviour {
         tripleTimeSelected = true;
 
         UpdateModSelectedText("Triple Time");
+
+        UpdateScoreMultiplierText(1.10f);
     }
 
     // Equip judgement plus skill
@@ -345,6 +406,8 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         judgementPlusSelected = true;
         UpdateModSelectedText("Judgement Plus");
+
+        UpdateScoreMultiplierText(1.05f);
     }
 
     // Equip no fail skill
@@ -358,6 +421,8 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         noFailSelected = true;
         UpdateModSelectedText("No Fail");
+
+        UpdateScoreMultiplierText(0.75f);
     }
 
     // Equip instant death skill
@@ -371,6 +436,8 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         instantDeathSelected = true;
         UpdateModSelectedText("Instant Death");
+
+        UpdateScoreMultiplierText(1.05f);
     }
 
 
