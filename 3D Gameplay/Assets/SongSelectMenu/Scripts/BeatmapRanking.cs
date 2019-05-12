@@ -40,6 +40,7 @@ public class BeatmapRanking : MonoBehaviour {
     string[] rankedButtonPercentage = new string[20];
     string[] rankedButtonGrade = new string[20];
     string[] rankedButtonScore = new string[20];
+    string[] rankedButtonMod = new string[20];
 
     public ParticleSystem[] rankedButtonGradeParticles = new ParticleSystem[20];
     public Image[] playerImage = new Image[20];
@@ -52,8 +53,6 @@ public class BeatmapRanking : MonoBehaviour {
     public TextMeshProUGUI personalBestEarlyText;
     public TextMeshProUGUI personalBestMissText;
 
-    private string ModUsed = "NO FAIL";
-
     string personalBestScore;
     string personalBestPerfect;
     string personalBestGood;
@@ -63,6 +62,7 @@ public class BeatmapRanking : MonoBehaviour {
     string personalBestPercentage;
     string personalBestGrade;
     string personalBestUsername;
+    string personalBestMod;
 
     public ParticleSystem personalBestGradeParticles;
     public Image personalBestImage;
@@ -143,6 +143,8 @@ public class BeatmapRanking : MonoBehaviour {
                     rankedButtonUsername[placementToCheck] = placeLeaderboardData[placementToCheck][6];
                     rankedButtonGrade[placementToCheck] = placeLeaderboardData[placementToCheck][7];
                     rankedButtonPercentage[placementToCheck] = placeLeaderboardData[placementToCheck][8];
+                    rankedButtonMod[placementToCheck] = placeLeaderboardData[placementToCheck][9];
+
 
                     // Update the text for the leaderboard button
                     rankedButtonGradeText[placementToCheck].text = rankedButtonGrade[placementToCheck];
@@ -152,8 +154,18 @@ public class BeatmapRanking : MonoBehaviour {
                     rankedButtonUsernameAndScoreText[placementToCheck].text = (placementToCheck + 1) + "# " + rankedButtonUsername[placementToCheck] + ": " +
                     rankedButtonScore[placementToCheck];
 
-                    rankedButtonPlayStatisticsText[placementToCheck].text = "[" + rankedButtonPercentage[placementToCheck] + "%] " +
-                    "[x" + rankedButtonCombo[placementToCheck] + "] " + "[" + ModUsed + "]";
+                    if (string.IsNullOrEmpty(rankedButtonMod[placementToCheck]))
+                    {
+                        rankedButtonPlayStatisticsText[placementToCheck].text = "[" + rankedButtonPercentage[placementToCheck] + "%] " +
+                        "[x" + rankedButtonCombo[placementToCheck] + "] ";
+                    }
+                    else
+                    {
+                        rankedButtonPlayStatisticsText[placementToCheck].text = "[" + rankedButtonPercentage[placementToCheck] + "%] " +
+                        "[x" + rankedButtonCombo[placementToCheck] + "] " + "[" + rankedButtonMod[placementToCheck] + "]";
+                    }
+
+                    
 
                     rankedButtonPerfectText[placementToCheck].text = "P:" + rankedButtonPerfect[placementToCheck];
                     rankedButtonGoodText[placementToCheck].text = "G:" + rankedButtonGood[placementToCheck];
@@ -178,12 +190,23 @@ public class BeatmapRanking : MonoBehaviour {
                     personalBestUsername = personalBestLeaderboardData[6];
                     personalBestGrade = personalBestLeaderboardData[7];
                     personalBestPercentage = personalBestLeaderboardData[8];
+                    personalBestMod = personalBestLeaderboardData[9];
 
                     personalBestButtonGradeText.text = personalBestGrade;
                     personalBestButtonGradeText.color = SetGradeColor(personalBestGrade);
-                    personalBestButtonUsernameAndScoreText.text = "PB# " + MySQLDBManager.username + ": " + personalBestScore;
-                    personalBestButtonPlayStatisticsText.text = "[" + personalBestPercentage + "%] " +
-                    "[x" + personalBestCombo + "] " + "[" + ModUsed + "]";
+                    personalBestButtonUsernameAndScoreText.text = MySQLDBManager.username + ": " + personalBestScore;
+
+                    if (string.IsNullOrEmpty(personalBestMod))
+                    {
+                        personalBestButtonPlayStatisticsText.text = "[" + personalBestPercentage + "%] " +
+                        "[x" + personalBestCombo + "] ";
+                    }
+                    else
+                    {
+                        personalBestButtonPlayStatisticsText.text = "[" + personalBestPercentage + "%] " +
+                        "[x" + personalBestCombo + "] " + "[" + personalBestMod + "]";
+                    }
+                    
 
                     personalBestPerfectText.text = "P:" + personalBestPerfect;
                     personalBestGoodText.text =  "G:" + personalBestGood;
@@ -212,7 +235,7 @@ public class BeatmapRanking : MonoBehaviour {
 
         placeList.AddRange(Regex.Split(www.downloadHandler.text, "->"));
 
-        for (int dataType = 0; dataType < 9; dataType++)
+        for (int dataType = 0; dataType < 10; dataType++)
         {
             /*
               DataType:
@@ -226,6 +249,7 @@ public class BeatmapRanking : MonoBehaviour {
               [6] = player_id
               [7] = grade
               [8] = percentage
+              [9] = mod
             */
 
 
@@ -277,7 +301,7 @@ public class BeatmapRanking : MonoBehaviour {
             placeList.AddRange(Regex.Split(www.downloadHandler.text, "->"));
 
 
-            for (int dataType = 0; dataType < 9; dataType++)
+            for (int dataType = 0; dataType < 10; dataType++)
             {
                 // If it succeeded
                 if (www.downloadHandler.text != "1")
@@ -315,6 +339,7 @@ public class BeatmapRanking : MonoBehaviour {
             rankedButtonUsername[placementToCheck] = "";
             rankedButtonGrade[placementToCheck] = "";
             rankedButtonPercentage[placementToCheck] = "";
+            rankedButtonMod[placementToCheck] = "";
             // Reset the text on the leaderboard 
             rankedButtonGradeText[placementToCheck].text = "";
             rankedButtonUsernameAndScoreText[placementToCheck].text = "";
@@ -324,6 +349,7 @@ public class BeatmapRanking : MonoBehaviour {
             rankedButtonGoodText[placementToCheck].text = "";
             rankedButtonEarlyText[placementToCheck].text = "";
             rankedButtonMissText[placementToCheck].text = "";
+
             // Disable the particles on the leaderboard
             rankedButtonGradeParticles[placementToCheck].gameObject.SetActive(false);
             // Clear the leaderboard data 
@@ -340,6 +366,7 @@ public class BeatmapRanking : MonoBehaviour {
             personalBestCombo = "";
             personalBestPercentage = "";
             personalBestGrade = "";
+            personalBestMod = "";
 
             // Reset personal best text
             personalBestButtonGradeText.text = "";

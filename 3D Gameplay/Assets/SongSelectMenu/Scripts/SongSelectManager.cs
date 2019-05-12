@@ -98,6 +98,12 @@ public class SongSelectManager : MonoBehaviour {
     public Color advancedDifficultyButtonColor;
     public Color extraDifficultyButtonColor;
 
+    // The flash animator
+    public Animator songSelectFlashAnimator;
+
+    // The song player bar image
+    public Image songPlayerBarImage;
+
     // Use this for initialization
     void Start () {
 
@@ -171,15 +177,23 @@ public class SongSelectManager : MonoBehaviour {
         switch (beatmapDifficulty)
         {
             case "easy":
+                FlashImage("SongSelectMenuFlashEasy");
+                songPlayerBarImage.color = easyDifficultyButtonColor;
                 personalBestLeaderboardButton.image.color = easyDifficultyButtonColor;
                 break;
             case "advanced":
+                FlashImage("SongSelectMenuFlashAdvanced");
+                songPlayerBarImage.color = advancedDifficultyButtonColor;
                 personalBestLeaderboardButton.image.color = advancedDifficultyButtonColor;
                 break;
             case "extra":
+                FlashImage("SongSelectMenuFlashExtra");
+                songPlayerBarImage.color = extraDifficultyButtonColor;
                 personalBestLeaderboardButton.image.color = extraDifficultyButtonColor;
                 break;
             default:
+                FlashImage("SongSelectMenuFlash");
+                songPlayerBarImage.color = advancedDifficultyButtonColor;
                 personalBestLeaderboardButton.image.color = advancedDifficultyButtonColor;
                 break;
         }
@@ -276,6 +290,12 @@ public class SongSelectManager : MonoBehaviour {
             DifficultyOptionExtraLevelText.text = extraDifficultyLevel;
         }
 
+    }
+
+    // Animate the flash on screen for the difficulties: easy/advanced/extra
+    public void FlashImage(string animationPass)
+    {
+        songSelectFlashAnimator.Play(animationPass);  
     }
 
     // Play the song preview at the saved preview time

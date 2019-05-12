@@ -8,6 +8,7 @@ public class GameplayToResultsManager : MonoBehaviour {
     private ScoreManager scoreManager;
     public LevelChanger levelChanger;
     private LoadAndRunBeatmap loadAndRunBeatmap;
+    private PlayerSkillsManager playerSkillsManager;
 
     // UI variables
     public int highestCombo;
@@ -22,6 +23,7 @@ public class GameplayToResultsManager : MonoBehaviour {
     public float totalHit;
     public float totalSpecial;
     public float totalHitObjects;
+    public string modUsed;
 
     float AudioSourceLength;
     float AudioSourceTime;
@@ -36,6 +38,7 @@ public class GameplayToResultsManager : MonoBehaviour {
     void Start () {
         scoreManager = FindObjectOfType<ScoreManager>();
         loadAndRunBeatmap = FindObjectOfType<LoadAndRunBeatmap>();
+        playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
     }
 	
 	// Update is called once per frame
@@ -90,6 +93,42 @@ public class GameplayToResultsManager : MonoBehaviour {
         levelChanger.FadeToLevel(levelChanger.resultsSceneIndex);
     }
 
+
+    // Get mod used
+    private string GetModUsed()
+    {
+        if (playerSkillsManager.tripleTimeSelected == true)
+        {
+            modUsed = "TRIPLE TIME";
+        }
+        else if (playerSkillsManager.doubleTimeSelected == true)
+        {
+            modUsed = "DOUBLE TIME";
+        }
+        else if (playerSkillsManager.halfTimeSelected == true)
+        {
+            modUsed = "HALF TIME";
+        }
+        else if (playerSkillsManager.judgementPlusSelected == true)
+        {
+            modUsed = "JUDGEMENT+";
+        }
+        else if (playerSkillsManager.noFailSelected == true)
+        {
+            modUsed = "NO FAIL";
+        }
+        else if (playerSkillsManager.instantDeathSelected == true)
+        {
+            modUsed = "INSTANT DEATH";
+        }
+        else
+        {
+            modUsed = "";
+        }
+
+        return modUsed;
+    }
+
     // Get the results from the scoreManager just before the game ends
     public void GetResults()
     {
@@ -103,6 +142,7 @@ public class GameplayToResultsManager : MonoBehaviour {
         totalHit = scoreManager.totalHit;
         totalSpecial = scoreManager.totalSpecial;
         totalHitObjects = scoreManager.totalHitObjects;
+        modUsed = GetModUsed();
     }
 
     public void CalculateGradeAchieved()

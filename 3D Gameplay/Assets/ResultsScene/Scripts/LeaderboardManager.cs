@@ -21,13 +21,13 @@ public class LeaderboardManager : MonoBehaviour {
     private bool hasExistingScoreInOverallRankings;
     public TextMeshProUGUI uploadStatusText;
 
+
     void Start()
     {
         // For checking if scores have uploaded or attempted once
         notChecked = true;
         // Get the reference
         gameplayToResultsManager = FindObjectOfType<GameplayToResultsManager>();
-
         // Update the status text
         UpdateStatusTextUploading();
     }
@@ -99,6 +99,7 @@ public class LeaderboardManager : MonoBehaviour {
         form.AddField("player_id", username);
         form.AddField("grade", gameplayToResultsManager.gradeAchieved);
         form.AddField("percentage", gameplayToResultsManager.Percentage.ToString());
+        form.AddField("modused", gameplayToResultsManager.modUsed);
 
         UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/uploaduserscoretobeatmap.php", form);
         www.chunkedTransfer = false;
