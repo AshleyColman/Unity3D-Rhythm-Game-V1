@@ -37,8 +37,15 @@ public class ScoreManager : MonoBehaviour {
 
     PlayerSkillsManager playerSkillsManager;
 
+    FailAndRetryManager failAndRetryManager; // Controls failing/retrying
+
+    private bool hasFailed; // Has the player failed
+
     // Use this for initialization
     void Start () {
+
+        // Reference to the failAndRetryManager
+        failAndRetryManager = FindObjectOfType<FailAndRetryManager>();
 
         // Reference to the hitSoundPreview for playing the miss combo break sound
         hitSoundPreview = FindObjectOfType<HitSoundPreview>();
@@ -153,7 +160,7 @@ public class ScoreManager : MonoBehaviour {
         scoreAnimation.Play("GameplayUITextAnimation");
 
         // Multiply the default score per note passed by the mod mutiplier
-        //scorePass = (scorePass * playerSkillsManager.scoreMultiplier);
+        scorePass = (scorePass * playerSkillsManager.scoreMultiplier);
 
         // Increase the score to lerp to
         scoreToLerpTo += scorePass;
@@ -257,6 +264,29 @@ public class ScoreManager : MonoBehaviour {
             totalMiss++;
         }
 
+
+        // Check if instant death is equiped and if the judgement passed is not perfect
+        CheckIfInstantDeath(judgementPass);
+
+    }
+
+    // Check if instant death
+    private void CheckIfInstantDeath(string judgementPass)
+    {
+        // Check if the user has failed yet
+        hasFailed = failAndRetryManager.ReturnHasFailed();
+
+        // If the user has not failed yet
+        if (hasFailed == false)
+        {
+            // If the judgement passed is not perfect, and instant death has been equiped
+            if (judgementPass != "PERFECT" && playerSkillsManager.instantDeathSelected == true)
+            {
+                // Activate fail screen
+                failAndRetryManager.HasFailed();
+            }
+        }
+
     }
 
     // Check if the current combo is the highest combo so far
@@ -279,7 +309,8 @@ public class ScoreManager : MonoBehaviour {
 
         // Get the total number of hit objects possible in the map
         totalHitObjects = Database.database.LoadedPositionX.Count;
-        float scorePerPerfect = (500 * playerSkillsManager.scoreMultiplier);
+        // Multiply the score per perfect by the multiplier, 5 is the score for a standard perfect note but will be multiplied by the default multiplier (100) to give 500 points
+        float scorePerPerfect = (5 * playerSkillsManager.scoreMultiplier);
         totalScorePossible = totalHitObjects * scorePerPerfect;
 
 

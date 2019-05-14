@@ -34,8 +34,15 @@ public class GameplayToResultsManager : MonoBehaviour {
 
     private bool allHitObjectsHaveBeenHit; // Have all the hit objects been hit? Used for going to the results screen if they have
 
+    FailAndRetryManager failAndRetryManager; // Used for checking if the user has failed / disables continuing to the results page
+
+    bool hasFailed; // Has the user failed
+    bool hasPressedRetryKey; // Has the user pressed the retry key
+
     // Use this for initialization
     void Start () {
+        hasFailed = false;
+        failAndRetryManager = FindObjectOfType<FailAndRetryManager>();
         scoreManager = FindObjectOfType<ScoreManager>();
         loadAndRunBeatmap = FindObjectOfType<LoadAndRunBeatmap>();
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
@@ -43,6 +50,9 @@ public class GameplayToResultsManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        // Check if the user has failed
+        hasFailed = failAndRetryManager.ReturnHasFailed();
 
         levelChanger = FindObjectOfType<LevelChanger>();
 
@@ -53,7 +63,8 @@ public class GameplayToResultsManager : MonoBehaviour {
             // Check if the last hit object has been hit
             allHitObjectsHaveBeenHit = loadAndRunBeatmap.CheckIfAllHitObjectsHaveBeenHit();
 
-            if (allHitObjectsHaveBeenHit == true)
+            // Only transition to the results page if all notes have been hit and the user has not failed
+            if (allHitObjectsHaveBeenHit == true && hasFailed == false)
             {
                 // Get the results from the score manager before transitioning
                 GetResults();
@@ -61,6 +72,15 @@ public class GameplayToResultsManager : MonoBehaviour {
             }
 
 
+        }
+
+
+
+        // Check if the retry key has been pressed, if it has destroy this game object
+        hasPressedRetryKey = failAndRetryManager.ReturnHasPressedRetryKey();
+        if (hasPressedRetryKey == true)
+        {
+            Destroy(this.gameObject);
         }
 
         if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex || levelChanger.currentLevelIndex == levelChanger.resultsSceneIndex)

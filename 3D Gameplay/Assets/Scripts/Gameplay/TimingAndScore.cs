@@ -68,9 +68,13 @@ public class TimingAndScore : MonoBehaviour {
         hitObjectHit = false;
 
         // Initialize scores
-        earlyScore = 100; 
-        perfectScore = 500; 
-        goodScore = 200; 
+        // Scores start at 1/2/5 but are multiplied by the multiplier, default being 100
+        // Real scores are: 100, 200, 500
+        // Scores start as single values as floats cannot be uploaded to the server and therfore need to be multiplied by 100 to get the original value
+        // To work with mods
+        earlyScore = 1; 
+        perfectScore = 5; 
+        goodScore = 2; 
 
         playerTotalScore = 0;
         timeWhenHit = 0;
@@ -285,6 +289,12 @@ public class TimingAndScore : MonoBehaviour {
         canBeHit = true;
     }
 
+    // Set can be hit to false
+    public void CannotBeHit()
+    {
+        canBeHit = false;
+    }
+
     // Is the note special during special time?
     public void CheckIsSpecial()
     {
@@ -307,26 +317,29 @@ public class TimingAndScore : MonoBehaviour {
     // Check the fade speed selected from the song select menu, set the judgements based on the fade speed
     public void GetAndSetFadeSpeed()
     {
-        string fadeSpeedSelected = playerSkillsManager.fadeSpeedSelected;
-
-        // Set the fade speeds based on the fade speed selected
-        switch (fadeSpeedSelected)
+        if (playerSkillsManager != null)
         {
-            case "SLOW":
-                earlyJudgementTime = 1f;
-                perfectJudgementTime = 1.8f;
-                destroyedTime = 2.2f;
-                break;
-            case "NORMAL":
-                earlyJudgementTime = 0.4f;
-                perfectJudgementTime = 0.8f;
-                destroyedTime = 1.2f;
-                break;
-            case "FAST":
-                earlyJudgementTime = 0.2f;
-                perfectJudgementTime = 0.4f;
-                destroyedTime = 0.7f;
-                break;
+            string fadeSpeedSelected = playerSkillsManager.fadeSpeedSelected;
+
+            // Set the fade speeds based on the fade speed selected
+            switch (fadeSpeedSelected)
+            {
+                case "SLOW":
+                    earlyJudgementTime = 1f;
+                    perfectJudgementTime = 1.8f;
+                    destroyedTime = 2.2f;
+                    break;
+                case "NORMAL":
+                    earlyJudgementTime = 0.4f;
+                    perfectJudgementTime = 0.8f;
+                    destroyedTime = 1.2f;
+                    break;
+                case "FAST":
+                    earlyJudgementTime = 0.2f;
+                    perfectJudgementTime = 0.4f;
+                    destroyedTime = 0.7f;
+                    break;
+            }
         }
     }
 }

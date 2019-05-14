@@ -56,9 +56,15 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
     private bool allHitObjectsHaveBeenHit; // Have all the hit objects been hit? Used for going to the results screen if they have
 
+    FailAndRetryManager failAndRetryManager; // Used for tracking whether the user has failed and restarting the game scene
+
+    bool hasFailed; // Has the user faileds
+
     // Use this for initialization
     void Start()
     {
+        hasFailed = false;
+        failAndRetryManager = FindObjectOfType<FailAndRetryManager>();
         songProgressBar = FindObjectOfType<SongProgressBar>();
         specialTimeManager = FindObjectOfType<SpecialTimeManager>();
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
@@ -138,6 +144,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+
         // Load special time start
         specialTimeStart = specialTimeManager.specialTimeStart;
         // Load special time end
@@ -216,7 +223,21 @@ public class LoadAndRunBeatmap : MonoBehaviour {
                 }
                 else
                 {
-                    spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().CanBeHit();
+                    // Check if the user has failed
+                    CheckIfFailed();
+
+                    // If the user has failed set can be hit to false
+                    if (hasFailed == true)
+                    {
+                        // Make hit objects unhittable
+                        spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().CannotBeHit();
+                    }
+                    else
+                    {
+                        // Allow the hit objects to be hit
+                        spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().CanBeHit();
+                    }
+                    
                 }
             }
         }
@@ -324,5 +345,12 @@ public class LoadAndRunBeatmap : MonoBehaviour {
             allHitObjectsHaveBeenHit = false;
             return allHitObjectsHaveBeenHit;
         }
+    }
+
+    // Check if the user has failed or not
+    private void CheckIfFailed()
+    {
+        // Check if the user has failed or not
+        hasFailed = failAndRetryManager.ReturnHasFailed();
     }
 }

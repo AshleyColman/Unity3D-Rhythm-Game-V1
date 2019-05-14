@@ -21,6 +21,7 @@ public class LeaderboardManager : MonoBehaviour {
     private bool hasExistingScoreInOverallRankings;
     public TextMeshProUGUI uploadStatusText;
 
+    public Button retryScoreUploadButton;
 
     void Start()
     {
@@ -225,14 +226,14 @@ public class LeaderboardManager : MonoBehaviour {
         uploadStatusText.text = "Failed to upload score";
 
         // Set the retry button to active?
+        retryScoreUploadButton.gameObject.SetActive(true);
 
-        // Play the failed animation - red color
     }
 
     // Change text to uploading
     private void UpdateStatusTextUploading()
     {
-        uploadStatusText.text = "Uploading score to the game server";
+        uploadStatusText.text = "Uploading score to the game server...";
 
         // Play uploading animation
     }
@@ -247,7 +248,7 @@ public class LeaderboardManager : MonoBehaviour {
         // Play the success animation
     }
 
-    private void RetryUploadingScore()
+    public void RetryUploadingScore()
     {
         // Reset all variables so allow checking to happen again
         leaderboardTableName = "";
@@ -260,7 +261,7 @@ public class LeaderboardManager : MonoBehaviour {
         hasExistingScoreInOverallRankings = false;
 
         // Disable the retry button
-
+        retryScoreUploadButton.gameObject.SetActive(false);
         // Update the text to trying to upload
         UpdateStatusTextUploading();
     }

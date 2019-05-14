@@ -19,9 +19,20 @@ public class Healthbar : MonoBehaviour {
     public bool assignHealthBarLerp;
     float healthValueToLerpTo;
 
+    private bool canFail; // Controls whether the user can fail or not
+
+    FailAndRetryManager failAndRetryManager; // Reference to the failAndRetryManager
+
+    private bool hasFailed; // Has the user failed
+
     // Use this for initialization
     void Start () {
-
+        // Set hasfailed to false at the start
+        hasFailed = false;
+        // Reference to the failAndRetryManager
+        failAndRetryManager = FindObjectOfType<FailAndRetryManager>();
+        // Set can fail to true at the start 
+        canFail = true;
         // We set the health to 75 by default to prevent lerping at start of gameplay
         healthValueToLerpTo = 75;
         // Used to assign the new value to lerp to when an object has been hit
@@ -49,6 +60,15 @@ public class Healthbar : MonoBehaviour {
 
         // Lerp the healthbar
         UpdateHealthbar(healthBarValue, assignHealthBarLerp);
+
+        // Check the failAndRetryManagers hasFailed bool
+        hasFailed = failAndRetryManager.ReturnHasFailed();
+
+        if (hasFailed == false)
+        {
+            // Check if the player has failed if they can fail
+            CheckIfFailed();
+        }
     }
 
     /*
@@ -103,7 +123,11 @@ public class Healthbar : MonoBehaviour {
         // Lerp the slider value to the current health, to the new health over time
         healthBarSlider.value = Mathf.Lerp(currentHealth, healthValueToLerpTo, Time.deltaTime * lerpSpeed);
 
-
+        // Check if the player has failed if they can fail
+        if (hasFailed == false)
+        {
+            CheckIfFailed();
+        }
 
         // Assign the current health to the new slider value
         currentHealth = healthBarSlider.value;
@@ -136,6 +160,21 @@ public class Healthbar : MonoBehaviour {
         else if (currentHealth > yellowBarAmount && currentHealth <= greenBarAmount)
         {
             healthBarFill.color = greenBarColor;
+        }
+    }
+
+ 
+    // Check if the player has failed and restart if they have
+    private void CheckIfFailed()
+    {
+        // If the health is less than or equal to 1 
+        if (currentHealth <= 1)
+        {
+            // Set has failed to true as the user has now failed
+            hasFailed = true;
+            
+            // Activate failed screen and disable gameplay
+            failAndRetryManager.HasFailed();
         }
     }
 }

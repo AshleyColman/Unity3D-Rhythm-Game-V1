@@ -42,7 +42,12 @@ public class Fade : MonoBehaviour {
         if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex)
         {
             playerSkillsManager = FindObjectOfType<PlayerSkillsManager>(); // Get the reference for scale speed
-            fadeSpeedSelected = playerSkillsManager.GetFadeSpeedSelected(); // Get the fade speed selected such as 2 for slow, 1 for normal and 0.5f for fast
+
+            if (playerSkillsManager != null)
+            {
+                fadeSpeedSelected = playerSkillsManager.GetFadeSpeedSelected(); // Get the fade speed selected such as 2 for slow, 1 for normal and 0.5f for fast
+            }
+
         }
         else
         {

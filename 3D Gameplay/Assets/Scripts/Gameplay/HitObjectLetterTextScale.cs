@@ -36,8 +36,13 @@ public class HitObjectLetterTextScale : MonoBehaviour {
         minScale = new Vector3(0, 0, 0);
 
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>(); // Get the reference for scale speed
-        lerpTime = playerSkillsManager.GetFadeSpeedSelected(); // Get the fade speed selected such as 2 for slow, 1 for normal and 0.5f for fast
-        perfectTime = (lerpTime + 0.2f); // Perfect time is the time the object is destroyed, this is 0.2 seconds from the hit time
+
+        if (playerSkillsManager != null)
+        {
+            lerpTime = playerSkillsManager.GetFadeSpeedSelected(); // Get the fade speed selected such as 2 for slow, 1 for normal and 0.5f for fast
+            perfectTime = (lerpTime + 0.2f); // Perfect time is the time the object is destroyed, this is 0.2 seconds from the hit time
+        }
+
     }
 
     // Update is called once per frame

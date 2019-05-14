@@ -35161,7 +35161,7 @@ Prefab:
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.size
-      value: 107
+      value: 108
       objectReference: {fileID: 0}
     - target: {fileID: 4178306738267400, guid: d377f2b4f2a68c449b392f8d9c3e4edf, type: 2}
       propertyPath: m_LocalPosition.x
@@ -35369,25 +35369,30 @@ Prefab:
         type: 2}
       propertyPath: songClip.Array.data[102]
       value: 
-      objectReference: {fileID: 8300000, guid: 1363abae0365c10498b5a3c77faa6bf3, type: 3}
+      objectReference: {fileID: 8300000, guid: b52188ae0b82f8649822b1585e3bc510, type: 3}
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.data[103]
       value: 
-      objectReference: {fileID: 8300000, guid: 241ccb24f44d7d24da3eb5e055b0a8f7, type: 3}
+      objectReference: {fileID: 8300000, guid: 1363abae0365c10498b5a3c77faa6bf3, type: 3}
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.data[104]
       value: 
-      objectReference: {fileID: 8300000, guid: 4d193c6c3a49a194f963a1247a309b66, type: 3}
+      objectReference: {fileID: 8300000, guid: 241ccb24f44d7d24da3eb5e055b0a8f7, type: 3}
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.data[105]
       value: 
-      objectReference: {fileID: 8300000, guid: 7ab997f4e50db2741a4888bfdfc80e55, type: 3}
+      objectReference: {fileID: 8300000, guid: 4d193c6c3a49a194f963a1247a309b66, type: 3}
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.data[106]
+      value: 
+      objectReference: {fileID: 8300000, guid: 7ab997f4e50db2741a4888bfdfc80e55, type: 3}
+    - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
+        type: 2}
+      propertyPath: songClip.Array.data[107]
       value: 
       objectReference: {fileID: 8300000, guid: 144ea87b65334754ca823024fc02b3bd, type: 3}
     m_RemovedComponents: []

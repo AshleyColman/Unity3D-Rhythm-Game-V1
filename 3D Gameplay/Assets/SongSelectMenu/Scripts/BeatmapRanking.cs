@@ -145,6 +145,10 @@ public class BeatmapRanking : MonoBehaviour {
                     rankedButtonPercentage[placementToCheck] = placeLeaderboardData[placementToCheck][8];
                     rankedButtonMod[placementToCheck] = placeLeaderboardData[placementToCheck][9];
 
+                    if (rankedButtonGrade[placementToCheck] == "S" || rankedButtonGrade[placementToCheck] == "P")
+                    {
+                        rankedButtonGradeParticles[placementToCheck].gameObject.SetActive(true);
+                    }
 
                     // Update the text for the leaderboard button
                     rankedButtonGradeText[placementToCheck].text = rankedButtonGrade[placementToCheck];
@@ -195,6 +199,12 @@ public class BeatmapRanking : MonoBehaviour {
                     personalBestButtonGradeText.text = personalBestGrade;
                     personalBestButtonGradeText.color = SetGradeColor(personalBestGrade);
                     personalBestButtonUsernameAndScoreText.text = MySQLDBManager.username + ": " + personalBestScore;
+
+                    if (personalBestGrade == "S" || personalBestGrade == "P")
+                    {
+                        personalBestGradeParticles.gameObject.SetActive(true);
+                    }
+
 
                     if (string.IsNullOrEmpty(personalBestMod))
                     {

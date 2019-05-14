@@ -31,7 +31,7 @@ public class PlayerSkillsManager : MonoBehaviour {
 
     public TextMeshProUGUI scoreMultiplierText;
 
-    public float scoreMultiplier;
+    public int scoreMultiplier;
 
     public Color goodMultiplierColor, okayMultiplierColor, badMultiplierColor, defaultMultipierColor;
 
@@ -73,8 +73,6 @@ public class PlayerSkillsManager : MonoBehaviour {
     // Reference required to change the song pitch when in gameplay
     SongProgressBar songProgressBar;
 
-
-
     private void Start()
     {
         discoSkillSelected = false;
@@ -88,7 +86,8 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         PlayFadeSpeedSelectedAnimation();
 
-        scoreMultiplier = 1f;
+        // Default multiplier is 100
+        scoreMultiplier = 100;
     }
 
     void Update()
@@ -221,25 +220,34 @@ public class PlayerSkillsManager : MonoBehaviour {
     }
 
     // Update the scoreMultiplierText
-    private void UpdateScoreMultiplierText(float scoreMultiplierValuePass)
+    private void UpdateScoreMultiplierText(int scoreMultiplierValuePass)
     {
         // Add the new score multiplier to the existing multiplier
         scoreMultiplier = scoreMultiplierValuePass;
 
-        if (scoreMultiplier == 1)
-        {
-            scoreMultiplierText.text = "SCORE: x" + scoreMultiplier.ToString() + "00";
-        }
-        else if (scoreMultiplier == 1.10f)
-        {
-            scoreMultiplierText.text = "SCORE: x" + scoreMultiplier.ToString() + "0";
-        }
-        else
-        {
-            // Update the text
-            scoreMultiplierText.text = "SCORE: x" + scoreMultiplier.ToString();
+        // Original note values per score are single values such as 1, 2 and 5
+        // Because we cannot submit float and use 1.00 or 0.50 for multiplier we use x100 as default and x50 for (0.5) when multipliers applied
+        // So 1.00 = x100
+        // 5 x 100 = 500 points per note
+        // 5 x 50 (half time) = 250 points per note
 
+        if (scoreMultiplier == 100)
+        {
+            scoreMultiplierText.text = "SCORE: x1.00";
         }
+        else if (scoreMultiplier == 105)
+        {
+            scoreMultiplierText.text = "SCORE: x1.05";
+        }
+        else if (scoreMultiplier == 110)
+        {
+            scoreMultiplierText.text = "SCORE: x1.10";
+        }
+        else if (scoreMultiplier == 75)
+        {
+            scoreMultiplierText.text = "SCORE: x0.75";
+        }
+
 
         // Check the multiplier and update the score color based on how good of an increase it is/ or decrease
         UpdateScoreMultiplierColor();
@@ -249,19 +257,19 @@ public class PlayerSkillsManager : MonoBehaviour {
     public void UpdateScoreMultiplierColor()
     {
         
-        if (scoreMultiplier == 1f)
+        if (scoreMultiplier == 100)
         {
             scoreMultiplierText.color = defaultMultipierColor;
         }
-        else if (scoreMultiplier == 1.05f)
+        else if (scoreMultiplier == 105)
         {
             scoreMultiplierText.color = okayMultiplierColor;
         }
-        else if (scoreMultiplier == 1.10f)
+        else if (scoreMultiplier == 110)
         {
             scoreMultiplierText.color = goodMultiplierColor;
         }
-        else if (scoreMultiplier == 0.75f)
+        else if (scoreMultiplier == 75)
         {
             scoreMultiplierText.color = badMultiplierColor;
         }
@@ -326,7 +334,7 @@ public class PlayerSkillsManager : MonoBehaviour {
         instantDeathSelected = false;
         UpdateModSelectedText("");
 
-        UpdateScoreMultiplierText(1f);
+        UpdateScoreMultiplierText(100);
     }
 
     // Equip the disco skill
@@ -360,7 +368,7 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         UpdateModSelectedText("Half Time");
 
-        UpdateScoreMultiplierText(0.75f);
+        UpdateScoreMultiplierText(75);
     }
 
     // Equip double time skill
@@ -376,7 +384,7 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         UpdateModSelectedText("Double Time");
 
-        UpdateScoreMultiplierText(1.05f);
+        UpdateScoreMultiplierText(105);
     }
 
     // Equip triple time skill
@@ -392,7 +400,7 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         UpdateModSelectedText("Triple Time");
 
-        UpdateScoreMultiplierText(1.10f);
+        UpdateScoreMultiplierText(110);
     }
 
     // Equip judgement plus skill
@@ -407,7 +415,7 @@ public class PlayerSkillsManager : MonoBehaviour {
         judgementPlusSelected = true;
         UpdateModSelectedText("Judgement Plus");
 
-        UpdateScoreMultiplierText(1.05f);
+        UpdateScoreMultiplierText(105);
     }
 
     // Equip no fail skill
@@ -422,7 +430,7 @@ public class PlayerSkillsManager : MonoBehaviour {
         noFailSelected = true;
         UpdateModSelectedText("No Fail");
 
-        UpdateScoreMultiplierText(0.75f);
+        UpdateScoreMultiplierText(75);
     }
 
     // Equip instant death skill
@@ -437,7 +445,7 @@ public class PlayerSkillsManager : MonoBehaviour {
         instantDeathSelected = true;
         UpdateModSelectedText("Instant Death");
 
-        UpdateScoreMultiplierText(1.05f);
+        UpdateScoreMultiplierText(100);
     }
 
 
