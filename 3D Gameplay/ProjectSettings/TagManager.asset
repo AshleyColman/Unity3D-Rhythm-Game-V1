@@ -38,6 +38,7 @@ TagManager:
   - ToMainThread
   - BeatmapKeys
   - BackgroundImage
+  - PreviewHitObject
   layers:
   - Default
   - TransparentFX

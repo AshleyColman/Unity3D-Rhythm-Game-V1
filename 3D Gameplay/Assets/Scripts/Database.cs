@@ -309,8 +309,8 @@ public class Database : MonoBehaviour {
         HitObjectSpawnTime.Clear();
         ObjectType.Clear();
 
-        SpecialTimeStart = 0;
-        SpecialTimeEnd = 0;
+        //SpecialTimeStart = 0;
+        //SpecialTimeEnd = 0;
 
 
         pressedKeyS = false;

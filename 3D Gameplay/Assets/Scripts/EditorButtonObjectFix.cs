@@ -42,10 +42,13 @@ public class EditorButtonObjectFix : MonoBehaviour {
         // If the UI button has been clicked before
         if (hasClickedUIButton == true)
         {
-            // Disable the editor hit object
-            editorHitOBjectColor = editorHitObjectMaterial.color;
-            editorHitOBjectColor.a = 0;
-            editorHitObjectMaterial.color = editorHitOBjectColor;
+            if (editorHitObject != null)
+            {
+                // Disable the editor hit object
+                editorHitOBjectColor = editorHitObjectMaterial.color;
+                editorHitOBjectColor.a = 0;
+                editorHitObjectMaterial.color = editorHitOBjectColor;
+            }
         }
     }
 
@@ -54,9 +57,12 @@ public class EditorButtonObjectFix : MonoBehaviour {
     {
         if (hasClickedUIButton == true)
         {
-            editorHitOBjectColor = editorHitObjectMaterial.color;
-            editorHitOBjectColor.a = 1;
-            editorHitObjectMaterial.color = editorHitOBjectColor;
+            if (editorHitObject != null)
+            {
+                editorHitOBjectColor = editorHitObjectMaterial.color;
+                editorHitOBjectColor.a = 1;
+                editorHitObjectMaterial.color = editorHitOBjectColor;
+            }
         }
     }
 

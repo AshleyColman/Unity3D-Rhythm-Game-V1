@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114518219875897230}
   m_Layer: 0
   m_Name: PreviewHitObjectPurple
-  m_TagString: InstantiatedEditorHitObject
+  m_TagString: PreviewHitObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

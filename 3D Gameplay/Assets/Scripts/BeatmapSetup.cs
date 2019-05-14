@@ -70,6 +70,8 @@ public class BeatmapSetup : MonoBehaviour {
     public Button resetButton;
     public Button newSongButton;
 
+    public Button successSaveButton;
+
     private void Awake()
     {
         beatmap = new Beatmap();
@@ -235,6 +237,12 @@ public class BeatmapSetup : MonoBehaviour {
         finishedButton.interactable = false;
         resetButton.interactable = false;
         newSongButton.interactable = false;
+    }
+
+    // Activate success beatmap save button
+    public void ActivateSuccessBeatmapSaveButton()
+    {
+        successSaveButton.gameObject.SetActive(true);
     }
 
 }

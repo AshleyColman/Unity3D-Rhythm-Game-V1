@@ -5,7 +5,11 @@ using UnityEngine;
 public class EditorHitObjectMouseFollow : MonoBehaviour {
 
     private GameObject editorGhostObject;
-    private GameObject instantiatedEditorHitObject;
+    public GameObject instantiatedEditorHitObject;
+
+    public AudioSource menuSFXAudioSource;
+    public AudioClip placedSound;
+    public AudioClip selectedSound;
 
     // Is true when the hit object is following the mouse, false when it isn't
     private bool raycastObjectDragActive;
@@ -38,6 +42,8 @@ public class EditorHitObjectMouseFollow : MonoBehaviour {
             {
                 // Set is dragging to true
                 raycastObjectDragActive = true;
+                // Play the selected sound
+                PlaySelectedSound();
             }
             // If M key is pressed and previously was following the mouse
             else if (Input.GetKeyDown(KeyCode.M) && raycastObjectDragActive == true)
@@ -47,6 +53,9 @@ public class EditorHitObjectMouseFollow : MonoBehaviour {
 
                 // Save the current position of the instantiated hit object?
                 placedObject.SaveNewInstantiatedEditorObjectsPosition();
+
+                // Play the placed sound
+                PlayPlacedSound();
             }
 
 
@@ -61,8 +70,17 @@ public class EditorHitObjectMouseFollow : MonoBehaviour {
                 // Do not move the instantiated hit object
             }
         }
+    }
 
+    // Play selectedSound
+    private void PlaySelectedSound()
+    {
+        menuSFXAudioSource.PlayOneShot(selectedSound);
+    }
 
-
+    // Play the placed sound
+    private void PlayPlacedSound()
+    {
+        menuSFXAudioSource.PlayOneShot(placedSound);
     }
 }

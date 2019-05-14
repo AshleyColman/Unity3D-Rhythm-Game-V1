@@ -88,8 +88,21 @@ public class PlacedObject : MonoBehaviour {
     // The instantiated editor hit object that is added to the scene when a timeline bar has been clicked
     GameObject instantiatedEditorHitObject;
 
+    // The materials to change to when the instantiatedEditorHitObject's color button has been pressed
+    public Material greenEditorHitObjectMaterial;
+    public Material yellowEditorHitObjectMaterial;
+    public Material orangeEditorHitObjectMaterial;
+    public Material blueEditorHitObjectMaterial;
+    public Material purpleEditorHitObjectMaterial;
+    public Material redEditorHitObjectMaterial;
 
-
+    // Instantiated timeline bar image colors
+    public Color greenTimelineBarColor;
+    public Color yellowTimelineBarColor;
+    public Color orangeTimelineBarColor;
+    public Color blueTimelineBarColor;
+    public Color purpleTimelineBarColor;
+    public Color redTimelineBarColor;
 
     // The list of preview hit objects that have been spawned when the preview button has been pressed and the song timer has reached the spawn time for the hit object
     private List<GameObject> previewHitObjectList = new List<GameObject>();
@@ -124,7 +137,14 @@ public class PlacedObject : MonoBehaviour {
     bool hasSpawnedAllPreviewHitObjects; // Used for stopping the spawn of preview hit objects
 
     private MetronomePro metronomePro;
-   
+
+    private EditorUIManager editorUIManager; // UI manager for controlling UI elements
+
+    public Button moveHitObjectPositionInstructionButton; // The instructions on how to move a hit object in edit mode
+    public Button changeHitObjectTypeInstructionButton; // The instructinos on how to change a hit objects color in edit mode
+
+    public AudioSource menuSFXAudioSource;
+    public AudioClip colorChangedSound;
 
     // Use this for initialization
     void Start () {
@@ -150,6 +170,7 @@ public class PlacedObject : MonoBehaviour {
         placeObject = FindObjectOfType<PlaceObject>();
         metronomePro_Player = FindObjectOfType<MetronomePro_Player>();
         metronomePro = FindObjectOfType<MetronomePro>();
+        editorUIManager = FindObjectOfType<EditorUIManager>();
     }
 	
 	// Update is called once per frame
@@ -170,6 +191,23 @@ public class PlacedObject : MonoBehaviour {
                 hasPressedSpacebar = true;
             }
         }
+
+        // Check for key color change input if an instantiated editor hit object exists
+        if (instantiatedEditorHitObjectExists == true)
+        {
+            // Check for color change input
+            CheckForColorChangeInput();
+
+            // Show UI elements
+            ActivateEditorHitObjectToolTips();
+        }
+        else
+        {
+            // Hide UI elements and disable color change input
+            DeactivateEditorHitObjectToolTips();
+        }
+
+
 
         // Place a hit object only if the mouse has been clicked and the UI button has been clicked
         if (hasClickedUIButton == true)
@@ -211,7 +249,7 @@ public class PlacedObject : MonoBehaviour {
                 AddEditorHitObjectToList(editorPlacedHitObjectType);
             }
             // Green Key Pressed
-            if (Input.GetKeyDown(KeyCode.U))
+            if (Input.GetKeyDown(KeyCode.U) || Input.GetKey(KeyCode.S))
             {
                 // Set has pressed S to true
                 pressedKeyS = true;
@@ -223,7 +261,7 @@ public class PlacedObject : MonoBehaviour {
                 AddEditorHitObjectToList(editorPlacedHitObjectType);
             }
             // Yellow Key Pressed
-            if (Input.GetKeyDown(KeyCode.I))
+            if (Input.GetKeyDown(KeyCode.I) || Input.GetKey(KeyCode.D))
             {
                 // Set has pressed D to true
                 pressedKeyD = true;
@@ -235,7 +273,7 @@ public class PlacedObject : MonoBehaviour {
                 AddEditorHitObjectToList(editorPlacedHitObjectType);
             }
             // Orange Key Pressed
-            if (Input.GetKeyDown(KeyCode.O))
+            if (Input.GetKeyDown(KeyCode.O) || Input.GetKey(KeyCode.F))
             {
                 // Set has pressed F to true
                 pressedKeyF = true;
@@ -346,6 +384,16 @@ public class PlacedObject : MonoBehaviour {
 
         // DestroyInstantiatedEditorHitObject
         DestroyInstantiatedEditorHitObject();
+
+        // Set editor hit object to false
+        instantiatedEditorHitObjectExists = false;
+
+        // Destroy the special timeline objects
+        // Destroy(instantiatedSpecialTimeStartObject);
+        // Destroy(instantiatedSpecialTimeEndObject);
+
+        // Reset the special time key presses
+        // specialTimeKeyPresses = 0;
     }
 
     // Destroy the instantiatedEditorHitObject that is spawned when a timeline object has been clicked
@@ -379,6 +427,26 @@ public class PlacedObject : MonoBehaviour {
 
         return raycastTimelineObjectListIndex;
 
+    }
+
+    // Activate the instantiateEditorHitObjectEdit UI elements
+    private void ActivateEditorHitObjectToolTips()
+    {
+        // Activate the move hit object position button
+        moveHitObjectPositionInstructionButton.gameObject.SetActive(true);
+
+        // Activate the change hit object color button
+        changeHitObjectTypeInstructionButton.gameObject.SetActive(true);
+    }
+
+    // Hide the instantiateEditorHitObjectEdit UI elements
+    private void DeactivateEditorHitObjectToolTips()
+    {
+        // Activate the move hit object position button
+        moveHitObjectPositionInstructionButton.gameObject.SetActive(false);
+
+        // Activate the change hit object color button
+        changeHitObjectTypeInstructionButton.gameObject.SetActive(false);
     }
 
     // Save the changed instantiated editor objects position
@@ -751,7 +819,7 @@ public class PlacedObject : MonoBehaviour {
         pressedKeyL = false;
 
         // Reset specialTimeKeyPresses
-        specialTimeKeyPresses = 0;
+        //specialTimeKeyPresses = 0;
     }
 
     // Enable the beatmap preview starting with note 0
@@ -778,6 +846,11 @@ public class PlacedObject : MonoBehaviour {
         hasSpawnedAllPreviewHitObjects = false;
         previewHitObjectIndex = 0;
         songTimer = 0;
+        // DestroyInstantiatedEditorHitObject
+        DestroyInstantiatedEditorHitObject();
+
+        // Set instantiatedEditorHitObject to false
+        instantiatedEditorHitObjectExists = false;
     }
 
     // Toggle on and off when clicked, pause then resume when next clicked 
@@ -846,4 +919,115 @@ public class PlacedObject : MonoBehaviour {
             }
         
     }
+
+    // Change instantiated hit objects material
+    public void ChangeInstantiatedEditorHitObjectMaterial(string materialTypePass)
+    {
+        // Get the timelinebar selected handle image
+        Image instantiatedTimelineImage = instantiatedTimelineObjectList[raycastTimelineObjectListIndex].GetComponentInChildren<Image>();
+
+        // Get the renderer attached to the editor hit object
+        Renderer rend = instantiatedEditorHitObject.GetComponentInChildren<Renderer>();
+        // If the object has a renderer component change its material
+        if (rend != null)
+        {
+            // Change the material based on the type passed
+            switch (materialTypePass)
+            {
+                case "GREEN":
+                    instantiatedTimelineImage.color = greenTimelineBarColor;
+                    rend.material = greenEditorHitObjectMaterial;
+                    // Save the new color/type for the hit object in the list // the number is the type
+                    editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 3;
+                    // Update the preview list also
+                    objectTypeList[raycastTimelineObjectListIndex] = 3;
+                    break;
+                case "YELLOW":
+                    instantiatedTimelineImage.color = yellowTimelineBarColor;
+                    rend.material = yellowEditorHitObjectMaterial;
+                    // Save the new color/type for the hit object in the list // the number is the type
+                    editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 4;
+                    // Update the preview list also
+                    objectTypeList[raycastTimelineObjectListIndex] = 4;
+                    break;
+                case "ORANGE":
+                    instantiatedTimelineImage.color = orangeTimelineBarColor;
+                    rend.material = orangeEditorHitObjectMaterial;
+                    // Save the new color/type for the hit object in the list // the number is the type
+                    editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 5;
+                    // Update the preview list also
+                    objectTypeList[raycastTimelineObjectListIndex] = 5;
+                    break;
+                case "BLUE":
+                    instantiatedTimelineImage.color = blueTimelineBarColor;
+                    rend.material = blueEditorHitObjectMaterial;
+                    // Save the new color/type for the hit object in the list // the number is the type
+                    editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 0;
+                    // Update the preview list also
+                    objectTypeList[raycastTimelineObjectListIndex] = 0;
+                    break;
+                case "PURPLE":
+                    instantiatedTimelineImage.color = purpleTimelineBarColor;
+                    rend.material = purpleEditorHitObjectMaterial;
+                    // Save the new color/type for the hit object in the list // the number is the type
+                    editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 1;
+                    // Update the preview list also
+                    objectTypeList[raycastTimelineObjectListIndex] = 1;
+                    break;
+                case "RED":
+                    instantiatedTimelineImage.color = redTimelineBarColor;
+                    rend.material = redEditorHitObjectMaterial;
+                    // Save the new color/type for the hit object in the list // the number is the type
+                    editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 2;
+                    // Update the preview list also
+                    objectTypeList[raycastTimelineObjectListIndex] = 2;
+                    break;
+            }
+        }
+    }
+
+    // Check for color change input when a hit object has spawned
+    private void CheckForColorChangeInput()
+    {
+        // Check if number keys have been pressed, if so change the color of the hit object and timeline bars
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            PlayColorChangedSound();
+            ChangeInstantiatedEditorHitObjectMaterial("GREEN");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            PlayColorChangedSound();
+            ChangeInstantiatedEditorHitObjectMaterial("YELLOW");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            PlayColorChangedSound();
+            ChangeInstantiatedEditorHitObjectMaterial("ORANGE");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            PlayColorChangedSound();
+            ChangeInstantiatedEditorHitObjectMaterial("BLUE");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            PlayColorChangedSound();
+            ChangeInstantiatedEditorHitObjectMaterial("PURPLE");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            PlayColorChangedSound();
+            ChangeInstantiatedEditorHitObjectMaterial("RED");
+        }
+    }
+
+    // Play color changed sound effect
+    private void PlayColorChangedSound()
+    {
+        menuSFXAudioSource.PlayOneShot(colorChangedSound);
+    }
+
+
+
 }
