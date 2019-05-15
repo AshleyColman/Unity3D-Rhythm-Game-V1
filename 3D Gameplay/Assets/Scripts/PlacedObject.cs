@@ -127,12 +127,12 @@ public class PlacedObject : MonoBehaviour {
     // List of editorHitObjects (includes spawn time, object type and positions)
     public List<EditorHitObject> editorHitObjectList = new List<EditorHitObject>();
     // List of positions, spawn times and type for all hit objects
-    public List<Vector3> editorHitObjectPositionList = new List<Vector3>(); // The editorHitObject positions
-    List<float> xPositionList = new List<float>(); // The editorHitObject x position
-    List<float> yPositionList = new List<float>(); // The editorHitObject y position
-    List<float> zPositionList = new List<float>(); // The editorHitObject z position
-    public List<float> spawnTimeList = new List<float>(); // The editorHitObject spawntime
-    public List<int> objectTypeList = new List<int>(); // The editorHitObject type
+    //public List<Vector3> editorHitObjectPositionList = new List<Vector3>(); // The editorHitObject positions
+    //List<float> xPositionList = new List<float>(); // The editorHitObject x position
+    //List<float> yPositionList = new List<float>(); // The editorHitObject y position
+    //List<float> zPositionList = new List<float>(); // The editorHitObject z position
+    //public List<float> spawnTimeList = new List<float>(); // The editorHitObject spawntime
+    //public List<int> objectTypeList = new List<int>(); // The editorHitObject type
 
     bool hasSpawnedAllPreviewHitObjects; // Used for stopping the spawn of preview hit objects
 
@@ -346,13 +346,16 @@ public class PlacedObject : MonoBehaviour {
         StopBeatmapPreview();
 
         // Reset lists
-        editorHitObjectPositionList.Clear();
         editorHitObjectList.Clear();
+        /*
+        editorHitObjectPositionList.Clear();
+
         xPositionList.Clear();
         yPositionList.Clear();
         zPositionList.Clear();
         objectTypeList.Clear();
         spawnTimeList.Clear();
+        */
 
         // Destroy all preview hit objects
         DestroyAllPreviewHitObjects();
@@ -440,7 +443,7 @@ public class PlacedObject : MonoBehaviour {
     }
 
     // Hide the instantiateEditorHitObjectEdit UI elements
-    private void DeactivateEditorHitObjectToolTips()
+    public void DeactivateEditorHitObjectToolTips()
     {
         // Activate the move hit object position button
         moveHitObjectPositionInstructionButton.gameObject.SetActive(false);
@@ -454,8 +457,6 @@ public class PlacedObject : MonoBehaviour {
     {
         // Set the saved editor position to the new position of the current object/replace the old value
         editorHitObjectList[raycastTimelineObjectListIndex].hitObjectPosition = instantiatedEditorHitObject.transform.position;
-        // Update the positions list for preview notes
-        editorHitObjectPositionList[raycastTimelineObjectListIndex] = instantiatedEditorHitObject.transform.position;
     }
 
     // Removes the timeline object from the list
@@ -492,11 +493,6 @@ public class PlacedObject : MonoBehaviour {
             // Remove the editorHitObject tied to the timeline from the list
             editorHitObjectList.RemoveAt(nullTimelineObjectIndex);
 
-            // Remove the positions, type and spawn time information tied to this index in other lists
-            spawnTimeList.RemoveAt(nullTimelineObjectIndex);
-            editorHitObjectPositionList.RemoveAt(nullTimelineObjectIndex);
-            objectTypeList.RemoveAt(nullTimelineObjectIndex);
-
 
             Debug.Log("Removed at: " + nullTimelineObjectIndex);
         }
@@ -509,7 +505,6 @@ public class PlacedObject : MonoBehaviour {
     {
         // Slider change updates the spawn time for this editor hit object
         editorHitObjectList[editorHitObjectIndexPass].hitObjectSpawnTime = spawnTimePass;
-        spawnTimeList[editorHitObjectIndexPass] = spawnTimePass;
         Debug.Log("object: " + editorHitObjectIndexPass + "now: " + spawnTimePass);
     }
 
@@ -682,11 +677,6 @@ public class PlacedObject : MonoBehaviour {
         newEditorHitObject.hitObjectType = editorPlacedHitObjectType;
         newEditorHitObject.hitObjectSpawnTime = hitObjectSpawnTime;
 
-        // Add the information to the individual lists
-        editorHitObjectPositionList.Add(instantiatePosition);
-        spawnTimeList.Add(hitObjectSpawnTime);
-        objectTypeList.Add(editorPlacedHitObjectType);
-
         // Add the newEditorHitObject to the editorHitObjectList
         editorHitObjectList.Add(newEditorHitObject);
 
@@ -709,49 +699,21 @@ public class PlacedObject : MonoBehaviour {
 
     public void SaveListsToDatabase()
     {
-        // Clear the lists before rewriting back to them with the sorted information
-        editorHitObjectPositionList.Clear();
-        spawnTimeList.Clear();
-        objectTypeList.Clear();
-
         // Sort the editorHitObjects based on the spawn time
         SortListOrders();
 
         
-        for (int i = 0; i < editorHitObjectList.Count; i++)
-        {
-            // Get the hit object positions, spawn times and type and assign to variables
-            float xPosition = editorHitObjectList[i].hitObjectPosition.x;
-            float yPosition = editorHitObjectList[i].hitObjectPosition.y;
-            float zPosition = editorHitObjectList[i].hitObjectPosition.z;
-            float spawnTime = editorHitObjectList[i].hitObjectSpawnTime;
-            int objectType = editorHitObjectList[i].hitObjectType;
-
-            // Combine x y z for complete position of the editor hit object before adding to the list
-            Vector3 editorHitObjectPosition = new Vector3(xPosition, yPosition, zPosition);
-
-            // Add the positions, spawn time and type to their own lists for all hit objects
-            editorHitObjectPositionList.Add(editorHitObjectPosition);
-            xPositionList.Add(xPosition);
-            yPositionList.Add(yPosition);
-            zPositionList.Add(zPosition);
-            spawnTimeList.Add(spawnTime);
-            objectTypeList.Add(objectType);
-        }
-        
-    
-
         // Save to the database everything - spawn times, object type, positions
         for (int i = 0; i < editorHitObjectList.Count; i++)
         {
             // Add the positions to the database
-            Database.database.PositionX.Add(xPositionList[i]);
-            Database.database.PositionY.Add(yPositionList[i]);
-            Database.database.PositionZ.Add(zPositionList[i]);
+            Database.database.PositionX.Add(editorHitObjectList[i].hitObjectPosition.x);
+            Database.database.PositionY.Add(editorHitObjectList[i].hitObjectPosition.y);
+            Database.database.PositionZ.Add(editorHitObjectList[i].hitObjectPosition.z);
             // Add the spawn times to the database
-            Database.database.HitObjectSpawnTime.Add(spawnTimeList[i]);
+            Database.database.HitObjectSpawnTime.Add(editorHitObjectList[i].hitObjectSpawnTime);
             // Add the object type to the database
-            Database.database.ObjectType.Add(objectTypeList[i]);
+            Database.database.ObjectType.Add(editorHitObjectList[i].hitObjectType);
         }
 
     }
@@ -825,6 +787,8 @@ public class PlacedObject : MonoBehaviour {
     // Enable the beatmap preview starting with note 0
     public void EnableBeatmapPreview()
     {
+        // Sort the hit objects
+        SortListOrders();
         // Start the beatmap preview
         playBeatmapPreview = true;
     }
@@ -843,6 +807,9 @@ public class PlacedObject : MonoBehaviour {
     {
         // Remove all null objects in lists before playing the preview
         RemoveTimelineObject();
+        // Sort the objects
+        SortListOrders();
+
         hasSpawnedAllPreviewHitObjects = false;
         previewHitObjectIndex = 0;
         songTimer = 0;
@@ -898,18 +865,27 @@ public class PlacedObject : MonoBehaviour {
             {
                 hasSpawnedAllPreviewHitObjects = true;
             }
-
+        
             if (hasSpawnedAllPreviewHitObjects == false)
             {
-            previewHitObjectSpawnTime = (spawnTimeList[previewHitObjectIndex] - 1);
+            previewHitObjectSpawnTime = (editorHitObjectList[previewHitObjectIndex].hitObjectSpawnTime - 1);
                 if (songTimer >= previewHitObjectSpawnTime)
                 {
-                Debug.Log("spawning: " + previewHitObjectIndex + "at: " + metronomePro_Player.songAudioSource.time);
+                    Debug.Log("spawning: " + previewHitObjectIndex + "at: " + metronomePro_Player.songAudioSource.time);
                     // Set the preview hit object type by getting the saved type from the placed editor hit objects
-                    previewHitObjectType = objectTypeList[previewHitObjectIndex];
+                    previewHitObjectType = editorHitObjectList[previewHitObjectIndex].hitObjectType;
 
+                    float positionX = 0;
+                    float positionY = 0;
+                    float positionZ = 0;
+
+                    positionX = editorHitObjectList[previewHitObjectIndex].hitObjectPosition.x;
+                    positionY = editorHitObjectList[previewHitObjectIndex].hitObjectPosition.y;
+                    positionZ = editorHitObjectList[previewHitObjectIndex].hitObjectPosition.z;
                     // Set the preview hit object position by getting the saved position from the placed editor hit object
-                    previewHitObjectPosition = editorHitObjectPositionList[previewHitObjectIndex];
+                    previewHitObjectPosition = new Vector3(positionX, positionY, positionZ);
+
+
 
                     // Instantiate the preview hit object and add to the previewHitObjectList
                     previewHitObjectList.Add(Instantiate(previewHitObjects[previewHitObjectType], previewHitObjectPosition, Quaternion.Euler(0, 45, 0)));
@@ -939,48 +915,36 @@ public class PlacedObject : MonoBehaviour {
                     rend.material = greenEditorHitObjectMaterial;
                     // Save the new color/type for the hit object in the list // the number is the type
                     editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 3;
-                    // Update the preview list also
-                    objectTypeList[raycastTimelineObjectListIndex] = 3;
                     break;
                 case "YELLOW":
                     instantiatedTimelineImage.color = yellowTimelineBarColor;
                     rend.material = yellowEditorHitObjectMaterial;
                     // Save the new color/type for the hit object in the list // the number is the type
                     editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 4;
-                    // Update the preview list also
-                    objectTypeList[raycastTimelineObjectListIndex] = 4;
                     break;
                 case "ORANGE":
                     instantiatedTimelineImage.color = orangeTimelineBarColor;
                     rend.material = orangeEditorHitObjectMaterial;
                     // Save the new color/type for the hit object in the list // the number is the type
                     editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 5;
-                    // Update the preview list also
-                    objectTypeList[raycastTimelineObjectListIndex] = 5;
                     break;
                 case "BLUE":
                     instantiatedTimelineImage.color = blueTimelineBarColor;
                     rend.material = blueEditorHitObjectMaterial;
                     // Save the new color/type for the hit object in the list // the number is the type
                     editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 0;
-                    // Update the preview list also
-                    objectTypeList[raycastTimelineObjectListIndex] = 0;
                     break;
                 case "PURPLE":
                     instantiatedTimelineImage.color = purpleTimelineBarColor;
                     rend.material = purpleEditorHitObjectMaterial;
                     // Save the new color/type for the hit object in the list // the number is the type
                     editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 1;
-                    // Update the preview list also
-                    objectTypeList[raycastTimelineObjectListIndex] = 1;
                     break;
                 case "RED":
                     instantiatedTimelineImage.color = redTimelineBarColor;
                     rend.material = redEditorHitObjectMaterial;
                     // Save the new color/type for the hit object in the list // the number is the type
                     editorHitObjectList[raycastTimelineObjectListIndex].hitObjectType = 2;
-                    // Update the preview list also
-                    objectTypeList[raycastTimelineObjectListIndex] = 2;
                     break;
             }
         }

@@ -8,6 +8,7 @@ public class LeaderboardCreate : MonoBehaviour {
     public string leaderboardTableName;
     public BeatmapSetup beatmapSetup;
     string difficultySelected;
+    string beatmapCreator;
 
     void Start()
     {
@@ -54,8 +55,16 @@ public class LeaderboardCreate : MonoBehaviour {
     // Create a leaderboard table for this beatmap
     public void SetLeaderboardTableName()
     {
-        // Get the name of the user currently logged in
-        string beatmapCreator =  MySQLDBManager.username.Replace(' ', '_');
+        if (MySQLDBManager.loggedIn)
+        {
+            // Get the name of the user currently logged in
+            beatmapCreator = MySQLDBManager.username.Replace(' ', '_');
+        }
+        else
+        {
+            beatmapCreator = "GUEST";
+        }
+
 
         // Get the name of the beatmap song being charted
         string beatmapSong = beatmapSetup.songName.Replace(' ', '_');
