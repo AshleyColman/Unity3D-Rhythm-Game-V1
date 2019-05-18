@@ -95,8 +95,12 @@ public class SongSelectPreview : MonoBehaviour
         // Play song
         songAudioSource.clip = songDatabase.songClip[songClipChosenIndexPass];
         songAudioSource.volume = songVolume;
+
+        if (songPreviewStartTimePass >= 0 && songPreviewStartTimePass < songDatabase.songClip[songClipChosenIndexPass].length)
+        {
+            songAudioSource.time = songPreviewStartTimePass;
+        }
         songAudioSource.Play();
-        songAudioSource.time = songPreviewStartTimePass;
         playing = true;
         active = true;
         choseSong = false;

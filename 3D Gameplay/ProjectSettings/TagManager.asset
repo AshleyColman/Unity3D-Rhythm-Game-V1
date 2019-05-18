@@ -39,6 +39,10 @@ TagManager:
   - BeatmapKeys
   - BackgroundImage
   - PreviewHitObject
+  - SongDatabase
+  - HitSoundDatabase
+  - BeatsnapTimeline
+  - BeatsnapPoint
   layers:
   - Default
   - TransparentFX

@@ -16,6 +16,8 @@ public class HitSoundPreview : MonoBehaviour {
     // The hit sound selected number text
     public TextMeshProUGUI hitSoundSelectedNumberText;
 
+
+
     void Start()
     {
         hitSoundChosenIndex = 0;
@@ -23,6 +25,10 @@ public class HitSoundPreview : MonoBehaviour {
 
         // Update the selected number text
         hitSoundSelectedNumberText.text = hitSoundChosenIndex.ToString();
+
+
+        // Load the saved hit sound selected index if it exists
+        LoadPlayerPrefsHitSoundSelectedIndex();
     }
 
     void Update()
@@ -64,6 +70,31 @@ public class HitSoundPreview : MonoBehaviour {
         }
     }
 
+    // Set player prefs hit sound selected index 
+    private void SetPlayerPrefsHitSoundSelectedIndex()
+    {
+        PlayerPrefs.SetInt("hitSoundChosenIndex", hitSoundChosenIndex);
+        PlayerPrefs.Save();
+    }
+
+    // Load the hit sound selected index from the player prefs loading
+    private void LoadPlayerPrefsHitSoundSelectedIndex()
+    {
+        if (PlayerPrefs.HasKey("hitSoundChosenIndex"))
+        {
+            hitSoundChosenIndex = PlayerPrefs.GetInt("hitSoundChosenIndex");
+
+            UpdateHitSoundChosenIndexText();
+        }
+    }
+
+    // Update the selected number text
+    private void UpdateHitSoundChosenIndexText()
+    {
+        // Update the selected number text
+        hitSoundSelectedNumberText.text = hitSoundChosenIndex.ToString();
+    }
+
     // Increment the hit sound selected
     public void IncrementHitSoundSelected()
     {
@@ -79,6 +110,9 @@ public class HitSoundPreview : MonoBehaviour {
             hitSoundChosenIndex++;
             // Update the selected number text
             hitSoundSelectedNumberText.text = hitSoundChosenIndex.ToString();
+
+            // Set the new hit sound selected in the player prefs for saving
+            SetPlayerPrefsHitSoundSelectedIndex();
 
             // Play the new hit sound
             PlayHitSound();
@@ -100,6 +134,10 @@ public class HitSoundPreview : MonoBehaviour {
             hitSoundChosenIndex--;
             // Update the selected number text
             hitSoundSelectedNumberText.text = hitSoundChosenIndex.ToString();
+
+            // Set the new hit sound selected in the player prefs for saving
+            SetPlayerPrefsHitSoundSelectedIndex();
+
             // Play the hit sound
             PlayHitSound();
         }

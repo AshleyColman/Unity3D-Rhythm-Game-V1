@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using System;
 
 public class DestroyTimelineObject : MonoBehaviour {
 
@@ -17,8 +19,13 @@ public class DestroyTimelineObject : MonoBehaviour {
     private AudioClip clickedSoundClip;
     private AudioClip deletedSoundClip;
 
+
+    BeatsnapManager beatsnapManager;
+
     private void Start()
     {
+        beatsnapManager = FindObjectOfType<BeatsnapManager>();
+
         timelineObjectListIndex = 0;
 
         placedObject = FindObjectOfType<PlacedObject>();
@@ -48,7 +55,6 @@ public class DestroyTimelineObject : MonoBehaviour {
             deletedSoundClip = hitSoundDatabase.hitSoundClip[42];
         }
     }
-
 
     // Play deleted sound
     public void PlayDeletedSound()
@@ -95,9 +101,41 @@ public class DestroyTimelineObject : MonoBehaviour {
         if (metronome_Player != null)
         {
             timelineHitObjectSpawnTime = metronome_Player.UpdateTimelineHitObjectSpawnTimes(timelineSlider);
+            Debug.Log("timelineHitObjectSpawnTime: " + timelineHitObjectSpawnTime);
             // Send the new spawn time and the editorHitObject index to update
             placedObject.UpdateEditorHitObjectSpawnTime(timelineHitObjectSpawnTime, timelineObjectListIndex);
         }
+    }
+
+
+    // Snap the timeline hit object to the nearsest beat snap
+    public void SnapToNearestBeatsnap()
+    {
+        if (Input.GetMouseButton(0))
+        {
+
+            Debug.Log("run");
+            // Get the slider for this timeline hit object
+
+
+            // Get the slider value for this timeline hit object
+            float hitObjectSliderValue = timelineSlider.value;
+            //Debug.Log("slider value: " + hitObjectSliderValue);
+
+            // Detect which beatsnap slider value the hit object slider value is closest to
+
+            float nearest = beatsnapManager.beatsnapSliderValueList.Select(p => new { Value = p, Difference = Math.Abs(p - hitObjectSliderValue) })
+                      .OrderBy(p => p.Difference)
+                      .First().Value;
+
+
+            //Debug.Log("nearest: " + nearest);
+            // Set the hit object slider value to the closest beatsnap slider value
+            timelineSlider.value = nearest;
+
+            UpdateTimelineHitObjectSpawnTime();
+        }
+
     }
 
 }

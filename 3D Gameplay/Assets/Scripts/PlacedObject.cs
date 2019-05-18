@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using System.Linq;
+using System;
 
 public class PlacedObject : MonoBehaviour {
 
@@ -146,6 +147,13 @@ public class PlacedObject : MonoBehaviour {
     public AudioSource menuSFXAudioSource;
     public AudioClip colorChangedSound;
 
+    // The last beatsnap to have played (time/index in the tick list for metronome)
+    private int latestBeatsnapIndex;
+
+    // Beatsnap manager
+    BeatsnapManager beatsnapManager;
+
+
     // Use this for initialization
     void Start () {
 
@@ -171,6 +179,7 @@ public class PlacedObject : MonoBehaviour {
         metronomePro_Player = FindObjectOfType<MetronomePro_Player>();
         metronomePro = FindObjectOfType<MetronomePro>();
         editorUIManager = FindObjectOfType<EditorUIManager>();
+        beatsnapManager = FindObjectOfType<BeatsnapManager>();
     }
 	
 	// Update is called once per frame
@@ -215,9 +224,6 @@ public class PlacedObject : MonoBehaviour {
             // Blue Key Pressed
             if (Input.GetKeyDown(KeyCode.J))
             {
-                // Set has pressed J to true
-                pressedKeyJ = true;
-
                 // Set the type to BLUE as the J key has been pressed
                 editorPlacedHitObjectType = 0;
 
@@ -227,9 +233,6 @@ public class PlacedObject : MonoBehaviour {
             // Purple Key Pressed
             else if (Input.GetKeyDown(KeyCode.K))
             {
-                // Set has pressed K to true
-                pressedKeyK = true;
-
                 // Set the type to PURPLE as the K key has been pressed
                 editorPlacedHitObjectType = 1;
 
@@ -239,9 +242,6 @@ public class PlacedObject : MonoBehaviour {
             // Red Key Pressed
             else if (Input.GetKeyDown(KeyCode.L))
             {
-                // Set has pressed L to true
-                pressedKeyL = true;
-
                 // Set the type to RED as the L key has been pressed
                 editorPlacedHitObjectType = 2;
 
@@ -249,11 +249,8 @@ public class PlacedObject : MonoBehaviour {
                 AddEditorHitObjectToList(editorPlacedHitObjectType);
             }
             // Green Key Pressed
-            if (Input.GetKeyDown(KeyCode.U) || Input.GetKey(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.U) || Input.GetKeyDown(KeyCode.S))
             {
-                // Set has pressed S to true
-                pressedKeyS = true;
-
                 // Set the type to GREEN as the U key has been pressed
                 editorPlacedHitObjectType = 3;
 
@@ -261,11 +258,8 @@ public class PlacedObject : MonoBehaviour {
                 AddEditorHitObjectToList(editorPlacedHitObjectType);
             }
             // Yellow Key Pressed
-            if (Input.GetKeyDown(KeyCode.I) || Input.GetKey(KeyCode.D))
+            if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.D))
             {
-                // Set has pressed D to true
-                pressedKeyD = true;
-
                 // Set the type to YELLOW as the I key has been pressed
                 editorPlacedHitObjectType = 4;
 
@@ -273,11 +267,8 @@ public class PlacedObject : MonoBehaviour {
                 AddEditorHitObjectToList(editorPlacedHitObjectType);
             }
             // Orange Key Pressed
-            if (Input.GetKeyDown(KeyCode.O) || Input.GetKey(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.O) || Input.GetKeyDown(KeyCode.F))
             {
-                // Set has pressed F to true
-                pressedKeyF = true;
-
                 // Set the type to ORANGE as the O key has been pressed
                 editorPlacedHitObjectType = 5;
 
@@ -324,6 +315,37 @@ public class PlacedObject : MonoBehaviour {
             PlayBeatmapPreview();
         }
 
+    }
+
+    // Check the keys contained within the beatmap
+    private void CheckKeysForBeatmap()
+    {
+        for (int i = 0; i < editorHitObjectList.Count; i++)
+        {
+            int keyPressed = editorHitObjectList[i].hitObjectType;
+
+            switch (keyPressed)
+            {
+                case 0:
+                    pressedKeyJ = true;
+                    break;
+                case 1:
+                    pressedKeyK = true;
+                    break;
+                case 2:
+                    pressedKeyL = true;
+                    break;
+                case 3:
+                    pressedKeyS = true;
+                    break;
+                case 4:
+                    pressedKeyD = true;
+                    break;
+                case 5:
+                    pressedKeyF = true;
+                    break;
+            }
+        }
     }
 
     private void DestroyAllPreviewHitObjects()
@@ -422,8 +444,7 @@ public class PlacedObject : MonoBehaviour {
 
         // Get the index number for the timeline object passed in the instantiated list it was inserted into when instantiated
         raycastTimelineObjectListIndex = instantiatedTimelineObjectList.IndexOf(raycastTimelineObject);
-        Debug.Log(raycastTimelineObject.transform.name);
-        Debug.Log(raycastTimelineObjectListIndex);
+
 
         // Instantiate the hit object saved with this timeline index
         InstantiateEditorHitObject();
@@ -505,7 +526,6 @@ public class PlacedObject : MonoBehaviour {
     {
         // Slider change updates the spawn time for this editor hit object
         editorHitObjectList[editorHitObjectIndexPass].hitObjectSpawnTime = spawnTimePass;
-        Debug.Log("object: " + editorHitObjectIndexPass + "now: " + spawnTimePass);
     }
 
 
@@ -550,7 +570,7 @@ public class PlacedObject : MonoBehaviour {
     }
 
     // Instantiate a timeline object at the current song time
-    public float InstantiateTimelineObject(int instantiatedTimelineObjectTypePass)
+    public void InstantiateTimelineObject(int instantiatedTimelineObjectTypePass, float hitObjectSpawnTimePass)
     {
         // Get the handle position currently in the song to spawn the timeline object at
         handlePositionX = metronomePro_Player.songPointSliderHandle.transform.position.x;
@@ -569,22 +589,73 @@ public class PlacedObject : MonoBehaviour {
 
         // Add the instantiated timeline object to the list of instantiated timeline objects
         instantiatedTimelineObjectList.Add(timelineObject);
-        timelineSlider.value = metronomePro_Player.handleSlider.value;
 
         // Get the reference to the destroy timeline object script attached to the timeline object
         DestroyTimelineObject destroyTimelineObject = timelineObject.GetComponent<DestroyTimelineObject>();
 
+        /*
         // Set the timeline objects spawn time to the current time in the song
         float timelineObjectSpawnTime = 0;
         timelineObjectSpawnTime = metronomePro_Player.songAudioSource.time;
         destroyTimelineObject.timelineHitObjectSpawnTime = timelineObjectSpawnTime;
+        */
+
+        // Set the spawn time inside the object to the spawn time calculated from ticks previously
+        destroyTimelineObject.timelineHitObjectSpawnTime = hitObjectSpawnTimePass;
+
+        // Calculate the slider value based off the timeline hit object spawn time
+        float sliderValue = CalculateTimelineHitObjectSliderValue(hitObjectSpawnTimePass);
+        // Update the instantiated timeline hit object's slider to the correct value calculated from ticks
+        timelineSlider.value = sliderValue;
 
         // Increase the timeline object index
         timelineObjectIndex++;
-
-        // Return the timelineObjectSpawnTime
-        return timelineObjectSpawnTime;
     }
+
+    // Calculate the timeline editor hit object sliders value based off the tick time converted to percentage of 0-1 slider value
+    private float CalculateTimelineHitObjectSliderValue(float spawnTimePass)
+    {
+        // NEED TO CONSIDER OFFSET!
+
+        // Get how much % the spawn time is out of the entire clip length
+        float currentSongTimePercentage = (spawnTimePass / metronomePro.songAudioSource.clip.length);
+
+        // Calculate percentage of 1 based on percentage of currentSongTimePercentage
+        float sliderValue = (currentSongTimePercentage / 1);
+
+        return sliderValue;
+    }
+
+    // Get current beatsnap tick time
+    private float GetCurrentBeatsnapTime()
+    {
+        List<float> tickTimesList = new List<float>();
+
+        // The current tick index and time
+        int currentTickIndex = metronomePro.CurrentTick;
+        float currentTickTime = (float)metronomePro.songTickTimes[currentTickIndex];
+        tickTimesList.Add(currentTickTime);
+
+        // The next tick index and time
+        int nextTickIndex = metronomePro.CurrentTick + 1;
+        float nextTickTime = (float)metronomePro.songTickTimes[nextTickIndex];
+        tickTimesList.Add(nextTickTime);
+
+        // Get the time the user pressed the key down
+        float userPressedTime = metronomePro_Player.songAudioSource.time;
+
+        // Check which time the users press was closest to
+        float closestTime = tickTimesList.Select(p => new { Value = p, Difference = Math.Abs(p - userPressedTime) })
+        .OrderBy(p => p.Difference)
+        .First().Value;
+
+        // Snap the hit object to this time
+        float hitObjectSpawnTime = closestTime;
+
+        return closestTime;
+    }
+
+
 
     // Instantiate a special time start timeline object on the timeline
     public void InstantiateSpecialTimeTimelineObject(string specialTimeTypePass)
@@ -658,30 +729,54 @@ public class PlacedObject : MonoBehaviour {
     // Add a new editor hit object to the editorHitObjectList saving the spawn times, positions and object type. Instantiate a timeline object for this object also
     public void AddEditorHitObjectToList(int objectTypePass)
     {
-        // Set a new vector 3 based off the editor hit object position in the scene
-        float x = editorHitObject.transform.position.x;
-        float y = 10;
-        float z = editorHitObject.transform.position.z;
+        if (placeObject.hasInstantiated == true)
+        {
+            // Check if another hit object has the same spawn time based off ticks, if another hit object exists do not instantiate or add to the list
+            float hitObjectSpawnTime = GetCurrentBeatsnapTime();
+            bool objectSpawnTimeIsTaken = false;
 
-        // Set the instantiate position to the editor hit object position but with a Y of 0
-        instantiatePosition = new Vector3(x, y, z);
-        InstantiateEditorPlacedHitObject(instantiatePosition, editorPlacedHitObjectType);
+            // Check through all the editor hit objects in the list, check if the spawn time exists already
+            for (int i = 0; i < editorHitObjectList.Count; i++)
+            {
+                if (hitObjectSpawnTime == editorHitObjectList[i].hitObjectSpawnTime)
+                {
+                    objectSpawnTimeIsTaken = true;
+                    break;
+                }
+            }
 
-        // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
-        // Retrieve the spawn time from the current time in the song player
-        float hitObjectSpawnTime = InstantiateTimelineObject(objectTypePass);
+            // If the objects spawn time does not exist/is not taken, allow instantiation of another hit object
+            if (objectSpawnTimeIsTaken == false)
+            {
+                // Set a new vector 3 based off the editor hit object position in the scene
+                float x = editorHitObject.transform.position.x;
+                float y = 10;
+                float z = editorHitObject.transform.position.z;
 
-        // Create a new editor hit object (class object) and assign all the variables such as position, spawn time and type
-        EditorHitObject newEditorHitObject = new EditorHitObject();
-        newEditorHitObject.hitObjectPosition = instantiatePosition;
-        newEditorHitObject.hitObjectType = editorPlacedHitObjectType;
-        newEditorHitObject.hitObjectSpawnTime = hitObjectSpawnTime;
+                // Set the instantiate position to the editor hit object position but with a Y of 0
+                instantiatePosition = new Vector3(x, y, z);
+                InstantiateEditorPlacedHitObject(instantiatePosition, editorPlacedHitObjectType);
 
-        // Add the newEditorHitObject to the editorHitObjectList
-        editorHitObjectList.Add(newEditorHitObject);
+                // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
+                InstantiateTimelineObject(objectTypePass, hitObjectSpawnTime);
 
-        // Reorder the editorHitObject list
-        SortListOrders();
+                // Create a new editor hit object (class object) and assign all the variables such as position, spawn time and type
+                EditorHitObject newEditorHitObject = new EditorHitObject();
+                newEditorHitObject.hitObjectPosition = instantiatePosition;
+                newEditorHitObject.hitObjectType = editorPlacedHitObjectType;
+                newEditorHitObject.hitObjectSpawnTime = hitObjectSpawnTime;
+
+                // Add the newEditorHitObject to the editorHitObjectList
+                editorHitObjectList.Add(newEditorHitObject);
+
+                // Reorder the editorHitObject list
+                SortListOrders();
+            }
+            else
+            {
+                // Do not instantiate a new editor hit object
+            }
+        }
     }
 
     // Sort all lists based on spawn time so they're in order

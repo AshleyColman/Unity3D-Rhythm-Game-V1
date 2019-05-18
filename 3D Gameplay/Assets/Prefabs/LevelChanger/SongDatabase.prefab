@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114249757644139790}
   m_Layer: 0
   m_Name: SongDatabase
-  m_TagString: Untagged
+  m_TagString: SongDatabase
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -35,7 +35,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1606035032517132}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 433.392, y: 418.47913, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -241,3 +241,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 4d193c6c3a49a194f963a1247a309b66, type: 3}
   - {fileID: 8300000, guid: 7ab997f4e50db2741a4888bfdfc80e55, type: 3}
   - {fileID: 8300000, guid: 144ea87b65334754ca823024fc02b3bd, type: 3}
+  - {fileID: 8300000, guid: e4f112833c7e4684a92e834b9d3584eb, type: 3}
+  - {fileID: 8300000, guid: 6694d5d583f02964e99ef77f4cca6b35, type: 3}
+  - {fileID: 8300000, guid: 1f7d14149f124234ab30057414065054, type: 3}
+  - {fileID: 8300000, guid: aba8f02f8a06587419d5b232f7649662, type: 3}
+  - {fileID: 8300000, guid: cf850b9ffef6aa0418bcb9fc2c478f95, type: 3}
+  - {fileID: 8300000, guid: 5c5c0e779a9b00148a34f23bac95b606, type: 3}
+  - {fileID: 8300000, guid: 2d1cffe1c79765245beb50f7d67301cd, type: 3}

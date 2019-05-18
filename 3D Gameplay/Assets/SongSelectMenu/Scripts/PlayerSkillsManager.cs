@@ -86,6 +86,10 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         PlayFadeSpeedSelectedAnimation();
 
+        // Load the selected fade speed index from player prefs if it exists
+        LoadPlayerPrefsFadeSpeedSelectedIndex();
+
+
         // Default multiplier is 100
         scoreMultiplier = 100;
     }
@@ -460,6 +464,9 @@ public class PlayerSkillsManager : MonoBehaviour {
         else
         {
             fadeSpeedSelectedIndex++;
+            // Save the fade speed index in player prefs
+            SetPlayerPrefsFadeSpeedSelectedIndex();
+
             PlayFadeSpeedSelectedAnimation();
         }
     }
@@ -475,9 +482,31 @@ public class PlayerSkillsManager : MonoBehaviour {
         else
         {
             fadeSpeedSelectedIndex--;
+            // Save the fade speed selected index in player prefs
+            SetPlayerPrefsFadeSpeedSelectedIndex();
+
             PlayFadeSpeedSelectedAnimation();
         }
     }
+
+    // Set player prefs fade speed selected index
+    private void SetPlayerPrefsFadeSpeedSelectedIndex()
+    {
+        PlayerPrefs.SetInt("fadeSpeedSelectedIndex", fadeSpeedSelectedIndex);
+        PlayerPrefs.Save();
+    }
+
+    // Load the fade speed selected index from the player prefs loading
+    private void LoadPlayerPrefsFadeSpeedSelectedIndex()
+    {
+        if (PlayerPrefs.HasKey("fadeSpeedSelectedIndex"))
+        {
+            fadeSpeedSelectedIndex = PlayerPrefs.GetInt("fadeSpeedSelectedIndex");
+
+            PlayFadeSpeedSelectedAnimation();
+        }
+    }
+
 
     // Check fade speed selected and play animation in song select scene
     public void PlayFadeSpeedSelectedAnimation()
