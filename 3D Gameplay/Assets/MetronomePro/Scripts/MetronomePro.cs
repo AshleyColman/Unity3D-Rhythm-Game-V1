@@ -56,6 +56,8 @@ public class MetronomePro : MonoBehaviour {
 
 	public bool neverPlayed = true;
 
+    private int division;
+
 	void Start () {
 		imgBeat1.color = Color.gray;
 		imgBeat2.color = Color.gray;
@@ -89,6 +91,12 @@ public class MetronomePro : MonoBehaviour {
 		}
 	}
 
+    // Update the beatsnap division
+    public void UpdateBeatsnapDivision(int _division)
+    {
+        division = _division;
+    }
+
 	// Set the new Offset when is playing
 	public void UpdateOffset () {
 		try {
@@ -102,7 +110,6 @@ public class MetronomePro : MonoBehaviour {
 			Debug.Log ("Please enter the new Offset value correctly.");
 		}
 	}
-
 
 	void SetDelay () {
 		bool isPlaying = false;
@@ -154,13 +161,32 @@ public class MetronomePro : MonoBehaviour {
 		var tmpInterval = 60f / Bpm;
 		interval = tmpInterval / multiplier;
 
+            // Check the division, based on this calculate the intervals
+            switch (division)
+            {
+                case 0:
+                    // No division
+                    break;
+                case 8:
+                    interval = interval / 2;
+                    break;
+                case 16:
+                    interval = interval / 4;
+                    break;
+                case 32:
+                    //interval = interval / 2;
+                    break;
+            }
+
 		int i = 0;
 
 		songTickTimes.Clear ();
 
 			while (interval * i <= songAudioSource.clip.length) {
 				songTickTimes.Add ((interval * i) + (OffsetMS / 1000f));
-				i++;
+                i++;
+
+  
 			}
 
 			active = true;

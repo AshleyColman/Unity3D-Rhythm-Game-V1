@@ -43,8 +43,6 @@ public class BeatsnapManager : MonoBehaviour {
 
     bool hasCheckedTickDifference;
 
-    float offset;
-
     float sliderValue;
 
     private void Start()
@@ -68,13 +66,10 @@ public class BeatsnapManager : MonoBehaviour {
         // Calculate the intervals
         metronomePro.CalculateIntervals();
 
+        /*
             // Based off the difference for song tick time slider value, use the difference to instantiate the remaining song tick time objects
             if (hasCheckedTickDifference == false)
             {
-                tickDifference = ((float)metronomePro.songTickTimes[1] - (float)metronomePro.songTickTimes[0]);
-
-                tickTimePercentage = (tickDifference / songAudioSource.clip.length);
-
                 // tick time = 6
                 // song duration = 60 seconds
                 // get percentage
@@ -83,19 +78,30 @@ public class BeatsnapManager : MonoBehaviour {
                 // 10% of 1 = 0.1
                 // slider value = 0.1
 
+                // Get tick time
+                // Convert to slider value
+                // Set timeline bar to that value when spawned
+
+
+                tickDifference = ((float)metronomePro.songTickTimes[1] - (float)metronomePro.songTickTimes[0]);
+                tickTimePercentage = (tickDifference / songAudioSource.clip.length);
+
                 // Calculate percentage of 1 based on percentage of songPercentage
                 sliderValue = (tickTimePercentage / 1);
 
                 // Get the difference for 1 tick for the slider value
                 timelineValueDifferencePerTick = sliderValue;
+
         }
+
+        */
 
          // Instantiate a beatsnap object at the current timeline's handle position
          StartCoroutine(GraduallyInstantiate());
     }
 
     // Instantiate beatsnap timeline object
-    private void InstantiateBeatsnapTimelineObject()
+    private void InstantiateBeatsnapTimelineObject(int iCountPass)
     {
         // Instantiate by ignoring the y? 
 
@@ -105,14 +111,50 @@ public class BeatsnapManager : MonoBehaviour {
         // Add the beatsnap game object to the list of instantiated beatsnap timeline objects, and instantiate in the game
         instantiatedBeatsnapTimelineObjectList.Add(instantiatedBeatsnap);
 
+
+        /*
+        // Add the offset slider value to the tick slider value also for the first tick, else only add the tick per difference value to each slider
+        if (iCountPass == 0)
+        {
+            //HOW MUCH % SLIDER VALUE THE OFFSET IS, THEN ADD IT TO THE FIRST ONE
+            // Get the offset in millisconds
+            float offset = ((float)metronomePro.OffsetMS / 1000);
+
+            // Get how much % the offset is out of the entire song
+            float offsetPercentage = (offset / songAudioSource.clip.length);
+
+            // Calculate percentage of 1 based on percentage of offsetPercentage
+            float offsetSliderValue = (offsetPercentage / 1);
+
+            // For the first tick time add the offset slider value + the timeline value difference per tick
+            instantiatedSliderValue += (timelineValueDifferencePerTick + offsetSliderValue);
+        }
+        else
+        {
+            // Increment the instantiated slider value
+            instantiatedSliderValue += timelineValueDifferencePerTick;
+        }
+        
+
         // Increment the instantiated slider value
         instantiatedSliderValue += timelineValueDifferencePerTick;
 
         // Set the timeline slider value to the current song time handles value
         beatsnapPoint.value = instantiatedSliderValue;
+        */
+
+
+        // Get how much % the spawn time is out of the entire clip length
+        float currentSongTimePercentage = ((float)metronomePro.songTickTimes[iCountPass] / metronomePro.songAudioSource.clip.length);
+
+        // Calculate percentage of 1 based on percentage of currentSongTimePercentage
+        float sliderValue = (currentSongTimePercentage / 1);
+
+        // Set the timeline slider value to the tick time converted value 
+        beatsnapPoint.value = sliderValue;
 
         // Add the slider value for the beatsnap to the list
-        beatsnapSliderValueList.Add(instantiatedSliderValue);
+        beatsnapSliderValueList.Add(beatsnapPoint.value);
     }
 
     //This coroutine gradually creates gameobjects of the given prefab.
@@ -121,31 +163,11 @@ public class BeatsnapManager : MonoBehaviour {
         // Loop through all song tick times and set the song time to the tick time, moving the slider, instantiate a beatsnap timeline object at the timeline position
         for (int iCount = 0; iCount < metronomePro.songTickTimes.Count; iCount++)
         {
-            if (iCount == 0)
-            {
-                // Get the offset in millisconds
-                float offset = ((float)metronomePro.OffsetMS / 1000);
-
-                // Wait for the offset time before instantiating the first 
-                //yield return new WaitForSeconds(offset);
-                // THIS IS WRONG - CALCULATE HOW MUCH % SLIDER VALUE THE OFFSET IS, THEN ADD IT TO THE FIRST ONE
-
-
-
-                // Instantiate the beatsnap timeline object
-                InstantiateBeatsnapTimelineObject();
-                // Set the beatsnap time for the timeline object
-                SetBeatsnapTime(iCount);
-            }
-            else
-            {
-                // Instantiate the beatsnap timeline object
-                InstantiateBeatsnapTimelineObject();
-                // Set the beatsnap time for the timeline object
-                SetBeatsnapTime(iCount);
-                yield return new WaitForSeconds(instantiationTime);
-            }
-
+            // Instantiate the beatsnap timeline object
+            InstantiateBeatsnapTimelineObject(iCount);
+            // Set the beatsnap time for the timeline object
+            SetBeatsnapTime(iCount);
+            yield return new WaitForSeconds(instantiationTime);
         }
     }
 
@@ -173,6 +195,8 @@ public class BeatsnapManager : MonoBehaviour {
         tickTimePercentage = 0f;
 
         hasCheckedTickDifference = false;
+
+        beatsnapSliderValueList.Clear();
     }
 
     // Destroy all instantiatedBeatsnapTimelineObjects

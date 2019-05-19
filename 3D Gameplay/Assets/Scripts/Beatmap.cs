@@ -35,4 +35,10 @@ public class Beatmap
     public bool pressedKeyL;
 
     public float songPreviewStartTime;
+
+
+
+    // Timing information for the beatmap from the metronome
+    public double BPM;
+    public double offsetMS;
 }

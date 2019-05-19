@@ -623,6 +623,7 @@ public class PlacedObject : MonoBehaviour {
         // Calculate percentage of 1 based on percentage of currentSongTimePercentage
         float sliderValue = (currentSongTimePercentage / 1);
 
+        Debug.Log("slider value: " + sliderValue);
         return sliderValue;
     }
 
@@ -652,7 +653,7 @@ public class PlacedObject : MonoBehaviour {
         // Snap the hit object to this time
         float hitObjectSpawnTime = closestTime;
 
-        return closestTime;
+        return hitObjectSpawnTime;
     }
 
 

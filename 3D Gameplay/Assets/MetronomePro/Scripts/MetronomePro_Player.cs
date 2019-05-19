@@ -51,8 +51,8 @@ public class MetronomePro_Player : MonoBehaviour
     public double Bpm = 128;
     public double OffsetMS = 100;
 
-    public int Step = 4;
-    public int Base = 4;
+    private int Step = 4;
+    private int Base = 4;
 
     float amount;
 

@@ -12,7 +12,7 @@ public class Database : MonoBehaviour {
     public BeatmapSetup beatmapSetup;
     public LeaderboardCreate leaderboardCreate;
     public PlacedObject placedObject;
-
+    public MetronomePro metronomePro;
 
     string FILE_EXTENSION = ".dia";
 
@@ -93,7 +93,11 @@ public class Database : MonoBehaviour {
     public bool loadedPressedKeyK;
     public bool loadedPressedKeyL;
 
-    
+    public double BPM;
+    public double offsetMS;
+
+    public double loadedBPM;
+    public double loadedOffsetMS;
 
     private void Awake()
     {
@@ -105,6 +109,7 @@ public class Database : MonoBehaviour {
     {
         beatmapSetup = FindObjectOfType<BeatmapSetup>();
         placedObject = FindObjectOfType<PlacedObject>();
+        metronomePro = FindObjectOfType<MetronomePro>();
     }
     public void Save()
     {
@@ -153,6 +158,10 @@ public class Database : MonoBehaviour {
         songClipChosenIndex = beatmapSetup.songClipChosenIndex;
         songPreviewStartTime = beatmapSetup.songPreviewStartTime;
 
+        // Timing information for the beatmap from the metronome
+        BPM = metronomePro.Bpm;
+        offsetMS = metronomePro.OffsetMS;
+
         // Save beatmap information
         beatmap.songName = songName;
         beatmap.songArtist = songArtist;
@@ -164,6 +173,10 @@ public class Database : MonoBehaviour {
         beatmap.beatmapExtraDifficultyLevel = beatmapExtraDifficultyLevel;
         beatmap.songClipChosenIndex = songClipChosenIndex;
         beatmap.songPreviewStartTime = songPreviewStartTime;
+
+        // Timing information for the beatmap from the metronome
+        beatmap.BPM = BPM;
+        beatmap.offsetMS = offsetMS;
 
         // Save leaderboard table name
         beatmap.leaderboardTableName = leaderboardTableName;
@@ -257,6 +270,10 @@ public class Database : MonoBehaviour {
         loadedSongClipChosenIndex = beatmap.songClipChosenIndex;
         loadedSongPreviewStartTime = beatmap.songPreviewStartTime;
 
+        // Timing information for the beatmap from the metronome
+        loadedBPM = beatmap.BPM;
+        loadedOffsetMS = beatmap.offsetMS;
+
         // Load keys pressed
         loadedPressedKeyS = beatmap.pressedKeyS;
         loadedPressedKeyD = beatmap.pressedKeyD;
@@ -288,6 +305,9 @@ public class Database : MonoBehaviour {
         loadedbeatmapAdvancedDifficultyLevel = "";
         loadedbeatmapExtraDifficultyLevel = "";
         loadedSongPreviewStartTime = 0;
+
+        loadedBPM = 0;
+        loadedOffsetMS = 0;
 
         loadedSongClipChosenIndex = 0;
         loadedLeaderboardTableName = "";

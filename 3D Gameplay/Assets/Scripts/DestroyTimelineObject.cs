@@ -22,6 +22,8 @@ public class DestroyTimelineObject : MonoBehaviour {
 
     BeatsnapManager beatsnapManager;
 
+    public GameObject visibleTracker;
+
     private void Start()
     {
         beatsnapManager = FindObjectOfType<BeatsnapManager>();
