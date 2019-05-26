@@ -9,8 +9,7 @@ public class Login : MonoBehaviour {
 
     public TMP_InputField usernameInputField;
     public TMP_InputField passwordInputField;
-    public TextMeshProUGUI usernameFieldDescription;
-    public TextMeshProUGUI passwordFieldDescription;
+    public Image incorrectDetailsImage;
     public Button submitButton;
     public Button loggedInCanvas;
     public Button loginCanvas;
@@ -63,14 +62,11 @@ public class Login : MonoBehaviour {
             MySQLDBManager.username = usernameInputField.text;
             DisableLoginCanvas();
             EnableLoggedInCanvas();
-
-            // Disable the loading icon
-            DisableAccountProgressLoadingIcon();
         }
         // Error
         if (www.downloadHandler.text == "1")
         {
-            usernameFieldDescription.gameObject.SetActive(true);
+            incorrectDetailsImage.gameObject.SetActive(true);
             Debug.Log("error");
 
             // Disable the loading icon

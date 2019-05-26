@@ -9,6 +9,7 @@ public class Registration : MonoBehaviour {
 
     public TMP_InputField usernameInputField;
     public TMP_InputField passwordInputField;
+    public Image incorrectDetailsImage;
     public TextMeshProUGUI usernameFieldDescription;
     public TextMeshProUGUI passwordFieldDescription;
     public Button submitButton;
@@ -20,6 +21,9 @@ public class Registration : MonoBehaviour {
 
     // The loading icon for logging in and signing up
     public GameObject accountProgressIcon;
+
+    // Press anywhere text
+    public TextMeshProUGUI pressAnywhereText;
 
     void Update()
     {
@@ -81,12 +85,17 @@ public class Registration : MonoBehaviour {
 
             // Disable the loading icon
             DisableAccountProgressLoadingIcon();
+
+            // Update press anywhere text
+            pressAnywhereText.text = "Account created successfully";
         }
         else
         {
             error = "error";
             Debug.Log("User creation failed.");
             Debug.Log(www.downloadHandler.text);
+
+            incorrectDetailsImage.gameObject.SetActive(true);
 
             // Disable the loading icon
             DisableAccountProgressLoadingIcon();

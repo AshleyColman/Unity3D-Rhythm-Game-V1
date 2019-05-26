@@ -20,13 +20,10 @@ public class Menu : MonoBehaviour {
     public TextMeshProUGUI modeDescriptionText;
     public Animator modeDescriptionTextAnimator;
 
-    string playTextValue = "PLAY: Complete against others on community created Beatmaps";
-    string createTextValue = "CREATE: Create your very own Beatmap for others to play";
-    string optionTextValue = "OPTIONS: Coming soon";
-    string discordTextValue = "DISCORD: Join the Discord community <3";
-    string exitTextValue = "EXIT: Thanks for playing!";
-    string registerTextValue = "REGISTER: Create an account to track progress and compete on the leaderboards";
-    string loginTextValue = "LOGIN: Login to your existing account";
+    string playTextValue = "Complete against others on player created beatmaps";
+    string createTextValue = "Create your very own beatmap for others to play";
+    string discordTextValue = "Join the discord channel to get access to more beatmaps and meet other players";
+    string exitTextValue = "Thanks for playing!";
 
     void Start()
     {
@@ -95,38 +92,24 @@ public class Menu : MonoBehaviour {
 
     public void UpdatePage(string buttonSelectedPass)
     {
-        if (buttonSelectedPass == "PLAY")
+        switch (buttonSelectedPass)
         {
-            modeDescriptionText.text = playTextValue;
+            case "PLAY":
+                modeDescriptionText.text = playTextValue;
+                break;
+            case "CREATE":
+                modeDescriptionText.text = createTextValue;
+                break;
+            case "DISCORD":
+                modeDescriptionText.text = discordTextValue;
+                break;
+            case "EXIT":
+                modeDescriptionText.text = exitTextValue;
+                break;
+            default:
+                modeDescriptionText.text = "";
+                break;
         }
-        if (buttonSelectedPass == "DISCORD")
-        {
-            modeDescriptionText.text = discordTextValue;
-        }
-        if (buttonSelectedPass == "CREATE")
-        {
-            modeDescriptionText.text = createTextValue;
-
-        }
-        if (buttonSelectedPass == "OPTIONS")
-        {
-            modeDescriptionText.text = optionTextValue;
-        }
-        if (buttonSelectedPass == "EXIT")
-        {
-            modeDescriptionText.text = exitTextValue;
-        }
-        if (buttonSelectedPass == "REGISTER")
-        {
-            modeDescriptionText.text = registerTextValue;
-        }
-        if (buttonSelectedPass == "LOGIN")
-        {
-            modeDescriptionText.text = loginTextValue;
-        }
-
-        // Play text animation
-        modeDescriptionTextAnimator.Play("ModeDescriptionTextAnimation");
     }
 
     // Close the game

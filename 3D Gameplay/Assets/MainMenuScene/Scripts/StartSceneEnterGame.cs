@@ -1,46 +1,72 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class StartSceneEnterGame : MonoBehaviour {
 
-    public GameObject MainMenuCanvas;
-    public GameObject StartMenuCanvas;
     public AudioSource MenuSFXAudioSource;
     public AudioClip MenuSFXMenuSourceClip;
-    bool hasPressedEnter;
-    public Animator StartMenuCanvasAnimator;
     private MetronomeForEffects metronomeForEffects;
+
+    public TextMeshProUGUI pressAnywhereText;
+
+    public GameObject SignupAndLoginPanel;
+
+    public GameObject[] pressAnywhereDiamonds = new GameObject[2];
+
+    private bool hasClicked;
+
     // Use this for initialization
     void Start () {
         metronomeForEffects = FindObjectOfType<MetronomeForEffects>();
-        hasPressedEnter = false;
+        hasClicked = false;
         MenuSFXAudioSource.clip = MenuSFXMenuSourceClip;
     }
 
     void Update()
     {
-
-        // If enter is pressed load the next scene and play sound
-        if (Input.GetKey("return") && hasPressedEnter == false || Input.GetMouseButtonDown(0) && hasPressedEnter == false)
+        // If user presses left click on title screen
+        if (Input.GetMouseButtonDown(0) && hasClicked == false)
         {
+            // Show the login panel
+            ShowLoginPanel();
+
+            // Set to true
+            hasClicked = true;
+
+            // Play sound effect
             MenuSFXAudioSource.PlayOneShot(MenuSFXMenuSourceClip);
-            StartCoroutine(PlayCanvasSwipAnimation());
-            hasPressedEnter = true;
         }
     }
 
-    private IEnumerator PlayCanvasSwipAnimation()
+    private void ShowLoginPanel()
     {
-        metronomeForEffects.enabled = false;
-        StartMenuCanvasAnimator.Play("CanvasSwipAnimation");
+        // Show the login/sign up buttons
+        pressAnywhereText.text = "Create a new account or sign into an existing one";
 
-        MainMenuCanvas.gameObject.SetActive(true);
+        // Activate the signup and login panel
+        SignupAndLoginPanel.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(1f);
+        // Disable the press anywhere diamonds
+        for (int i = 0; i < pressAnywhereDiamonds.Length; i++)
+        {
+            pressAnywhereDiamonds[i].gameObject.SetActive(false);
+        }
+    }
 
-        StartMenuCanvas.gameObject.SetActive(false);
+    private void EnterGame()
+    {
+        // Play sound effect
+        MenuSFXAudioSource.Play();
 
-        metronomeForEffects.enabled = true;
+        // Update press anywhere text
+        pressAnywhereText.text = "Select a mode";
+
+    }
+
+    private void EnableModeButtons()
+    {
+
     }
 }

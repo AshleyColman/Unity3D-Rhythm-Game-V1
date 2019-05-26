@@ -43,6 +43,7 @@ TagManager:
   - HitSoundDatabase
   - BeatsnapTimeline
   - BeatsnapPoint
+  - AudioSource
   layers:
   - Default
   - TransparentFX

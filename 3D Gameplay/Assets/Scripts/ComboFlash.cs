@@ -10,9 +10,13 @@ public class ComboFlash : MonoBehaviour {
     private float nextComboFlashCombo; // Combo required for combo flash
     private bool hasFlashed; // Used for making sure the combo only flashes once
     private bool hasFlashedPreviously;
-    private bool canFlash; 
+    private bool canFlash;
+
+    bool previousComboFlashRight; // Was the previous flash from the right side?
+
     void Start()
     {
+        previousComboFlashRight = false; // Set to false at the start so the first flash is on the right side
         currentCombo = 0f;
         nextComboFlashCombo = 10f;
         hasFlashed = false;
@@ -57,6 +61,18 @@ public class ComboFlash : MonoBehaviour {
     // Animate the flash on screen
     public void FlashComboFlashImage()
     {
-        comboFlashAnimator.Play("ComboFlashAnimation");
+        // Do a left or right side flash by checking whether the last combo flash was the right side
+        if (previousComboFlashRight == false)
+        {
+            // Play the right side combo flash animation
+            comboFlashAnimator.Play("ComboFlashAnimation");
+            previousComboFlashRight = true;
+        }
+        else if (previousComboFlashRight == true)
+        {
+            // Play the left side combo flash animation
+            comboFlashAnimator.Play("ComboFlashAnimationLeft");
+            previousComboFlashRight = false;
+        }
     }
 }
