@@ -15,10 +15,11 @@ public class MetronomeForEffects : MonoBehaviour
     public bool active = false;
 
     private Animator metronomeEffectsMainMenuCanvasAnimator;
+    public Animator mainMenuCanvasFlashAnimator;
     private LevelChanger levelChanger;
 
-    public double Bpm = 140.0f;
-    public double OffsetMS = 0;
+    public double Bpm = 170.0f;
+    public double OffsetMS = 1000;
 
     public int Step = 4;
     public int Base = 4;
@@ -36,9 +37,11 @@ public class MetronomeForEffects : MonoBehaviour
     private AudioSource songAudioSource;
     private GameObject songAudioGameObject;
 
-    float timer;
+    public float timer;
 
     int currentTick;
+
+    int flashTick;
 
     private void Start()
     {
@@ -47,6 +50,8 @@ public class MetronomeForEffects : MonoBehaviour
         songAudioGameObject = GameObject.FindGameObjectWithTag("AudioSource");
         songAudioSource = songAudioGameObject.GetComponent<AudioSource>();
         CalculateIntervals();
+
+        flashTick = 2;
     }
 
     public void GetSongData(double _bpm, double _offsetMS, int _base, int _step)
@@ -96,6 +101,7 @@ public class MetronomeForEffects : MonoBehaviour
             // Play canvas animation on start scene
             metronomeEffectsMainMenuCanvasAnimator.Play("MetronomeEffectsMainMenuCanvasAnimation");
         }
+
     }
 
     private void Update()
@@ -124,9 +130,22 @@ public class MetronomeForEffects : MonoBehaviour
                     OnTick();
                     // Check for next tick next time
                     currentTick++;
+
+
+                    if (currentTick >= flashTick)
+                    {
+                        // Play the flash animation on the main menu
+                        flashTick += 4;
+                        PlayFlashAnimation();
+                    }
                 }
             }
         }
+    }
+
+    private void PlayFlashAnimation()
+    {
+        mainMenuCanvasFlashAnimator.Play("MainMenuFlash");
     }
 
     // Reset the menu animation that plays with the song

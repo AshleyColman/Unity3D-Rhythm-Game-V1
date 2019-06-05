@@ -14,9 +14,8 @@ public class ScoreManager : MonoBehaviour {
     public TextMeshProUGUI largeComboText;
     public string judgement;
     public TextMeshProUGUI judgementText;
-    public Animator scoreAnimation; // Animate the score text
+
     public Animator comboAnimation; // Animate the combo text
-    public Animator largeComboAnimation; // Animate the large combo text
     public Animator judgementAnimation; // Animate the judgement text
 
     public int highestCombo;
@@ -113,12 +112,12 @@ public class ScoreManager : MonoBehaviour {
             DeactivateRainbowComboParticles();
         }
         
-        if (combo >= 100 && combo < 500)
+        if (combo >= 100 && combo < 150)
         {
             ActivateWhiteComboParticles();
         }
 
-        if (combo >= 500)
+        if (combo >= 150)
         {
             DeactivateWhiteComboParticles();
             ActivateRainbowComboParticles();
@@ -132,8 +131,8 @@ public class ScoreManager : MonoBehaviour {
         if (combo >= 5)
         {
             hitSoundPreview.PlayMissSound();
+
             comboAnimation.Play("ComboBreakTextAnimation");
-            largeComboAnimation.Play("LargeComboBreakTextAnimation");
         }
 
         combo = 0;
@@ -157,7 +156,9 @@ public class ScoreManager : MonoBehaviour {
         }
 
         // Play the score animation
-        scoreAnimation.Play("GameplayUITextAnimation");
+        //scoreAnimation.Play("GameplayUITextAnimation");
+
+
 
         // Multiply the default score per note passed by the mod mutiplier
         scorePass = (scorePass * playerSkillsManager.scoreMultiplier);
@@ -229,8 +230,7 @@ public class ScoreManager : MonoBehaviour {
             largeComboText.text = " " + combo.ToString() + "x";
         }
 
-        comboAnimation.Play("GameplayUITextAnimation");
-        largeComboAnimation.Play("LargeComboTextAnimation");
+        comboAnimation.Play("ComboAnimation");
     }
 
     // Update judgement text
@@ -240,26 +240,26 @@ public class ScoreManager : MonoBehaviour {
 
         if (judgementPass == "EARLY")
         {
-            judgementAnimation.Play("EARLYAnimation");
+            judgementAnimation.Play("EARLY");
 
             // Hit so we add 1 to the total for the results screen
             totalEarly++;
         }
         else if (judgementPass == "GOOD")
         {
-            judgementAnimation.Play("GOODAnimation");
+            judgementAnimation.Play("GOOD");
             // Hit so we add 1 to the total for the results screen
             totalGood++;
         }
         else if (judgementPass == "PERFECT")
         {
-            judgementAnimation.Play("PERFECTAnimation");
+            judgementAnimation.Play("PERFECT");
             // Hit so we add 1 to the total for the results screen
             totalPerfect++;
         }
         else if (judgementPass == "MISS")
         {
-            judgementAnimation.Play("MISSAnimation");
+            judgementAnimation.Play("MISS");
             // Hit so we add 1 to the total for the results screen
             totalMiss++;
         }

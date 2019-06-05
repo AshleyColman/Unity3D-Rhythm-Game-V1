@@ -79,7 +79,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         hitObjectID = 0;
 
         // Set the startYPosition to the highest range of the camera
-        startingYPosition = 100000;
+        startingYPosition = 99500; 
 
         // Get the fade speed selected
         fadeSpeedSelected = playerSkillsManager.GetFadeSpeedSelected();
