@@ -14,6 +14,7 @@ public class ScoreManager : MonoBehaviour {
     public TextMeshProUGUI largeComboText;
     public string judgement;
     public TextMeshProUGUI judgementText;
+    public TextMeshProUGUI judgementTextLarge;
 
     public Animator comboAnimation; // Animate the combo text
     public Animator judgementAnimation; // Animate the judgement text
@@ -237,33 +238,27 @@ public class ScoreManager : MonoBehaviour {
     public void AddJudgement(string judgementPass)
     {
         judgementText.text = judgementPass.ToString();
+        judgementTextLarge.text = judgementPass.ToString();
 
-        if (judgementPass == "EARLY")
+        switch (judgementPass)
         {
-            judgementAnimation.Play("EARLY");
-
-            // Hit so we add 1 to the total for the results screen
-            totalEarly++;
+            case "EARLY":
+                judgementAnimation.Play("EARLY");
+                totalEarly++;
+                break;
+            case "GOOD":
+                judgementAnimation.Play("GOOD");
+                totalGood++;
+                break;
+            case "PERFECT":
+                judgementAnimation.Play("PERFECT");
+                totalPerfect++;
+                break;
+            case "MISS":
+                judgementAnimation.Play("MISS");
+                totalMiss++;
+                break;
         }
-        else if (judgementPass == "GOOD")
-        {
-            judgementAnimation.Play("GOOD");
-            // Hit so we add 1 to the total for the results screen
-            totalGood++;
-        }
-        else if (judgementPass == "PERFECT")
-        {
-            judgementAnimation.Play("PERFECT");
-            // Hit so we add 1 to the total for the results screen
-            totalPerfect++;
-        }
-        else if (judgementPass == "MISS")
-        {
-            judgementAnimation.Play("MISS");
-            // Hit so we add 1 to the total for the results screen
-            totalMiss++;
-        }
-
 
         // Check if instant death is equiped and if the judgement passed is not perfect
         CheckIfInstantDeath(judgementPass);
