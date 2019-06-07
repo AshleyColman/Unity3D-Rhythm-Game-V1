@@ -21,7 +21,7 @@ public class BeatmapRanking : MonoBehaviour {
     public bool setFirst = false;
 
     // Leaderboard text
-    public TextMeshProUGUI[] rankedButtonGradeText = new TextMeshProUGUI[20];
+    public Animator[] rankedButtonBunnyGradeIcon = new Animator[20];
     public TextMeshProUGUI[] rankedButtonUsernameAndScoreText = new TextMeshProUGUI[20];
     public TextMeshProUGUI[] rankedButtonPlayStatisticsText = new TextMeshProUGUI[20];
     public TextMeshProUGUI[] rankedButtonPerfectText = new TextMeshProUGUI[20];
@@ -42,10 +42,8 @@ public class BeatmapRanking : MonoBehaviour {
     string[] rankedButtonScore = new string[20];
     string[] rankedButtonMod = new string[20];
 
-    public ParticleSystem[] rankedButtonGradeParticles = new ParticleSystem[20];
-    public Image[] playerImage = new Image[20];
-
-    public TextMeshProUGUI personalBestButtonGradeText;
+    //public TextMeshProUGUI personalBestButtonGradeText;
+    public Animator personalBestButtonBunnyGradeIcon;
     public TextMeshProUGUI personalBestButtonUsernameAndScoreText;
     public TextMeshProUGUI personalBestButtonPlayStatisticsText;
     public TextMeshProUGUI personalBestPerfectText;
@@ -63,9 +61,6 @@ public class BeatmapRanking : MonoBehaviour {
     string personalBestGrade;
     string personalBestUsername;
     string personalBestMod;
-
-    public ParticleSystem personalBestGradeParticles;
-    public Image personalBestImage;
 
     bool[] placeExists = new bool[20];
 
@@ -145,15 +140,43 @@ public class BeatmapRanking : MonoBehaviour {
                     rankedButtonPercentage[placementToCheck] = placeLeaderboardData[placementToCheck][8];
                     rankedButtonMod[placementToCheck] = placeLeaderboardData[placementToCheck][9];
 
-                    if (rankedButtonGrade[placementToCheck] == "S" || rankedButtonGrade[placementToCheck] == "P")
+                    // Update the text for the leaderboard button
+                    //rankedButtonGradeText[placementToCheck].text = rankedButtonGrade[placementToCheck];
+
+                    rankedButtonBunnyGradeIcon[placementToCheck].gameObject.SetActive(true);
+
+                    // Enable correct grade icon
+                    switch (rankedButtonGrade[placementToCheck])
                     {
-                        rankedButtonGradeParticles[placementToCheck].gameObject.SetActive(true);
+                        case "P":
+                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyPRank");
+                            break;
+                        case "S":
+                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnySRank");
+                            break;
+                        case "A":
+                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyARank");
+                            break;
+                        case "B":
+                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyBRank");
+                            break;
+                        case "C":
+                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyCRank");
+                            break;
+                        case "D":
+                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyDRank");
+                            break;
+                        case "E":
+                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyERank");
+                            break;
+                        case "F":
+                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyFRank");
+                            break;
                     }
 
-                    // Update the text for the leaderboard button
-                    rankedButtonGradeText[placementToCheck].text = rankedButtonGrade[placementToCheck];
 
-                    rankedButtonGradeText[placementToCheck].color = SetGradeColor(rankedButtonGrade[placementToCheck]);
+
+                    //rankedButtonGradeText[placementToCheck].color = SetGradeColor(rankedButtonGrade[placementToCheck]);
 
                     rankedButtonUsernameAndScoreText[placementToCheck].text = (placementToCheck + 1) + "# " + rankedButtonUsername[placementToCheck] + ": " +
                     rankedButtonScore[placementToCheck];
@@ -196,15 +219,42 @@ public class BeatmapRanking : MonoBehaviour {
                     personalBestPercentage = personalBestLeaderboardData[8];
                     personalBestMod = personalBestLeaderboardData[9];
 
-                    personalBestButtonGradeText.text = personalBestGrade;
-                    personalBestButtonGradeText.color = SetGradeColor(personalBestGrade);
-                    personalBestButtonUsernameAndScoreText.text = MySQLDBManager.username + ": " + personalBestScore;
+                    //personalBestButtonGradeText.text = personalBestGrade;
+                    //personalBestButtonGradeText.color = SetGradeColor(personalBestGrade);
 
-                    if (personalBestGrade == "S" || personalBestGrade == "P")
+                    personalBestButtonBunnyGradeIcon.gameObject.SetActive(true);
+
+                    // Enable correct grade icon
+                    switch (personalBestGrade)
                     {
-                        personalBestGradeParticles.gameObject.SetActive(true);
+                        case "P":
+                            personalBestButtonBunnyGradeIcon.Play("BunnyPRank");
+                            break;
+                        case "S":
+                            personalBestButtonBunnyGradeIcon.Play("BunnySRank");
+                            break;
+                        case "A":
+                            personalBestButtonBunnyGradeIcon.Play("BunnyARank");
+                            break;
+                        case "B":
+                            personalBestButtonBunnyGradeIcon.Play("BunnyBRank");
+                            break;
+                        case "C":
+                            personalBestButtonBunnyGradeIcon.Play("BunnyCRank");
+                            break;
+                        case "D":
+                            personalBestButtonBunnyGradeIcon.Play("BunnyDRank");
+                            break;
+                        case "E":
+                            personalBestButtonBunnyGradeIcon.Play("BunnyERank");
+                            break;
+                        case "F":
+                            personalBestButtonBunnyGradeIcon.Play("BunnyFRank");
+                            break;
                     }
 
+
+                    personalBestButtonUsernameAndScoreText.text = MySQLDBManager.username + ": " + personalBestScore;
 
                     if (string.IsNullOrEmpty(personalBestMod))
                     {
@@ -351,7 +401,9 @@ public class BeatmapRanking : MonoBehaviour {
             rankedButtonPercentage[placementToCheck] = "";
             rankedButtonMod[placementToCheck] = "";
             // Reset the text on the leaderboard 
-            rankedButtonGradeText[placementToCheck].text = "";
+            rankedButtonBunnyGradeIcon[placementToCheck].gameObject.SetActive(false);
+
+            //rankedButtonGradeText[placementToCheck].text = "";
             rankedButtonUsernameAndScoreText[placementToCheck].text = "";
             rankedButtonPlayStatisticsText[placementToCheck].text = "";
 
@@ -360,8 +412,6 @@ public class BeatmapRanking : MonoBehaviour {
             rankedButtonEarlyText[placementToCheck].text = "";
             rankedButtonMissText[placementToCheck].text = "";
 
-            // Disable the particles on the leaderboard
-            rankedButtonGradeParticles[placementToCheck].gameObject.SetActive(false);
             // Clear the leaderboard data 
             placeLeaderboardData[placementToCheck].Clear();
             // Reset all places that exist
@@ -379,7 +429,8 @@ public class BeatmapRanking : MonoBehaviour {
             personalBestMod = "";
 
             // Reset personal best text
-            personalBestButtonGradeText.text = "";
+            //personalBestButtonGradeText.text = "";
+            personalBestButtonBunnyGradeIcon.gameObject.SetActive(false);
             personalBestButtonUsernameAndScoreText.text = "";
             personalBestButtonPlayStatisticsText.text = "";
 
@@ -390,8 +441,6 @@ public class BeatmapRanking : MonoBehaviour {
 
             // Reset personal best leaderboard data
             personalBestLeaderboardData.Clear();
-            // Reset personal best grade particle
-            personalBestGradeParticles.gameObject.SetActive(false);
 
             // Reset checking variables
             ResetNotChecked();
