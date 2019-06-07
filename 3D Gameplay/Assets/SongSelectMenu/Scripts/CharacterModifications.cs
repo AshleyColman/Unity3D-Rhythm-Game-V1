@@ -12,6 +12,10 @@ public class CharacterModifications : MonoBehaviour {
 
     public Animator characterModifcationAnimator;
 
+    // Leaderboard to disable when activating the characterModificationPanel
+    public GameObject leaderboard;
+
+
 	// Use this for initialization
 	void Start () {
         characterModificationsPanelActive = false;
@@ -29,12 +33,14 @@ public class CharacterModifications : MonoBehaviour {
         {
             //characterModifcationAnimator.Play("CharacterModificationsPanelActivateAnimation");
             characterModificationsPanel.gameObject.SetActive(true);
+            leaderboard.gameObject.SetActive(false);
             characterModificationsPanelActive = true;
         }
         else if (characterModificationsPanelActive == true)
         {
             //StartCoroutine(DeactivateCharacterModificationPanel());
             characterModificationsPanel.gameObject.SetActive(false);
+            leaderboard.gameObject.SetActive(true);
             characterModificationsPanelActive = false;
         }
     }

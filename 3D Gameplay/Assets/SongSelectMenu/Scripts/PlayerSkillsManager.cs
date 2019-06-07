@@ -27,8 +27,6 @@ public class PlayerSkillsManager : MonoBehaviour {
     // Level changer
     public LevelChanger levelChanger;
 
-    public TextMeshProUGUI fadeSpeedText;
-
     public TextMeshProUGUI scoreMultiplierText;
 
     public int scoreMultiplier;
@@ -62,13 +60,6 @@ public class PlayerSkillsManager : MonoBehaviour {
     public Image judgementPlusSelectedKey;
     public Image noFailSelectedKey;
     public Image instantDeathSelectedKey;
-    // DISABLED KEYS
-    public Image tripleTimeDisabledKey;
-    public Image doubleTimeDisabledKey;
-    public Image halfTimeDisabledKey;
-    public Image judgementPlusDisabledKey;
-    public Image noFailDisabledKey;
-    public Image instantDeathDisabledKey;
 
     // Reference required to change the song pitch when in gameplay
     SongProgressBar songProgressBar;
@@ -459,16 +450,17 @@ public class PlayerSkillsManager : MonoBehaviour {
     {
         if (fadeSpeedSelectedIndex == 2)
         {
-            // Do not increment
+            // Reset to 0 for slow speed for looping
+            fadeSpeedSelectedIndex = 0;
         }
         else
         {
             fadeSpeedSelectedIndex++;
-            // Save the fade speed index in player prefs
-            SetPlayerPrefsFadeSpeedSelectedIndex();
-
-            PlayFadeSpeedSelectedAnimation();
         }
+
+        // Save the fade speed index in player prefs
+        SetPlayerPrefsFadeSpeedSelectedIndex();
+        PlayFadeSpeedSelectedAnimation();
     }
 
 
@@ -514,17 +506,14 @@ public class PlayerSkillsManager : MonoBehaviour {
         if (fadeSpeedSelectedIndex == 0)
         {
             fadeSpeedAnimator.Play("FadeSpeedSlow");
-            fadeSpeedText.text = "1";
         }
         else if (fadeSpeedSelectedIndex == 1)
         {
             fadeSpeedAnimator.Play("FadeSpeedNormal");
-            fadeSpeedText.text = "2";
         }
         else if (fadeSpeedSelectedIndex == 2)
         {
             fadeSpeedAnimator.Play("FadeSpeedFast");
-            fadeSpeedText.text = "3";
         }
     }
 
@@ -566,12 +555,10 @@ public class PlayerSkillsManager : MonoBehaviour {
         if (tripleTimeSelected == true)
         {
             tripleTimeSelectedKey.gameObject.SetActive(true);
-            tripleTimeDisabledKey.gameObject.SetActive(false);
         }
         else
         {
             tripleTimeSelectedKey.gameObject.SetActive(false);
-            tripleTimeDisabledKey.gameObject.SetActive(true);
         }
 
 
@@ -579,12 +566,10 @@ public class PlayerSkillsManager : MonoBehaviour {
         if (doubleTimeSelected == true)
         {
             doubleTimeSelectedKey.gameObject.SetActive(true);
-            doubleTimeDisabledKey.gameObject.SetActive(false);
         }
         else
         {
             doubleTimeSelectedKey.gameObject.SetActive(false);
-            doubleTimeDisabledKey.gameObject.SetActive(true);
         }
 
 
@@ -592,38 +577,32 @@ public class PlayerSkillsManager : MonoBehaviour {
         if (halfTimeSelected == true)
         {
             halfTimeSelectedKey.gameObject.SetActive(true);
-            halfTimeDisabledKey.gameObject.SetActive(false);
         }
         else
         {
             halfTimeSelectedKey.gameObject.SetActive(false);
-            halfTimeDisabledKey.gameObject.SetActive(true);
         }
 
-
+        /*
         // CHECK JUDGEMENT+ 
         if (judgementPlusSelected == true)
         {
             judgementPlusSelectedKey.gameObject.SetActive(true);
-            judgementPlusDisabledKey.gameObject.SetActive(false);
         }
         else
         {
             judgementPlusSelectedKey.gameObject.SetActive(false);
-            judgementPlusDisabledKey.gameObject.SetActive(true);
         }
-
+        */
 
         // CHECK NO FAIL
         if (noFailSelected == true)
         {
             noFailSelectedKey.gameObject.SetActive(true);
-            noFailDisabledKey.gameObject.SetActive(false);
         }
         else
         {
             noFailSelectedKey.gameObject.SetActive(false);
-            noFailDisabledKey.gameObject.SetActive(true);
         }
 
 
@@ -631,12 +610,10 @@ public class PlayerSkillsManager : MonoBehaviour {
         if (instantDeathSelected == true)
         {
             instantDeathSelectedKey.gameObject.SetActive(true);
-            instantDeathDisabledKey.gameObject.SetActive(false);
         }
         else
         {
             instantDeathSelectedKey.gameObject.SetActive(false);
-            instantDeathDisabledKey.gameObject.SetActive(true);
         }
     }
 }

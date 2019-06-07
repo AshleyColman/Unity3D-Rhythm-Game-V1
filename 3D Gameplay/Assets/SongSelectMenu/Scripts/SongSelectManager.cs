@@ -90,8 +90,8 @@ public class SongSelectManager : MonoBehaviour {
     // Difficulty Text in song select screen
     public TextMeshProUGUI difficultyText;
 
-    // PB leaderboard button
-    public Button personalBestLeaderboardButton;
+    // Leaderboard side image bar
+    public Image leaderboardSideBar;
 
     // Colors for advanced and extra buttons
     public Color easyDifficultyButtonColor;
@@ -179,22 +179,22 @@ public class SongSelectManager : MonoBehaviour {
             case "easy":
                 FlashImage("SongSelectMenuFlashEasy");
                 songPlayerBarImage.color = easyDifficultyButtonColor;
-                personalBestLeaderboardButton.image.color = easyDifficultyButtonColor;
+                leaderboardSideBar.color = easyDifficultyButtonColor;
                 break;
             case "advanced":
                 FlashImage("SongSelectMenuFlashAdvanced");
                 songPlayerBarImage.color = advancedDifficultyButtonColor;
-                personalBestLeaderboardButton.image.color = advancedDifficultyButtonColor;
+                leaderboardSideBar.color = advancedDifficultyButtonColor;
                 break;
             case "extra":
                 FlashImage("SongSelectMenuFlashExtra");
                 songPlayerBarImage.color = extraDifficultyButtonColor;
-                personalBestLeaderboardButton.image.color = extraDifficultyButtonColor;
+                leaderboardSideBar.color = extraDifficultyButtonColor;
                 break;
             default:
                 FlashImage("SongSelectMenuFlash");
                 songPlayerBarImage.color = advancedDifficultyButtonColor;
-                personalBestLeaderboardButton.image.color = advancedDifficultyButtonColor;
+                leaderboardSideBar.color = advancedDifficultyButtonColor;
                 break;
         }
         
