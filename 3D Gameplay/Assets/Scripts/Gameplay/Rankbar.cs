@@ -19,10 +19,8 @@ public class Rankbar : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-
         currentPercentage = 0f;
         scoreManager = FindObjectOfType<ScoreManager>();
-
 	}
 	
 	// Update is called once per frame

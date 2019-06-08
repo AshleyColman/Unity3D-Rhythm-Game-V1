@@ -4,72 +4,85 @@ using UnityEngine;
 
 public class ExplosionController : MonoBehaviour {
 
-    public GameObject[] explosion = new GameObject[10]; // Particle system objects
+    public GameObject blueHitExplosion, purpleHitExplosion, redHitExplosion, greenHitExplosion, yellowHitExplosion, orangeHitExplosion; // Hit explosions
+    public GameObject blueMissExplosion, purpleMissExplosion, redMissExplosion, greenMissExplosion, yellowMissExplosion, orangeMissExplosion; // Hit explosions
+    public GameObject specialHitExplosion; // Special hit explosion
+
     public LoadAndRunBeatmap loadAndRunBeatmap; // Reference required to check for special time explosions
 
     // Use this for initialization
     void Start () {
         loadAndRunBeatmap = FindObjectOfType<LoadAndRunBeatmap>(); // Set the reference 
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	}
 
-    // Spawn explosion
-    public void SpawnExplosion(Vector3 positionPass, string objectTagPass)
+    // Spawn hit explosion
+    public void SpawnHitExplosion(Vector3 positionPass, string objectTagPass)
     {
+        // OBJECTS HIT EXPLOSIONS
+
         // Check if special time, if it is spawn a special explosion, if not check the object tag and spawn the correct colored explosion for normal objects
         if (loadAndRunBeatmap.isSpecialTime == true)
         {
-            if (objectTagPass == "Miss")
-            {
-                Instantiate(explosion[7], positionPass, Quaternion.Euler(90, 0, -45)); // Spawn special miss explosion for special miss notes
-            }
-            else
-            {
-                Instantiate(explosion[8], positionPass, Quaternion.Euler(90, 0, -45)); // Instantiate special explosion for special notes
-            }
+            // instantiate special hit explosion
+            Instantiate(specialHitExplosion, positionPass, Quaternion.Euler(90, 0, -45)); // Spawn special miss explosion for special miss notes
         }
         else
         {
-            // Spawn blue explosion for blue notes
-            if (objectTagPass == "Blue")
+            // Spawn correct colored explosion based on the hit object color hit
+            switch (objectTagPass)
             {
-                Instantiate(explosion[0], positionPass, Quaternion.Euler(90, 0, -45)); // Instantiate blue particle system
-            }
-            // Spawn green explosion for purple notes
-            else if (objectTagPass == "Purple")
-            {
-                Instantiate(explosion[1], positionPass, Quaternion.Euler(90, 0, -45));
-            }
-            // Spawn orange explosion for Red notes
-            else if (objectTagPass == "Red")
-            {
-                Instantiate(explosion[2], positionPass, Quaternion.Euler(90, 0, -45));
-            }
-            // Spawn pink explosion for Green notes
-            else if (objectTagPass == "Green")
-            {
-                Instantiate(explosion[3], positionPass, Quaternion.Euler(90, 0, -45));
-            }
-            // Spawn purple explosion for Yellow notes
-            else if (objectTagPass == "Yellow")
-            {
-                Instantiate(explosion[4], positionPass, Quaternion.Euler(90, 0, -45));
-            }
-            // Spawn red explosion for Orange notes
-            else if (objectTagPass == "Orange")
-            {
-                Instantiate(explosion[5], positionPass, Quaternion.Euler(90, 0, -45));
-            }
-            // Spawn yellow explosion for miss notes
-            else if (objectTagPass == "Miss")
-            {
-                Instantiate(explosion[6], positionPass, Quaternion.Euler(90, 0, -45));
+                case "Blue":
+                    Instantiate(blueHitExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                    break;
+                case "Purple":
+                    Instantiate(purpleHitExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                    break;
+                case "Red":
+                    Instantiate(redHitExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                    break;
+                case "Green":
+                    Instantiate(greenHitExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                    break;
+                case "Orange":
+                    Instantiate(orangeHitExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                    break;
+                case "Yellow":
+                    Instantiate(yellowHitExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                    break;
             }
         }
     }
 
+    // Spawn miss explosion
+    public void SpawnMissExplosion(Vector3 positionPass, string objectTagPass)
+    {
+        // OBJECTS MISS EXPLOSIONS
 
+        // Spawn correct colored explosion based on the hit object color hit
+        switch (objectTagPass)
+        {
+            case "Blue":
+                Instantiate(blueMissExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                break;
+            case "Purple":
+                Instantiate(purpleMissExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                break;
+            case "Red":
+                Instantiate(redMissExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                break;
+            case "Green":
+                Instantiate(greenMissExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                break;
+            case "Orange":
+                Instantiate(orangeMissExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                break;
+            case "Yellow":
+                Instantiate(yellowMissExplosion, positionPass, Quaternion.Euler(90, 0, -45));
+                break;
+        }
+    }
 }
+
+
+
+

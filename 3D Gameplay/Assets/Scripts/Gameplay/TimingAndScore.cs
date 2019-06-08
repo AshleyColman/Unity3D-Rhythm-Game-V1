@@ -84,8 +84,8 @@ public class TimingAndScore : MonoBehaviour {
 
         // Initialize health bar values when hit
         earlyHealthValue = -5;
-        perfectHealthValue = 10;
-        goodHealthValue = 5;
+        perfectHealthValue = 5;
+        goodHealthValue = -5;
         missHealthValue = -10;
 
         // Get and set the fade speed for the hit object
@@ -132,7 +132,7 @@ public class TimingAndScore : MonoBehaviour {
 
                             hitObjectPosition = transform.position; // Get the position of the object
 
-                            explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
+                            explosionController.SpawnHitExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
                             hitSoundPreview.PlayHitSound(); // Play the hitsound
 
@@ -146,8 +146,8 @@ public class TimingAndScore : MonoBehaviour {
 
                             timeWhenHit = timer; // Get the time when hit
 
-                            healthbar.healthBarValue = earlyHealthValue; // Update the healthbar with the miss value
-                            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+                            // Update the healthbar and pass the health value to add to the current healthbars value
+                            healthbar.UpdateHealthBarValue(earlyHealthValue);
 
                             DestroyHitObject(); // Destroy hit object
                         }
@@ -158,7 +158,7 @@ public class TimingAndScore : MonoBehaviour {
                             CheckIsSpecial(); // Check if the note is special
 
                             hitObjectPosition = transform.position; // Get the position of the object
-                            explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
+                            explosionController.SpawnHitExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
                             hitSoundPreview.PlayHitSound(); // Play the hit sound
 
@@ -172,8 +172,8 @@ public class TimingAndScore : MonoBehaviour {
 
                             timeWhenHit = timer; // Get the time when hit
 
-                            healthbar.healthBarValue = goodHealthValue; // Update the healthbar with the miss value
-                            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+                            // Update the healthbar and pass the health value to add to the current healthbars value
+                            healthbar.UpdateHealthBarValue(goodHealthValue);
 
                             DestroyHitObject(); // Destroy hit object
                         }
@@ -184,7 +184,7 @@ public class TimingAndScore : MonoBehaviour {
                             CheckIsSpecial(); // Check if the note is special
 
                             hitObjectPosition = transform.position; // Get the position of the object
-                            explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
+                            explosionController.SpawnHitExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
                             hitSoundPreview.PlayHitSound(); // Play the hitsound
 
@@ -198,8 +198,8 @@ public class TimingAndScore : MonoBehaviour {
 
                             timeWhenHit = timer; // Get the time when hit
 
-                            healthbar.healthBarValue = perfectHealthValue; // Update the healthbar with the miss value
-                            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+                            // Update the healthbar and pass the health value to add to the current healthbars value
+                            healthbar.UpdateHealthBarValue(perfectHealthValue);
 
                             DestroyHitObject(); // Destroy hit object
                         }
@@ -211,20 +211,15 @@ public class TimingAndScore : MonoBehaviour {
                     MissedObject();
                 }
             }
-
-
         }
-
-
     }
 
     // Do the miss object functions
     private void MissedObject()
     {
-        healthbar.healthBarValue = missHealthValue; // Update the healthbar with the miss value
-        healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+        healthbar.UpdateHealthBarValue(missHealthValue); // Update the healthbar and pass the health value to add to the current healthbars value
         hitObjectPosition = transform.position; // Get the position of the object
-        explosionController.SpawnExplosion(hitObjectPosition, "Miss"); // Pass the position and spawn a miss particle system
+        explosionController.SpawnMissExplosion(hitObjectPosition, objectTag); // Pass the position and hit object type, spawn miss explosion
         scoreManager.AddJudgement("MISS"); // Sets judgement to early
         scoreManager.ResetCombo(); // Reset combo as missed
         DestroyHitObject(); // Destroy the hit object

@@ -7,6 +7,10 @@ using TMPro;
 public class LoadAndRunBeatmap : MonoBehaviour {
 
     public SongProgressBar songProgressBar; // Required for song time for spawning
+    public Image songProgressBarImage; // Song progress bar image
+    public Color easyDifficultyColor; // Easy difficulty song progress bar color
+    public Color advancedDifficultyColor; // Advanced difficulty song progress bar color
+    public Color extraDifficultyColor; // Extra difficulty song progress bar color
 
     float timer = 0f;
 
@@ -139,6 +143,25 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
         hitObjectSpawned = new bool[totalHitObjectListSize];
 
+        // Check the difficulty selected, change the song progress bar color to the difficulty color
+        SetSongProgressBarColor();
+    }
+
+    // Check the difficulty selected, change the song progress bar color to the difficulty color
+    private void SetSongProgressBarColor()
+    {
+        switch (beatmapDifficulty)
+        {
+            case "easy":
+                songProgressBarImage.color = easyDifficultyColor;
+                break;
+            case "advanced":
+                songProgressBarImage.color = advancedDifficultyColor;
+                break;
+            case "extra":
+                songProgressBarImage.color = extraDifficultyColor;
+                break;
+        }
     }
 
     // Update is called once per frame
