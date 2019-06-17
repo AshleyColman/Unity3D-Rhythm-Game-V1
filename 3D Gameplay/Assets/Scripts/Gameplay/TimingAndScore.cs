@@ -42,6 +42,11 @@ public class TimingAndScore : MonoBehaviour {
 
     public string objectScoreType;
 
+
+
+    BeatSoundManager beatSoundManager;
+
+
     // Use this for initialization
     void Start () {
 
@@ -54,6 +59,9 @@ public class TimingAndScore : MonoBehaviour {
         hitSoundPreview = FindObjectOfType<HitSoundPreview>();
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
 
+        beatSoundManager = FindObjectOfType<BeatSoundManager>();
+
+
         // Check if its special time
         CheckIsSpecialTime();
 
@@ -63,7 +71,7 @@ public class TimingAndScore : MonoBehaviour {
         // Initialize judgements
         earlyJudgementTime = 0.4f;
         perfectJudgementTime = 0.8f;
-        destroyedTime = 1.2f;
+        destroyedTime = 1.1f;
         combo = 0;
         hitObjectHit = false;
 
@@ -128,13 +136,28 @@ public class TimingAndScore : MonoBehaviour {
                         // CHECK IF PLAYER HIT EARLY
                         if (timer >= hitObjectStartTime && timer <= earlyJudgementTime)
                         {
+                            /*
+                            // Check if the time hit is the same as the current tick time / perfect hit
+                            if (timer == beatSoundManager.songTickTimes[beatSoundManager.CurrentTick])
+                            {
+                                hitSoundPreview.PlayHitSound(); // Play the hitsound
+                                beatSoundManager.playTickSound = false;
+                            }
+                            else
+                            {
+                                // Play the hit sound at the next tick
+                                beatSoundManager.playTickSound = true;
+                            }
+                            */
+                            hitSoundPreview.PlayHitSound(); // Play the hitsound
+
                             CheckIsSpecial(); // Check if the note is special
 
                             hitObjectPosition = transform.position; // Get the position of the object
 
                             explosionController.SpawnHitExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
-                            hitSoundPreview.PlayHitSound(); // Play the hitsound
+
 
                             scoreManager.AddJudgement("EARLY"); // Sets judgement to early
 
@@ -146,8 +169,8 @@ public class TimingAndScore : MonoBehaviour {
 
                             timeWhenHit = timer; // Get the time when hit
 
-                            // Update the healthbar and pass the health value to add to the current healthbars value
-                            healthbar.UpdateHealthBarValue(earlyHealthValue);
+                            healthbar.healthBarValue = earlyHealthValue; // Update the healthbar with the miss value
+                            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
 
                             DestroyHitObject(); // Destroy hit object
                         }
@@ -155,12 +178,25 @@ public class TimingAndScore : MonoBehaviour {
                         // CHECK IF PLAYER HIT GOOD
                         if (timer >= earlyJudgementTime && timer <= perfectJudgementTime)
                         {
+                            /*
+                            // Check if the time hit is the same as the current tick time / perfect hit
+                            if (timer == beatSoundManager.songTickTimes[beatSoundManager.CurrentTick])
+                            {
+                                hitSoundPreview.PlayHitSound(); // Play the hitsound
+                                beatSoundManager.playTickSound = false;
+                            }
+                            else
+                            {
+                                // Play the hit sound at the next tick
+                                beatSoundManager.playTickSound = true;
+                            }
+                            */
+                            hitSoundPreview.PlayHitSound(); // Play the hitsound
+
                             CheckIsSpecial(); // Check if the note is special
 
                             hitObjectPosition = transform.position; // Get the position of the object
                             explosionController.SpawnHitExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
-
-                            hitSoundPreview.PlayHitSound(); // Play the hit sound
 
                             scoreManager.AddJudgement("GOOD"); // Sets judgement to early
 
@@ -172,8 +208,8 @@ public class TimingAndScore : MonoBehaviour {
 
                             timeWhenHit = timer; // Get the time when hit
 
-                            // Update the healthbar and pass the health value to add to the current healthbars value
-                            healthbar.UpdateHealthBarValue(goodHealthValue);
+                            healthbar.healthBarValue = goodHealthValue; // Update the healthbar with the miss value
+                            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
 
                             DestroyHitObject(); // Destroy hit object
                         }
@@ -181,11 +217,26 @@ public class TimingAndScore : MonoBehaviour {
                         // CHECK IF PLAYER HIT GOOD
                         if (timer >= perfectJudgementTime && timer <= destroyedTime)
                         {
+                            Debug.Log("key pressed: " + timer);
+
                             CheckIsSpecial(); // Check if the note is special
 
                             hitObjectPosition = transform.position; // Get the position of the object
                             explosionController.SpawnHitExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
+                            /*
+                            // Check if the time hit is the same as the current tick time / perfect hit
+                            if (timer == beatSoundManager.songTickTimes[beatSoundManager.CurrentTick])
+                            {
+                                //hitSoundPreview.PlayHitSound(); // Play the hitsound
+                                beatSoundManager.playTickSound = false;
+                            }
+                            else
+                            {
+                                // Play the hit sound at the next tick
+                                beatSoundManager.playTickSound = true;
+                            }
+                            */
                             hitSoundPreview.PlayHitSound(); // Play the hitsound
 
                             scoreManager.AddJudgement("PERFECT");
@@ -198,8 +249,8 @@ public class TimingAndScore : MonoBehaviour {
 
                             timeWhenHit = timer; // Get the time when hit
 
-                            // Update the healthbar and pass the health value to add to the current healthbars value
-                            healthbar.UpdateHealthBarValue(perfectHealthValue);
+                            healthbar.healthBarValue = perfectHealthValue; // Update the healthbar with the miss value
+                            healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
 
                             DestroyHitObject(); // Destroy hit object
                         }
@@ -217,7 +268,9 @@ public class TimingAndScore : MonoBehaviour {
     // Do the miss object functions
     private void MissedObject()
     {
-        healthbar.UpdateHealthBarValue(missHealthValue); // Update the healthbar and pass the health value to add to the current healthbars value
+        healthbar.healthBarValue = missHealthValue; // Update the healthbar with the miss value
+        healthbar.assignHealthBarLerp = true; // Assign a new lerp position for the health bar
+
         hitObjectPosition = transform.position; // Get the position of the object
         explosionController.SpawnMissExplosion(hitObjectPosition, objectTag); // Pass the position and hit object type, spawn miss explosion
         scoreManager.AddJudgement("MISS"); // Sets judgement to early

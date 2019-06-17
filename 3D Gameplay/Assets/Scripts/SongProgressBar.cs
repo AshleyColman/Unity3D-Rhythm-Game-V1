@@ -27,10 +27,24 @@ public class SongProgressBar : MonoBehaviour {
     // Required for getting the song list from the songDatabase
     public SongDatabase songDatabase;
 
+
+
+
+    public float dsptimesong;
+    //the current position of the song (in seconds)
+    public float songPosition;
+
+
+
+
+
     // Used for tracking if the spacebar has been pressed which starts the song, prevents restarting of the song if spacebar is pressed again
     private bool hasPressedSpacebar; 
     void Start()
     {
+
+
+
         // Set to false at the start
         hasPressedSpacebar = false;
         // Get the reference
@@ -44,7 +58,6 @@ public class SongProgressBar : MonoBehaviour {
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
     void Update()
     {
-    
         if (levelChanger.currentLevelIndex == levelChanger.editorSceneIndex)
         {
             if (beatmapSetup.settingUp == false && hasPressedSpacebar == false)
@@ -74,12 +87,23 @@ public class SongProgressBar : MonoBehaviour {
                     songAudioSource.Play();
                     playing = true;
                     active = true;
+
+
+                    //record the time when the song starts
+                    dsptimesong = (float)AudioSettings.dspTime;
+                }
+
+
+                // If the spacebar has been pressed start tracking the song time
+                if (hasPressedSpacebar == true)
+                {
+                    //calculate the position in seconds
+                    songPosition = (float)(AudioSettings.dspTime - dsptimesong);
                 }
 
                 // Dont destroy the song audio source in gameplay to results page to continue the song playing after the gameplay has ended
                 DontDestroyOnLoad(this.gameObject);
             }
-
         }
         
         // If the song player bar exists update it, if not (such as on results scene) don't update

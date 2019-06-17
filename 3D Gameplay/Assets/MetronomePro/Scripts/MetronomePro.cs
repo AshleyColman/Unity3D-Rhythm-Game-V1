@@ -1,6 +1,4 @@
-﻿// Created by Carlos Arturo Rodriguez Silva (Legend)
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -174,7 +172,7 @@ public class MetronomePro : MonoBehaviour {
                     interval = interval / 4;
                     break;
                 case 32:
-                    //interval = interval / 2;
+                    interval = interval / 6;
                     break;
             }
 

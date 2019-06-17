@@ -228,19 +228,19 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         if (scoreMultiplier == 100)
         {
-            scoreMultiplierText.text = "SCORE: x1.00";
+            scoreMultiplierText.text = "x1.00";
         }
         else if (scoreMultiplier == 105)
         {
-            scoreMultiplierText.text = "SCORE: x1.05";
+            scoreMultiplierText.text = "x1.05";
         }
         else if (scoreMultiplier == 110)
         {
-            scoreMultiplierText.text = "SCORE: x1.10";
+            scoreMultiplierText.text = "x1.10";
         }
         else if (scoreMultiplier == 75)
         {
-            scoreMultiplierText.text = "SCORE: x0.75";
+            scoreMultiplierText.text = "x0.75";
         }
 
 

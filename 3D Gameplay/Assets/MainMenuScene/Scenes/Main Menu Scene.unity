@@ -7855,7 +7855,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 606270256
+  randomSeed: -609656361
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -31108,7 +31108,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1985171450}
+      - m_Target: {fileID: 1985171449}
         m_MethodName: VerifyInputs
         m_Mode: 1
         m_Arguments:
@@ -31346,7 +31346,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1985171450}
+      - m_Target: {fileID: 1985171449}
         m_MethodName: VerifyInputs
         m_Mode: 1
         m_Arguments:

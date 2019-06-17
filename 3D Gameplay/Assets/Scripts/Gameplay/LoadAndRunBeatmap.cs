@@ -34,7 +34,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     public int sizeOfList;
     public int nextIndex;
     private bool justHit = false;
-    public float songTimer;
+    public double songTimer;
     public float specialTimeStart;
     public float specialTimeEnd;
     public SpecialTimeManager specialTimeManager;
@@ -64,6 +64,12 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
     bool hasFailed; // Has the user faileds
 
+    // Song start time
+    double trackStartTime;
+
+    BeatSoundManager beatSoundManager;
+
+
     // Use this for initialization
     void Start()
     {
@@ -72,6 +78,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         songProgressBar = FindObjectOfType<SongProgressBar>();
         specialTimeManager = FindObjectOfType<SpecialTimeManager>();
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
+        beatSoundManager = FindObjectOfType<BeatSoundManager>();
         isSpecialTime = false;
         songTimer = 0;
         startSongTimer = false;
@@ -145,23 +152,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
         // Check the difficulty selected, change the song progress bar color to the difficulty color
         SetSongProgressBarColor();
-    }
-
-    // Check the difficulty selected, change the song progress bar color to the difficulty color
-    private void SetSongProgressBarColor()
-    {
-        switch (beatmapDifficulty)
-        {
-            case "easy":
-                songProgressBarImage.color = easyDifficultyColor;
-                break;
-            case "advanced":
-                songProgressBarImage.color = advancedDifficultyColor;
-                break;
-            case "extra":
-                songProgressBarImage.color = extraDifficultyColor;
-                break;
-        }
+        
     }
 
     // Update is called once per frame
@@ -187,12 +178,19 @@ public class LoadAndRunBeatmap : MonoBehaviour {
             StartCoroutine(AnimatePressPlayText());
             // Play the press play sound effect
             PlayPressPlaySound();
+
+            StartMusic();
+
+            // Start the beatSoundManager
+            beatSoundManager.Play();
         }
 
         if (startSongTimer == true)
         {
             // Update the song timer with the current song time
-            songTimer += Time.deltaTime;
+            //songTimer += Time.deltaTime;
+
+            songTimer = songProgressBar.songPosition;
         }
 
         if (hitObjectID == (totalHitObjectListSize))
@@ -265,6 +263,29 @@ public class LoadAndRunBeatmap : MonoBehaviour {
             }
         }
 
+    }
+
+    void StartMusic()
+    {
+        trackStartTime = AudioSettings.dspTime;
+        songProgressBar.songAudioSource.PlayScheduled(trackStartTime);
+    }
+
+    // Check the difficulty selected, change the song progress bar color to the difficulty color
+    private void SetSongProgressBarColor()
+    {
+        switch (beatmapDifficulty)
+        {
+            case "easy":
+                songProgressBarImage.color = easyDifficultyColor;
+                break;
+            case "advanced":
+                songProgressBarImage.color = advancedDifficultyColor;
+                break;
+            case "extra":
+                songProgressBarImage.color = extraDifficultyColor;
+                break;
+        }
     }
 
     // Spawn the hit object

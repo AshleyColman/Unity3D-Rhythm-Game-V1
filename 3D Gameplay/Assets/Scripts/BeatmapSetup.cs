@@ -19,17 +19,15 @@ public class BeatmapSetup : MonoBehaviour {
     public string beatmapExtraDifficultyLevel;
 
     // Beatmap difficulty
-    public Button beatmapDifficultyEasyButton;
-    public Button beatmapDifficultyAdvancedButton;
-    public Button beatmapDifficultyExtraButton;
+    public GameObject difficultyButtonsPanel;
     public string beatmapDifficulty;
 
     // Song preview start time in th song select screen
     public float songPreviewStartTime;
     // The textbox to get the vlaue of the start time
     public TMP_InputField songPreviewStartTimeInputField;
-    // The submit button for songPreviewStartTime
-    public Button songPreviewStartTimeSetButton;
+    // The song preview start time panel
+    public GameObject songPreviewStartTimePanel;
 
     // Song name
     public string songName;
@@ -46,9 +44,6 @@ public class BeatmapSetup : MonoBehaviour {
     // The editor UI components
     public TextMeshProUGUI editorTitle;
 
-    // The choose a difficulty text that appears when selecting a difficulty
-    public TextMeshProUGUI difficultySelectText;
-
     // Is true when in the setup screen, used for allowing keyboard press without starting the editor
     public bool settingUp;
 
@@ -63,6 +58,8 @@ public class BeatmapSetup : MonoBehaviour {
 
     public Button finishedButton;
 
+    public Button hitObjectButton;
+
     public GameObject difficultyLevelPanel;
 
     public Button saveButton;
@@ -71,6 +68,11 @@ public class BeatmapSetup : MonoBehaviour {
     public Button newSongButton;
 
     public Button successSaveButton;
+
+    // The settings panel that's displayed when the user has finished creating the beatmap or is editing beatmap information
+    public GameObject settingsPanel;
+
+    public GameObject saveButtonPanel;
 
     private void Awake()
     {
@@ -99,10 +101,8 @@ public class BeatmapSetup : MonoBehaviour {
     // Get the song preview time from the input field box
     public void ActivateSongPreviewStartTimePanel()
     {
-        // Enable the text field
-        songPreviewStartTimeInputField.gameObject.SetActive(true);
-        // Enable the button
-        songPreviewStartTimeSetButton.gameObject.SetActive(true);
+        // Enable the song preview start time panel
+        songPreviewStartTimePanel.gameObject.SetActive(true);
     }
 
     // Save the text field information then disable
@@ -111,13 +111,29 @@ public class BeatmapSetup : MonoBehaviour {
         // Get the time from the input field
         songPreviewStartTime = float.Parse(songPreviewStartTimeInputField.text);
 
-        // Disable the text field
-        songPreviewStartTimeInputField.gameObject.SetActive(false);
-        // Disable the button
-        songPreviewStartTimeSetButton.gameObject.SetActive(false);
+        // Disble the song preview start time panel
+        songPreviewStartTimePanel.gameObject.SetActive(false);
 
         // Enable the save button
         saveButton.interactable = true;
+
+        // Activate save button panel and disable settings panel
+        ActivateSaveButtonPanel();
+    }
+
+    // Activate the save button panel
+    public void ActivateSaveButtonPanel()
+    {
+        saveButtonPanel.gameObject.SetActive(true);
+
+        // Disable the settings panel
+        settingsPanel.gameObject.SetActive(false);
+    }
+
+    // Deactivate the save button panel
+    public void DeactivateSaveButtonPanel()
+    {
+        saveButtonPanel.gameObject.SetActive(false);
     }
 
     // Insert all song information when the song selected has been clicked
@@ -175,10 +191,7 @@ public class BeatmapSetup : MonoBehaviour {
 
 
         // Disable the difficulty buttons
-        difficultySelectText.gameObject.SetActive(false);
-        beatmapDifficultyExtraButton.gameObject.SetActive(false);
-        beatmapDifficultyAdvancedButton.gameObject.SetActive(false);
-        beatmapDifficultyEasyButton.gameObject.SetActive(false);
+        difficultyButtonsPanel.gameObject.SetActive(false);
 
         // Activate the difficulty level buttons
         difficultyLevelPanel.gameObject.SetActive(true);
@@ -230,13 +243,15 @@ public class BeatmapSetup : MonoBehaviour {
     // Activate the difficulty buttons
     public void ActivateDifficultyTypeButtons()
     {
-        difficultySelectText.gameObject.SetActive(true);
-        beatmapDifficultyEasyButton.gameObject.SetActive(true);
-        beatmapDifficultyAdvancedButton.gameObject.SetActive(true);
-        beatmapDifficultyExtraButton.gameObject.SetActive(true);
+        // Activate settings panel
+        settingsPanel.gameObject.SetActive(true);
+
+        difficultyButtonsPanel.gameObject.SetActive(true);
         finishedButton.interactable = false;
         resetButton.interactable = false;
         newSongButton.interactable = false;
+        newSongButton.interactable = false;
+        hitObjectButton.interactable = false;
     }
 
     // Activate success beatmap save button

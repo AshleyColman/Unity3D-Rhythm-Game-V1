@@ -318,7 +318,7 @@ public class PlacedObject : MonoBehaviour {
     }
 
     // Check the keys contained within the beatmap
-    private void CheckKeysForBeatmap()
+    public void CheckKeysForBeatmap()
     {
         for (int i = 0; i < editorHitObjectList.Count; i++)
         {
@@ -471,6 +471,12 @@ public class PlacedObject : MonoBehaviour {
 
         // Activate the change hit object color button
         changeHitObjectTypeInstructionButton.gameObject.SetActive(false);
+
+        // DestroyInstantiatedEditorHitObject
+        DestroyInstantiatedEditorHitObject();
+
+        // Set editor hit object to false
+        instantiatedEditorHitObjectExists = false;
     }
 
     // Save the changed instantiated editor objects position
@@ -632,6 +638,7 @@ public class PlacedObject : MonoBehaviour {
     {
         List<float> tickTimesList = new List<float>();
 
+        /*
         // The current tick index and time
         int currentTickIndex = metronomePro.CurrentTick;
         float currentTickTime = (float)metronomePro.songTickTimes[currentTickIndex];
@@ -640,6 +647,17 @@ public class PlacedObject : MonoBehaviour {
         // The next tick index and time
         int nextTickIndex = metronomePro.CurrentTick + 1;
         float nextTickTime = (float)metronomePro.songTickTimes[nextTickIndex];
+        tickTimesList.Add(nextTickTime);
+        */
+
+        // The current tick index and time
+        int currentTickIndex = metronomePro.CurrentTick;
+        float currentTickTime = (float)metronomePro.songTickTimes[currentTickIndex];
+        tickTimesList.Add(currentTickTime);
+
+        // The next tick index and time
+        int previousTickIndex = metronomePro.CurrentTick - 1;
+        float nextTickTime = (float)metronomePro.songTickTimes[previousTickIndex];
         tickTimesList.Add(nextTickTime);
 
         // Get the time the user pressed the key down
