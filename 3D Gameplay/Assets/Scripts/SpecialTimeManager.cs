@@ -110,7 +110,7 @@ public class SpecialTimeManager : MonoBehaviour {
 
     public void BackgroundAnimation()
     {
-        backgroundImageAnimation.Play("BackgroundImage");
+        backgroundImageAnimation.Play("BackgroundImage", 0, 0f);
     }
 
     public void ActivateBorder()

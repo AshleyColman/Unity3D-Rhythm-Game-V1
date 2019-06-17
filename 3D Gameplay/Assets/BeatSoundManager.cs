@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Runtime.InteropServices;
 using TMPro;
+using System.Linq;
 
 public class BeatSoundManager : MonoBehaviour
 {
@@ -31,15 +32,22 @@ public class BeatSoundManager : MonoBehaviour
 
     public bool neverPlayed = true;
 
-    private int division = 8;
+    private int division = 32;
 
     public bool playTickSound = false;
 
-    public Text testText;
-    public Text falseText;
-
     // Hit sound preview manager for playing the selected hit sound by the player
     HitSoundPreview hitSoundPreview;
+
+    // |SongProgressBar for getting the current song time
+    SongProgressBar songProgressBar;
+
+
+    public Text songTimeText;
+    public Text nextTickTimeText;
+    public Text hitTimeText;
+
+    public float timeHit;
 
     private void Start()
     {
@@ -47,6 +55,8 @@ public class BeatSoundManager : MonoBehaviour
         GetSongData();
         // Get the reference to the hit sound preview object
         hitSoundPreview = FindObjectOfType<HitSoundPreview>();
+        // get the reference to the songProgressBar object
+        songProgressBar = FindObjectOfType<SongProgressBar>();
     }
 
     public void GetSongData()
@@ -156,6 +166,12 @@ public class BeatSoundManager : MonoBehaviour
         ToMainThread.AssignNewAction().ExecuteOnMainThread(CalculateTicks());
     }
 
+    public void GetTimeHit()
+    {
+        timeHit = songProgressBar.songTimePosition;
+        playTickSound = true;
+    }
+
     // Metronome Main function, this calculates the times to make a Tick, Step Count, Metronome Sounds, etc.
     IEnumerator CalculateTicks()
     {
@@ -163,12 +179,25 @@ public class BeatSoundManager : MonoBehaviour
             yield return null;
 
 
+        if (hitSoundPreview.hitSoundAudioSource.isPlaying == false)
+        {
+            hitSoundPreview.MuteHitSound();
+        }
+
+        nextTickTimeText.text = songTickTimes[CurrentTick].ToString();
+
+        /*
+        if (timeHit > songTickTimes[CurrentTick])
+        {
+            playTickSound = false;
+        }
+        */
+
         if (songAudioSource != null)
         {
             // Check if the song time is greater than the current tick Time
-            if (songAudioSource.time >= songTickTimes[CurrentTick])
+            if (songProgressBar.songTimePosition >= songTickTimes[CurrentTick])
             {
-
                 CurrentTick++;
 
                 if (CurrentTick >= songTickTimes.Count)
@@ -181,34 +210,31 @@ public class BeatSoundManager : MonoBehaviour
                 {
                     CurrentStep = 1;
                     CurrentMeasure++;
-                    audioSource.clip = highClip;
                 }
                 else
                 {
                     CurrentStep++;
-                    audioSource.clip = lowClip;
                 }
 
-                /*
                 if (playTickSound == true)
                 {
                     playTickSound = false;
-                    // Call OnTick functions
                     OnTick();
                 }
-                */
+
             }
         }
-
-
         yield return null;
     }
 
     // Tick Time (execute here all what you want)
     void OnTick()
     {
+        hitSoundPreview.UnMuteHitSound();
+
         // Play the hit sound
         hitSoundPreview.PlayHitSound();
-        Debug.Log("tick time played at: " + songTickTimes[CurrentTick]);
+
+        hitTimeText.text = songProgressBar.songTimePosition.ToString();
     }
 }

@@ -15,6 +15,7 @@ public class SongProgressBar : MonoBehaviour {
     public AudioSource songAudioSource;
     public bool active;
     bool playing = false;
+    //float songVolume = 0.4f;
     float songVolume = 0.4f;
     float amount;
     public float songAudioSourceTime;
@@ -32,7 +33,7 @@ public class SongProgressBar : MonoBehaviour {
 
     public float dsptimesong;
     //the current position of the song (in seconds)
-    public float songPosition;
+    public float songTimePosition;
 
 
 
@@ -98,7 +99,7 @@ public class SongProgressBar : MonoBehaviour {
                 if (hasPressedSpacebar == true)
                 {
                     //calculate the position in seconds
-                    songPosition = (float)(AudioSettings.dspTime - dsptimesong);
+                    songTimePosition = (float)(AudioSettings.dspTime - dsptimesong);
                 }
 
                 // Dont destroy the song audio source in gameplay to results page to continue the song playing after the gameplay has ended

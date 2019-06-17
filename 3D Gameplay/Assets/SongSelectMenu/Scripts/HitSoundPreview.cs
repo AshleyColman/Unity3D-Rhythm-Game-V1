@@ -8,7 +8,8 @@ public class HitSoundPreview : MonoBehaviour {
     public HitSoundDatabase hitSoundDatabase; // Required for loading all the hit sounds in the game
     public AudioSource hitSoundAudioSource; // The audio source that plays the hit sounds
     public int hitSoundChosenIndex; // The hit sound selected
-    private float hitSoundVolume = 0.5f; // Volume of the hit sound
+    private float hitSoundVolume = 0.0f; // Volume of the hit sound
+    private float missSoundVolume = 0.5f; // Volume of the miss sound
 
     // Level changer
     public LevelChanger levelChanger; // The level changer
@@ -152,6 +153,16 @@ public class HitSoundPreview : MonoBehaviour {
     // Play miss sound
     public void PlayMissSound()
     {
-        hitSoundAudioSource.PlayOneShot(hitSoundDatabase.missSoundClip, hitSoundVolume);
+        hitSoundAudioSource.PlayOneShot(hitSoundDatabase.missSoundClip, missSoundVolume);
+    }
+
+    public void MuteHitSound()
+    {
+        hitSoundVolume = 0f;
+    }
+
+    public void UnMuteHitSound()
+    {
+        hitSoundVolume = 0.5f;
     }
 }

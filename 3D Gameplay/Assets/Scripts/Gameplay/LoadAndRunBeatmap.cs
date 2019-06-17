@@ -190,7 +190,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
             // Update the song timer with the current song time
             //songTimer += Time.deltaTime;
 
-            songTimer = songProgressBar.songPosition;
+            songTimer = songProgressBar.songTimePosition;
         }
 
         if (hitObjectID == (totalHitObjectListSize))

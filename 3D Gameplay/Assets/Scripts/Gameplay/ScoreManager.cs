@@ -133,7 +133,7 @@ public class ScoreManager : MonoBehaviour {
         {
             hitSoundPreview.PlayMissSound();
 
-            comboAnimation.Play("ComboBreakTextAnimation");
+            comboAnimation.Play("ComboBreakTextAnimation", 0, 0f);
         }
 
         combo = 0;
@@ -231,7 +231,7 @@ public class ScoreManager : MonoBehaviour {
             largeComboText.text = " " + combo.ToString() + "x";
         }
 
-        comboAnimation.Play("ComboAnimation");
+        comboAnimation.Play("ComboAnimation", 0, 0f);
     }
 
     // Update judgement text
@@ -243,19 +243,19 @@ public class ScoreManager : MonoBehaviour {
         switch (judgementPass)
         {
             case "EARLY":
-                judgementAnimation.Play("EARLY");
+                judgementAnimation.Play("EARLY", 0, 0f);
                 totalEarly++;
                 break;
             case "GOOD":
-                judgementAnimation.Play("GOOD");
+                judgementAnimation.Play("GOOD", 0, 0f);
                 totalGood++;
                 break;
             case "PERFECT":
-                judgementAnimation.Play("PERFECT");
+                judgementAnimation.Play("PERFECT", 0, 0f);
                 totalPerfect++;
                 break;
             case "MISS":
-                judgementAnimation.Play("MISS");
+                judgementAnimation.Play("MISS", 0, 0f);
                 totalMiss++;
                 break;
         }

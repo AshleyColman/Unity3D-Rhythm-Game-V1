@@ -51,6 +51,33 @@ public class ResultsUIManager : MonoBehaviour {
         LoadResults();
     }
 
+    /*
+    IEnumerator UpdateTextTest()
+    {
+        //increase by animation
+        float i = 0f;
+        while (i <= 1f)
+        {
+            print(2);
+            i += Time.deltaTime / NumberAnimationDuration;
+
+            int newCombo = (int)Mathf.Lerp(0f, (float)maxCombo, i);
+            Color newColor = Color.Lerp(startColor, fullColor, (float)newCombo / (float)fullNoteCounts);
+
+            //set text
+            winComboScoreText.text = newCombo.ToString();
+
+            //set color
+            winComboCircle.color = newColor;
+            winComboScoreText.color = newColor;
+            winComboText.color = newColor;
+
+            yield return null;
+        }
+
+    }
+    */
+
     public void LoadResults()
     {
         PerfectText.text = gameplayToResultsManager.totalPerfect.ToString();

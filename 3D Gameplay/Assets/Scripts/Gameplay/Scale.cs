@@ -32,7 +32,7 @@ public class Scale : MonoBehaviour {
         timeStartedLerping = 0;
         timeToStartLerping = 0;
         objectScale = transform.localScale;
-        maxScale = new Vector3(5, 1, 5);
+        maxScale = new Vector3(4, 1, 4);
         minScale = new Vector3(0, 0, 0);
 
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>(); // Get the reference for scale speed

@@ -136,20 +136,11 @@ public class TimingAndScore : MonoBehaviour {
                         // CHECK IF PLAYER HIT EARLY
                         if (timer >= hitObjectStartTime && timer <= earlyJudgementTime)
                         {
-                            /*
-                            // Check if the time hit is the same as the current tick time / perfect hit
-                            if (timer == beatSoundManager.songTickTimes[beatSoundManager.CurrentTick])
-                            {
-                                hitSoundPreview.PlayHitSound(); // Play the hitsound
-                                beatSoundManager.playTickSound = false;
-                            }
-                            else
-                            {
-                                // Play the hit sound at the next tick
-                                beatSoundManager.playTickSound = true;
-                            }
-                            */
-                            hitSoundPreview.PlayHitSound(); // Play the hitsound
+
+                            // Play the hit sound at the next tick
+                            //beatSoundManager.GetTimeHit();
+
+
 
                             CheckIsSpecial(); // Check if the note is special
 
@@ -178,20 +169,11 @@ public class TimingAndScore : MonoBehaviour {
                         // CHECK IF PLAYER HIT GOOD
                         if (timer >= earlyJudgementTime && timer <= perfectJudgementTime)
                         {
-                            /*
-                            // Check if the time hit is the same as the current tick time / perfect hit
-                            if (timer == beatSoundManager.songTickTimes[beatSoundManager.CurrentTick])
-                            {
-                                hitSoundPreview.PlayHitSound(); // Play the hitsound
-                                beatSoundManager.playTickSound = false;
-                            }
-                            else
-                            {
-                                // Play the hit sound at the next tick
-                                beatSoundManager.playTickSound = true;
-                            }
-                            */
-                            hitSoundPreview.PlayHitSound(); // Play the hitsound
+
+                            // Play the hit sound at the next tick
+                            //beatSoundManager.GetTimeHit();
+
+
 
                             CheckIsSpecial(); // Check if the note is special
 
@@ -224,20 +206,10 @@ public class TimingAndScore : MonoBehaviour {
                             hitObjectPosition = transform.position; // Get the position of the object
                             explosionController.SpawnHitExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
 
-                            /*
-                            // Check if the time hit is the same as the current tick time / perfect hit
-                            if (timer == beatSoundManager.songTickTimes[beatSoundManager.CurrentTick])
-                            {
-                                //hitSoundPreview.PlayHitSound(); // Play the hitsound
-                                beatSoundManager.playTickSound = false;
-                            }
-                            else
-                            {
-                                // Play the hit sound at the next tick
-                                beatSoundManager.playTickSound = true;
-                            }
-                            */
-                            hitSoundPreview.PlayHitSound(); // Play the hitsound
+
+                            // Play the hit sound at the next tick
+                            //beatSoundManager.GetTimeHit();
+
 
                             scoreManager.AddJudgement("PERFECT");
 
