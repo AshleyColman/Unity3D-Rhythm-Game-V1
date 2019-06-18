@@ -265,7 +265,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 7
+      scalar: 50
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -3486,8 +3486,8 @@ ParticleSystemRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 2100000, guid: e8e7df794ea261648bbe4a7dc2a1a1bd, type: 2}
+  - {fileID: 2100000, guid: ab6cfb1ab2046024e9fa9df72bb529e3, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -38,7 +38,6 @@ GameObject:
   - component: {fileID: 33403730387266670}
   - component: {fileID: 64383292629791250}
   - component: {fileID: 23019824573939962}
-  - component: {fileID: 114111577945961028}
   m_Layer: 0
   m_Name: Glow
   m_TagString: Untagged
@@ -480,19 +479,6 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114111577945961028
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1050757684492368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeSpeed: 0
-  timer: 0
 --- !u!114 &114141641589948612
 MonoBehaviour:
   m_ObjectHideFlags: 1

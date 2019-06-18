@@ -28,16 +28,14 @@ public class SongProgressBar : MonoBehaviour {
     // Required for getting the song list from the songDatabase
     public SongDatabase songDatabase;
 
+    // Player skills manager for controlling audio speed based on mods
+    private PlayerSkillsManager PlayerSkillsManager;
 
 
 
     public float dsptimesong;
     //the current position of the song (in seconds)
     public float songTimePosition;
-
-
-
-
 
     // Used for tracking if the spacebar has been pressed which starts the song, prevents restarting of the song if spacebar is pressed again
     private bool hasPressedSpacebar; 
@@ -54,6 +52,8 @@ public class SongProgressBar : MonoBehaviour {
         levelChanger = FindObjectOfType<LevelChanger>();
         // Get the reference
         songDatabase = FindObjectOfType<SongDatabase>();
+        // Get the refernce
+        PlayerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
     }
 
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
@@ -100,6 +100,21 @@ public class SongProgressBar : MonoBehaviour {
                 {
                     //calculate the position in seconds
                     songTimePosition = (float)(AudioSettings.dspTime - dsptimesong);
+
+
+                    // Check mods used and multiply the dsp song time by the mod used 
+                    if (PlayerSkillsManager.tripleTimeSelected == true)
+                    {
+                        songTimePosition = songTimePosition * 2;
+                    }
+                    else if (PlayerSkillsManager.doubleTimeSelected == true)
+                    {
+                        songTimePosition = songTimePosition * 1.5f;
+                    }
+                    else if (PlayerSkillsManager.halfTimeSelected == true)
+                    {
+                        songTimePosition = songTimePosition / 1.25f;
+                    }
                 }
 
                 // Dont destroy the song audio source in gameplay to results page to continue the song playing after the gameplay has ended

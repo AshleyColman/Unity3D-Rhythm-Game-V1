@@ -308,9 +308,9 @@ public class PlayerSkillsManager : MonoBehaviour {
     private void EnableHalfTimeInGameplay()
     {
         // Set the gameplay speed to x0.75
-        Time.timeScale = 0.75f;
+        Time.timeScale = 0.80f;
 
-        songProgressBar.songAudioSource.pitch = 0.75f;
+        songProgressBar.songAudioSource.pitch = 0.80f;
     }
 
 

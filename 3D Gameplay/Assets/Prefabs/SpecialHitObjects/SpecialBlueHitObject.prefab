@@ -57,7 +57,6 @@ GameObject:
   - component: {fileID: 33320800431600686}
   - component: {fileID: 64787366668094534}
   - component: {fileID: 23975633721097394}
-  - component: {fileID: 114878584892211344}
   m_Layer: 0
   m_Name: Glow
   m_TagString: Untagged
@@ -435,19 +434,6 @@ MonoBehaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1045800696307370}
   m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeSpeed: 0
-  timer: 0
---- !u!114 &114878584892211344
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1312171870262894}
-  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a46eebdcf7ce0204f9d80f7c54e6ae15, type: 3}
   m_Name: 

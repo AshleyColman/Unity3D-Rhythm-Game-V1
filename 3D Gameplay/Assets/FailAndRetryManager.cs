@@ -102,6 +102,7 @@ public class FailAndRetryManager : MonoBehaviour {
     // Check for user input during fail screen
     private void CheckUserInput()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.R))
         {
             // Has pressed retry key to true
@@ -109,6 +110,7 @@ public class FailAndRetryManager : MonoBehaviour {
             // Restart gameplay scene
             RestartGameplayScene();
         }
+        */
     }
 
     // Activate the failed screen
