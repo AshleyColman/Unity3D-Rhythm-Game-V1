@@ -41,6 +41,13 @@ public class ScoreManager : MonoBehaviour {
 
     private bool hasFailed; // Has the player failed
 
+    // Mod icons
+    public GameObject tripleTimeMod, doubleTimeMod, halfTimeMod, instantDeathMod, noFailMod;
+    public GameObject modGlow;
+
+
+
+
     // Use this for initialization
     void Start () {
 
@@ -69,6 +76,8 @@ public class ScoreManager : MonoBehaviour {
         // Lerp the score overtime with the timer 
         LerpScore();
 
+        // Check the mods used
+        CheckMods();
 
         // Check the current combo and see if it's the highest so far;
         CheckHighestCombo();
@@ -79,6 +88,37 @@ public class ScoreManager : MonoBehaviour {
         // Calculate the highest score possible in the beatmap
         CalculateHighestScoreForBeatmap();
 	}
+
+    // Check mod used and display mod used
+    private void CheckMods()
+    {
+        if (playerSkillsManager.tripleTimeSelected == true)
+        {
+            tripleTimeMod.gameObject.SetActive(true);
+            modGlow.gameObject.SetActive(true);
+        }
+        else if (playerSkillsManager.doubleTimeSelected == true)
+        {
+            doubleTimeMod.gameObject.SetActive(true);
+            modGlow.gameObject.SetActive(true);
+        }
+        else if (playerSkillsManager.halfTimeSelected == true)
+        {
+            halfTimeMod.gameObject.SetActive(true);
+            modGlow.gameObject.SetActive(true);
+        }
+        else if (playerSkillsManager.instantDeathSelected == true)
+        {
+            instantDeathMod.gameObject.SetActive(true);
+            modGlow.gameObject.SetActive(true);
+        }
+        else if (playerSkillsManager.noFailSelected == true)
+        {
+            noFailMod.gameObject.SetActive(true);
+            modGlow.gameObject.SetActive(true);
+        }
+    }
+
 
     // Activate white combo particles
     private void ActivateWhiteComboParticles()

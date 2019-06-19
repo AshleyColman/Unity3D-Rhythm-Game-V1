@@ -29,7 +29,7 @@ public class TimingAndScore : MonoBehaviour {
 
     private string objectTag; // The tag of the object
     private KeyCode objectKey = KeyCode.None;
-
+    private KeyCode alternateObjectKey = KeyCode.None;
     public bool canBeHit = false;
     public bool isSpecial = false; // Is it a special note during special time?
 
@@ -127,7 +127,7 @@ public class TimingAndScore : MonoBehaviour {
             if (canBeHit == true)
             {
                 // If the user has pressed the right object key enable hit 
-                if (Input.GetKeyDown(objectKey))
+                if (Input.GetKeyDown(objectKey) || Input.GetKeyDown(alternateObjectKey))
                 {
                     // Timing check to calculate the type of hit on timing (perfect, miss)
 
@@ -199,8 +199,6 @@ public class TimingAndScore : MonoBehaviour {
                         // CHECK IF PLAYER HIT GOOD
                         if (timer >= perfectJudgementTime && timer <= destroyedTime)
                         {
-                            Debug.Log("key pressed: " + timer);
-
                             CheckIsSpecial(); // Check if the note is special
 
                             hitObjectPosition = transform.position; // Get the position of the object
@@ -276,30 +274,44 @@ public class TimingAndScore : MonoBehaviour {
         if (objectTag == "Green")
         {
             objectKey = KeyCode.S;
+
+            // Alternate
+            alternateObjectKey = KeyCode.Z;
         }
         else if (objectTag == "Yellow")
         {
             objectKey = KeyCode.D;
+
+            // Alternate
+            alternateObjectKey = KeyCode.X;
         }
         else if (objectTag == "Orange")
         {
             objectKey = KeyCode.F;
+
+            // Alternate
+            alternateObjectKey = KeyCode.C;
         }
         else if (objectTag == "Blue")
         {
             objectKey = KeyCode.J;
+
+            // Alternate
+            alternateObjectKey = KeyCode.M;
         }
         else if (objectTag == "Purple")
         {
             objectKey = KeyCode.K;
+
+            // Alternate
+            alternateObjectKey = KeyCode.Comma;
         }
         else if (objectTag == "Red")
         {
             objectKey = KeyCode.L;
-        }
-        else if (objectTag == "Yellow")
-        {
-            objectKey = KeyCode.E;
+
+            // Alternate
+            alternateObjectKey = KeyCode.Period;
         }
     }
     

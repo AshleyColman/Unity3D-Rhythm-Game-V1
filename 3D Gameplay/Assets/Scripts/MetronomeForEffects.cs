@@ -106,139 +106,146 @@ public class MetronomeForEffects : MonoBehaviour
 
     private void Update()
     {
+        // Get the reference to the audio source
+        songAudioGameObject = GameObject.FindGameObjectWithTag("AudioSource");
+        songAudioSource = songAudioGameObject.GetComponent<AudioSource>();
+
         // Get the reference to the level changer
         levelChanger = FindObjectOfType<LevelChanger>();
 
-        // Check if the menu song is playing 
-        if (songAudioSource.isPlaying)
+        if (songAudioSource != null)
         {
-            // Increment the timer based on the current song time
-            timer = songAudioSource.time;
-
-            // Main Menu Animation Reset
-            if (levelChanger.currentLevelIndex == levelChanger.mainMenuSceneIndex)
+            // Check if the menu song is playing 
+            if (songAudioSource.isPlaying)
             {
-                // If the song has reached the end, check if it has started playing again, reset the timer to loop the animation
-                if (songAudioSource.time >= songAudioSource.clip.length || songAudioSource.time == 0f || songAudioSource.isPlaying == false)
+                // Increment the timer based on the current song time
+                timer = songAudioSource.time;
+
+                // Main Menu Animation Reset
+                if (levelChanger.currentLevelIndex == levelChanger.mainMenuSceneIndex)
                 {
-                    // Reset the menu animation that plays with the song
-                    ResetMenuAnimation();
-                }
-            }
-
-
-            // Calculate the current tick for song select scene preview time differences effecting animations
-            // Current tick needs to be calculated to ensure animations are played in sync
-            if (levelChanger.currentLevelIndex == levelChanger.songSelectSceneIndex)
-            {
-                if (hasCalculatedCurrentTick == false)
-                {
-                    // Calculate and update the current tick
-                    currentTick = CalculateCurrentTick();
-
-                    // Reset flash tick
-                    flashTick = currentTick;
-                    // Set to true to prevent recalculations
-                    hasCalculatedCurrentTick = true;
-                }
-            }
-
-            // Main Menu Scene Animations
-            if (levelChanger.currentLevelIndex == levelChanger.mainMenuSceneIndex)
-            {
-                // Check the timer against the tick times for the song
-                if (currentTick < (songTickTimes.Count - 1))
-                {
-                    if (timer >= songTickTimes[currentTick])
+                    // If the song has reached the end, check if it has started playing again, reset the timer to loop the animation
+                    if (songAudioSource.time >= songAudioSource.clip.length || songAudioSource.time == 0f || songAudioSource.isPlaying == false)
                     {
-                        // Play ontick animations
-                        MainMenuSceneOnTick();
-                        // Check for next tick next time
-                        currentTick++;
+                        // Reset the menu animation that plays with the song
+                        ResetMenuAnimation();
+                    }
+                }
 
-                        if (currentTick >= flashTick)
+
+                // Calculate the current tick for song select scene preview time differences effecting animations
+                // Current tick needs to be calculated to ensure animations are played in sync
+                if (levelChanger.currentLevelIndex == levelChanger.songSelectSceneIndex)
+                {
+                    if (hasCalculatedCurrentTick == false)
+                    {
+                        // Calculate and update the current tick
+                        currentTick = CalculateCurrentTick();
+
+                        // Reset flash tick
+                        flashTick = currentTick;
+                        // Set to true to prevent recalculations
+                        hasCalculatedCurrentTick = true;
+                    }
+                }
+
+                // Main Menu Scene Animations
+                if (levelChanger.currentLevelIndex == levelChanger.mainMenuSceneIndex)
+                {
+                    // Check the timer against the tick times for the song
+                    if (currentTick < (songTickTimes.Count - 1))
+                    {
+                        if (timer >= songTickTimes[currentTick])
                         {
-                            // Play the flash animation on the main menu
-                            flashTick += 4;
-                            PlayMainMenuSceneFlashAnimation();
+                            // Play ontick animations
+                            MainMenuSceneOnTick();
+                            // Check for next tick next time
+                            currentTick++;
+
+                            if (currentTick >= flashTick)
+                            {
+                                // Play the flash animation on the main menu
+                                flashTick += 4;
+                                PlayMainMenuSceneFlashAnimation();
+                            }
                         }
                     }
                 }
-            }
 
-            // Song Select Scene Animations
-            if (levelChanger.currentLevelIndex == levelChanger.songSelectSceneIndex)
-            {
-                // Check the timer against the tick times for the song
-                if (currentTick < (songTickTimes.Count - 1))
+                // Song Select Scene Animations
+                if (levelChanger.currentLevelIndex == levelChanger.songSelectSceneIndex)
                 {
-                    if (timer >= songTickTimes[currentTick])
+                    // Check the timer against the tick times for the song
+                    if (currentTick < (songTickTimes.Count - 1))
                     {
-                        // Play ontick animations
-                        SongSelectSceneOnTick();
-                        // Check for next tick next time
-                        currentTick++;
-
-                        PlayDifficultyTextAnimation();
-
-                        // Difficulty Flash Animations
-                        if (currentTick >= flashTick)
+                        if (timer >= songTickTimes[currentTick])
                         {
-                            // Play the difficuly flash animation
-                            flashTick += 4;
-                            PlayBeatFlashAnimation();
+                            // Play ontick animations
+                            SongSelectSceneOnTick();
+                            // Check for next tick next time
+                            currentTick++;
 
+                            PlayDifficultyTextAnimation();
+
+                            // Difficulty Flash Animations
+                            if (currentTick >= flashTick)
+                            {
+                                // Play the difficuly flash animation
+                                flashTick += 4;
+                                PlayBeatFlashAnimation();
+
+                            }
                         }
                     }
                 }
-            }
 
 
-            // Gameplay special time Animations
-            if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex)
-            {
+                // Gameplay special time Animations
                 if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex)
                 {
-                    // Get reference to the special time manager
-                    specialTimeManager = FindObjectOfType<SpecialTimeManager>();
-
-                    // Get bpm and offset information
-                    if (hasSongInformationForGameplay == false)
+                    if (levelChanger.currentLevelIndex == levelChanger.gameplaySceneIndex)
                     {
-                        Bpm = Database.database.loadedBPM;
-                        OffsetMS = Database.database.loadedOffsetMS;
+                        // Get reference to the special time manager
+                        specialTimeManager = FindObjectOfType<SpecialTimeManager>();
 
-                        if (songAudioSource.clip != null)
+                        // Get bpm and offset information
+                        if (hasSongInformationForGameplay == false)
                         {
-                            CalculateIntervals();
-                        }
+                            Bpm = Database.database.loadedBPM;
+                            OffsetMS = Database.database.loadedOffsetMS;
 
-                        hasSongInformationForGameplay = true;
+                            if (songAudioSource.clip != null)
+                            {
+                                CalculateIntervals();
+                            }
+
+                            hasSongInformationForGameplay = true;
+                        }
                     }
-                }
 
 
 
-                // Check the timer against the tick times for the song
-                if (currentTick < (songTickTimes.Count - 1))
-                {
-                    if (timer >= songTickTimes[currentTick])
+                    // Check the timer against the tick times for the song
+                    if (currentTick < (songTickTimes.Count - 1))
                     {
-                        // Play ontick animations
-                        GameplaySceneOnTick();
-                        // Check for next tick next time
-                        currentTick++;
-
-                        /*
-                        // Difficulty Flash Animations
-                        if (currentTick >= flashTick)
+                        if (timer >= songTickTimes[currentTick])
                         {
-                            // Play the difficuly flash animation
-                            flashTick += 4;
-                            PlayBeatFlashAnimation();
-                            PlayDifficultyTextAnimation();
+                            // Play ontick animations
+                            GameplaySceneOnTick();
+                            // Check for next tick next time
+                            currentTick++;
+
+                            /*
+                            // Difficulty Flash Animations
+                            if (currentTick >= flashTick)
+                            {
+                                // Play the difficuly flash animation
+                                flashTick += 4;
+                                PlayBeatFlashAnimation();
+                                PlayDifficultyTextAnimation();
+                            }
+                            */
                         }
-                        */
                     }
                 }
             }

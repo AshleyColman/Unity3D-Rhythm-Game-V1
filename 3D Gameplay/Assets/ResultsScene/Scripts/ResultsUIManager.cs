@@ -16,17 +16,18 @@ public class ResultsUIManager : MonoBehaviour {
     public TextMeshProUGUI ComboText;
     public TextMeshProUGUI PercentageText;
     public TextMeshProUGUI UsernameText;
-    public TextMeshProUGUI GradeTextP;
-    public TextMeshProUGUI GradeTextS;
-    public TextMeshProUGUI GradeTextA;
-    public TextMeshProUGUI GradeTextB;
-    public TextMeshProUGUI GradeTextC;
-    public TextMeshProUGUI GradeTextD;
-    public TextMeshProUGUI GradeTextE;
-    public TextMeshProUGUI GradeTextF;
+    public Animator gradeIconAnimator;
     public TextMeshProUGUI ScoreText;
     private float gradePercentage;
     public GameplayToResultsManager gameplayToResultsManager;
+
+    public PlayerSkillsManager playerSkillsManager;
+
+    // Mod icons
+    public GameObject tripleTimeMod, doubleTimeMod, halfTimeMod, instantDeathMod, noFailMod;
+    public GameObject modGlow;
+
+    bool hasLoadedResults;
 
     public float GradePercentage
     {
@@ -43,11 +44,14 @@ public class ResultsUIManager : MonoBehaviour {
 
     void Start()
     {
+        playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
         gameplayToResultsManager = FindObjectOfType<GameplayToResultsManager>();
     }
 
     void Update()
     {
+        CheckMods();
+
         LoadResults();
     }
 
@@ -77,6 +81,37 @@ public class ResultsUIManager : MonoBehaviour {
 
     }
     */
+
+    // Check mod used and display mod used
+    private void CheckMods()
+    {
+        if (playerSkillsManager.tripleTimeSelected == true)
+        {
+            tripleTimeMod.gameObject.SetActive(true);
+            modGlow.gameObject.SetActive(true);
+        }
+        else if (playerSkillsManager.doubleTimeSelected == true)
+        {
+            doubleTimeMod.gameObject.SetActive(true);
+            modGlow.gameObject.SetActive(true);
+        }
+        else if (playerSkillsManager.halfTimeSelected == true)
+        {
+            halfTimeMod.gameObject.SetActive(true);
+            modGlow.gameObject.SetActive(true);
+        }
+        else if (playerSkillsManager.instantDeathSelected == true)
+        {
+            instantDeathMod.gameObject.SetActive(true);
+            modGlow.gameObject.SetActive(true);
+        }
+        else if (playerSkillsManager.noFailSelected == true)
+        {
+            noFailMod.gameObject.SetActive(true);
+            modGlow.gameObject.SetActive(true);
+        }
+    }
+
 
     public void LoadResults()
     {
@@ -111,35 +146,35 @@ public class ResultsUIManager : MonoBehaviour {
         // Enable the grade achieved
         if (gameplayToResultsManager.gradeAchieved == "P")
         {
-            GradeTextP.gameObject.SetActive(true);
+            gradeIconAnimator.Play("BunnyPRank");
         }
         else if (gameplayToResultsManager.gradeAchieved == "S")
         {
-            GradeTextS.gameObject.SetActive(true);
+            gradeIconAnimator.Play("BunnySRank");
         }
         else if (gameplayToResultsManager.gradeAchieved == "A")
         {
-            GradeTextA.gameObject.SetActive(true);
+            gradeIconAnimator.Play("BunnyARank");
         }
         else if (gameplayToResultsManager.gradeAchieved == "B")
         {
-            GradeTextB.gameObject.SetActive(true);
+            gradeIconAnimator.Play("BunnyBRank");
         }
         else if (gameplayToResultsManager.gradeAchieved == "C")
         {
-            GradeTextC.gameObject.SetActive(true);
+            gradeIconAnimator.Play("BunnyCRank");
         }
         else if (gameplayToResultsManager.gradeAchieved == "D")
         {
-            GradeTextD.gameObject.SetActive(true);
+            gradeIconAnimator.Play("BunnyDRank");
         }
         else if (gameplayToResultsManager.gradeAchieved == "E")
         {
-            GradeTextE.gameObject.SetActive(true);
+            gradeIconAnimator.Play("BunnyERank");
         }
         else if (gameplayToResultsManager.gradeAchieved == "F")
         {
-            GradeTextF.gameObject.SetActive(true);
+            gradeIconAnimator.Play("BunnyFRank");
         }
     }
     

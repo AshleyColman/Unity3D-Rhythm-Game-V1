@@ -85,8 +85,6 @@ public class SpecialTimeManager : MonoBehaviour {
         // If it is the special time 
         if (specialTimesLoaded == true && songTime >= specialTimeStart && songTime <= specialTimeEnd)
         {
-            Debug.Log("is special time set: " + songTime);
-
             isSpecialTime = true;
         }
         // Activate the border if within special time and below the additional 1 second borderDisableTime

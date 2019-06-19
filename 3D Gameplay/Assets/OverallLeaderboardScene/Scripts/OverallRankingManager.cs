@@ -38,13 +38,13 @@ public class OverallRankingManager : MonoBehaviour
 
     int totalRankingPlacements;
 
+    public GameObject loadingButton;
 
     void Start()
     {
         totalRankingPlacements = 50;
         leaderboardPlaceToGet = 1;
         notChecked = true;
-
 
         // Instantiate the lists
         for (int i = 0; i < placeLeaderboardData.Length; i++)
@@ -56,6 +56,11 @@ public class OverallRankingManager : MonoBehaviour
 
     void Update()
     {
+        // Display loading icon
+        if (notChecked == false && hasCheckedPersonalBest == true)
+        {
+            loadingButton.gameObject.SetActive(false);
+        }
 
         if (notChecked == true && hasCheckedPersonalBest == false)
         {
