@@ -23,6 +23,8 @@ public class StartSceneEnterGame : MonoBehaviour {
     private string loginTextValue;
     private string selectModeValue;
 
+    
+
     // Use this for initialization
     void Start () {
 
@@ -34,21 +36,33 @@ public class StartSceneEnterGame : MonoBehaviour {
         hasClicked = false;
         loginTextValue = "Create a new account or sign into an existing one";
         selectModeValue = "Select a mode";
+
+
+        // If the user has logged in previously (returned from a different scene then back to the main menu)
+        if (MySQLDBManager.loggedIn == true)
+        {
+            // Update the press anywhere text to the select a mode text as default
+            pressAnywhereText.text = selectModeValue;    
+        }
     }
 
     void Update()
     {
-        // If user presses left click on title screen
-        if (Input.GetMouseButtonDown(0) && hasClicked == false)
+        // If the user has not logged in yet
+        if (MySQLDBManager.loggedIn == false)
         {
-            // Show the login panel
-            ShowLoginPanel();
+            // If user presses left click on title screen or the user has logged in
+            if (Input.GetMouseButtonDown(0) && hasClicked == false)
+            {
+                // Show the login panel
+                ShowLoginPanel();
 
-            // Set to true
-            hasClicked = true;
+                // Set to true
+                hasClicked = true;
 
-            // Play sound effect
-            menuSFXAudioSource.PlayOneShot(menuSFXMenuSourceClip);
+                // Play sound effect
+                menuSFXAudioSource.PlayOneShot(menuSFXMenuSourceClip);
+            }
         }
     }
 

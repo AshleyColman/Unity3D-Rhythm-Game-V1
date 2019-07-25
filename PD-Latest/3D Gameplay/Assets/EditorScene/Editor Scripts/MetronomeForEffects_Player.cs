@@ -8,8 +8,8 @@ public class MetronomeForEffects_Player : MonoBehaviour
 {
     public bool active;
     bool playing = false;
-    public double Bpm = 128;
-    public double OffsetMS = 100;
+    public float bpm = 128;
+    public float offsetMS = 100;
     private bool previouslyPaused = false;
 
     void Start()
@@ -21,7 +21,7 @@ public class MetronomeForEffects_Player : MonoBehaviour
     // Sends Song Data to Metronome Pro script
     public void SendSongData()
     {
-        FindObjectOfType<MetronomeForEffects>().GetSongData(Bpm, OffsetMS);
+        FindObjectOfType<MetronomeForEffects>().GetSongData(bpm, offsetMS);
     }
 }
 

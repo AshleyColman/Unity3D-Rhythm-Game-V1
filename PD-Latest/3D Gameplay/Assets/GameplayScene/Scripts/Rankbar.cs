@@ -124,7 +124,7 @@ public class Rankbar : MonoBehaviour {
         }
 
         // Update the current percentage for the gameplayToResults manager
-        gameplayToResultsManager.Percentage = currentPercentage.ToString();
+        gameplayToResultsManager.Percentage = currentPercentage.ToString("F2");
         // Set the color and value
         rankBarSlider.value = currentPercentage;
         // Update current percentage text

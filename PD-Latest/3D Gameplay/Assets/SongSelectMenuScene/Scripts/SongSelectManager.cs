@@ -39,7 +39,7 @@ public class SongSelectManager : MonoBehaviour {
     // Integers
     private int selectedBeatmapDirectoryIndex, previousBeatmapDirectoryIndex; // Beatmap directory indexs
     private float songPreviewStartTime;
-    private double beatmapSongOffset, beatmapSongBpm;
+    private float beatmapSongOffset, beatmapSongBpm;
     private int songClipChosenIndex;
     private int frameInterval;
     private int beatmapDirectoryCount;
@@ -57,6 +57,7 @@ public class SongSelectManager : MonoBehaviour {
     private SongSelectPanel songSelectPanel; // Reference to the SongSelectPanel for loading the song beatmap buttons with the directories found
     private MetronomeForEffects metronomeForEffects; // MetronomeForEffects - controls beat animations
     private BeatmapRanking beatmapRanking; // Beatmapranking
+    private SongSelectMenuFlash songSelectMenuFlash; // Menu flash control
 
     // Properties
 
@@ -88,6 +89,8 @@ public class SongSelectManager : MonoBehaviour {
         loadLastBeatmapManager = FindObjectOfType<LoadLastBeatmapManager>();
         metronomeForEffects = FindObjectOfType<MetronomeForEffects>();
         beatmapRanking = FindObjectOfType<BeatmapRanking>();
+        songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
+
 
         // Functions
         CheckBeatmapDirectories(); // Get and check the beatmaps in the directory
@@ -390,12 +393,21 @@ public class SongSelectManager : MonoBehaviour {
         UpdateDifficultyLevelText(_selectedBeatmapDirectoryIndex);
 
 
-        // Check which difficulty files exist and load the first one to be found when the arrow key has been pressed in song select
-        LoadFirstBeatmapFileThatExists(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
+        // Only load the beatmap file if 1 of the difficulties exist
+        if (easyDifficultyExist || advancedDifficultyExist || extraDifficultyExist)
+        {
+            // Check which difficulty files exist and load the first one to be found when the arrow key has been pressed in song select
+            LoadSelectedDifficultyBeatmapFile(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
+        }
+        else
+        {
+            // No difficulties were found for that beatmap - load the previous beatmap in the list?
+            AttemptToLoadPreviousBeatmap(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
+        }
     }
-
-    // Check which difficulty files exist and load the first one to be found when the arrow key has been pressed in song select
-    private void LoadFirstBeatmapFileThatExists(int _selectedBeatmapDirectoryIndex, bool _hasPressedArrowKey)
+    
+    // Check the difficulty and try to load that specific beatmap file if it exists
+    private void LoadSelectedDifficultyBeatmapFile(int _selectedBeatmapDirectoryIndex, bool _hasPressedArrowKey)
     {
         // If the last beatmap difficulty has been set
         if (lastBeatmapDifficulty != null)
@@ -428,13 +440,19 @@ public class SongSelectManager : MonoBehaviour {
                         // Load the song select information for extra
                         LoadBeatmapSongSelectInformation(_selectedBeatmapDirectoryIndex, extraDifficultyName, _hasPressedArrowKey);
                     }
+                    else
+                    {
+                        // Check which difficulty files exist and load the first one to be found when the arrow key has been pressed in song select
+                        LoadFirsBeatmapFileThatExists(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
+                    }
                     break;
             }   
         }
+    }
 
-
-
-        /*
+    // Check which difficulty files exist and load the first one to be found when the arrow key has been pressed in song select
+    private void LoadFirsBeatmapFileThatExists(int _selectedBeatmapDirectoryIndex, bool _hasPressedArrowKey)
+    {
         // If the easy.dia difficulty file exists
         if (easyDifficultyExist == true)
         {
@@ -453,7 +471,22 @@ public class SongSelectManager : MonoBehaviour {
             // Load the song select information for extra
             LoadBeatmapSongSelectInformation(_selectedBeatmapDirectoryIndex, extraDifficultyName, _hasPressedArrowKey);
         }
-        */
+        else
+        {
+            // No difficulties were found for that beatmap - load the previous beatmap in the list?
+            AttemptToLoadPreviousBeatmap(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
+        }
+    }
+
+
+    private void AttemptToLoadPreviousBeatmap(int _selectedBeatmapDirectoryIndex, bool _hasPressedArrowKey)
+    {
+        // Try to load the previous beatmap
+        _selectedBeatmapDirectoryIndex = (_selectedBeatmapDirectoryIndex - 1);
+        selectedBeatmapDirectoryIndex = (_selectedBeatmapDirectoryIndex - 1);
+
+        // Load previous beatmap
+        LoadBeatmapFileThatExists((_selectedBeatmapDirectoryIndex), _hasPressedArrowKey);
     }
 
     // Update the song select scene difficulty text for the difficulty selected

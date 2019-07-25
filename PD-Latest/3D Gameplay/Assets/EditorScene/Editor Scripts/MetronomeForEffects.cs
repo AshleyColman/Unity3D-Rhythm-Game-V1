@@ -1,82 +1,79 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Runtime.InteropServices;
-using Random = UnityEngine.Random;
 
 public class MetronomeForEffects : MonoBehaviour
 {
+
+    // UI
     public GameObject mainMenuCanvas;
-    public bool active = false;
-    private LevelChanger levelChanger;
-    public double Bpm = 170.0f;
-    public double OffsetMS = 1000;
-    public int Step = 4;
-    public int Base = 4;
-    public int CurrentMeasure = 0;
-    public int CurrentStep = 0;
-    public List<Double> songTickTimes;
-    double interval;
-    public bool neverPlayed = false;
-    public AudioSource songAudioSource;
+
+    // Audio
     public GameObject songAudioGameObject;
-    public float timer;
-    public int currentTick;
-    public int flashTick;
+    public AudioSource songAudioSource;
 
-    // Time difference between ticks
-    float tickTimeDifference;
-    // Time that makes up a measure in the song
-    float measureDuration;
+    // Bools
+    private bool active;
+    private bool neverPlayed;
+    private bool hasCalculatedCurrentTick; // Used for calculating the current tick in the song
+    private bool hasSongInformationForGameplay; // For getting the bpm and offset information in-gameplay
 
-    // Main Menu Animators
-    private Animator metronomeEffectsMainMenuCanvasAnimator;
+    // Strings
+    private string beatmapDifficultySelected; // Difficulty selected, changes which animations are played
+    
+    // Animation
+    public Animator metronomeEffectsMainMenuCanvasAnimator;
     public Animator mainMenuCanvasFlashAnimator;
-
     // Song Select Animators
     public Animator titleAnimator;
     public Animator difficultyTextAnimator;
     public Animator flashImageAnimator;
-
-    // Used for calculating the current tick in the song
-    bool hasCalculatedCurrentTick;
-
-    // Difficulty selected, changes which animations are played
-    string beatmapDifficultySelected;
-
-    // The previous random number used for fever time animations
-    int previousRandomNumber;
-    // For getting the bpm and offset information in-gameplay
-    bool hasSongInformationForGameplay;
-
-    // Gameplay healthbar animator
-    public Animator healthbarAnimator;
-    // Healthbar gameobject for information about the gameplay healthabr
-    private Healthbar healthbar;
-
-    // Reference for getting the difficulty selected
-    private LoadAndRunBeatmap loadAndRunBeatmap;
-
     // Gameplay difficulty panel animators
     public Animator easyDifficultyPanelAnimator, advancedDifficultyPanelAnimator, extraDifficultyPanelAnimator;
+    // Gameplay healthbar animator
+    public Animator healthbarAnimator;
+
+    // Integers
+    public List<float> songTickTimes;
+    private float interval;
+    private float bpm;
+    private float offsetMS;
+    private float timer;
+    private float tickTimeDifference; // Time difference between ticks
+    private float measureDuration; // Time that makes up a measure in the song
+    private int currentTick;
+    private int flashTick;
+    private int Step;
+    private int Base;
+    private int CurrentMeasure;
+    private int CurrentStep;
+
+    // Scripts
+    private LevelChanger levelChanger;
+    private Healthbar healthbar;
+    private LoadAndRunBeatmap loadAndRunBeatmap;
+
 
     private void Start()
     {
-        levelChanger = FindObjectOfType<LevelChanger>();
+        // Initialize
+        bpm = 170.0f;
+        offsetMS = 1000;
+        Step = 4;
+        Base = 4;
+        CurrentMeasure = 0;
+        CurrentStep = 0;
+        flashTick = 2;
+        active = false;
+        neverPlayed = false;
 
+
+        // Reference
+        levelChanger = FindObjectOfType<LevelChanger>();
         songAudioGameObject = GameObject.FindGameObjectWithTag("AudioSource");
         songAudioSource = songAudioGameObject.GetComponent<AudioSource>();
 
-        // Not gameplay scene
-        if (levelChanger.CurrentLevelIndex != levelChanger.GameplaySceneIndex)
-        {
-            // Do not calculate internvals for gameplay immediately
-            CalculateIntervals();
-        }
-
-        // Gameplay scene
+        // Gameplay Scene References
         if (levelChanger.CurrentLevelIndex == levelChanger.GameplaySceneIndex)
         {
             // Get the reference to the healthbar gameobject
@@ -85,20 +82,25 @@ public class MetronomeForEffects : MonoBehaviour
             // Get the reference to the loadAndRunBeatmap gameobject
             loadAndRunBeatmap = FindObjectOfType<LoadAndRunBeatmap>();
         }
-
-        flashTick = 2;
+        else
+        {
+            // Do not calculate intervals for gameplay immediately
+            // Calculate intervals for other scenes immediately however
+            CalculateIntervals();
+        }
     }
 
     // Update the beatmap difficulty selected 
-    public void UpdateDifficultyAnimations(string beatmapDifficultyPass)
+    public void UpdateDifficultyAnimations(string _beatmapDifficulty)
     {
-        beatmapDifficultySelected = beatmapDifficultyPass;
+        beatmapDifficultySelected = _beatmapDifficulty;
     }
 
-    public void GetSongData(double _bpm, double _offsetMS)
+    // Get the bpm and offset information
+    public void GetSongData(float _bpm, float _offsetMS)
     {
-        Bpm = _bpm;
-        OffsetMS = _offsetMS;
+        bpm = _bpm;
+        offsetMS = _offsetMS;
     }
 
     // Calculate Time Intervals for the song
@@ -107,7 +109,7 @@ public class MetronomeForEffects : MonoBehaviour
         try
         {
             var multiplier = Base / Step;
-            var tmpInterval = 60f / Bpm;
+            var tmpInterval = 60f / bpm;
             interval = tmpInterval / multiplier;
 
             int i = 0;
@@ -116,7 +118,7 @@ public class MetronomeForEffects : MonoBehaviour
 
             while (interval * i <= songAudioSource.clip.length)
             {
-                songTickTimes.Add((interval * i) + (OffsetMS / 1000f));
+                songTickTimes.Add((interval * i) + (offsetMS / 1000f));
                 i++;
             }
         }
@@ -128,13 +130,15 @@ public class MetronomeForEffects : MonoBehaviour
 
     private void Update()
     {
-        // Get the reference to the audio source
-        songAudioGameObject = GameObject.FindGameObjectWithTag("AudioSource");
-        songAudioSource = songAudioGameObject.GetComponent<AudioSource>();
+        // If the song audio game object has not been found
+        if (songAudioGameObject == null)
+        {
+            // Get the reference to the audio source
+            songAudioGameObject = GameObject.FindGameObjectWithTag("AudioSource");
+            songAudioSource = songAudioGameObject.GetComponent<AudioSource>();
+        }
 
-        // Get the reference to the level changer
-        levelChanger = FindObjectOfType<LevelChanger>();
-
+        // If the song audio source has been found
         if (songAudioSource != null)
         {
             // Check if the menu song is playing 
@@ -143,7 +147,7 @@ public class MetronomeForEffects : MonoBehaviour
                 // Increment the timer based on the current song time
                 timer = songAudioSource.time;
 
-                // Main Menu Animation Reset
+                // Main Menu Scene Animation Play / Reset
                 if (levelChanger.CurrentLevelIndex == levelChanger.MainMenuSceneIndex)
                 {
                     // If the song has reached the end, check if it has started playing again, reset the timer to loop the animation
@@ -211,7 +215,6 @@ public class MetronomeForEffects : MonoBehaviour
                                 // Play the difficuly flash animation
                                 flashTick += 4;
                                 PlayBeatFlashAnimation();
-
                             }
                         }
                     }
@@ -224,8 +227,8 @@ public class MetronomeForEffects : MonoBehaviour
                     // Get bpm and offset information
                     if (hasSongInformationForGameplay == false)
                     {
-                        Bpm = Database.database.LoadedBPM;
-                        OffsetMS = Database.database.LoadedOffsetMS;
+                        bpm = Database.database.LoadedBPM;
+                        offsetMS = Database.database.LoadedOffsetMS;
 
                         if (songAudioSource.clip != null)
                         {
@@ -350,58 +353,6 @@ public class MetronomeForEffects : MonoBehaviour
 
         // Play the difficulty panel animation
         PlayDifficultyPanelAnimation();
-
-
-
-        
-        /*
-        // If special time is activate play special time animation
-        // Get random number from 1-7
-        int randomNumber = Random.Range(1, 6);
-
-        // Check random number against the the previous random number to ensure no doubles
-        if (randomNumber == previousRandomNumber)
-        {
-            if (randomNumber == 6)
-            {
-                // Reset random number
-                randomNumber = 1;
-            }
-            else
-            {
-                // Increment random number for different color animation
-                randomNumber++;
-            }
-        }
-
-        if (specialTimeManager.isSpecialTime == true)
-        {
-            switch (randomNumber)
-            {
-                case 1:
-                    specialTimeManager.BlueBackgroundAnimation();
-                    break;
-                case 2:
-                    specialTimeManager.PurpleBackgroundAnimation();
-                    break;
-                case 3:
-                    specialTimeManager.RedBackgroundAnimation();
-                    break;
-                case 4:
-                    specialTimeManager.YellowBackgroundAnimation();
-                    break;
-                case 5:
-                    specialTimeManager.OrangeBackgroundAnimation();
-                    break;
-                case 6:
-                    specialTimeManager.GreenBackgroundAnimation();
-                    break;
-            }
-
-            // Update the previous random number
-            previousRandomNumber = randomNumber;
-        }
-        */
     }
 
     // Reset and allow current tick to be recalculated when the song has changed
@@ -471,8 +422,6 @@ public class MetronomeForEffects : MonoBehaviour
                 flashImageAnimator.Play("EXTRABeatFlashImage", 0, 0f);
                 break;
         }
-
-
     }
 
     // Song Select Scene difficulty beat flash animation
@@ -492,8 +441,6 @@ public class MetronomeForEffects : MonoBehaviour
         }
     }
 
-
-
     // Reset the menu animation that plays with the song
     private void ResetMenuAnimation()
     {
@@ -501,6 +448,5 @@ public class MetronomeForEffects : MonoBehaviour
         timer = 0f;
         // Reset the current tick time to check for animation
         currentTick = 0;
-    }
-        
+    } 
 }

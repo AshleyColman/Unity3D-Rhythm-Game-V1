@@ -101,22 +101,22 @@ public class UIKeyPressManager : MonoBehaviour {
         switch (_keyNumberPressed)
         {
             case 1:
-                _animator.Play("HeldS");
+                _animator.Play("HeldS", 0, 0f);
                 break;
             case 2:
-                _animator.Play("HeldD");
+                _animator.Play("HeldD", 0, 0f);
                 break;
             case 3:
-                _animator.Play("HeldF");
+                _animator.Play("HeldF", 0, 0f);
                 break;
             case 4:
-                _animator.Play("HeldJ");
+                _animator.Play("HeldJ", 0, 0f);
                 break;
             case 5:
-                _animator.Play("HeldK");
+                _animator.Play("HeldK", 0, 0f);
                 break;
             case 6:
-                _animator.Play("HeldL");
+                _animator.Play("HeldL", 0, 0f);
                 break;
         }
     }
@@ -127,22 +127,22 @@ public class UIKeyPressManager : MonoBehaviour {
         switch (_keyNumberPressed)
         {
             case 1:
-                _animator.Play("ReleaseS");
+                _animator.Play("ReleaseS", 0, 0f);
                 break;
             case 2:
-                _animator.Play("ReleaseD");
+                _animator.Play("ReleaseD", 0, 0f);
                 break;
             case 3:
-                _animator.Play("ReleaseF");
+                _animator.Play("ReleaseF", 0, 0f);
                 break;
             case 4:
-                _animator.Play("ReleaseJ");
+                _animator.Play("ReleaseJ", 0, 0f);
                 break;
             case 5:
-                _animator.Play("ReleaseK");
+                _animator.Play("ReleaseK", 0, 0f);
                 break;
             case 6:
-                _animator.Play("ReleaseL");
+                _animator.Play("ReleaseL", 0, 0f);
                 break;
         }
     }

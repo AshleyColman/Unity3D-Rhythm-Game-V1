@@ -39,7 +39,7 @@ public class EnterGameScene : MonoBehaviour {
         if (hasLoggedIn == false)
         {
             // Check if the user has logged in
-            if (MySQLDBManager.loggedIn)
+            if (MySQLDBManager.loggedIn == true)
             {
                 // Update the username logged in playing as text
                 usernameDisplayText.text = "Playing as " + MySQLDBManager.username;
@@ -60,9 +60,11 @@ public class EnterGameScene : MonoBehaviour {
                     // Disable the press anywhere diamonds
                     pressAnywhereLeftDiamond.gameObject.SetActive(false);
                     pressAnywhereRightDiamond.gameObject.SetActive(false);
-
-                    // Set to true as the animation has played
-                    modeButtonAnimationHasPlayed = true;
+                }
+                else
+                {
+                    // Update the mode panel position so that it stays on screen after the animation
+                    modeButtonPanel.transform.position = new Vector3(0, -6, 0);
                 }
 
                 // Set to true as the user has now logged in
@@ -79,9 +81,6 @@ public class EnterGameScene : MonoBehaviour {
 
         // Play animation
         PlayModePanelAnimation();
-
-        // Update the mode panel position so that it stays on screen after the animation
-        modeButtonPanel.transform.position = new Vector3(0, -6, 0);
     }
 
     // Play the mode panel animation
@@ -89,6 +88,9 @@ public class EnterGameScene : MonoBehaviour {
     {
         // Play animation
         modeButtonPanelAnimator.Play("ModeButtonPanelAnimation");
+
+        // Set to true as the animation has played
+        modeButtonAnimationHasPlayed = true;
     }
 
     // Go to the register canvas

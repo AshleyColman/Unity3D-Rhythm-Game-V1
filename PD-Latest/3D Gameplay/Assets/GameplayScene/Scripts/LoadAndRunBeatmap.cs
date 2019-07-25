@@ -153,6 +153,9 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
         // Control which hit object can be hit - earliest spawned
         EnableHitObjectsToBeHit();
+
+        // Check if all hit objects have been hit
+        CheckIfAllHitObjectsHaveBeenHit();
     }
 
     private void SpawnFromPool(int _tag, Vector3 _position)

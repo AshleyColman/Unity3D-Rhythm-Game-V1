@@ -687,6 +687,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114591839356208324, guid: a51493b45fbdfd04fbc2aa55be7c8a67,
+        type: 2}
+      propertyPath: menuSFXAudioSource
+      value: 
+      objectReference: {fileID: 639708020}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
   m_IsPrefabParent: 0
@@ -11223,7 +11228,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -1081067130
+  randomSeed: -1564486217
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -14823,8 +14828,6 @@ MonoBehaviour:
   dRankExplosion: {fileID: 1612336686}
   eRankExplosion: {fileID: 640990425}
   fRankExplosion: {fileID: 330742346}
-  gameplayToResultsManager: {fileID: 0}
-  playerSkillsManager: {fileID: 0}
 --- !u!4 &995390681
 Transform:
   m_ObjectHideFlags: 0

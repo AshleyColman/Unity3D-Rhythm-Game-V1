@@ -3613,11 +3613,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -11092,7 +11092,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1108776443
+  randomSeed: 1779669043
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -19422,6 +19422,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2056698174}
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 972614f45300eff49a41294be7a36485,
+            type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &953269572
@@ -20945,11 +20957,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -28872,6 +28884,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2056698174}
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 972614f45300eff49a41294be7a36485,
+            type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1311813149
@@ -33408,8 +33432,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   active: 0
-  Bpm: 170
-  OffsetMS: 280
+  bpm: 128
+  offsetMS: 100
 --- !u!114 &1523357943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33422,28 +33446,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenuCanvas: {fileID: 1959407784}
-  active: 0
-  Bpm: 170
-  OffsetMS: 100
-  Step: 4
-  Base: 4
-  CurrentMeasure: 0
-  CurrentStep: 0
-  songTickTimes: []
-  neverPlayed: 1
-  songAudioSource: {fileID: 0}
   songAudioGameObject: {fileID: 0}
-  timer: 0
-  currentTick: 0
-  flashTick: 0
+  songAudioSource: {fileID: 0}
+  metronomeEffectsMainMenuCanvasAnimator: {fileID: 1959407791}
   mainMenuCanvasFlashAnimator: {fileID: 667342038}
   titleAnimator: {fileID: 0}
   difficultyTextAnimator: {fileID: 0}
   flashImageAnimator: {fileID: 0}
-  healthbarAnimator: {fileID: 0}
   easyDifficultyPanelAnimator: {fileID: 0}
   advancedDifficultyPanelAnimator: {fileID: 0}
   extraDifficultyPanelAnimator: {fileID: 0}
+  healthbarAnimator: {fileID: 0}
+  songTickTimes: []
 --- !u!224 &1523357944
 RectTransform:
   m_ObjectHideFlags: 0
@@ -34002,6 +34016,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2056698174}
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 972614f45300eff49a41294be7a36485,
+            type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -38544,6 +38570,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2056698174}
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 972614f45300eff49a41294be7a36485,
+            type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1809864597
@@ -43079,7 +43117,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -556881054
+  randomSeed: -169989564
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -47184,6 +47222,11 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114591839356208324, guid: a51493b45fbdfd04fbc2aa55be7c8a67,
+        type: 2}
+      propertyPath: menuSFXAudioSource
+      value: 
+      objectReference: {fileID: 2056698174}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
   m_IsPrefabParent: 0
@@ -47546,7 +47589,7 @@ Prefab:
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.size
-      value: 9
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4178306738267400, guid: d377f2b4f2a68c449b392f8d9c3e4edf, type: 2}
       propertyPath: m_LocalPosition.x
@@ -47654,7 +47697,7 @@ Prefab:
         type: 2}
       propertyPath: songClip.Array.data[9]
       value: 
-      objectReference: {fileID: 8300000, guid: 1f1e6ac46dd822d4ca52e0917bc3db87, type: 3}
+      objectReference: {fileID: 8300000, guid: 555dc50d243ffd8498c4ae6079f41822, type: 3}
     - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
         type: 2}
       propertyPath: songClip.Array.data[12]
@@ -47964,6 +48007,11 @@ Prefab:
       propertyPath: songClip.Array.data[8]
       value: 
       objectReference: {fileID: 8300000, guid: e0351e4f510e800448a56ef59157a0e8, type: 3}
+    - target: {fileID: 114249757644139790, guid: d377f2b4f2a68c449b392f8d9c3e4edf,
+        type: 2}
+      propertyPath: songClip.Array.data[10]
+      value: 
+      objectReference: {fileID: 8300000, guid: 70ba5a7cb187c7749aca7ef85c54f19c, type: 3}
     m_RemovedComponents:
     - {fileID: 82195060058559050, guid: d377f2b4f2a68c449b392f8d9c3e4edf, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: d377f2b4f2a68c449b392f8d9c3e4edf, type: 2}

@@ -3543,7 +3543,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 1230738878
+  randomSeed: 407833078
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -12657,7 +12657,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 65351496
+  randomSeed: 1352427408
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -23634,7 +23634,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 804863618
+  randomSeed: -696456187
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -27267,7 +27267,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 895745467
+  randomSeed: 1701818813
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -35726,6 +35726,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c9836efb2230f7b4f9acd397d1026b30, type: 2}
   m_IsPrefabParent: 0
+--- !u!82 &1316586704 stripped
+AudioSource:
+  m_PrefabParentObject: {fileID: 82739957858114940, guid: c9836efb2230f7b4f9acd397d1026b30,
+    type: 2}
+  m_PrefabInternal: {fileID: 1316586703}
 --- !u!1 &1332527909
 GameObject:
   m_ObjectHideFlags: 0
@@ -39649,6 +39654,11 @@ Prefab:
       propertyPath: m_LocalScale.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114591839356208324, guid: a51493b45fbdfd04fbc2aa55be7c8a67,
+        type: 2}
+      propertyPath: menuSFXAudioSource
+      value: 
+      objectReference: {fileID: 1316586704}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a51493b45fbdfd04fbc2aa55be7c8a67, type: 2}
   m_IsPrefabParent: 0
@@ -46616,7 +46626,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 90019255
+  randomSeed: 2048814043
   InitialModule:
     serializedVersion: 3
     enabled: 1
