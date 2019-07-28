@@ -24,6 +24,9 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     // Gameobjects
     public List<GameObject> spawnedList = new List<GameObject>(); // List of all spawned hit objects in the scene
 
+    // Transform
+    public Canvas canvas;
+
     // Strings
     private string hitObjectTag; // The tag on the hit object - Blue, Green, Purple, Red, Orange, Yellow
 
@@ -127,6 +130,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
             for (int i = 0; i < pool.size; i++)
             {
                 GameObject obj = Instantiate(pool.prefab);
+                obj.transform.SetParent(canvas.transform);
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
             }
@@ -166,8 +170,8 @@ public class LoadAndRunBeatmap : MonoBehaviour {
 
             objectToSpawn.gameObject.SetActive(true);
             objectToSpawn.transform.position = _position;
-            objectToSpawn.transform.rotation = Quaternion.Euler(0, 45, 0);
-
+            //objectToSpawn.transform.rotation = Quaternion.Euler(0, 45, 0);
+            objectToSpawn.transform.rotation = Quaternion.Euler(-90, 0, 45);
             poolDictionary[_tag].Enqueue(objectToSpawn);
 
             spawnedList.Add(objectToSpawn);

@@ -11,6 +11,7 @@ public class ExplosionController : MonoBehaviour {
 
     private FeverTimeManager feverTimeManager; // Fever time manager for controlling fever time explosions
 
+    public Transform canvas;
 
     [System.Serializable]
     public class Pool
@@ -47,6 +48,7 @@ public class ExplosionController : MonoBehaviour {
             for (int i = 0; i < pool.size; i++)
             {
                 GameObject obj = Instantiate(pool.prefab);
+                obj.transform.SetParent(canvas.transform);
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
             }
@@ -64,8 +66,12 @@ public class ExplosionController : MonoBehaviour {
             GameObject objectToSpawn = poolDictionary[_tag].Dequeue();
 
             objectToSpawn.gameObject.SetActive(true);
+
+
+            //objectToSpawn.transform.rotation = Quaternion.Euler(90, 0, -45);
+            objectToSpawn.transform.rotation = Quaternion.Euler(90, 0, 180);
+
             objectToSpawn.transform.position = _position;
-            objectToSpawn.transform.rotation = Quaternion.Euler(90, 0, -45);
 
             poolDictionary[_tag].Enqueue(objectToSpawn);
         }

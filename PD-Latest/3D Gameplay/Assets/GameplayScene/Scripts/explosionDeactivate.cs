@@ -17,7 +17,7 @@ public class explosionDeactivate : MonoBehaviour {
     void Start()
     {
         // Initialize
-        deactivateTime = 1.2f;
+        deactivateTime = 1f;
         timer = 0f;
     }
 

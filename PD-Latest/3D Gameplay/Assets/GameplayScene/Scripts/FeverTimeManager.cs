@@ -5,48 +5,46 @@ using UnityEngine.UI;
 public class FeverTimeManager : MonoBehaviour {
 
     // UI
-    public Slider feverTimeBar; // First time fever time bar
-    public Slider feverTimeBarExtend2; // Second extention bar for fever time
-    public Slider feverTimeBarExtend3; // Third extention bar for fever time
-    public Slider feverTimeBarExtend4; // Fourth extention bar for fever time
-
+    public Slider feverTimeBar; // Fever time bar that fills up
+    public Image feverTimeBarFillImage; // Fill image
     public Image feverTimeBorderImage; // Border image that appears during fever time
-
-    // Animation
-    public Animator feverTimeUIAnimator; // Animator for all fever time bar animations
-    public Animator feverTimeBackgroundAnimator; // Fevertime background animator
 
     // Gameobjects
     public GameObject feverTimeBackground; // FeverTime background 
-    public GameObject buttonGlow; // Fever time button glow
-    public GameObject feverPanel; // Fever panel
+
+    // Color
+    public Color defaultBarColor, activatedBarColor;
+
+    // Animation
+    public Animator feverTimeBackgroundAnimator;
+    public Animator bar25PercentAnimator, bar50PercentAnimator, bar75PercentAnimator, bar100PercentAnimator;
 
     // Integers
     private int feverTimeBarMaxValue; // Max value for the fever time bar
     private int feverTimeBarMinValue; // Min value for the fever time bar
     private int feverTimeActivateCombo; // The combo required to activate fever time
-    private int currentFeverTimeBarCount; // How many fever time bars have been currently earned 1-4
+    public int fullFeverTimeBarCount; // How many fever time bars are full
+    public int feverTimeCombo; // Fever time combo for controlling fever time bars
     private float timeStartedLerping; // Time that the lerp started
-    private float lerpTimeUp; // Time to lerp from min to max value
-    private float lerpTimeDown; // Time to lerp from max to min value
+    public float lerpTimeDown; // Time to lerp from max to min value
     private float feverTimeBackgroundFadeTimer;
+    public float measureDuration; // Total time for 1 measure
+    private float lerpValue, lerpValue25Percent, lerpValue50Percent, lerpValue75Percent, lerpValue100Percent; // Values to lerp from
+    
 
     // Bools
-    private bool shouldLerpUp; // Controls lerping up
-    private bool shouldLerpDown; // Controls lerping down
-    private bool hasPlayedFeverTimeReadySound; // Prevents sound from playing multiple times
-    private bool hasPlayedFeverTimeReadySoundExtend2; // Second fever time bar hitting max value
-    private bool hasPlayedFeverTimeReadySoundExtend3; // Third fever time bar hitting max value
-    private bool hasPlayedFeverTimeReadySoundExtend4; // Fourth fever time bar hitting max value
-
-
-
+    public bool shouldLerpDown; // Controls lerping down
+    public bool hasPlayedFeverTimeReadySound; // Prevents sound from playing multiple times
+    public bool hasPlayedFeverTimeReadySound2; // Second fever time bar hitting max value
+    public bool hasPlayedFeverTimeReadySound3; // Third fever time bar hitting max value
+    public bool hasPlayedFeverTimeReadySound4; // Fourth fever time bar hitting max value
     private bool hasPlayedFeverTimeActivatedSound; // Prevents sound from playing multiple times
     private bool hasPlayedFeverTimeDeactivatedSound; // PRevents sound from playing multiple times
-    private bool feverTimeReady; // Controls whether fever time can be activated
-    private bool feverTimeActivated, feverTimeActivatedPrevious; // Has fever time been activated, previous for checking if fever time has been deactivated or activated
+    public bool feverTimeReady; // Controls whether fever time can be activated
+    public bool feverTimeActivated, feverTimeActivatedPrevious; // Has fever time been activated, previous for checking if fever time has been deactivated or activated
     private bool gameplayStarted; // Has gameplay started 
     private bool hasPlayedFeverTimeFadeAnimation;
+    private bool hasSet0Percent, hasSet25Percent, hasSet50Percent, hasSet75Percent, hasSet100Percent; // Controls setting the bar to x percent once per activation
 
     // Audio
     public AudioSource menuSFXAudioSource; // Menu SFX audio source
@@ -55,9 +53,6 @@ public class FeverTimeManager : MonoBehaviour {
     public AudioClip feverTimeDeactivatedSound; // Soundlcip when fever time has been deactivated
     public AudioReverbFilter songAudioReverbFilter; // Adds reverb to the song audio source
     public AudioReverbFilter menuSFXAudioReverbFiler; // Adds reverb to the hit sound audio source
-
-    // Particles
-    public ParticleSystem feverTimeBarParticles; // Fever time bar particlesystem
 
     // Keycodes
     private KeyCode feverTimeActivateKey; // Key to activate fever time
@@ -81,6 +76,26 @@ public class FeverTimeManager : MonoBehaviour {
         get { return feverTimeActivatedPrevious; }
     }
 
+    public bool HasSet25Percent
+    {
+        get { return hasSet25Percent; }
+    }
+
+    public bool HasSet50Percent
+    {
+        get { return hasSet50Percent; }
+    }
+
+    public bool HasSet75Percent
+    {
+        get { return hasSet75Percent; }
+    }
+
+    public bool HasSet100Percent
+    {
+        get { return hasSet100Percent; }
+    }
+
 
     // Use this for initialization
     void Start () {
@@ -94,32 +109,33 @@ public class FeverTimeManager : MonoBehaviour {
         timeStartedLerping = 0f;
         feverTimeBarMaxValue = 1;
         feverTimeBarMinValue = 0;
-        currentFeverTimeBarCount = 0;
-        lerpTimeUp = 0.5f;
+        fullFeverTimeBarCount = 0;
         lerpTimeDown = 5f;
-        feverTimeBar.value = 0;
-        shouldLerpUp = false;
+        lerpValue25Percent = 0.25f;
+        lerpValue50Percent = 0.50f;
+        lerpValue75Percent = 0.75f;
+        lerpValue100Percent = 1.0f;
+        lerpValue = 0f;
+
+        feverTimeCombo = 0;
         shouldLerpDown = false;
         feverTimeActivated = false;
         hasPlayedFeverTimeActivatedSound = false;
-        hasPlayedFeverTimeReadySoundExtend2 = false;
-        hasPlayedFeverTimeReadySoundExtend3 = false;
-        hasPlayedFeverTimeReadySoundExtend4 = false;
         hasPlayedFeverTimeReadySound = false;
+        hasPlayedFeverTimeReadySound2 = false;
+        hasPlayedFeverTimeReadySound3 = false;
+        hasPlayedFeverTimeReadySound4 = false;
         hasPlayedFeverTimeDeactivatedSound = true; // Set to true at the start to prevent the deactivated sound playing instantly
         feverTimeBackground.gameObject.SetActive(true); // Set to true at the start 
-        feverTimeActivateCombo = 25; // Next fever time combo
+        feverTimeActivateCombo = 5; // Next fever time combo
         feverTimeActivateKey = KeyCode.Space; // Set the key to activate fever time to the spacebar
         gameplayStarted = false; // Set gameplay to started at the start
-        feverPanel.gameObject.SetActive(false); // Deactivate at the start
-
+        hasSet0Percent = false;
+        hasSet25Percent = false;
+        hasSet50Percent = false;
+        hasSet75Percent = false;
+        hasSet100Percent = false;
         feverTimeBar.value = 0;
-        feverTimeBarExtend2.value = 0;
-        feverTimeBarExtend3.value = 0;
-        feverTimeBarExtend4.value = 0;
-
-        // Calculate the duration of fever time for 1 measure
-        CalculateFeverTimeDuration();
     }
 
     // Update is called once per frame
@@ -132,86 +148,43 @@ public class FeverTimeManager : MonoBehaviour {
             CheckGameplayStarted();
         }
 
-        // Check combo
-        CheckCombo();
-
-        // Check if user has pressed the fever time key
-        CheckFeverTimeKeyInput();
-
-        // Activate/Deactivate fever time border image
-        ToggleBorderImage();
-
-        // Lerp the fever time bar up if fever time is not ready
-        if (shouldLerpUp == true && feverTimeReady == false)
+        // Only run if the gameplay has started
+        if (gameplayStarted == true)
         {
-            // Increment the time since spawned
-            timeStartedLerping += Time.deltaTime;
+            // Check combo
+            CheckCombo();
 
-            // Lerp up the correct fever time bar based on how many bars have been earned during gameplay
-            switch (currentFeverTimeBarCount)
-            {
-                case 1:
-                    // Lerp the first fever time bar value up
-                    feverTimeBar.value = LerpFeverBarUp();
-                    break;
-                case 2:
-                    // Lerp the second fever time bar value up
-                    feverTimeBarExtend2.value = LerpFeverBarUp();
-                    break;
-                case 3:
-                    // Lerp the third fever time bar value up
-                    feverTimeBarExtend3.value = LerpFeverBarUp();
-                    break;
-                case 4:
-                    // Lerp the fourth fever time bar value up
-                    feverTimeBarExtend4.value = LerpFeverBarUp();
-                    break;
-            }
+            // Check if user has pressed the fever time key
+            CheckFeverTimeKeyInput();
+
+            // Activate/Deactivate fever time border image
+            ToggleBorderImage();
+
+            // Check which bar to lerp down based on the amount of bars earned
+            CheckBarToLerpDown();
+
+            CheckFirstBarMinValue();
+
+            // Update the feverTime activated and previous values
+            UpdateFeverTimeValues();
         }
+    }
 
+    // Lerp down the fever bar
+    private void CheckBarToLerpDown()
+    {
         // Lerp the fever time bar down if it has been activated
         if (shouldLerpDown == true && feverTimeActivated == true)
         {
             // Increment the time since spawned
             timeStartedLerping += Time.deltaTime;
 
-            // Check the current fever bar values and whether they have reached 0 / do not need updating
-            CheckCurrentActivatedBarValues();
-
             // Play the fever time background animation
             PlayFeverBackgroundAnimation();
 
-            // Lerp up the fever time bar based on how many bars have been earned during gameplay
-            switch (currentFeverTimeBarCount)
-            {
-                case 1:
-                    // Lerp the first fever time bar value down
-                    feverTimeBar.value = LerpFeverBarDown();
-                    break;
-                case 2:
-                    // Lerp the second fever time bar value down
-                    feverTimeBarExtend2.value = LerpFeverBarDown();
-                    break;
-                case 3:
-                    // Lerp the third fever time bar value down
-                    feverTimeBarExtend3.value = LerpFeverBarDown();
-                    break;
-                case 4:
-                    // Lerp the fourth fever time bar value down
-                    feverTimeBarExtend4.value = LerpFeverBarDown();
-                    break;
-            }
+            // Lerp the fever time bar value down
+            feverTimeBar.value = LerpFeverBarDown();
         }
-
-        // Only run if the gameplay has started
-        if (gameplayStarted == true)
-        {
-            // Check the current value of the fever bar
-            CheckFeverBarValue();
-        }
-
-        // Update the feverTime activated and previous values
-        UpdateFeverTimeValues();
     }
 
     // Update the feverTime activated and previous values
@@ -219,16 +192,6 @@ public class FeverTimeManager : MonoBehaviour {
     {
         feverTimeActivatedPrevious = feverTimeActivated;
     }
-
-    // Calculate fever time duration
-    private void CalculateFeverTimeDuration()
-    {
-        // LerpTimeDown = FeverTimeDuration
-        // Get the fever time duration
-        // Fever time duration = duration of 1 measure for the songs
-        lerpTimeDown = metronomeForEffects.GetMeasureDuration();
-    }
-
 
     // Check if the game has started yet from the spacebar being pressed
     private void CheckGameplayStarted()
@@ -294,58 +257,143 @@ public class FeverTimeManager : MonoBehaviour {
     // Check if the current combo is at the combo required to activate fever time
     private void CheckCombo()
     {
-        // Check if the current combo is at the combo required to activate fever time
-        if (scoreManager.Combo == feverTimeActivateCombo)
+        // Combo is going to have to be reset after being activated
+        // Combo will need to be incremented manually from this script only
+        
+        // Only check for combo if fever time is not activated
+        if (feverTimeActivated == false)
         {
-            // Increment the current bar count to get which fever bar we're on
-            currentFeverTimeBarCount++;
-
-            // Play the lerp bar animation to ready up fever time
-            // Set to true to lerp the bar value up
-            shouldLerpUp = true;
-
-            // Increment the feverTimeActivateCombo so it can be activated in another 25 combo
-            feverTimeActivateCombo += 25;
-        }
-
-        // If combo is at 0/reset
-        if (scoreManager.Combo == 0)
-        {
-            // Reset the fever time combo to the previous fever time value if a combo has been broken
-            switch (currentFeverTimeBarCount)
+            if (feverTimeCombo == 0 && hasSet0Percent == false)
             {
-                case 1:
-                    // Reset feverTimeActivateCombo back to 25 if only the first fever bar has been earned
-                    feverTimeActivateCombo = 25;
-                    break;
-                case 2:
-                    // Reset feverTimeActivateCombo back to 25 if the second fever bar has been earned
-                    feverTimeActivateCombo = 50;
-                    break;
-                case 3:
-                    // Reset feverTimeActivateCombo back to 25 if the third fever bar has been earned
-                    feverTimeActivateCombo = 75;
-                    break;
-                case 4:
-                    // Reset feverTimeActivateCombo back to 25 if fourth fever bar has been earned
-                    feverTimeActivateCombo = 100;
-                    break;
+                SetBarTo0Percent();
+            }
+            else if (feverTimeCombo == 25 && hasSet25Percent == false)
+            {
+                SetBarTo25Percent();
+            }
+            else if (feverTimeCombo == 50 && hasSet50Percent == false)
+            {
+                SetBarTo50Percent();
+            }
+            else if (feverTimeCombo == 75 && hasSet75Percent == false)
+            {
+                SetBarTo75Percent();
+            }
+            else if (feverTimeCombo == 100 && hasSet100Percent == false)
+            {
+                SetBarTo100Percent();
             }
         }
     }
 
-    // Lerp the fever bar value to gradually fill it up
-    public float LerpFeverBarUp()
+    // Bar has reached 0 percent
+    private void SetBarTo0Percent()
     {
-        float timeSinceStarted = timeStartedLerping;
+        if (feverTimeActivated == true)
+        {
+            feverTimeBar.value = 0f;
 
-        float percentageComplete = timeSinceStarted / lerpTimeUp;
+            lerpValue = 0f;
 
-        var result = Mathf.Lerp(feverTimeBarMinValue, feverTimeBarMaxValue, percentageComplete);
+            fullFeverTimeBarCount = 0;
 
-        return result;
+            menuSFXAudioSource.PlayOneShot(feverTimeDeactivatedSound);
+
+            feverTimeReady = false;
+
+            feverTimeBarFillImage.color = defaultBarColor;
+
+            hasSet0Percent = true;
+
+            // Turn off audio reverb
+            songAudioReverbFilter.enabled = false;
+            // Turn off menuSFX reverb
+            menuSFXAudioReverbFiler.enabled = false;
+
+            // Reset the fever time combo
+            feverTimeCombo = 0;
+        }
     }
 
+    // Bar has reached 25 percent
+    private void SetBarTo25Percent()
+    {
+        feverTimeBar.value = 0.25f;
+
+        lerpValue = lerpValue25Percent;
+
+        fullFeverTimeBarCount = 1;
+
+        CalculateFeverTimeDuration();
+
+        bar25PercentAnimator.Play("FeverTimeBarPercent", 0, 0f);
+
+        menuSFXAudioSource.PlayOneShot(feverTimeReadySound);
+
+        feverTimeReady = true;
+
+        hasSet25Percent = true;
+    }
+
+    // Bar has reached 50 percent
+    private void SetBarTo50Percent()
+    {
+        feverTimeBar.value = 0.50f;
+
+        lerpValue = lerpValue50Percent;
+
+        fullFeverTimeBarCount = 2;
+
+        CalculateFeverTimeDuration();
+
+        bar50PercentAnimator.Play("FeverTimeBarPercent", 0, 0f);
+
+        menuSFXAudioSource.PlayOneShot(feverTimeReadySound);
+
+        feverTimeReady = true;
+
+        hasSet50Percent = true;
+    }
+
+    // Bar has reached 75 percent
+    private void SetBarTo75Percent()
+    {
+        feverTimeBar.value = 0.75f;
+
+        lerpValue = lerpValue75Percent;
+
+        fullFeverTimeBarCount = 3;
+
+        CalculateFeverTimeDuration();
+
+        bar75PercentAnimator.Play("FeverTimeBarPercent", 0, 0f);
+
+        menuSFXAudioSource.PlayOneShot(feverTimeReadySound);
+
+        feverTimeReady = true;
+
+        hasSet75Percent = true;
+    }
+
+    // Bar has reached 100 percent
+    private void SetBarTo100Percent()
+    {
+        feverTimeBar.value = 1f;
+
+        lerpValue = lerpValue100Percent;
+
+        fullFeverTimeBarCount = 4;
+
+        CalculateFeverTimeDuration();
+
+        bar100PercentAnimator.Play("FeverTimeBarPercent", 0, 0f);
+
+        menuSFXAudioSource.PlayOneShot(feverTimeReadySound);
+
+        feverTimeReady = true;
+
+        hasSet100Percent = true;
+    }
 
     // Lerp the fever bar value to gradually go down
     public float LerpFeverBarDown()
@@ -354,76 +402,26 @@ public class FeverTimeManager : MonoBehaviour {
 
         float percentageComplete = timeSinceStarted / lerpTimeDown;
 
-        var result = Mathf.Lerp(feverTimeBarMaxValue, feverTimeBarMinValue, percentageComplete);
+        var result = Mathf.Lerp(lerpValue, feverTimeBarMinValue, percentageComplete);
 
         return result;
     }
 
-    // Check the fever bar current value
-    private void CheckFeverBarValue()
+
+    // Check the first bar against the min value
+    private void CheckFirstBarMinValue()
     {
-        // Check if the feverTimeBar value is at max value 1
-        if (feverTimeBar.value == feverTimeBarMaxValue)
-        {
-            // Fever time is ready and can be activated
-            feverTimeReady = true;
-            // Allow the deactivate sound to play
-            hasPlayedFeverTimeDeactivatedSound = false;
-            // Reset fever time activated bool to allow the sound to play
-            hasPlayedFeverTimeActivatedSound = false;
-
-            // Check if the fever time ready sound has been played previosuly
-            if (hasPlayedFeverTimeReadySound == false)
-            {
-                // Play fever time ready sound effect
-                menuSFXAudioSource.PlayOneShot(feverTimeReadySound);
-
-                // Play the first fever time bar hit animation
-                feverTimeUIAnimator.Play("FeverTimeUI_FirstHIT");
-
-                // Set to true
-                hasPlayedFeverTimeReadySound = true;
-            }
-            // Reset lerp variables
-            //ResetLerpVariables();
-        }
-
-
-
-
-
-
-        // TESTING - PUT THIS IN IT'S OWN LOOPING FUNCTION
-        if (feverTimeBarExtend2.value == feverTimeBarMaxValue)
-        {
-            // Check if the fever time ready sound has been played previosuly
-            if (hasPlayedFeverTimeReadySoundExtend2 == false)
-            {
-                // Play fever time ready sound effect
-                menuSFXAudioSource.PlayOneShot(feverTimeReadySound);
-
-                // Play the first fever time bar hit animation
-                feverTimeUIAnimator.Play("FeverTimeUI_SecondHIT");
-
-                // Set to true
-                hasPlayedFeverTimeReadySoundExtend2 = true;
-            }
-            // Reset lerp variables
-            //ResetLerpVariables();
-        }
-
-
-
-
-
-
-
-
         // Check if the feverTimeBar value is at 0
         if (feverTimeBar.value == feverTimeBarMinValue)
         {
+            // 0 bars are full
+            fullFeverTimeBarCount = 0;
+
             // Reset lerp variables
             ResetLerpVariables();
+
+            // Reset bar variables
+            ResetBarVariables();
 
             // Deactivate fever time background
             feverTimeBackground.gameObject.SetActive(false);
@@ -434,143 +432,68 @@ public class FeverTimeManager : MonoBehaviour {
             // Reset fever time ready bool to allow sound to play again when at max value
             hasPlayedFeverTimeReadySound = false;
 
-            // Play the default fever time animation
-            feverTimeUIAnimator.Play("FeverTimeUI_FirstDEFAULT");
-
-            // Deactivate feverPanel
-            feverPanel.gameObject.SetActive(false);
-
-            // Check if the deactivate sound has already played
-            if (hasPlayedFeverTimeDeactivatedSound == false)
-            {
-                // Play deactivate sound 
-                menuSFXAudioSource.PlayOneShot(feverTimeDeactivatedSound);
-                // Set to false to prevent sound from playing multiple times
-                hasPlayedFeverTimeDeactivatedSound = true;
-
-                // Turn off audio reverb
-                songAudioReverbFilter.enabled = false;
-                // Turn off menuSFX reverb
-                menuSFXAudioReverbFiler.enabled = false;
-            }
-        }
-
-        // Check all the activate fever time bar values against the max bar value they can hold, if any are below it means they've been activated
-        // Activating fever time while the values are below the max amount will be disabled
-        switch (currentFeverTimeBarCount)
-        {
-            case 1:
-                if (feverTimeBar.value < feverTimeBarMaxValue)
-                {
-                    feverTimeReady = false;
-                }
-                break;
-            case 2:
-                if (feverTimeBar.value < feverTimeBarMaxValue || feverTimeBarExtend2.value < feverTimeBarMaxValue)
-                {
-                    feverTimeReady = false;
-                }
-                break;
-            case 3:
-                if (feverTimeBar.value < feverTimeBarMaxValue || feverTimeBarExtend2.value < feverTimeBarMaxValue
-                    || feverTimeBarExtend3.value < feverTimeBarMaxValue)
-                {
-                    feverTimeReady = false;
-                }
-                break;
-            case 4:
-                if (feverTimeBar.value < feverTimeBarMaxValue || feverTimeBarExtend2.value < feverTimeBarMaxValue 
-                    || feverTimeBarExtend3.value < feverTimeBarMaxValue || feverTimeBarExtend4.value < feverTimeBarMaxValue)
-                {
-                    feverTimeReady = false;
-                }
-                break;
+            SetBarTo0Percent();
         }
     }
 
-    // Check all the activated fever time bar values, if a bar has reached the min value (0) update the current activate bar count number
-    private void CheckCurrentActivatedBarValues()
-    {
-        switch (currentFeverTimeBarCount)
-        {
-            case 2:
-                // If the 2nd fever bar value has reached 0
-                if (feverTimeBarExtend2.value <= feverTimeBarMinValue)
-                {
-                    // There is only 1 bar left that needs updating/draining
-                    currentFeverTimeBarCount = 1;
-                }
-                break;
-            case 3:
-                // If the 3rd fever bar value has reached 0
-                if (feverTimeBarExtend3.value <= feverTimeBarMinValue)
-                {
-                    // There are 2 bars left that needs updating/draining
-                    currentFeverTimeBarCount = 2;
-                }
-                break;
-            case 4:
-                // If the 4th fever bar value has reached 0
-                if (feverTimeBarExtend4.value <= feverTimeBarMinValue)
-                {
-                    // There are 3 bars left that needs updating/draining
-                    currentFeverTimeBarCount = 3;
-                }
-                break;
-        }
-
-    }
-
-    // Reset lerp
+    // Reset lerp variables
     private void ResetLerpVariables()
     {
-        // Reset lerp variables
         timeStartedLerping = 0;
-        shouldLerpUp = false;
         shouldLerpDown = false;
+    }
+
+    // Reset bar variables - sound and current bar count
+    private void ResetBarVariables()
+    {
+        hasPlayedFeverTimeReadySound = false;
+        hasPlayedFeverTimeReadySound2 = false;
+        hasPlayedFeverTimeReadySound3 = false;
+        hasPlayedFeverTimeReadySound4 = false;
+        fullFeverTimeBarCount = 0;
+
+        hasSet0Percent = false;
+        hasSet25Percent = false;
+        hasSet50Percent = false;
+        hasSet75Percent = false;
+        hasSet100Percent = false;
+    }
+
+    // Calculate the duration of fever time based on the amount of bars earned
+    private void CalculateFeverTimeDuration()
+    {
+        // Get the time for 1 measure
+        measureDuration = metronomeForEffects.GetMeasureDuration();
+        
+        switch (fullFeverTimeBarCount)
+        {
+            case 1:
+                // 2 Measures
+                lerpTimeDown = (measureDuration * 2);
+                break;
+            case 2:
+                // 4 Measures
+                lerpTimeDown = (measureDuration * 4);
+                break;
+            case 3:
+                // 6 Measures
+                lerpTimeDown = (measureDuration * 6);
+                break;
+            case 4:
+                // 8 Measures
+                lerpTimeDown = (measureDuration * 8);
+                break;
+        }
     }
 
     // Activate fever time
     private void ActivateFeverTime()
     {
-        // Play the fever time activated animation based on the current number of active bars
-        switch (currentFeverTimeBarCount)
-        {
-            case 1:
-                feverTimeUIAnimator.Play("FeverTimeUI_FirstACTIVATED");
-                break;
-            case 2:
-                feverTimeUIAnimator.Play("FeverTimeUI_SecondACTIVATED");
-                break;
-            case 3:
-                feverTimeUIAnimator.Play("FeverTimeUI_ThirdACTIVATED");
-                break;
-            case 4:
-                feverTimeUIAnimator.Play("FeverTimeUI_FourthACTIVATED");
-                break;
-        }
-
         // Calculate the duration of fever time based on the amount of bars earned
-        switch (currentFeverTimeBarCount)
-        {
-            case 1:
-                // 1 Measure
-                lerpTimeDown = metronomeForEffects.GetMeasureDuration();
-                break;
-            case 2:
-                // 2 Measures
-                lerpTimeDown = (metronomeForEffects.GetMeasureDuration() * 2);
-                break;
-            case 3:
-                // 3 Measures
-                lerpTimeDown = (metronomeForEffects.GetMeasureDuration() * 3);
-                break;
-            case 4:
-                // 4 Measures
-                lerpTimeDown = (metronomeForEffects.GetMeasureDuration() * 4);
-                break;
-        }
+        CalculateFeverTimeDuration();
 
+        // Change the bar color
+        feverTimeBarFillImage.color = activatedBarColor;
 
         // Check if sound has already been played previously
         if (hasPlayedFeverTimeActivatedSound == false)
@@ -589,13 +512,16 @@ public class FeverTimeManager : MonoBehaviour {
         // Activate fever time background
         feverTimeBackground.gameObject.SetActive(true);
 
-        // Activate feverPanel gameobject
-        feverPanel.gameObject.SetActive(true);
-
         // Set shouldLerpDown to true to allow the fever bar value to go down
         shouldLerpDown = true;
 
         // Set to true as fever time has been activated
         feverTimeActivated = true;
+    }
+
+    // Increment the fever time combo
+    public void IncrementFeverTimeCombo()
+    {
+        feverTimeCombo++;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 // HIT OBJECT TIMING SCRIPT
 public class TimingAndScore : MonoBehaviour {
@@ -35,6 +36,9 @@ public class TimingAndScore : MonoBehaviour {
     private SongData songData; // Manages the songData
     private Healthbar healthbar; // Manages the healthbar when hitting objects increasing or descreasing health
     private PlayerSkillsManager playerSkillsManager; // Manages all character skills equiped for gameplay
+
+    // Animation
+    private Animator hitObjectAnimator; // Animator 
 
     // Properties
 
@@ -98,10 +102,15 @@ public class TimingAndScore : MonoBehaviour {
         hitSoundPreview = FindObjectOfType<HitSoundPreview>();
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
 
+        // Get the animator reference
+        hitObjectAnimator = this.gameObject.GetComponent<Animator>();
+
         // Functions
         GetAndSetFadeSpeed(); // Get and set the fade speed for the hit object
     }
 	
+    
+
 	// Update is called once per frame
 	void Update () {
 
@@ -117,6 +126,12 @@ public class TimingAndScore : MonoBehaviour {
         // Check keypresses for judgements
         CheckJudgements();
     }
+
+    private void DeactivateGameObject()
+    {
+        this.gameObject.SetActive(false);
+    }
+
 
     // Check keypresses for judgements
     private void CheckJudgements()
@@ -146,10 +161,7 @@ public class TimingAndScore : MonoBehaviour {
                             scoreManager.AddCombo(); // Increment the current combo
                             timeWhenHit = hitObjectTimer; // Get the time when the user pressed the key to hit the hit object
                             hitSoundPreview.PlayHitSound(); // Play the hit sound effect
-
-                            hitObjectPosition = transform.position;
-                            explosionController.SpawnExplosion(hitObjectPosition, objectTag); // Pass the position and spawn a particle system
-
+                            
                             this.gameObject.SetActive(false);
 
                             //DestroyHitObject(); // Destroy hit object
@@ -173,6 +185,9 @@ public class TimingAndScore : MonoBehaviour {
         }
     }
 
+
+
+
     // Check if the player hit early judgement
     private void CheckEarlyJudgement()
     {
@@ -182,6 +197,9 @@ public class TimingAndScore : MonoBehaviour {
             scoreManager.AddJudgement(earlyJudgement); // Display early judgement
             scoreManager.AddScore(earlyScoreValue); // Update the score
             healthbar.UpdateHealthBarValue(earlyHealthValue); // Update the healthbar
+
+            hitObjectPosition = transform.position;
+            explosionController.SpawnExplosion(hitObjectPosition, "EARLY");
         }
     }
 
@@ -194,6 +212,10 @@ public class TimingAndScore : MonoBehaviour {
             scoreManager.AddJudgement(goodJudgement); // Sets judgement to good
             scoreManager.AddScore(goodScoreValue); // Update the score
             healthbar.UpdateHealthBarValue(goodHealthValue); // Update the healthbar with the good value
+
+
+            hitObjectPosition = transform.position;
+            explosionController.SpawnExplosion(hitObjectPosition, "GOOD");
         }
 
     }
@@ -207,6 +229,9 @@ public class TimingAndScore : MonoBehaviour {
             scoreManager.AddJudgement(perfectJudgement); // Display perfect judgement
             scoreManager.AddScore(perfectScoreValue); // Pass to score manager to update text
             healthbar.UpdateHealthBarValue(perfectHealthValue); // Update the healthbar
+
+            hitObjectPosition = transform.position;
+            explosionController.SpawnExplosion(hitObjectPosition, "PERFECT");
         }
     }
 
@@ -234,6 +259,7 @@ public class TimingAndScore : MonoBehaviour {
         healthbar.UpdateHealthBarValue(missHealthValue); // Update the healthbar with the miss value passed
         hitObjectPosition = transform.position;
         explosionController.SpawnExplosion(hitObjectPosition, objectMissedTag); // Pass the position and hit object type, spawn miss explosion
+
         scoreManager.AddJudgement(missJudgement); // Sets judgement to early
         scoreManager.ResetCombo(); // Reset combo as missed
         this.gameObject.SetActive(false);

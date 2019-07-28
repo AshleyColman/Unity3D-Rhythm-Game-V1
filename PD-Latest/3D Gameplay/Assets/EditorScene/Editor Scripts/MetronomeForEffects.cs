@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class MetronomeForEffects : MonoBehaviour
@@ -32,6 +31,10 @@ public class MetronomeForEffects : MonoBehaviour
     public Animator easyDifficultyPanelAnimator, advancedDifficultyPanelAnimator, extraDifficultyPanelAnimator;
     // Gameplay healthbar animator
     public Animator healthbarAnimator;
+    // Blur flash animator
+    public Animator blurFlashAnimator;
+    // Gameplay fever time bar animators
+    public Animator bar25PercentAnimator, bar50PercentAnimator, bar75PercentAnimator, bar100PercentAnimator;
 
     // Integers
     public List<float> songTickTimes;
@@ -39,8 +42,8 @@ public class MetronomeForEffects : MonoBehaviour
     private float bpm;
     private float offsetMS;
     private float timer;
-    private float tickTimeDifference; // Time difference between ticks
-    private float measureDuration; // Time that makes up a measure in the song
+    public float tickTimeDifference; // Time difference between ticks
+    public float measureDuration; // Time that makes up a measure in the song
     private int currentTick;
     private int flashTick;
     private int Step;
@@ -52,6 +55,7 @@ public class MetronomeForEffects : MonoBehaviour
     private LevelChanger levelChanger;
     private Healthbar healthbar;
     private LoadAndRunBeatmap loadAndRunBeatmap;
+    private FeverTimeManager feverTimeManager;
 
 
     private void Start()
@@ -67,7 +71,6 @@ public class MetronomeForEffects : MonoBehaviour
         active = false;
         neverPlayed = false;
 
-
         // Reference
         levelChanger = FindObjectOfType<LevelChanger>();
         songAudioGameObject = GameObject.FindGameObjectWithTag("AudioSource");
@@ -81,6 +84,8 @@ public class MetronomeForEffects : MonoBehaviour
 
             // Get the reference to the loadAndRunBeatmap gameobject
             loadAndRunBeatmap = FindObjectOfType<LoadAndRunBeatmap>();
+
+            feverTimeManager = FindObjectOfType<FeverTimeManager>();
         }
         else
         {
@@ -249,16 +254,19 @@ public class MetronomeForEffects : MonoBehaviour
                             // Check for next tick next time
                             currentTick++;
 
-                            /*
+                            
                             // Difficulty Flash Animations
                             if (currentTick >= flashTick)
                             {
                                 // Play the difficuly flash animation
                                 flashTick += 4;
-                                PlayBeatFlashAnimation();
-                                PlayDifficultyTextAnimation();
+                                // PlayBeatFlashAnimation();
+                                // PlayDifficultyTextAnimation();
+
+                                // Play the blur flash animation
+                                PlayBlurFlashAnimation();
                             }
-                            */
+                            
                         }
                     }
                 }
@@ -306,17 +314,43 @@ public class MetronomeForEffects : MonoBehaviour
     // Get the measure duration for the song
     public float GetMeasureDuration()
     {
-        return measureDuration;
+        return CalculateMeasureDuration();
     }
 
     // Calculate duration for measure
-    private void CalculateMeasureDuration()
+    private float CalculateMeasureDuration()
     {
         // Get the difference for 1 tick
-        tickTimeDifference = (float)songTickTimes[0] - (float)songTickTimes[1];
+        tickTimeDifference = (float)songTickTimes[1] - (float)songTickTimes[0];
 
         // Measure = 4 ticks
         measureDuration = tickTimeDifference * 4;
+
+        return measureDuration;
+    }
+
+    // Play the fever time bar animations based on the percentage reached
+    private void PlayFeverTimeBarAnimations()
+    {
+        if (feverTimeManager.HasSet25Percent == true)
+        {
+            bar25PercentAnimator.Play("FeverTimeBarPercent");
+        }
+
+        if (feverTimeManager.HasSet50Percent == true)
+        {
+            bar50PercentAnimator.Play("FeverTimeBarPercent");
+        }
+
+        if (feverTimeManager.HasSet75Percent == true)
+        {
+            bar75PercentAnimator.Play("FeverTimeBarPercent");
+        }
+
+        if (feverTimeManager.HasSet100Percent == true)
+        {
+            bar100PercentAnimator.Play("FeverTimeBarPercent");
+        }
     }
 
     // Main Menu Scene tick functions
@@ -353,6 +387,9 @@ public class MetronomeForEffects : MonoBehaviour
 
         // Play the difficulty panel animation
         PlayDifficultyPanelAnimation();
+
+        // Play fever time bar animations
+        PlayFeverTimeBarAnimations();
     }
 
     // Reset and allow current tick to be recalculated when the song has changed
@@ -403,8 +440,15 @@ public class MetronomeForEffects : MonoBehaviour
     {
         if (levelChanger.CurrentLevelIndex == levelChanger.MainMenuSceneIndex)
         {
-            mainMenuCanvasFlashAnimator.Play("MainMenuFlash", 0, 0f);
+            //mainMenuCanvasFlashAnimator.Play("MainMenuFlash", 0, 0f);
+            PlayBlurFlashAnimation();
         }
+    }
+
+    // Play the blur flash animation
+    private void PlayBlurFlashAnimation()
+    {
+        blurFlashAnimator.Play("BlurFlash", 0, 0f);
     }
 
     // Play beat flash animation

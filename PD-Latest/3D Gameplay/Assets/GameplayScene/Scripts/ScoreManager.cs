@@ -47,7 +47,7 @@ public class ScoreManager : MonoBehaviour {
     private FailAndRetryManager failAndRetryManager; // Controls failing/retrying
     private Rankbar rankbar; // Rank bar for displaying rank progress 
     private ComboFlash comboFlash; // Controls combo flash animations
-    
+    private FeverTimeManager feverTimeManager; // Fever time manager
 
     // Properties
     public int HighestCombo
@@ -120,6 +120,7 @@ public class ScoreManager : MonoBehaviour {
         hitSoundPreview = FindObjectOfType<HitSoundPreview>();
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
         comboFlash = FindObjectOfType<ComboFlash>();
+        feverTimeManager = FindObjectOfType<FeverTimeManager>();
 
         // Functions
         CheckMods(); // Check the mods used and enable the icon 
@@ -232,6 +233,8 @@ public class ScoreManager : MonoBehaviour {
         // Check the current combo and see if it's the highest so far;
         CheckHighestCombo();
 
+        // Reset the fever time combo
+
         // Check if combo is below 5
         if (combo >= comboBreakValue)
         {
@@ -308,6 +311,9 @@ public class ScoreManager : MonoBehaviour {
     {
         // Add to the existing combo
         combo++;
+
+        // Add to the fever time combo
+        feverTimeManager.IncrementFeverTimeCombo();
 
         // Check the current combo and see if it's the highest so far;
         CheckHighestCombo();
