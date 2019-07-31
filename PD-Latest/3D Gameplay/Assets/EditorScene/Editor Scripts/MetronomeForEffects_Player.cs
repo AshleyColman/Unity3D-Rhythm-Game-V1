@@ -8,8 +8,8 @@ public class MetronomeForEffects_Player : MonoBehaviour
 {
     public bool active;
     bool playing = false;
-    public float bpm = 128;
-    public float offsetMS = 100;
+    public float bpm = 175f;
+    public float offsetMS = 280;
     private bool previouslyPaused = false;
 
     void Start()

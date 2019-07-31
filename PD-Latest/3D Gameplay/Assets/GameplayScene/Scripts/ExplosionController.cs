@@ -8,7 +8,7 @@ public class ExplosionController : MonoBehaviour {
     public GameObject specialHitExplosion; // Special hit explosion
 
     private string feverExplosionTag;
-
+    private string feverExplosionToSpawnName;
     private FeverTimeManager feverTimeManager; // Fever time manager for controlling fever time explosions
 
     public Transform canvas;
@@ -84,8 +84,10 @@ public class ExplosionController : MonoBehaviour {
         // Check if fever time, if it is spawn a special explosion, if not check the object tag and spawn the correct colored explosion for normal objects
         if (feverTimeManager.FeverTimeActivated == true)
         {
+            // Set the name
+            feverExplosionToSpawnName = feverExplosionTag + _objectTag;
             // instantiate special hit explosion
-            SpawnFromPool(feverExplosionTag , _position); // Spawn special miss explosion for special miss notes
+            SpawnFromPool(feverExplosionToSpawnName, _position); // Spawn special miss explosion for special miss notes
         }
         else
         {

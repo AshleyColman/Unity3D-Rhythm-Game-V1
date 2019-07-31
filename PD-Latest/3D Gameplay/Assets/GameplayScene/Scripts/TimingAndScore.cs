@@ -10,7 +10,7 @@ public class TimingAndScore : MonoBehaviour {
 
     // Integers
     private float timeWhenHit; // The time when the object is hit
-    private float hitObjectTimer; // Timer for getting the time when the player hit the hit object key - judgement
+    public float hitObjectTimer; // Timer for getting the time when the player hit the hit object key - judgement
     private float hitObjectStartTime; // The time when the note spawns
     private float perfectJudgementTime, earlyJudgementTime; // Judgement time values
     private float destroyedTime; // The late time, last possible hit time before input is cancelled

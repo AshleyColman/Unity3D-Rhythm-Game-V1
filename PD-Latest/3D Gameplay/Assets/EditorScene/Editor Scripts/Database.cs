@@ -41,7 +41,7 @@ public class Database : MonoBehaviour {
     private string loadedSongName; // Loaded beatmap song name
     private string loadedSongArtist; // Loaded beatmap song artist
     private string loadedBeatmapCreator; // Loaded beatmap creator
-    private string loadedBeatmapDifficulty; // Loaded beatmap difficulty
+    public string loadedBeatmapDifficulty; // Loaded beatmap difficulty
     private string loadedBeatmapFolderDirectory; // Loaded beatmap directory location
     private string loadedBeatmapEasyDifficultyLevel; // Loaded easy level
     private string loadedBeatmapAdvancedDifficultyLevel; // Loaded advanced level
@@ -243,6 +243,7 @@ public class Database : MonoBehaviour {
     {
         // Load the folder directory to load the map 
         loadedBeatmapFolderDirectory = _beatmapFolderDirectory + @"\";
+
         // Load the beatmap difficulty
         loadedBeatmapDifficulty = _beatmapDifficulty;
 
@@ -266,7 +267,6 @@ public class Database : MonoBehaviour {
         loadedSongName = beatmap.songName;
         loadedSongArtist = beatmap.songArtist;
         loadedBeatmapCreator = beatmap.beatmapCreator;
-        loadedBeatmapDifficulty = beatmap.beatmapDifficulty;
         loadedBeatmapEasyDifficultyLevel = beatmap.beatmapEasyDifficultyLevel;
         loadedBeatmapAdvancedDifficultyLevel = beatmap.beatmapAdvancedDifficultyLevel;
         loadedBeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;

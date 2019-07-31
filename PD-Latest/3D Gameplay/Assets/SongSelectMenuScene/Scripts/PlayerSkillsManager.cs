@@ -30,11 +30,11 @@ public class PlayerSkillsManager : MonoBehaviour {
     private bool gameplayModKeysUpdated; // Controls updating the gameplay mod keys
 
     // Color
-    public Color goodMultiplierColor, okayMultiplierColor, badMultiplierColor, defaultMultipierColor; // Multiplier text colors
+    public Color goodMultiplierColor, okayMultiplierColor, badMultiplierColor, defaultMultiplierColor; // Multiplier text colors
 
     // Scripts
     private LevelChanger levelChanger; // Level changer for changing scenes
-    private SongProgressBar songProgressBar; // Reference required to change the song pitch when in gameplay
+    public SongProgressBar songProgressBar; // Reference required to change the song pitch when in gameplay
 
     // Keycodes
     private KeyCode destroyKey; // Key that destroys this gameobject
@@ -98,58 +98,43 @@ public class PlayerSkillsManager : MonoBehaviour {
     void Update()
     {
 
-        // If the level changer index has changed or new scene has loaded
-        if (levelChanger.CurrentLevelIndex != levelChanger.LastFrameLevelIndex)
+        levelChanger = FindObjectOfType<LevelChanger>();
+
+        // Mainmenu or overall leaderboard scene = destroy this 
+        if (levelChanger.CurrentLevelIndex == levelChanger.MainMenuSceneIndex ||
+            levelChanger.CurrentLevelIndex == levelChanger.OverallLeaderboardSceneIndex)
         {
-            // Mainmenu or overall leaderboard scene = destroy this 
-            if (levelChanger.CurrentLevelIndex == levelChanger.MainMenuSceneIndex || 
-                levelChanger.CurrentLevelIndex == levelChanger.OverallLeaderboardSceneIndex)
-            {
-                Destroy(this.gameObject);
-            }
-            else
-            {
-                // Dont destroy this
-                DontDestroyOnLoad(this.gameObject);
-            }
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            // Dont destroy this
+            DontDestroyOnLoad(this.gameObject);
+        }
 
-            // Only update the keys if in song select scene
-            if (levelChanger.CurrentLevelIndex == levelChanger.SongSelectSceneIndex)
+        // If in the gameplay scene
+        if (levelChanger.CurrentLevelIndex == levelChanger.GameplaySceneIndex)
+        {
+            // Get the reference to the song progress bar
+            if (songProgressBar == null)
             {
-                // If the mod keys have not been updated 
-                if (gameplayModKeysUpdated == false)
-                {
-                    // Update the mod keys selected for Eri
-                    UpdateSelectedModKeys();
-
-                    // Set to true as keys have been updated
-                    gameplayModKeysUpdated = true;
-                }
+                songProgressBar = FindObjectOfType<SongProgressBar>();
             }
 
-            // If in the gameplay scene
-            if (levelChanger.CurrentLevelIndex == levelChanger.GameplaySceneIndex)
+
+            // Enable the speed mod during gameplay
+            EnableSpeedModsInGameplay();
+        }
+
+        // If not in the gameplay scene 
+        if (levelChanger.CurrentLevelIndex != levelChanger.GameplaySceneIndex)
+        {
+            // Reset the game speed to 1
+            ResetGameSpeedToNormal();
+
+            if (songProgressBar != null)
             {
-                // Get the reference to the song progress bar
-                if (songProgressBar == null)
-                {
-                    songProgressBar = FindObjectOfType<SongProgressBar>();
-                }
-
-                // Enable the speed mod during gameplay
-                EnableSpeedModsInGameplay();
-            }
-
-            // If not in the gameplay scene 
-            if (levelChanger.CurrentLevelIndex != levelChanger.GameplaySceneIndex)
-            {
-                // Reset the game speed to 1
-                ResetGameSpeedToNormal();
-
-                if (songProgressBar != null)
-                {
-                    ResetSongPitchToNormal();
-                }
+                ResetSongPitchToNormal();
             }
         }
    
@@ -198,20 +183,20 @@ public class PlayerSkillsManager : MonoBehaviour {
         switch (scoreMultiplier)
         {
             case 75:
-                scoreMultiplierText.text = scoreMultiplier100;
-                scoreMultiplierText.color = defaultMultipierColor;
+                scoreMultiplierText.text = scoreMultiplier075;
+                scoreMultiplierText.color = badMultiplierColor;
                 break;
             case 100:
+                scoreMultiplierText.text = scoreMultiplier100;
+                scoreMultiplierText.color = defaultMultiplierColor;
+                break;
+            case 105:
                 scoreMultiplierText.text = scoreMultiplier105;
                 scoreMultiplierText.color = okayMultiplierColor;
                 break;
-            case 105:
+            case 110:
                 scoreMultiplierText.text = scoreMultiplier110;
                 scoreMultiplierText.color = goodMultiplierColor;
-                break;
-            case 110:
-                scoreMultiplierText.text = scoreMultiplier075;
-                scoreMultiplierText.color = badMultiplierColor;
                 break;
         }
     }
@@ -266,6 +251,8 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         // Reset the multiplier score text with default value
         UpdateScoreMultiplierText(100);
+
+        UpdateSelectedModKeys();
     }
 
     // Update mod selected text
@@ -281,6 +268,8 @@ public class PlayerSkillsManager : MonoBehaviour {
         UpdateModSelectedText(halfTimeTextValue);
 
         UpdateScoreMultiplierText(75);
+
+        UpdateSelectedModKeys();
     }
 
     // Equip double time skill
@@ -291,6 +280,8 @@ public class PlayerSkillsManager : MonoBehaviour {
         UpdateModSelectedText(doubleTimeTextValue);
 
         UpdateScoreMultiplierText(105);
+
+        UpdateSelectedModKeys();
     }
 
     // Equip triple time skill
@@ -300,7 +291,11 @@ public class PlayerSkillsManager : MonoBehaviour {
 
         UpdateModSelectedText(tripleTimeTextValue);
 
+        tripleTimeSelectedKey.gameObject.SetActive(true);
+
         UpdateScoreMultiplierText(110);
+
+        UpdateSelectedModKeys();
     }
 
     // Equip judgement plus skill
@@ -311,6 +306,8 @@ public class PlayerSkillsManager : MonoBehaviour {
         UpdateModSelectedText(judgementPlusTextValue);
 
         UpdateScoreMultiplierText(105);
+
+        UpdateSelectedModKeys();
     }
 
     // Equip no fail skill
@@ -321,6 +318,8 @@ public class PlayerSkillsManager : MonoBehaviour {
         UpdateModSelectedText(noFailTextValue);
 
         UpdateScoreMultiplierText(75);
+
+        UpdateSelectedModKeys();
     }
 
     // Equip instant death skill
@@ -331,6 +330,8 @@ public class PlayerSkillsManager : MonoBehaviour {
         UpdateModSelectedText(instantDeathTextValue);
 
         UpdateScoreMultiplierText(100);
+
+        UpdateSelectedModKeys();
     }
 
     // Increase the fade speed selected as the button preview has been pressed +

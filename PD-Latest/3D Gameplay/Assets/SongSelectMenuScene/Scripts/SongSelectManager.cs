@@ -422,6 +422,11 @@ public class SongSelectManager : MonoBehaviour {
                         // Load the song select information for easy
                         LoadBeatmapSongSelectInformation(_selectedBeatmapDirectoryIndex, easyDifficultyName, _hasPressedArrowKey);
                     }
+                    else
+                    {
+                        // Check which difficulty files exist and load the first one to be found when the arrow key has been pressed in song select
+                        LoadFirstBeatmapFileThatExists(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
+                    }
                     break;
 
                 case "advanced":
@@ -430,6 +435,11 @@ public class SongSelectManager : MonoBehaviour {
                     {
                         // Load the song select information for advanced
                         LoadBeatmapSongSelectInformation(_selectedBeatmapDirectoryIndex, advancedDifficultyName, _hasPressedArrowKey);
+                    }
+                    else
+                    {
+                        // Check which difficulty files exist and load the first one to be found when the arrow key has been pressed in song select
+                        LoadFirstBeatmapFileThatExists(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
                     }
                     break;
 
@@ -443,7 +453,7 @@ public class SongSelectManager : MonoBehaviour {
                     else
                     {
                         // Check which difficulty files exist and load the first one to be found when the arrow key has been pressed in song select
-                        LoadFirsBeatmapFileThatExists(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
+                        LoadFirstBeatmapFileThatExists(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
                     }
                     break;
             }   
@@ -451,7 +461,7 @@ public class SongSelectManager : MonoBehaviour {
     }
 
     // Check which difficulty files exist and load the first one to be found when the arrow key has been pressed in song select
-    private void LoadFirsBeatmapFileThatExists(int _selectedBeatmapDirectoryIndex, bool _hasPressedArrowKey)
+    private void LoadFirstBeatmapFileThatExists(int _selectedBeatmapDirectoryIndex, bool _hasPressedArrowKey)
     {
         // If the easy.dia difficulty file exists
         if (easyDifficultyExist == true)

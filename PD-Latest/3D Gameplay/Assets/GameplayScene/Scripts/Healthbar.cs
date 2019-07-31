@@ -11,7 +11,7 @@ public class Healthbar : MonoBehaviour
     private float redBarAmount; // The amount needed to change the bar to red
     private float yellowBarAmount; // The amount needed to change the bar to yellow
     private float greenBarAmount; // The amount needed to change the bar to green
-    private  float currentHealth; // Current health
+    public float currentHealth; // Current health
     private int failHealthValue; // Value to cause failing
     private int  maxHealthValue; // Max health value
 
@@ -47,7 +47,7 @@ public class Healthbar : MonoBehaviour
         redBarAmount = 33.33f;
         yellowBarAmount = 66.66f;
         greenBarAmount = 100f;
-        failHealthValue = 1;
+        failHealthValue = 0;
         maxHealthValue = 100;
         redHealthTextValue = "RED";
         yellowHealthTextValue = "YELLOW";
@@ -122,7 +122,7 @@ public class Healthbar : MonoBehaviour
     // Check if the player has failed and restart if they have
     private void CheckIfFailed()
     {
-        // If the health is less than or equal to 1 
+        // If the health is less than or equal to 0 
         if (currentHealth <= failHealthValue)
         {
             // Activate failed screen and disable gameplay

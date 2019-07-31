@@ -101,10 +101,6 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         startGameKey = KeyCode.Space; // Assign starting the game key to the spacebar
 
 
-
-
-
-
         // Reference
         songProgressBar = FindObjectOfType<SongProgressBar>();
         failAndRetryManager = FindObjectOfType<FailAndRetryManager>();
@@ -385,8 +381,8 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         // Create the playedByUsername value off the current player logged in
         string playedByUsername = "playing as " + MySQLDBManager.username;
         // Create the gameplay title from song name + artist
-        string gameplayTitle = Database.database.LoadedSongName + " [ " + Database.database.LoadedSongArtist + 
-            " ] " + "      " + playedByUsername;
+        string gameplayTitle = Database.database.LoadedSongName + " [ " + Database.database.LoadedSongArtist + " ]";
+        // + " ] " + "      " + playedByUsername;
         // Set gameplay text to gameplay title, make all upper case
         gameplayTitleText.text = gameplayTitle.ToUpper();
     }

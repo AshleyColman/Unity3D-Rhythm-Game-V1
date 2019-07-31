@@ -515,9 +515,6 @@ public class PlacedObject : MonoBehaviour {
 
             // Remove the editorHitObject tied to the timeline from the list
             editorHitObjectList.RemoveAt(nullTimelineObjectIndex);
-
-
-            Debug.Log("Removed at: " + nullTimelineObjectIndex);
         }
     }
 

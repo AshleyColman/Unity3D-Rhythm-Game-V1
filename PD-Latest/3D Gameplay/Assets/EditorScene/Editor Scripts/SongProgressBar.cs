@@ -139,8 +139,6 @@ public class SongProgressBar : MonoBehaviour {
                     {
                         amount = (songAudioSource.time) / (songAudioSource.clip.length);
                         songPlayerBar.fillAmount = amount;
-                        actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
-                        songTotalDuration.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.clip.length);
                     }
                 }
             }

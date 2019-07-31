@@ -9,6 +9,9 @@ public class Rankbar : MonoBehaviour {
     public Slider rankBarSlider;
     public Image rankBarFill;
 
+    // Animator
+    public Animator percentageTextAnimator;
+
     // Integers
     private float currentPercentage; // The current percentage of score out of max possible score
     private float fRankAmount, eRankAmount, dRankAmount, cRankAmount, bRankAmount, aRankAmount, sRankAmount, ssRankAmount; // Values for ranks
@@ -25,7 +28,7 @@ public class Rankbar : MonoBehaviour {
     // Scripts
     private ScoreManager scoreManager;
     private GameplayToResultsManager gameplayToResultsManager;
-
+    private FeverTimeManager feverTimeManager; 
 
 
     // Use this for initialization
@@ -46,6 +49,7 @@ public class Rankbar : MonoBehaviour {
         // Reference
         scoreManager = FindObjectOfType<ScoreManager>();
         gameplayToResultsManager = FindObjectOfType<GameplayToResultsManager>();
+        feverTimeManager = FindObjectOfType<FeverTimeManager>();
 
         // Script initialize
         currentScore = scoreManager.CurrentScore; // Get the current score
@@ -65,6 +69,7 @@ public class Rankbar : MonoBehaviour {
         totalScorePossible = scoreManager.TotalScorePossible; // Get the total score possible for the beatmap
 
         currentPercentage = (currentScore / totalScorePossible) * 100;
+
 
         if (currentPercentage < 50)
         {
@@ -115,7 +120,7 @@ public class Rankbar : MonoBehaviour {
             // Update the rank achieved
             gameplayToResultsManager.GradeAchieved = sRank;
         }
-        else if (currentPercentage == 100)
+        else if (currentPercentage >= 100)
         {
             // P rank 
             rankBarFill.color = pRankColor;
@@ -129,5 +134,18 @@ public class Rankbar : MonoBehaviour {
         rankBarSlider.value = currentPercentage;
         // Update current percentage text
         UpdatePercentageText();
+
+
+        if (feverTimeManager.FeverTimeActivated == true)
+        {
+            // Play score text animation
+            percentageTextAnimator.Play("FeverScoreTextAnimation", 0, 0f);
+        }
+        else
+        {
+            // Play score text animation
+            percentageTextAnimator.Play("ScoreTextAnimation", 0, 0f);
+        }
+
     }
 }

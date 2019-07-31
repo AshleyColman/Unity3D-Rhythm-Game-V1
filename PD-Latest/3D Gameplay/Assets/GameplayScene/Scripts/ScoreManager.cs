@@ -110,7 +110,7 @@ public class ScoreManager : MonoBehaviour {
         activateRainbowComboParticlesValue = 150;
         comboBreakValue = 5;
         comboX = 'x';
-        comboText.text = combo.ToString() + comboX;
+        comboText.text = "COMBO: " + combo.ToString() + comboX;
         judgement = "";
         judgementText.text = judgement.ToString();
 
@@ -241,14 +241,14 @@ public class ScoreManager : MonoBehaviour {
             // Play miss sound
             hitSoundPreview.PlayMissSound();
             // Play combo break animation
-            comboAnimator.Play("ComboTextBreakAnimation", 0, 0f);
+            comboAnimator.Play("BadScoreTextAnimation", 0, 0f);
         }
 
         // Reset combo
         combo = 0;
 
         // Update the text
-        comboText.text = comboX + combo.ToString();
+        comboText.text = "COMBO: " + comboX + combo.ToString();
 
         // Check the combo for spawning the correct particle effect
         CheckComboParticles();
@@ -263,11 +263,22 @@ public class ScoreManager : MonoBehaviour {
         // Multiply the default score per note passed by the mod mutiplier
         _scoreValue = (_scoreValue * playerSkillsManager.ScoreMultiplier);
 
+        if (feverTimeManager.FeverTimeActivated == true)
+        {
+
+            // Multiplier the notes value by 2 if fever time has been activated
+            _scoreValue = (_scoreValue * 2);
+            // Play score text animation
+            scoreTextAnimator.Play("FeverScoreTextAnimation", 0, 0f);
+        }
+        else
+        {
+            // Play score text animation
+            scoreTextAnimator.Play("ScoreTextAnimation", 0, 0f);
+        }
+
         // Increase the score to lerp to
         scoreToLerpTo += _scoreValue;
-
-        // Play score text animation
-        scoreTextAnimator.Play("ScoreTextAnimation", 0, 0f);
     }
 
     // Lerp the score to increase over time
@@ -281,23 +292,23 @@ public class ScoreManager : MonoBehaviour {
             // Check the score and add the 0's according to the type
             if (currentScore < 1000)
             {
-                scoreText.text = "00000" + currentScore.ToString();
+                scoreText.text = "SCORE: 00000" + currentScore.ToString();
             }
             if (currentScore >= 1000 && currentScore < 10000)
             {
-                scoreText.text = "0000" + currentScore.ToString();
+                scoreText.text = "SCORE: 0000" + currentScore.ToString();
             }
             if (currentScore >= 10000 && currentScore < 100000)
             {
-                scoreText.text = "000" + currentScore.ToString();
+                scoreText.text = "SCORE: 000" + currentScore.ToString();
             }
             if (currentScore >= 100000 && currentScore < 1000000)
             {
-                scoreText.text = "00" + currentScore.ToString();
+                scoreText.text = "SCORE: 00" + currentScore.ToString();
             }
             if (currentScore >= 1000000 && currentScore < 10000000)
             {
-                scoreText.text = "0" + currentScore.ToString();
+                scoreText.text = "SCORE: 0" + currentScore.ToString();
             }
             if (currentScore >= 10000000 && currentScore < 100000000)
             {
@@ -319,9 +330,19 @@ public class ScoreManager : MonoBehaviour {
         CheckHighestCombo();
 
         // Update combo text
-        comboText.text = comboX + combo.ToString();
+        comboText.text = "COMBO: " + comboX + combo.ToString();
+
         // Play combo animation
-        comboAnimator.Play("ComboTextAnimation", 0, 0f);
+        if (feverTimeManager.FeverTimeActivated == true)
+        {
+            // Play score text animation
+            comboAnimator.Play("FeverScoreTextAnimation", 0, 0f);
+        }
+        else
+        {
+            // Play score text animation
+            comboAnimator.Play("ScoreTextAnimation", 0, 0f);
+        }
 
         // Update the rank bar percentage and color
         rankbar.UpdateRankBar();

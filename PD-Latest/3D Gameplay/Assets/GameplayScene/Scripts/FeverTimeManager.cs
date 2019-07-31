@@ -263,11 +263,7 @@ public class FeverTimeManager : MonoBehaviour {
         // Only check for combo if fever time is not activated
         if (feverTimeActivated == false)
         {
-            if (feverTimeCombo == 0 && hasSet0Percent == false)
-            {
-                SetBarTo0Percent();
-            }
-            else if (feverTimeCombo == 25 && hasSet25Percent == false)
+            if (feverTimeCombo == 25 && hasSet25Percent == false)
             {
                 SetBarTo25Percent();
             }
@@ -283,35 +279,6 @@ public class FeverTimeManager : MonoBehaviour {
             {
                 SetBarTo100Percent();
             }
-        }
-    }
-
-    // Bar has reached 0 percent
-    private void SetBarTo0Percent()
-    {
-        if (feverTimeActivated == true)
-        {
-            feverTimeBar.value = 0f;
-
-            lerpValue = 0f;
-
-            fullFeverTimeBarCount = 0;
-
-            menuSFXAudioSource.PlayOneShot(feverTimeDeactivatedSound);
-
-            feverTimeReady = false;
-
-            feverTimeBarFillImage.color = defaultBarColor;
-
-            hasSet0Percent = true;
-
-            // Turn off audio reverb
-            songAudioReverbFilter.enabled = false;
-            // Turn off menuSFX reverb
-            menuSFXAudioReverbFiler.enabled = false;
-
-            // Reset the fever time combo
-            feverTimeCombo = 0;
         }
     }
 
@@ -333,6 +300,9 @@ public class FeverTimeManager : MonoBehaviour {
         feverTimeReady = true;
 
         hasSet25Percent = true;
+
+        // Reset
+        hasSet0Percent = false;
     }
 
     // Bar has reached 50 percent
@@ -412,10 +382,13 @@ public class FeverTimeManager : MonoBehaviour {
     private void CheckFirstBarMinValue()
     {
         // Check if the feverTimeBar value is at 0
-        if (feverTimeBar.value == feverTimeBarMinValue)
+        if (feverTimeBar.value == feverTimeBarMinValue && hasSet0Percent == false)
         {
             // 0 bars are full
             fullFeverTimeBarCount = 0;
+
+            // Reset combo
+            feverTimeCombo = 0;
 
             // Reset lerp variables
             ResetLerpVariables();
@@ -432,7 +405,22 @@ public class FeverTimeManager : MonoBehaviour {
             // Reset fever time ready bool to allow sound to play again when at max value
             hasPlayedFeverTimeReadySound = false;
 
-            SetBarTo0Percent();
+            lerpValue = 0f;
+
+    
+            //menuSFXAudioSource.PlayOneShot(feverTimeDeactivatedSound);
+
+            feverTimeReady = false;
+
+            feverTimeBarFillImage.color = defaultBarColor;
+
+            // Turn off audio reverb
+            songAudioReverbFilter.enabled = false;
+            // Turn off menuSFX reverb
+            menuSFXAudioReverbFiler.enabled = false;
+
+            // Set to true
+            hasSet0Percent = true;
         }
     }
 
@@ -457,6 +445,8 @@ public class FeverTimeManager : MonoBehaviour {
         hasSet50Percent = false;
         hasSet75Percent = false;
         hasSet100Percent = false;
+
+        hasPlayedFeverTimeActivatedSound = false;
     }
 
     // Calculate the duration of fever time based on the amount of bars earned

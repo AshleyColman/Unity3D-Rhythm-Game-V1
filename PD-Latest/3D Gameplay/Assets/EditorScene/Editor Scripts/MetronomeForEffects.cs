@@ -36,6 +36,8 @@ public class MetronomeForEffects : MonoBehaviour
     // Gameplay fever time bar animators
     public Animator bar25PercentAnimator, bar50PercentAnimator, bar75PercentAnimator, bar100PercentAnimator;
 
+  
+
     // Integers
     public List<float> songTickTimes;
     private float interval;
@@ -75,6 +77,12 @@ public class MetronomeForEffects : MonoBehaviour
         levelChanger = FindObjectOfType<LevelChanger>();
         songAudioGameObject = GameObject.FindGameObjectWithTag("AudioSource");
         songAudioSource = songAudioGameObject.GetComponent<AudioSource>();
+
+        if (levelChanger.CurrentLevelIndex == levelChanger.MainMenuSceneIndex)
+        {
+            bpm = 175f;
+            offsetMS = 280;
+        }
 
         // Gameplay Scene References
         if (levelChanger.CurrentLevelIndex == levelChanger.GameplaySceneIndex)

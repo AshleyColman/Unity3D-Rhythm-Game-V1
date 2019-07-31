@@ -65,7 +65,11 @@ public class HitSoundPreview : MonoBehaviour {
     // Lower hit sound volume
     public void LowerHitSoundVolume()
     {
-        if (hitSoundVolume > 0 && hitSoundVolume <= 1)
+        if (hitSoundVolume <= 0)
+        {
+            hitSoundVolume = 0;
+        }
+        else
         {
             hitSoundVolume = hitSoundVolume - 0.1f;
         }
@@ -76,7 +80,7 @@ public class HitSoundPreview : MonoBehaviour {
     // Raise hit sound volume
     public void RaiseHitSoundVolume()
     {
-        if (hitSoundVolume >= 0 && hitSoundVolume < 1)
+        if (hitSoundVolume < 1)
         {
             hitSoundVolume = hitSoundVolume + 0.1f;
         }
