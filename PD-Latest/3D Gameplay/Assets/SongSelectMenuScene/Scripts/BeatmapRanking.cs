@@ -31,16 +31,16 @@ public class BeatmapRanking : MonoBehaviour {
     private bool hasPersonalBest;
     private bool hasCheckedPersonalBest;
     private bool hasLoadedLeaderbaord;
-    private bool[] placeExists;
+    public bool[] placeExists;
 
     // Strings
-    private string leaderboardTableName;
+    public string leaderboardTableName;
     private string player_id;
     private string personalBestScore, personalBestPerfect, personalBestGood, personalBestEarly, personalBestMiss, personalBestCombo, personalBestPercentage, 
         personalBestGrade, personalBestUsername, personalBestMod;
     private string perfectTextValue, goodTextValue, earlyTextValue, missTextValue; // Text values on leaderbaord placements
-    private List<string>[] placeLeaderboardData;
-    private List<string> personalBestLeaderboardData;
+    public List<string>[] placeLeaderboardData;
+    public List<string> personalBestLeaderboardData;
     private string[] rankedButtonUsername, rankedButtonPerfect, rankedButtonGood, rankedButtonEarly, rankedButtonMiss, rankedButtonCombo,
         rankedButtonPercentage, rankedButtonGrade, rankedButtonScore, rankedButtonMod;
 

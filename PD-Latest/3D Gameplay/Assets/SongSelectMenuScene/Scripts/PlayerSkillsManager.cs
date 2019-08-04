@@ -74,7 +74,7 @@ public class PlayerSkillsManager : MonoBehaviour {
         fadeSpeedNormal = 1f;
         fadeSpeedFast = 0.5f;
         scoreMultiplier = 100;
-        scoreMultiplier075 = "x1.05";
+        scoreMultiplier075 = "x0.75";
         scoreMultiplier100 = "x1.00";
         scoreMultiplier105 = "x1.05";
         scoreMultiplier110 = "x1.10";
@@ -248,6 +248,8 @@ public class PlayerSkillsManager : MonoBehaviour {
     {
         // Reset
         UpdateModSelectedText("");
+
+        modSelected = "";
 
         // Reset the multiplier score text with default value
         UpdateScoreMultiplierText(100);

@@ -62,6 +62,9 @@ public class SongSelectMenuFlash : MonoBehaviour {
     // Load beatmap
     public void LoadBeatmap(string _keyPressed)
     {
+        // Stop all coroutines
+        beatmapRanking.StopAllCoroutines();
+
         // Set to true as an arrow key has been pressed
         hasPressedArrowKey = true;
 
@@ -118,6 +121,9 @@ public class SongSelectMenuFlash : MonoBehaviour {
     // Load the beatmap which the song select menu beatmap button has assigned to it (BUTTON FUNCTION)
     public void LoadBeatmapButtonSong(int _beatmapToLoadIndex)
     {
+        // Stop all coroutines
+        beatmapRanking.StopAllCoroutines();
+
         // Clear all loaded beatmaps
         ClearBeatmapLoaded();
 

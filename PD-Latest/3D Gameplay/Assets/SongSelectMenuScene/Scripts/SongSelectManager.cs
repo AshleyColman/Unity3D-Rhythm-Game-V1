@@ -392,7 +392,8 @@ public class SongSelectManager : MonoBehaviour {
         // Check the difficulty files if they exist and update the levels for each of them
         UpdateDifficultyLevelText(_selectedBeatmapDirectoryIndex);
 
-
+        LoadFirstBeatmapFileThatExists(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
+        /*
         // Only load the beatmap file if 1 of the difficulties exist
         if (easyDifficultyExist || advancedDifficultyExist || extraDifficultyExist)
         {
@@ -404,6 +405,7 @@ public class SongSelectManager : MonoBehaviour {
             // No difficulties were found for that beatmap - load the previous beatmap in the list?
             AttemptToLoadPreviousBeatmap(_selectedBeatmapDirectoryIndex, _hasPressedArrowKey);
         }
+        */
     }
     
     // Check the difficulty and try to load that specific beatmap file if it exists
