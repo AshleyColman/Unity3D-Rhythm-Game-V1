@@ -115,8 +115,6 @@ public class DestroyTimelineObject : MonoBehaviour {
     {
         if (Input.GetMouseButton(0))
         {
-
-            Debug.Log("run");
             // Get the slider for this timeline hit object
 
 

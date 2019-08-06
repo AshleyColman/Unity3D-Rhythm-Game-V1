@@ -1,23 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class EditorUIManager : MonoBehaviour {
 
     public GameObject editorInstructionsPanel;
+    public GameObject setupBeatmapPanel, beatmapToolsPanel, beatmapButtonsPanel;
+
     private bool editorInstructionsPanelIsActive;
 
-	// Use this for initialization
 	void Start () {
         // Set to false by default
         editorInstructionsPanelIsActive = false;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
 
     // Activate/Deactivate editerInstructionsPanel
     public void ActivateOrDeactivateEditorInstructionsPanel()
@@ -41,4 +36,42 @@ public class EditorUIManager : MonoBehaviour {
     }
 
 
+    // Activate beatmap buttons panel
+    public void ActivateBeatmapButtonsPanel()
+    {
+        // Deactivate all active panels
+        DeactivateAllPanels();
+
+        // Activate
+        beatmapButtonsPanel.gameObject.SetActive(true);
+    }
+
+    // Activate beatmap tools panel
+    public void ActivateBeatmapToolsPanel()
+    {
+        // Deactivate all active panels
+        DeactivateAllPanels();
+
+        // Activate
+        beatmapToolsPanel.gameObject.SetActive(true);
+    }
+
+    // Activate beatmap setup panel
+    public void ActivateBeatmapSetupPanel()
+    {
+        // Deactivate all active panels
+        DeactivateAllPanels();
+
+        // Activate
+        setupBeatmapPanel.gameObject.SetActive(true);
+    }
+
+    // Deactivate all active panels
+    public void DeactivateAllPanels()
+    {
+        // Deactivate the other panels
+        beatmapToolsPanel.gameObject.SetActive(false);
+        setupBeatmapPanel.gameObject.SetActive(false);
+        beatmapButtonsPanel.gameObject.SetActive(false);
+    }
 }

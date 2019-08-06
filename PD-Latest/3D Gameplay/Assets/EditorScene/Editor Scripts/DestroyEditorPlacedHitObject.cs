@@ -5,7 +5,7 @@ using UnityEngine;
 public class DestroyEditorPlacedHitObject : MonoBehaviour {
 
     private float timer;
-    private float destroyTime = 1.2f; // Hit object destroy time
+    private float destroyTime = 0.2f; // Hit object destroy time
 
     // Use this for initialization
     void Start()

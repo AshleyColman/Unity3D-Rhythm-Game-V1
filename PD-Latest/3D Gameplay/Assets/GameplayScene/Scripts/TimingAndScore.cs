@@ -82,7 +82,7 @@ public class TimingAndScore : MonoBehaviour {
         earlyHealthValue = -5;
         perfectHealthValue = 5;
         goodHealthValue = -5;
-        missHealthValue = -10;
+        missHealthValue = -5;
         perfectJudgement = "PERFECT";
         goodJudgement = "GOOD";
         earlyJudgement = "EARLY";

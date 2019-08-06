@@ -74,34 +74,6 @@ public class Fade : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // If in the Editor scene check if the preview beatmap is false
-        if (levelChanger.CurrentLevelIndex == levelChanger.EditorSceneIndex)
-        {
-            // If the beatmap preview is paused and no longer running
-            if (placedObject.playBeatmapPreview == false)
-            {
-                // Pause the fade at the current value
-                pauseFadeTransition = true;
-            }
-            else
-            {
-                pauseFadeTransition = false;
-            }
-
-            if (pauseFadeTransition == true)
-            {
-                // Do not continue fading and keep the fade at the current value
-            }
-            else
-            {
-                // Increment timer
-                timer += Time.deltaTime;
-
-                // Allow the preview hit object to continue to fade
-                SetAlpha((timer - spawnTime) * fadeSpeed);
-            }
-        }
-
         // If on the gameplay scene fade when the note appears
         if (levelChanger.CurrentLevelIndex == levelChanger.GameplaySceneIndex)
         {

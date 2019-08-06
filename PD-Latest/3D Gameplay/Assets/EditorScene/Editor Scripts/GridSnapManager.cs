@@ -1,120 +1,60 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using TMPro;
 
-public class GridSnapManager : MonoBehaviour {
+public class GridSnapManager : MonoBehaviour
+{
+    // Bools
+    public bool snappingEnabled; // Controls whether the hit object is snapped to nearest grid points
 
-    public float size = 5f;
-    private float gridPointSize = 320f;
-    public GameObject gridPointObject;
-    public bool snappingEnabled;
-    private GridObjectPlacer gridObjectPlacer;
+    // Gameobjects
+    public GameObject grid70Diamond, grid70Point; // Grid point options
+
+    public TMP_Dropdown gridDropDown; // Selects the grid to display
 
     private void Start()
     {
-        gridObjectPlacer = FindObjectOfType<GridObjectPlacer>();
+        // Set snapping to default
         snappingEnabled = true;
-        DrawGridPoints();
+    }
+
+    // Disable all grids
+    private void DeactivateAllGrids()
+    {
+        grid70Diamond.gameObject.SetActive(false);
+        grid70Point.gameObject.SetActive(false);
+    }
+
+    // Activate grid point selected
+    public void ActivateGridSelected()
+    {
+        // Deactivate all grids 
+        DeactivateAllGrids();
+
+        // Activate the grid based on the dropdown selected
+        switch (gridDropDown.value)
+        {
+            case 0:
+                // Activate grid 1
+                grid70Diamond.gameObject.SetActive(true);
+                break;
+            case 1:
+                grid70Point.gameObject.SetActive(true);
+                break;
+        }
     }
 
     private void Update()
     {
-        // Enable snapping
-        if (snappingEnabled == true)
-        {
-            // If scroll up
-            if (Input.mouseScrollDelta.y > 0)
-            {
-                // Increase the grid size by x amount
-                IncreaseGridPointSize();
-                // Draw the new grid points
-                DrawGridPoints();
-            }
-
-            // If scroll down
-            if (Input.mouseScrollDelta.y < 0)
-            {
-                // Decrease the grid size by x amount
-                DecreaseGridPointSize();
-                // Draw the new grid points
-                DrawGridPoints();
-            }
-        }
-
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (snappingEnabled == true)
             {
-                gridObjectPlacer.snappingEnabled = false;
                 snappingEnabled = false;
             }
             else if (snappingEnabled == false)
             {
-                // Redraw the grid points
-                DrawGridPoints();
-                gridObjectPlacer.snappingEnabled = true;
                 snappingEnabled = true;
             }
         }
-
     }
-
-    public Vector3 GetNearestPointOnGrid(Vector3 position)
-    {
-        position -= transform.position;
-
-        int xCount = Mathf.RoundToInt(position.x / size);
-        int yCount = Mathf.RoundToInt(position.y / size);
-        int zCount = Mathf.RoundToInt(position.z / size);
-
-        Vector3 result = new Vector3(
-            (float)xCount * size,
-            (float)yCount * size,
-            (float)zCount * size);
-
-        result += transform.position;
-
-        return result;
-    }
-
-    // Draw the grid points on the editor screen
-    public void DrawGridPoints()
-    {
-        for (float x = transform.position.x; x < gridPointSize; x += size)
-        {
-            for (float z = transform.position.z; z < 100; z += size)
-            {
-                var point = GetNearestPointOnGrid(new Vector3(x, 0f, z));
-                Instantiate(gridPointObject, point, Quaternion.Euler(0, 45, 0));
-            }
-        }
-    }
-
-    // Increase the grid point size
-    private void IncreaseGridPointSize()
-    {
-        size = size + 5;
-
-        // Check if it's 0, if it is set to 10
-        if (size >= 120)
-        {
-            size = 120;
-        }
-
-    }
-
-
-    // Decrease the grid point size
-    private void DecreaseGridPointSize()
-    {
-        size = size - 5;
-
-        // Check if it's 0, if it is set to 10
-        if (size <= 5)
-        {
-            size = 10;
-        }
-    }
-
-    
 }

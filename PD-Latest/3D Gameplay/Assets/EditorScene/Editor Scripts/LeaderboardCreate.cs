@@ -71,7 +71,7 @@ public class LeaderboardCreate : MonoBehaviour {
         }
 
         // Get the name of the beatmap song being charted
-        string beatmapSong = beatmapSetup.songName.Replace(' ', '_');
+        string beatmapSong = beatmapSetup.SongName.Replace(' ', '_');
 
         // Combine all together to create a unique leaderboard table name
         leaderboardTableName = beatmapCreator + "_" + beatmapSong + "_" + difficultySelected;

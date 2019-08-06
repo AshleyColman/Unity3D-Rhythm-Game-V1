@@ -1,78 +1,102 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
+using System;
+using System.Collections.Generic;
+using System.Collections;
 
 public class BeatmapSetup : MonoBehaviour {
 
-    // Create folder variables
-    public string beatmapFolderName;
-    public string folderDirectory;
-
-    public int songClipChosenIndex;
-
-    public string beatmapEasyDifficultyLevel;
-    public string beatmapAdvancedDifficultyLevel;
-    public string beatmapExtraDifficultyLevel;
-
-    // Beatmap difficulty
-    public GameObject difficultyButtonsPanel;
-    public string beatmapDifficulty;
-
-    // Song preview start time in th song select screen
-    public float songPreviewStartTime;
-    // The textbox to get the vlaue of the start time
-    public TMP_InputField songPreviewStartTimeInputField;
-    // The song preview start time panel
-    public GameObject songPreviewStartTimePanel;
-
-    // Song name
-    public string songName;
-
-    // Song artist
-    public string songArtist;
-
-    // Beatmap creator
-    public string beatmapCreator;
-
+    // Beatmap file
     public static Beatmap beatmap;
-    string FILE_EXTENSION = ".dia";
 
-    // The editor UI components
-    public TextMeshProUGUI editorTitle;
-
-    // Is true when in the setup screen, used for allowing keyboard press without starting the editor
-    public bool settingUp;
-
-    // Get reference to the background manager
-    private BackgroundManager backgroundManager;
-    // Get the editor background image
-    public Image backgroundImage;
-
-    private bool hasUpdatedUIText;
-
-    public GameObject songSelectPanel;
-
+    // UI
     public Button finishedButton;
-
-    public Button hitObjectButton;
-
-    public GameObject difficultyLevelPanel;
-
     public Button saveButton;
-
     public Button resetButton;
     public Button newSongButton;
+    public TMP_InputField songPreviewStartTimeInputField;    // The textbox to get the vlaue of the start time
+    public TextMeshProUGUI statusText; // Displays status and user activity
 
-    public Button successSaveButton;
+    // Gameobjects
+    public GameObject difficultyButtonsPanel;
+    public GameObject songSelectPanel;
+    public GameObject difficultyLevelPanel;
+    public GameObject settingsPanel; // The settings panel that's displayed when the user has finished creating the beatmap or is editing beatmap information
+    public GameObject songPreviewStartTimePanel;    // The song preview start time panel
+    public GameObject statusPanel; // Status panel for displaying information on user activity in the editor
+    public GameObject saveBeatmapPanel; // Save beatmap panel
 
-    // The settings panel that's displayed when the user has finished creating the beatmap or is editing beatmap information
-    public GameObject settingsPanel;
+    // strings
+    private string beatmapEasyDifficultyLevel, beatmapAdvancedDifficultyLevel, beatmapExtraDifficultyLevel;
+    private string beatmapFolderName, folderDirectory, beatmapDifficulty;
+    private string songName, songArtist, beatmapCreator;
+    private const string FILE_EXTENSION = ".dia";
+    private string statusBeatmapSaved, statusBeatmapReset, statusDeletedHitObject;
 
-    public GameObject saveButtonPanel;
+
+    // integers
+    private int songClipChosenIndex;
+    private float songPreviewStartTime;  // Song preview start time in th song select screen
+
+    // bools
+    private bool settingUp; // Is true when in the setup screen, used for allowing keyboard press without starting the editor
+    private bool hasUpdatedUIText;
+
+
+    // Properties
+    public string BeatmapEasyDifficultyLevel
+    {
+        get { return beatmapEasyDifficultyLevel; }
+    }
+
+    public string BeatmapAdvancedDifficultyLevel
+    {
+        get { return beatmapAdvancedDifficultyLevel; }
+    }
+
+    public string BeatmapExtraDifficultyLevel
+    {
+        get { return beatmapExtraDifficultyLevel; }
+    }
+
+    public string SongName
+    {
+        get { return songName; }
+    }
+
+    public string SongArtist
+    {
+        get { return songArtist; }
+    }
+
+    public string BeatmapCreator
+    {
+        get { return beatmapCreator; }
+    }
+
+    public int SongClipChosenIndex
+    {
+        get { return songClipChosenIndex; }
+    }
+
+    public float SongPreviewStartTime
+    {
+        get { return songPreviewStartTime; }
+    }
+
+    public string FolderDirectory
+    {
+        get { return folderDirectory; }
+    }
+
+    public string BeatmapDifficulty
+    {
+        get { return beatmapDifficulty; }
+    }
+
+
 
     private void Awake()
     {
@@ -81,6 +105,11 @@ public class BeatmapSetup : MonoBehaviour {
 
     private void Start()
     {
+        // Initialize
+        statusBeatmapSaved = "Beatmap saved at ";
+        statusBeatmapReset = "Beatmap reset";
+        statusDeletedHitObject = "Deleted hit object";
+      
         // Setting up at the start 
         settingUp = true;
 
@@ -93,9 +122,6 @@ public class BeatmapSetup : MonoBehaviour {
         {
             beatmapCreator = "GUEST";
         }
-
-        // Get the reference to the background image manager
-        backgroundManager = FindObjectOfType<BackgroundManager>();
     }
 
     // Get the song preview time from the input field box
@@ -115,25 +141,22 @@ public class BeatmapSetup : MonoBehaviour {
         songPreviewStartTimePanel.gameObject.SetActive(false);
 
         // Enable the save button
-        saveButton.interactable = true;
+        //saveButton.interactable = true;
 
         // Activate save button panel and disable settings panel
-        ActivateSaveButtonPanel();
+        ActivateSaveBeatmapPanel();
     }
 
-    // Activate the save button panel
-    public void ActivateSaveButtonPanel()
+    // Activate the save beatmap panel
+    private void ActivateSaveBeatmapPanel()
     {
-        saveButtonPanel.gameObject.SetActive(true);
+        saveBeatmapPanel.gameObject.SetActive(true);
+    }
 
-        // Disable the settings panel
+    // Turn off the settings panels
+    public void DeactivateSettingsPanel()
+    {
         settingsPanel.gameObject.SetActive(false);
-    }
-
-    // Deactivate the save button panel
-    public void DeactivateSaveButtonPanel()
-    {
-        saveButtonPanel.gameObject.SetActive(false);
     }
 
     // Insert all song information when the song selected has been clicked
@@ -251,13 +274,26 @@ public class BeatmapSetup : MonoBehaviour {
         resetButton.interactable = false;
         newSongButton.interactable = false;
         newSongButton.interactable = false;
-        hitObjectButton.interactable = false;
     }
 
-    // Activate success beatmap save button
-    public void ActivateSuccessBeatmapSaveButton()
+    // Show the success save status
+    public void DisplayStatus(string _status)
     {
-        successSaveButton.gameObject.SetActive(true);
-    }
+        // Activate panel
+        statusPanel.gameObject.SetActive(true);
 
+        // Display the correct status
+        switch (_status)
+        {
+            case "SAVED":
+                statusText.text = statusBeatmapSaved + "C:Beatmaps " + beatmapFolderName;
+                break;
+            case "DELETED":
+                statusText.text = statusDeletedHitObject;
+                break;
+            case "RESET":
+                statusText.text = statusBeatmapReset;
+                break;
+        }
+    }
 }

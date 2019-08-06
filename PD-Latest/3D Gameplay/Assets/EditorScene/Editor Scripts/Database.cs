@@ -177,7 +177,7 @@ public class Database : MonoBehaviour {
         // Get the beatmap directory for saving to the right beatmap folder
 
         // Create new beatmap folder with the name provided
-        Stream stream = File.Open(beatmapSetup.folderDirectory + beatmapSetup.beatmapDifficulty + FILE_EXTENSION, FileMode.OpenOrCreate);
+        Stream stream = File.Open(beatmapSetup.FolderDirectory + beatmapSetup.BeatmapDifficulty + FILE_EXTENSION, FileMode.OpenOrCreate);
         BinaryFormatter bf = new BinaryFormatter();
 
         // Save the list of beatmap information for all hit objects
@@ -191,16 +191,16 @@ public class Database : MonoBehaviour {
         }
 
         // Save beatmap information
-        beatmap.songName = beatmapSetup.songName;
-        beatmap.songArtist = beatmapSetup.songArtist;
-        beatmap.beatmapCreator = beatmapSetup.beatmapCreator;
+        beatmap.songName = beatmapSetup.SongName;
+        beatmap.songArtist = beatmapSetup.SongArtist;
+        beatmap.beatmapCreator = beatmapSetup.BeatmapCreator;
         beatmap.beatmapDifficulty = beatmapDifficulty;
         beatmap.beatmapFolderDirectory = beatmapFolderDirectory;
-        beatmap.beatmapEasyDifficultyLevel = beatmapSetup.beatmapEasyDifficultyLevel;
-        beatmap.beatmapAdvancedDifficultyLevel = beatmapSetup.beatmapAdvancedDifficultyLevel;
-        beatmap.beatmapExtraDifficultyLevel = beatmapSetup.beatmapExtraDifficultyLevel;
-        beatmap.songClipChosenIndex = beatmapSetup.songClipChosenIndex;
-        beatmap.songPreviewStartTime = beatmapSetup.songPreviewStartTime;
+        beatmap.beatmapEasyDifficultyLevel = beatmapSetup.BeatmapEasyDifficultyLevel;
+        beatmap.beatmapAdvancedDifficultyLevel = beatmapSetup.BeatmapAdvancedDifficultyLevel;
+        beatmap.beatmapExtraDifficultyLevel = beatmapSetup.BeatmapExtraDifficultyLevel;
+        beatmap.songClipChosenIndex = beatmapSetup.SongClipChosenIndex;
+        beatmap.songPreviewStartTime = beatmapSetup.SongPreviewStartTime;
 
         // Timing information for the beatmap from the metronome
         beatmap.BPM = metronomePro.Bpm;
@@ -210,12 +210,12 @@ public class Database : MonoBehaviour {
         beatmap.leaderboardTableName = leaderboardTableName;
 
         // Save the keys used for the map
-        beatmap.pressedKeyS = placedObject.pressedKeyS;
-        beatmap.pressedKeyD = placedObject.pressedKeyD;
-        beatmap.pressedKeyF = placedObject.pressedKeyF;
-        beatmap.pressedKeyJ = placedObject.pressedKeyJ;
-        beatmap.pressedKeyK = placedObject.pressedKeyK;
-        beatmap.pressedKeyL = placedObject.pressedKeyL;
+        beatmap.pressedKeyS = placedObject.PressedKeyS;
+        beatmap.pressedKeyD = placedObject.PressedKeyD;
+        beatmap.pressedKeyF = placedObject.PressedKeyF;
+        beatmap.pressedKeyJ = placedObject.PressedKeyJ;
+        beatmap.pressedKeyK = placedObject.PressedKeyK;
+        beatmap.pressedKeyL = placedObject.PressedKeyL;
 
 
         bf.Serialize(stream, beatmap);
