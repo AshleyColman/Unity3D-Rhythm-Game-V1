@@ -1976,39 +1976,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 96418812}
---- !u!1 &108218348
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 108218349}
-  m_Layer: 5
-  m_Name: BeatsnapBarSpawn
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &108218349
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 108218348}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1093434289}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &112590207
 GameObject:
   m_ObjectHideFlags: 0
@@ -7307,7 +7274,7 @@ RectTransform:
   - {fileID: 503421931}
   - {fileID: 1242530728}
   m_Father: {fileID: 2134355960}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -9693,7 +9660,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 435480786}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a4b279a0d970a0b47aa9348c8833aab0, type: 3}
   m_Name: 
@@ -9701,11 +9668,19 @@ MonoBehaviour:
   beatsnapPoint: {fileID: 114299623198833082, guid: 5f706fbf61fa0b34f9013d4cad033612,
     type: 2}
   timelineSlider: {fileID: 1754882297}
-  instantiatedBeatsnapTimelineObjectList: []
   timelineCurrentTimeHandle: {fileID: 302886433}
   songAudioSource: {fileID: 872771430}
   beatsnapSliderValueList: []
-  timeline: {fileID: 435480788}
+  beatsnapTickTimesList: []
+  nextPoolTickTime: 0
+  currentTickTime: 0
+  previousFrameTick: 0
+  nextPoolTickIndex: 0
+  timeline: {fileID: 1093434289}
+  pools:
+  - tag: 0
+    prefab: {fileID: 114497256152265042, guid: 9db2eb07e950f53479b7ca6c7a040322, type: 2}
+    size: 30
 --- !u!1 &435922246
 GameObject:
   m_ObjectHideFlags: 0
@@ -14069,6 +14044,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 435480794}
+        m_MethodName: SortBeatsnaps
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &579237536
@@ -15076,6 +15062,111 @@ MonoBehaviour:
       m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
         Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   delegates: []
+--- !u!1001 &616949327
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1093434289}
+    m_Modifications:
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 15000
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+        type: 2}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 1660ae185f1872447ae1f2292e36aeaf, type: 2}
+  m_IsPrefabParent: 0
+--- !u!224 &616949328 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224027911200816774, guid: 1660ae185f1872447ae1f2292e36aeaf,
+    type: 2}
+  m_PrefabInternal: {fileID: 616949327}
 --- !u!1 &617119931
 GameObject:
   m_ObjectHideFlags: 0
@@ -16082,7 +16173,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 435480794}
-        m_MethodName: GenerateBeatsnaps
+        m_MethodName: SetupBeatsnaps
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -18037,7 +18128,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1093434289}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -20557,7 +20648,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 435480794}
-        m_MethodName: GenerateBeatsnaps
+        m_MethodName: SetupBeatsnaps
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -24870,6 +24961,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 435480789}
+        m_MethodName: DisableTimelineObjects
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &1005685615
@@ -25694,7 +25796,7 @@ RectTransform:
   m_Children:
   - {fileID: 579237533}
   m_Father: {fileID: 1187741094}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -27197,7 +27299,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.8431373, g: 0.20392159, b: 0.9490197, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.025
   m_SpriteState:
@@ -27220,18 +27322,7 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1203993309}
-        m_MethodName: SetNewSongPosition
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!224 &1093434289
@@ -27247,9 +27338,8 @@ RectTransform:
   m_Children:
   - {fileID: 1726343155}
   - {fileID: 1754882298}
+  - {fileID: 616949328}
   - {fileID: 756806041}
-  - {fileID: 108218349}
-  - {fileID: 1955352503}
   m_Father: {fileID: 191673451}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -28708,6 +28798,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 2}
   m_Children:
+  - {fileID: 1817543905}
   - {fileID: 1280399634}
   - {fileID: 2134355960}
   - {fileID: 1374453049}
@@ -31105,7 +31196,7 @@ RectTransform:
   - {fileID: 567410277}
   - {fileID: 1380186855}
   m_Father: {fileID: 1187741094}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -32812,7 +32903,7 @@ RectTransform:
   - {fileID: 1005685616}
   - {fileID: 830007199}
   m_Father: {fileID: 1187741094}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -35066,7 +35157,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2134355960}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -35654,6 +35745,17 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1203993309}
         m_MethodName: PlayOrPauseSong
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 435480794}
+        m_MethodName: SortBeatsnaps
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -37807,7 +37909,7 @@ RectTransform:
   m_Children:
   - {fileID: 1450720562}
   m_Father: {fileID: 1187741094}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -38856,7 +38958,7 @@ RectTransform:
   m_Children:
   - {fileID: 758567154}
   m_Father: {fileID: 2134355960}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -38915,7 +39017,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 435480794}
-        m_MethodName: GenerateBeatsnaps
+        m_MethodName: SortBeatsnapsWithDivision
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -40799,7 +40901,7 @@ RectTransform:
   m_Children:
   - {fileID: 116324862}
   m_Father: {fileID: 2134355960}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -40858,7 +40960,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 435480794}
-        m_MethodName: GenerateBeatsnaps
+        m_MethodName: SortBeatsnapsWithDivision
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -47046,8 +47148,8 @@ RectTransform:
   - {fileID: 1371187044}
   - {fileID: 1083261348}
   - {fileID: 908635856}
-  m_Father: {fileID: 2134355960}
-  m_RootOrder: 2
+  m_Father: {fileID: 1187741094}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -50217,39 +50319,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1955000981}
---- !u!1 &1955352502
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1955352503}
-  m_Layer: 5
-  m_Name: TimelineObjectSpawn
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1955352503
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1955352502}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1093434289}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1965284955
 GameObject:
   m_ObjectHideFlags: 0
@@ -51571,7 +51640,7 @@ RectTransform:
   - {fileID: 227863491}
   - {fileID: 771013934}
   m_Father: {fileID: 2134355960}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -52461,7 +52530,7 @@ RectTransform:
   m_Children:
   - {fileID: 626667076}
   m_Father: {fileID: 2134355960}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -52520,7 +52589,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 435480794}
-        m_MethodName: GenerateBeatsnaps
+        m_MethodName: SortBeatsnapsWithDivision
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -54907,7 +54976,6 @@ RectTransform:
   m_Children:
   - {fileID: 1797845010}
   - {fileID: 952323649}
-  - {fileID: 1817543905}
   - {fileID: 2008104802}
   - {fileID: 362810989}
   - {fileID: 1550247356}
@@ -54915,7 +54983,7 @@ RectTransform:
   - {fileID: 2028113991}
   - {fileID: 1427159831}
   m_Father: {fileID: 1187741094}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

@@ -56,7 +56,13 @@ public class MetronomePro : MonoBehaviour {
 
     private int division;
 
-	void Start () {
+    BeatsnapManager beatsnapmanager;
+
+
+    void Start () {
+
+        beatsnapmanager = FindObjectOfType<BeatsnapManager>();
+
 		imgBeat1.color = Color.gray;
 		imgBeat2.color = Color.gray;
 		imgBeat3.color = Color.gray;
@@ -234,43 +240,52 @@ public class MetronomePro : MonoBehaviour {
 
         if (songAudioSource != null)
         {
-            // Check if the song time is greater than the current tick Time
-            if (songAudioSource.time >= songTickTimes[CurrentTick])
+            if (CurrentTick < songTickTimes.Count)
             {
-
-                CurrentTick++;
-
-                if (CurrentTick >= songTickTimes.Count)
+                // Check if the song time is greater than the current tick Time
+                if (songAudioSource.time >= songTickTimes[CurrentTick])
                 {
-                    active = false;
-                }
 
-                // If the Current Step is greater than the Step, reset it and increment the Measure
-                if (CurrentStep >= Step)
-                {
-                    CurrentStep = 1;
-                    CurrentMeasure++;
-                    metronomeAudioSource.clip = highClip;
-                }
-                else
-                {
-                    CurrentStep++;
-                    metronomeAudioSource.clip = lowClip;
-                }
+                    CurrentTick++;
 
-                // Call OnTick functions
-                StartCoroutine(OnTick());
+                    if (CurrentTick >= songTickTimes.Count)
+                    {
+                        active = false;
+                    }
+
+                    // If the Current Step is greater than the Step, reset it and increment the Measure
+                    if (CurrentStep >= Step)
+                    {
+                        CurrentStep = 1;
+                        CurrentMeasure++;
+                        metronomeAudioSource.clip = highClip;
+                    }
+                    else
+                    {
+                        CurrentStep++;
+                        metronomeAudioSource.clip = lowClip;
+                    }
+
+                    // Call OnTick functions
+                    StartCoroutine(OnTick());
+                }
             }
         }
 		
-
 		yield return null;
 	}
 
 	// Tick Time (execute here all what you want)
 	IEnumerator OnTick () {
 
-		// Play Audio Tick
+
+        if (songAudioSource.isPlaying)
+        {
+            beatsnapmanager.SortBeatsnaps();
+        }
+
+
+        // Play Audio Tick
         if (metronomeMuted == false)
         {
             metronomeAudioSource.Play();

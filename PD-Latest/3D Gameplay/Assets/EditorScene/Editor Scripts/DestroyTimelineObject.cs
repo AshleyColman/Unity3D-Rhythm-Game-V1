@@ -1,60 +1,58 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using System;
 
 public class DestroyTimelineObject : MonoBehaviour {
 
-    private PlacedObject placedObject;
-    public float timelineHitObjectSpawnTime;
+    // UI
     public Slider timelineSlider;
-    public MetronomePro_Player metronome_Player;
+    // Integers
     private int timelineObjectListIndex;
-
+    private float timelineHitObjectSpawnTime;
+    private float hitObjectSliderValue;
+    private float nearest;
+    // Audio
     private AudioSource menuSFXAudioSource;
-    private HitSoundDatabase hitSoundDatabase;
     private AudioClip selectedSoundClip;
     private AudioClip clickedSoundClip;
     private AudioClip deletedSoundClip;
+    // Scripts
+    private PlacedObject placedObject;
+    private MetronomePro_Player metronome_Player;
+    private HitSoundDatabase hitSoundDatabase;
+    private BeatsnapManager beatsnapManager;
 
+    // Properties
 
-    BeatsnapManager beatsnapManager;
-
-    public GameObject visibleTracker;
+    public float TimelineHitObjectSpawnTime
+    {
+        set { timelineHitObjectSpawnTime = value; }
+    }
 
     private void Start()
     {
-        beatsnapManager = FindObjectOfType<BeatsnapManager>();
-
+        // Initialize
         timelineObjectListIndex = 0;
-
+        // Reference
+        beatsnapManager = FindObjectOfType<BeatsnapManager>();
         placedObject = FindObjectOfType<PlacedObject>();
-
-        // Get the reference to the timelines own slider
-        timelineSlider = this.gameObject.GetComponent<Slider>();
-
-        // Get the reference to the metronome_Player
-        metronome_Player = FindObjectOfType<MetronomePro_Player>();
-
-        // Find the menuSFXAudioSource
-        menuSFXAudioSource = GameObject.FindGameObjectWithTag("MenuSFXAudioSource").GetComponentInChildren<AudioSource>();
-
-        // Get the hit sound database
         hitSoundDatabase = FindObjectOfType<HitSoundDatabase>();
+        metronome_Player = FindObjectOfType<MetronomePro_Player>();
+        menuSFXAudioSource = GameObject.FindGameObjectWithTag("MenuSFXAudioSource").GetComponentInChildren<AudioSource>();
+        timelineSlider = this.gameObject.GetComponent<Slider>(); // Get the reference to the timelines own slider
 
 
         if (hitSoundDatabase != null)
         {
             // Assign the selected sound clip
-            //selectedSoundClip = hitSoundDatabase.hitSoundClip[36];
+            selectedSoundClip = hitSoundDatabase.hitSoundClip[13];
 
             // Assign the clicked sound clip
-            //clickedSoundClip = hitSoundDatabase.hitSoundClip[0];
+            clickedSoundClip = hitSoundDatabase.hitSoundClip[1];
 
             // Assign the deleteed sound clip
-            //deletedSoundClip = hitSoundDatabase.hitSoundClip[42];
+            deletedSoundClip = hitSoundDatabase.missSoundClip;
         }
     }
 
@@ -103,28 +101,23 @@ public class DestroyTimelineObject : MonoBehaviour {
         if (metronome_Player != null)
         {
             timelineHitObjectSpawnTime = metronome_Player.UpdateTimelineHitObjectSpawnTimes(timelineSlider);
-            Debug.Log("timelineHitObjectSpawnTime: " + timelineHitObjectSpawnTime);
             // Send the new spawn time and the editorHitObject index to update
             placedObject.UpdateEditorHitObjectSpawnTime(timelineHitObjectSpawnTime, timelineObjectListIndex);
         }
     }
-
 
     // Snap the timeline hit object to the nearsest beat snap
     public void SnapToNearestBeatsnap()
     {
         if (Input.GetMouseButton(0))
         {
-            // Get the slider for this timeline hit object
-
-
             // Get the slider value for this timeline hit object
-            float hitObjectSliderValue = timelineSlider.value;
+            hitObjectSliderValue = timelineSlider.value;
             //Debug.Log("slider value: " + hitObjectSliderValue);
 
             // Detect which beatsnap slider value the hit object slider value is closest to
 
-            float nearest = beatsnapManager.beatsnapSliderValueList.Select(p => new { Value = p, Difference = Math.Abs(p - hitObjectSliderValue) })
+            nearest = beatsnapManager.beatsnapSliderValueList.Select(p => new { Value = p, Difference = Math.Abs(p - hitObjectSliderValue) })
                       .OrderBy(p => p.Difference)
                       .First().Value;
 
@@ -135,7 +128,5 @@ public class DestroyTimelineObject : MonoBehaviour {
 
             UpdateTimelineHitObjectSpawnTime();
         }
-
     }
-
 }

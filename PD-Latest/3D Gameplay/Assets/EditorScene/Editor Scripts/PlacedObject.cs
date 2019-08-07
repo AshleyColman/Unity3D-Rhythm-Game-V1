@@ -25,8 +25,9 @@ public class PlacedObject : MonoBehaviour {
     private List<GameObject> previewHitObjectList = new List<GameObject>(); // Preview hit objects that have been spawned when the preview button has been pressed and the song timer has reached the spawn time for the hit object
     public List<EditorHitObject> editorHitObjectList = new List<EditorHitObject>(); // List of editorHitObjects (includes spawn time, object type and positions)
     public List<GameObject> instantiatedTimelineObjectList = new List<GameObject>(); // List of instantiated timeline objects that are added to the list when instantiated
-    
-    // Integers
+
+    // Integers   
+    private int deactivateValue;
     private int hitObjectTypeBlueValue, hitObjectTypeRedValue, hitObjectTypePurpleValue, hitObjectTypeYellowValue, hitObjectTypeGreenValue,
         hitObjectTypeOrangeValue; // Number values for the hit object types - array
     private int specialTimeKeyPresses;
@@ -46,10 +47,17 @@ public class PlacedObject : MonoBehaviour {
     private float closestTickTime; // Closest tick time based on the user pressing the key down
     private float calculatedTickSpawnTime; // Calculated time for the hit object spawn
     private float hitObjectSpawnTime; // Hit object spawn time
+    private float timelineObjectSpawnTime; // Object spawn time for activating/deactivating objects
+    private float currentSongTime; // Current song time
+    private float deactivateAfterObjectTime; // Time to deactivate the timeline object after it reaches this number
+    private float deactivateBeforeObjectTime; // Time to deactivate the timeline object before it reaches this number
     private float deactivateObjectTimer; // Timer for controlling checks on deactivating timeline hit objects
     private List<float> tickTimesList = new List<float>(); // Tick times for comparing and calculating the closest tick time based on user key press time
     private List<int> nullObjectsList = new List<int>(); // List of all null gameobjects
-    
+
+
+
+
     // Vectors
     private Vector3 instantiatePosition, timelineObjectPosition;
     private Vector3 timelineBarHandlePosition; // Timeline bar position
@@ -117,6 +125,7 @@ public class PlacedObject : MonoBehaviour {
         // Intialize
 
         ResetKeysPressed();
+        deactivateValue = 5;
         hitObjectTypeBlueValue = 0;
         hitObjectTypePurpleValue = 1;
         hitObjectTypeRedValue = 2;
@@ -147,8 +156,9 @@ public class PlacedObject : MonoBehaviour {
         // Timer increment
         deactivateObjectTimer += Time.deltaTime;
 
-        // Check timeline objects every 5 seconds
-        if (deactivateObjectTimer > 5)
+        /*
+        // Check timeline objects every 1 seconds
+        if (deactivateObjectTimer > 1)
         {
             // Disable the timeline objects 
             DisableTimelineObjects();
@@ -156,44 +166,49 @@ public class PlacedObject : MonoBehaviour {
             // Reset timer
             deactivateObjectTimer = 0;
         }
- 
+        */
 
-        // BLUE Key Pressed
-        if (Input.GetKeyDown(KeyCode.J))
+        // Check for input if a song has been selected
+        if (metronomePro.songAudioSource.clip != null)
         {
-            // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
-            AddEditorHitObjectToList(hitObjectTypeBlueValue);
+            // BLUE Key Pressed
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
+                AddEditorHitObjectToList(hitObjectTypeBlueValue);
+            }
+            // PURPLE Key Pressed
+            else if (Input.GetKeyDown(KeyCode.K))
+            {
+                // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
+                AddEditorHitObjectToList(hitObjectTypePurpleValue);
+            }
+            // RED Key Pressed
+            else if (Input.GetKeyDown(KeyCode.L))
+            {
+                // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
+                AddEditorHitObjectToList(hitObjectTypeRedValue);
+            }
+            // GREEN Key Pressed
+            else if (Input.GetKeyDown(KeyCode.U) || Input.GetKeyDown(KeyCode.S))
+            {
+                // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
+                AddEditorHitObjectToList(hitObjectTypeGreenValue);
+            }
+            // YELLOW Key Pressed
+            else if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.D))
+            {
+                // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
+                AddEditorHitObjectToList(hitObjectTypeYellowValue);
+            }
+            // ORANGE Key Pressed
+            else if (Input.GetKeyDown(KeyCode.O) || Input.GetKeyDown(KeyCode.F))
+            {
+                // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
+                AddEditorHitObjectToList(hitObjectTypeOrangeValue);
+            }
         }
-        // PURPLE Key Pressed
-        else if (Input.GetKeyDown(KeyCode.K))
-        {
-            // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
-            AddEditorHitObjectToList(hitObjectTypePurpleValue);
-        }
-        // RED Key Pressed
-        else if (Input.GetKeyDown(KeyCode.L))
-        {
-            // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
-            AddEditorHitObjectToList(hitObjectTypeRedValue);
-        }
-        // GREEN Key Pressed
-        else if (Input.GetKeyDown(KeyCode.U) || Input.GetKeyDown(KeyCode.S))
-        {
-            // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
-            AddEditorHitObjectToList(hitObjectTypeGreenValue);
-        }
-        // YELLOW Key Pressed
-        else if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.D))
-        {
-            // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
-            AddEditorHitObjectToList(hitObjectTypeYellowValue);
-        }
-        // ORANGE Key Pressed
-        else if (Input.GetKeyDown(KeyCode.O) || Input.GetKeyDown(KeyCode.F))
-        {
-            // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
-            AddEditorHitObjectToList(hitObjectTypeOrangeValue);
-        }
+
     }
 
     // Check the keys contained within the beatmap
@@ -433,7 +448,7 @@ public class PlacedObject : MonoBehaviour {
         // Get the reference to the destroy timeline object script attached to the timeline object
         destroyTimelineObject = timelineObject.GetComponent<DestroyTimelineObject>();
         // Set the spawn time inside the object to the spawn time calculated from ticks previously
-        destroyTimelineObject.timelineHitObjectSpawnTime = _hitObjectSpawnTime;
+        destroyTimelineObject.TimelineHitObjectSpawnTime = _hitObjectSpawnTime;
 
         // Calculate the slider value based off the timeline hit object spawn time
         // Update the instantiated timeline hit object's slider to the correct value calculated from ticks
@@ -454,25 +469,36 @@ public class PlacedObject : MonoBehaviour {
     }
 
     // Get current beatsnap tick time
-    private float GetCurrentBeatsnapTime()
+    public float GetCurrentBeatsnapTime()
     {
         // The current tick index and time
         currentTickIndex = metronomePro.CurrentTick;
-        currentTickTime = (float)metronomePro.songTickTimes[currentTickIndex];
-        tickTimesList.Add(currentTickTime);
 
-        // The next tick index and time
-        previousTickIndex = metronomePro.CurrentTick - 1;
-        nextTickTime = (float)metronomePro.songTickTimes[previousTickIndex];
-        tickTimesList.Add(nextTickTime);
+        if (currentTickIndex != 0 && currentTickIndex < metronomePro.songTickTimes.Count)
+        {
+            currentTickTime = (float)metronomePro.songTickTimes[currentTickIndex];
+            tickTimesList.Add(currentTickTime);
 
-        // Get the time the user pressed the key down
-        userPressedTime = metronomePro_Player.songAudioSource.time;
+            // The next tick index and time
 
-        // Check which time the users press was closest to
-        closestTickTime = tickTimesList.Select(p => new { Value = p, Difference = Math.Abs(p - userPressedTime) })
-        .OrderBy(p => p.Difference)
-        .First().Value;
+            previousTickIndex = metronomePro.CurrentTick - 1;
+
+
+            nextTickTime = (float)metronomePro.songTickTimes[previousTickIndex];
+            tickTimesList.Add(nextTickTime);
+
+            // Get the time the user pressed the key down
+            userPressedTime = metronomePro_Player.songAudioSource.time;
+
+            // Check which time the users press was closest to
+            closestTickTime = tickTimesList.Select(p => new { Value = p, Difference = Math.Abs(p - userPressedTime) })
+            .OrderBy(p => p.Difference)
+            .First().Value;
+        }
+        else
+        {
+            closestTickTime = 0;
+        }
 
         // Snap the hit object to this time
         calculatedTickSpawnTime = closestTickTime;
@@ -581,7 +607,7 @@ public class PlacedObject : MonoBehaviour {
     }
 
     // Disable timeline objects based on song time
-    private void DisableTimelineObjects()
+    public void DisableTimelineObjects()
     {
         if (editorHitObjectList.Count != 0)
         {
@@ -592,16 +618,21 @@ public class PlacedObject : MonoBehaviour {
                 // If current time is greater by 10 seconds of the hit object spawn time
                 // Deactivate the timeline object
 
-                float timelineObjectSpawnTime = editorHitObjectList[i].hitObjectSpawnTime;
-                float currentSongTime = metronomePro.songAudioSource.time;
-                int deactivateValue = 5;
-                float deactivateObjectTime = (timelineObjectSpawnTime + deactivateValue);
+                timelineObjectSpawnTime = editorHitObjectList[i].hitObjectSpawnTime;
+                currentSongTime = metronomePro.songAudioSource.time;
+                deactivateValue = 5;
+                deactivateAfterObjectTime = (timelineObjectSpawnTime + deactivateValue);
+                deactivateBeforeObjectTime = (timelineObjectSpawnTime - deactivateValue);
+
 
                 // If the current song time is greater than the time to deactivate the hit object based off its spawn time
-                if (currentSongTime > deactivateObjectTime)
+                if (currentSongTime > deactivateAfterObjectTime || currentSongTime < deactivateBeforeObjectTime)
                 {
                     // Deactivate the timeline hit object
-                    instantiatedTimelineObjectList[i].gameObject.SetActive(false);
+                    if (instantiatedTimelineObjectList[i].gameObject.activeSelf == true)
+                    {
+                        instantiatedTimelineObjectList[i].gameObject.SetActive(false);
+                    }
                 }
                 else
                 {
