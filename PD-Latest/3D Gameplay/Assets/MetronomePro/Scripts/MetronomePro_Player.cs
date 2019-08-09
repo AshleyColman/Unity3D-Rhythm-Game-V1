@@ -140,28 +140,31 @@ public class MetronomePro_Player : MonoBehaviour
     {
         active = false;
 
-        if (timelinePositionSlider.value * songAudioSource.clip.length < songAudioSource.clip.length)
+        if (songAudioSource.clip != null)
         {
-            songAudioSource.time = (timelinePositionSlider.value * songAudioSource.clip.length);
+            if (timelinePositionSlider.value * songAudioSource.clip.length < songAudioSource.clip.length)
+            {
+                songAudioSource.time = (timelinePositionSlider.value * songAudioSource.clip.length);
+            }
+            else if ((timelinePositionSlider.value * songAudioSource.clip.length >= songAudioSource.clip.length))
+            {
+                StopSong();
+            }
+
+            if (FindObjectOfType<MetronomePro>().neverPlayed)
+            {
+                FindObjectOfType<MetronomePro>().CalculateIntervals();
+            }
+
+            FindObjectOfType<MetronomePro>().CalculateActualStep();
+
+            actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
+
+            songPlayerBar.fillAmount = timelinePositionSlider.value;
+            timelinePositionSliderImage.fillAmount = timelinePositionSlider.value;
+
+            active = true;
         }
-        else if ((timelinePositionSlider.value * songAudioSource.clip.length >= songAudioSource.clip.length))
-        {
-            StopSong();
-        }
-
-        if (FindObjectOfType<MetronomePro>().neverPlayed)
-        {
-            FindObjectOfType<MetronomePro>().CalculateIntervals();
-        }
-
-        FindObjectOfType<MetronomePro>().CalculateActualStep();
-
-        actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
-
-        songPlayerBar.fillAmount = timelinePositionSlider.value;
-        timelinePositionSliderImage.fillAmount = timelinePositionSlider.value;
-
-        active = true;
     }
 
     // Update the hit objects time from the slider passed and set it to a song time

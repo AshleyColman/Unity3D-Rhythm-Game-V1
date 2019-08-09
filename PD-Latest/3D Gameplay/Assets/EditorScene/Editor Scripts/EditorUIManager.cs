@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class EditorUIManager : MonoBehaviour {
 
     public GameObject editorInstructionsPanel;
-    public GameObject setupBeatmapPanel, beatmapToolsPanel, beatmapButtonsPanel;
+    public GameObject setupBeatmapPanel, beatmapToolsPanel, beatmapButtonsPanel, previewPanel;
 
     private bool editorInstructionsPanelIsActive;
 
@@ -66,6 +66,17 @@ public class EditorUIManager : MonoBehaviour {
         setupBeatmapPanel.gameObject.SetActive(true);
     }
 
+
+    // Activate preview panel
+    public void ActivatePreviewPanel()
+    {
+        // Deactivate all active panels
+        DeactivateAllPanels();
+
+        // Activate
+        previewPanel.gameObject.SetActive(true);
+    }
+
     // Deactivate all active panels
     public void DeactivateAllPanels()
     {
@@ -73,5 +84,6 @@ public class EditorUIManager : MonoBehaviour {
         beatmapToolsPanel.gameObject.SetActive(false);
         setupBeatmapPanel.gameObject.SetActive(false);
         beatmapButtonsPanel.gameObject.SetActive(false);
+        previewPanel.gameObject.SetActive(false);
     }
 }

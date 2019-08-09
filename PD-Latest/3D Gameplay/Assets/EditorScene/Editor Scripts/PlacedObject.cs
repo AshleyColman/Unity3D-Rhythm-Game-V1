@@ -71,7 +71,7 @@ public class PlacedObject : MonoBehaviour {
     private bool objectSpawnTimeIsTaken; // Check if spawn time already exists or taken by another hit object
 
     // Colors
-    public Color greenTimelineBarColor, yellowTimelineBarColor, orangeTimelineBarColor, blueTimelineBarColor, purpleTimelineBarColor, redTimelineBarColor;
+    public Color greenObjectColor, yellowObjectColor, orangeObjectColor, blueObjectColor, purpleObjectColor, redObjectColor; // Timeline and hit object colors
 
     // Transform
     public Transform canvas, timeline;
@@ -784,7 +784,5 @@ public class PlacedObject : MonoBehaviour {
     }
 
     */
-
-
 
 }
