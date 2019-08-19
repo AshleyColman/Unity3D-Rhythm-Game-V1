@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 
 public class EditorUIManager : MonoBehaviour {
@@ -6,35 +7,38 @@ public class EditorUIManager : MonoBehaviour {
     public GameObject editorInstructionsPanel;
     public GameObject setupBeatmapPanel, beatmapToolsPanel, beatmapButtonsPanel, previewPanel;
 
-    private bool editorInstructionsPanelIsActive;
+    public Button beatmapToolsButton, beatmapButtonsButton, previewButton, playTestButton;
 
-	void Start () {
-        // Set to false by default
-        editorInstructionsPanelIsActive = false;
-	}
+    public TextMeshProUGUI descriptionText;
 
+    private MetronomePro metronomePro;
 
-    // Activate/Deactivate editerInstructionsPanel
-    public void ActivateOrDeactivateEditorInstructionsPanel()
+    private void Start()
     {
-        // If the editor instructions panel is disabled
-        if (editorInstructionsPanelIsActive == false)
+        metronomePro = FindObjectOfType<MetronomePro>();
+
+        if (metronomePro.songAudioSource.clip == null)
         {
-            // Enable it
-            editorInstructionsPanel.gameObject.SetActive(true);
-            // Set is active to true
-            editorInstructionsPanelIsActive = true;
-        }
-        // If the editor instructions panel is active
-        else if (editorInstructionsPanelIsActive == true)
-        {
-            // Disable it
-            editorInstructionsPanel.gameObject.SetActive(false);
-            // Set is active to false
-            editorInstructionsPanelIsActive = false;
+            beatmapToolsButton.interactable = false;
+            beatmapButtonsButton.interactable = false;
+            previewButton.interactable = false;
+            playTestButton.interactable = false;
         }
     }
 
+    public void EnableToolButtons()
+    {
+        beatmapToolsButton.interactable = true;
+        beatmapButtonsButton.interactable = true;
+        previewButton.interactable = true;
+        playTestButton.interactable = true;
+    }
+
+    // Update description text
+    public void UpdateDescriptionText(string _descriptionTextValue)
+    {
+        descriptionText.text = _descriptionTextValue;
+    }
 
     // Activate beatmap buttons panel
     public void ActivateBeatmapButtonsPanel()

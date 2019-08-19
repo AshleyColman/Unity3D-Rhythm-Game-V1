@@ -2,10 +2,23 @@
 
 public class MouseFollow : MonoBehaviour {
 
+    private void Update()
+    {
+        this.gameObject.transform.position = Input.mousePosition;
+    }
+
+
+
+
+
+
+
+
+    /*
     // Floats
     private float distance;
     // Vectors
-    private Vector3 pos, lastMousePosition;
+    private Vector3 pos, lastMousePosition, newPos;
     // Rays
     private Ray ray; 
 
@@ -34,6 +47,8 @@ public class MouseFollow : MonoBehaviour {
     {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         pos = ray.GetPoint(distance);
-        transform.position = pos;
+        newPos = new Vector3(pos.x, pos.y, 0);
+        transform.position = newPos;
     }
+    */
 }

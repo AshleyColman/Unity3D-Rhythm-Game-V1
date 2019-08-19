@@ -12,7 +12,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
     // Scripts
     private SongSelectManager songSelectManager; // Song select manager for loading beatmaps                                     
     private BeatmapRanking beatmapRanking; // Loads beatmap leaderboard information
-
+    private PlayerProfile playerProfile; // Loads player profile information
 
     void Start () {
 
@@ -25,6 +25,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
         // Reference
         songSelectManager = FindObjectOfType<SongSelectManager>();
         beatmapRanking = FindObjectOfType<BeatmapRanking>();
+        playerProfile = FindObjectOfType<PlayerProfile>();
 	}
 	
 	// Update is called once per frame
@@ -44,6 +45,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
             keyPressed = "RIGHT";
             // Stop beatmap leaderboard ranking loading functions
             beatmapRanking.StopAllCoroutines();
+            playerProfile.StopAllCoroutines();
             // Load next beatmap in the directory
             LoadBeatmap(keyPressed);
         }
@@ -54,6 +56,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
             keyPressed = "LEFT";
             // Stop beatmap leaderboard ranking loading functions
             beatmapRanking.StopAllCoroutines();
+            playerProfile.StopAllCoroutines();
             // Load the previous beatmap in the directory
             LoadBeatmap(keyPressed);
         }
@@ -64,6 +67,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
     {
         // Stop all coroutines
         beatmapRanking.StopAllCoroutines();
+        playerProfile.StopAllCoroutines();
 
         // Set to true as an arrow key has been pressed
         hasPressedArrowKey = true;
@@ -114,6 +118,9 @@ public class SongSelectMenuFlash : MonoBehaviour {
         // Reset the leaderboard checking variables
         beatmapRanking.ResetNotChecked();
 
+        // Stop profile loading
+        playerProfile.StopAllCoroutines();
+
         // Get leaderboard table name 
         //beatmapRanking.GetLeaderboardTableName();
     }
@@ -123,6 +130,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
     {
         // Stop all coroutines
         beatmapRanking.StopAllCoroutines();
+        playerProfile.StopAllCoroutines();
 
         // Clear all loaded beatmaps
         ClearBeatmapLoaded();

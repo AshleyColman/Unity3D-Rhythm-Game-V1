@@ -6,7 +6,7 @@ public class EnterGameScene : MonoBehaviour {
 
     // UI
     public TextMeshProUGUI pressAnywhereText, usernameDisplayText;
-    public Button loginCanvas, registerCanvas, enterGameCanvas, loggedInCanvas; // Login and sign up canvas objects
+    public GameObject loginCanvas, registerCanvas, enterGameCanvas, loggedInCanvas; // Login and sign up canvas objects
 
     // Animation
     public Animator modeButtonPanelAnimator; // Animator for the mode buttons
@@ -42,7 +42,7 @@ public class EnterGameScene : MonoBehaviour {
             if (MySQLDBManager.loggedIn == true)
             {
                 // Update the username logged in playing as text
-                usernameDisplayText.text = "Playing as " + MySQLDBManager.username;
+                usernameDisplayText.text = "Welcome! Playing as " + MySQLDBManager.username;
 
                 // Disable the login and enter game canvas
                 loggedInCanvas.gameObject.SetActive(true);

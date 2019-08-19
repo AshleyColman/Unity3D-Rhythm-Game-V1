@@ -19,10 +19,12 @@ public class MetronomeForEffects : MonoBehaviour
 
     // Strings
     private string beatmapDifficultySelected; // Difficulty selected, changes which animations are played
-    
+
     // Animation
-    public Animator metronomeEffectsMainMenuCanvasAnimator;
+    public Animator mainMenuTitleAnimator;
     public Animator mainMenuCanvasFlashAnimator;
+    public Animator backgroundBeatAnimator;
+
     // Song Select Animators
     public Animator titleAnimator;
     public Animator difficultyTextAnimator;
@@ -35,8 +37,6 @@ public class MetronomeForEffects : MonoBehaviour
     public Animator blurFlashAnimator;
     // Gameplay fever time bar animators
     public Animator bar25PercentAnimator, bar50PercentAnimator, bar75PercentAnimator, bar100PercentAnimator;
-
-  
 
     // Integers
     public List<float> songTickTimes;
@@ -364,26 +364,22 @@ public class MetronomeForEffects : MonoBehaviour
     // Main Menu Scene tick functions
     void MainMenuSceneOnTick()
     {
-        // Find the animator game object
-        metronomeEffectsMainMenuCanvasAnimator = mainMenuCanvas.GetComponent<Animator>();
-
-        // Only play canvas animation if the animator is not null
-        if (metronomeEffectsMainMenuCanvasAnimator != null)
+        // Play main menu title animation
+        if (mainMenuTitleAnimator != null)
         {
-            // Play canvas animation on start scene
-            metronomeEffectsMainMenuCanvasAnimator.Play("MetronomeEffectsMainMenuCanvasAnimation", 0, 0f);
+            mainMenuTitleAnimator.Play("MainMenuTitleAnimation", 0, 0f);
+        }
+
+        // Play the background beat animation
+        if (backgroundBeatAnimator != null)
+        {
+            backgroundBeatAnimator.Play("BackgroundBeatAnimation", 0, 0f);
         }
     }
 
     // Song Select Scene tick functions
     void SongSelectSceneOnTick()
     {
-        // Only play the title animation if the title animator exists
-        if (titleAnimator != null)
-        {
-            // Play title animation
-            titleAnimator.Play("TitleAnimation", 0, 0f);
-        }
     }
 
 

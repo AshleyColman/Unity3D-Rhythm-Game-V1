@@ -28,11 +28,11 @@ public class Menu : MonoBehaviour {
     private void Start()
     {
         // Initialize
-        playTextValue = "Play against others on player created beatmaps";
+        playTextValue = "Play on user created beatmaps";
         createTextValue = "Create your own beatmap for others to play";
         discordTextValue = "Join the discord server";
-        exitTextValue = "Thanks for playing!";
-        noBeatmapsValue = "You have 0 beatmaps";
+        exitTextValue = "Thank you for playing";
+        noBeatmapsValue = "No beatmaps found";
         frameInterval = 60;
     }
 

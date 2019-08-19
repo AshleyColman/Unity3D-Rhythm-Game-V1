@@ -9,7 +9,8 @@ public class Login : MonoBehaviour {
     // UI
     public TMP_InputField usernameInputField, passwordInputField; // Login input fields for getting the username and password values
     public Image incorrectDetailsImage; // Error image that appears if incorrect details / login failure
-    public Button submitButton, loggedInCanvas, loginCanvas;
+    public GameObject loggedInCanvas, loginCanvas;
+    public Button submitButton;
 
     // Gameobjects
     public GameObject accountProgressIcon; // The loading icon for logging in and signing up

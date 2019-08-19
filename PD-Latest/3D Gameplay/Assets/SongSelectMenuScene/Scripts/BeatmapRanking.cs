@@ -10,6 +10,9 @@ public class BeatmapRanking : MonoBehaviour {
 
     // UI
     public Button leaderboardLoadingIconButton;
+
+    public Button[] leaderboardProfileButton = new Button[20];
+
     public TextMeshProUGUI[] rankedButtonUsernameAndScoreText = new TextMeshProUGUI[20];
     public TextMeshProUGUI[] rankedButtonPlayStatisticsText = new TextMeshProUGUI[20];
     public TextMeshProUGUI[] rankedButtonPerfectText = new TextMeshProUGUI[20];
@@ -22,18 +25,27 @@ public class BeatmapRanking : MonoBehaviour {
     public TextMeshProUGUI personalBestGoodText;
     public TextMeshProUGUI personalBestEarlyText;
     public TextMeshProUGUI personalBestMissText;
+
     // Animation
-    public Animator[] rankedButtonBunnyGradeIcon = new Animator[20]; // Leaderboard text
-    public Animator personalBestButtonBunnyGradeIcon;
+    //public Animator[] rankedButtonBunnyGradeIcon = new Animator[20]; // Leaderboard text
+    public Image[] rankedButtonRankImage = new Image[20];
+
+    //public Animator personalBestButtonBunnyGradeIcon;
+    public GameObject personalBestRank;
+    public Image personalBestImage;
 
     // Bools
-    private bool notChecked;
-    private bool hasPersonalBest;
-    private bool hasCheckedPersonalBest;
-    private bool hasLoadedLeaderbaord;
+    public bool notChecked;
+    public bool hasPersonalBest;
+    public bool hasCheckedPersonalBest;
+    public bool hasLoadedLeaderbaord;
+    public bool hasCheckedImages;
+    public bool hasCheckedPlayerProfiles;
     public bool[] placeExists;
+    public bool[] placeChecked;
 
     // Strings
+    private string username;
     public string leaderboardTableName;
     private string player_id;
     private string personalBestScore, personalBestPerfect, personalBestGood, personalBestEarly, personalBestMiss, personalBestCombo, personalBestPercentage, 
@@ -47,18 +59,44 @@ public class BeatmapRanking : MonoBehaviour {
     // Integers
     private sbyte leaderboardPlaceToGet;
     private sbyte totalRankingPlacements;
+    public int totalPlacesChecked, totalLeaderboardPlacementsUpdated, totalImagesUpdated;
 
     // Colors
     public Color pColor, sColor, aColor, bColor, cColor, dColor, eColor, fColor, defaultColor;
+
+    // Material
+    public Material defaultMaterial;
+
+    // Scripts
+    private UploadPlayerImage uploadPlayerImage;
+    private PlayerProfile playerProfile; // Loading player profiles
+
+
+
+    // Properties
+    public string[] RankedButtonUsername
+    {
+        get { return rankedButtonUsername; }
+    }
+
+    public bool[] PlaceExists
+    {
+        get { return placeExists; }  
+    }
+
 
     void Start()
     {
         // Initialize
         placeExists = new bool[20];
+        placeChecked = new bool[20];
+
         hasPersonalBest = false;
         hasCheckedPersonalBest = false;
         hasLoadedLeaderbaord = false;
         notChecked = true;
+        hasCheckedImages = false;
+        hasCheckedPlayerProfiles = false;
 
         perfectTextValue = "P: ";
         goodTextValue = "G: ";
@@ -78,9 +116,15 @@ public class BeatmapRanking : MonoBehaviour {
         rankedButtonScore = new string[20];
         rankedButtonMod = new string[20];
 
+        totalImagesUpdated = 0;
+        totalLeaderboardPlacementsUpdated = 0;
+        totalPlacesChecked = 0;
         totalRankingPlacements = 20;
         leaderboardPlaceToGet = 1;
 
+        // Reference
+        uploadPlayerImage = FindObjectOfType<UploadPlayerImage>();
+        playerProfile = FindObjectOfType<PlayerProfile>();
 
         // Instantiate the lists
         for (int i = 0; i < placeLeaderboardData.Length; i++)
@@ -97,6 +141,9 @@ public class BeatmapRanking : MonoBehaviour {
         // If the leaderboard placements and personal best has not been checked yet
         if (notChecked == true && hasCheckedPersonalBest == false)
         {
+            // Reset 
+            totalPlacesChecked = 0;
+
             // Retrieve all placement information for the leaderboard
             for (sbyte placementToCheck = 0; placementToCheck < totalRankingPlacements; placementToCheck++)
             {
@@ -114,8 +161,10 @@ public class BeatmapRanking : MonoBehaviour {
         }
 
         // If the leaderboard placements and personal best have been checked and retrieved, and the leaderboard has not updated yet
-        if (notChecked == false && hasCheckedPersonalBest == true && hasLoadedLeaderbaord == false)
+        if (notChecked == false && hasCheckedPersonalBest == true && hasLoadedLeaderbaord == false && totalPlacesChecked == totalRankingPlacements)
         {
+            // Reset
+
             // Loop through all the placements
             for (sbyte placementToCheck = 0; placementToCheck < totalRankingPlacements; placementToCheck++)
             {
@@ -134,37 +183,6 @@ public class BeatmapRanking : MonoBehaviour {
                     rankedButtonPercentage[placementToCheck] = placeLeaderboardData[placementToCheck][8];
                     rankedButtonMod[placementToCheck] = placeLeaderboardData[placementToCheck][9];
 
-                    // Enable the ranked bunny grade icon if eri was used
-                    rankedButtonBunnyGradeIcon[placementToCheck].gameObject.SetActive(true);
-
-                    // Enable correct grade icon based on the grade achieved
-                    switch (rankedButtonGrade[placementToCheck])
-                    {
-                        case "P":
-                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyPRank");
-                            break;
-                        case "S":
-                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnySRank");
-                            break;
-                        case "A":
-                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyARank");
-                            break;
-                        case "B":
-                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyBRank");
-                            break;
-                        case "C":
-                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyCRank");
-                            break;
-                        case "D":
-                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyDRank");
-                            break;
-                        case "E":
-                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyERank");
-                            break;
-                        case "F":
-                            rankedButtonBunnyGradeIcon[placementToCheck].Play("BunnyFRank");
-                            break;
-                    }
 
                     // Update the username and score text for the placement on the leaderbaord
                     rankedButtonUsernameAndScoreText[placementToCheck].text = (placementToCheck + 1) + "# " + rankedButtonUsername[placementToCheck] + ": " +
@@ -190,6 +208,9 @@ public class BeatmapRanking : MonoBehaviour {
                     rankedButtonMissText[placementToCheck].text = missTextValue + rankedButtonMiss[placementToCheck];
                 }
 
+
+                totalLeaderboardPlacementsUpdated++;
+
                 // Set has loaded leaderbaord to true to prevent the leaderbaord from continuing to upload every frame
                 hasLoadedLeaderbaord = true;
 
@@ -212,41 +233,6 @@ public class BeatmapRanking : MonoBehaviour {
                     personalBestPercentage = personalBestLeaderboardData[8];
                     personalBestMod = personalBestLeaderboardData[9];
 
-                    //personalBestButtonGradeText.text = personalBestGrade;
-                    //personalBestButtonGradeText.color = SetGradeColor(personalBestGrade);
-
-                    personalBestButtonBunnyGradeIcon.gameObject.SetActive(true);
-
-                    // Enable correct grade icon
-                    switch (personalBestGrade)
-                    {
-                        case "P":
-                            personalBestButtonBunnyGradeIcon.Play("BunnyPRank");
-                            break;
-                        case "S":
-                            personalBestButtonBunnyGradeIcon.Play("BunnySRank");
-                            break;
-                        case "A":
-                            personalBestButtonBunnyGradeIcon.Play("BunnyARank");
-                            break;
-                        case "B":
-                            personalBestButtonBunnyGradeIcon.Play("BunnyBRank");
-                            break;
-                        case "C":
-                            personalBestButtonBunnyGradeIcon.Play("BunnyCRank");
-                            break;
-                        case "D":
-                            personalBestButtonBunnyGradeIcon.Play("BunnyDRank");
-                            break;
-                        case "E":
-                            personalBestButtonBunnyGradeIcon.Play("BunnyERank");
-                            break;
-                        case "F":
-                            personalBestButtonBunnyGradeIcon.Play("BunnyFRank");
-                            break;
-                    }
-
-
                     personalBestButtonUsernameAndScoreText.text = MySQLDBManager.username + ": " + personalBestScore;
 
                     if (string.IsNullOrEmpty(personalBestMod))
@@ -265,6 +251,106 @@ public class BeatmapRanking : MonoBehaviour {
                     personalBestGoodText.text =  "G:" + personalBestGood;
                     personalBestEarlyText.text = "E:" + personalBestEarly;
                     personalBestMissText.text = "M:" + personalBestMiss;
+                }
+            }
+        }
+
+        // if all information has been loaded for the leaderboard
+        if (notChecked == false && hasCheckedPersonalBest == true && totalLeaderboardPlacementsUpdated == totalRankingPlacements)
+        {
+            // If profiles have not been loaded yet
+            if (hasCheckedPlayerProfiles == false)
+            {
+                // Load player profile information
+                playerProfile.GetPlayerProfiles();
+
+                // Set to true to prevent reloading each frame
+                hasCheckedPlayerProfiles = true;
+            }
+        }
+
+        // If all player profile information has been collected and assigned to the arrays
+        if (playerProfile.informationAssigned == true && totalImagesUpdated < playerProfile.TotalExistingProfiles)
+        {
+            LoadLeaderboardPlayerImages();
+        }
+    }
+
+    // Load all leaderboard player images
+    private void LoadLeaderboardPlayerImages()
+    {
+        // Load leaderboard images
+        if (notChecked == false && hasCheckedPersonalBest == true && totalLeaderboardPlacementsUpdated == totalRankingPlacements)
+        {
+            // Loop through all existing profiles on the leaderboard
+            for (int i = 0; i < playerProfile.TotalExistingProfiles; i++)
+            {
+                // If a url exists for the leaderboard spot
+                if (playerProfile.playerImageUrlArray[i] != "")
+                {
+                    // Load the player image (passing the URL and index)
+                    StartCoroutine(LoadPlayerImg(playerProfile.playerImageUrlArray[i], i));
+                }
+                else
+                {
+                    // Load the default image
+                    LoadDefaultMaterial(i);
+                }
+
+                // Activate leaderboard profile button
+                leaderboardProfileButton[i].gameObject.SetActive(true);
+            }
+
+            // If a personal best record exists
+            if (hasPersonalBest == true)
+            {
+                // Retrieve the players image for personal best placement
+                personalBestImage.material = uploadPlayerImage.PlayerImage.material;
+                personalBestImage.gameObject.SetActive(false);
+                personalBestImage.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    // Load the default image
+    private void LoadDefaultMaterial(int _placement)
+    {
+        // Set the material to default
+        rankedButtonRankImage[_placement].material = defaultMaterial;
+
+        // Set image to false then to true to activate new material
+        rankedButtonRankImage[_placement].gameObject.SetActive(false);
+        rankedButtonRankImage[_placement].gameObject.SetActive(true);
+
+        // Increment
+        totalImagesUpdated++;
+    }
+
+    // Load the player image
+    IEnumerator LoadPlayerImg(string _url, int _placement)
+    {
+        totalImagesUpdated++;
+
+        if (_url != "")
+        {
+            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.isNetworkError || uwr.isHttpError)
+                {
+                    Debug.Log(uwr.error);
+                }
+                else
+                {
+                    // Get downloaded asset bundle
+                    var texture = DownloadHandlerTexture.GetContent(uwr);
+
+                    // Update the image for the placement
+                    rankedButtonRankImage[_placement].material.mainTexture = texture;
+
+                    // Set image to false then to true to activate new image
+                    rankedButtonRankImage[_placement].gameObject.SetActive(true);
                 }
             }
         }
@@ -332,6 +418,9 @@ public class BeatmapRanking : MonoBehaviour {
                 placeExists[leaderboardPlaceToGetPass - 1] = false;
             }
         }
+
+        totalPlacesChecked++;
+        placeChecked[leaderboardPlaceToGetPass - 1] = true;
     }
     
     // Get the leaderboard table name to load the beatmap leaderboard from
@@ -415,7 +504,7 @@ public class BeatmapRanking : MonoBehaviour {
             rankedButtonMod[placementToCheck] = "";
 
             // Reset the text on the leaderboard 
-            rankedButtonBunnyGradeIcon[placementToCheck].gameObject.SetActive(false);
+            //rankedButtonBunnyGradeIcon[placementToCheck].gameObject.SetActive(false);
             rankedButtonUsernameAndScoreText[placementToCheck].text = "";
             rankedButtonPlayStatisticsText[placementToCheck].text = "";
             rankedButtonPerfectText[placementToCheck].text = "";
@@ -427,6 +516,15 @@ public class BeatmapRanking : MonoBehaviour {
             placeLeaderboardData[placementToCheck].Clear();
             // Reset all places that exist
             placeExists[placementToCheck] = false;
+            // Reset all places checked
+            placeChecked[placementToCheck] = false;
+
+            // Reset all images
+            rankedButtonRankImage[placementToCheck].gameObject.SetActive(false);
+            personalBestImage.gameObject.SetActive(false);
+
+            // Disable interactivity for leaderboard profile buttons
+            leaderboardProfileButton[placementToCheck].gameObject.SetActive(false);
         }
 
         // Reset personal best information
@@ -441,7 +539,7 @@ public class BeatmapRanking : MonoBehaviour {
         personalBestMod = "";
 
         // Reset personal best text
-        personalBestButtonBunnyGradeIcon.gameObject.SetActive(false);
+        //personalBestButtonBunnyGradeIcon.gameObject.SetActive(false);
         personalBestButtonUsernameAndScoreText.text = "";
         personalBestButtonPlayStatisticsText.text = "";
         personalBestPerfectText.text = "";
@@ -466,7 +564,13 @@ public class BeatmapRanking : MonoBehaviour {
         notChecked = true;
         hasPersonalBest = false;
         hasCheckedPersonalBest = false;
+        hasCheckedImages = false;
+        hasCheckedPlayerProfiles = false;
+
         leaderboardPlaceToGet = 1;
+        totalLeaderboardPlacementsUpdated = 0;
+        totalPlacesChecked = 0;
+        totalImagesUpdated = 0;
     }
 
     // Set the grade icon color based on the grade passed

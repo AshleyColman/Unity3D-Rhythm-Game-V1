@@ -14,6 +14,10 @@ public class LevelChanger : MonoBehaviour
     private int mainMenuSceneIndex, editorSceneIndex, songSelectSceneIndex, gameplaySceneIndex, resultsSceneIndex, overallLeaderboardSceneIndex,
         currentLevelIndex, lastFrameLevelIndex, levelToLoad;
 
+    private float fadeOutTimer;
+
+    private bool canFadeOut;
+
     // Bool
     private bool hasBackLevel;
 
@@ -79,7 +83,21 @@ public class LevelChanger : MonoBehaviour
         hasBackLevel = false;
         currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
         goToPreviousSceneKey = KeyCode.Escape;
+
+        PlaySceneLoadInAnimation();
     }
+
+    private void PlaySceneLoadInAnimation()
+    {
+        switch(currentLevelIndex)
+        {
+            case 0:
+                animator.Play("LevelChanger_White_FadeIn");
+            break;
+        }
+
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -92,6 +110,22 @@ public class LevelChanger : MonoBehaviour
 
         // Update the last frame level index as the current frame
         lastFrameLevelIndex = currentLevelIndex;
+
+
+        // If we can fade out
+        if (canFadeOut == true)
+        {
+            // Increment fade time
+            fadeOutTimer += Time.deltaTime;
+
+
+            // Check if time to load next level
+            if (fadeOutTimer >= 1)
+            {
+                // Fade to next level
+                OnFadeComplete();
+            }
+        }
     }
 
     // Check for input on returning to the previous scene
@@ -119,7 +153,21 @@ public class LevelChanger : MonoBehaviour
     public void FadeToLevel(int levelIndex)
     {
         levelToLoad = levelIndex;
-        animator.SetTrigger("FadeOut");
+
+        PlaySceneLoadOutAnimation();
+
+        canFadeOut = true;
+    }
+
+    private void PlaySceneLoadOutAnimation()
+    {
+        switch (currentLevelIndex)
+        {
+            case 0:
+                animator.Play("LevelChanger_MainMenu_FadeOut");
+                break;
+        }
+
     }
 
     // On fade transition complete

@@ -11,7 +11,8 @@ public class Registration : MonoBehaviour {
     public TextMeshProUGUI pressAnywhereText;
     public Image incorrectDetailsImage;
     public TextMeshProUGUI usernameFieldDescription, passwordFieldDescription;
-    public Button submitButton, registerCanvas, enterGameCanvas;
+    public GameObject registerCanvas, enterGameCanvas;
+    public Button submitButton;
 
     // Gameobjects
     public GameObject accountProgressIcon; // The loading icon for logging in and signing up
@@ -66,8 +67,8 @@ public class Registration : MonoBehaviour {
         www.chunkedTransfer = false;
         yield return www.SendWebRequest();
 
-        // If no errors were found during registering 
-        if (www.error == null)
+        // Check if success
+        if (www.downloadHandler.text == "0")
         {
             // REGISTER SUCCESS
 
@@ -75,6 +76,9 @@ public class Registration : MonoBehaviour {
             DisableRegisterCanvas();
             // Enable the enter game canvas
             EnableEnterGameCanvas();
+
+            // Disable the incorrect details image
+            incorrectDetailsImage.gameObject.SetActive(false);
 
             // Disable the loading icon
             DisableAccountProgressLoadingIcon();
@@ -85,6 +89,8 @@ public class Registration : MonoBehaviour {
         else
         {
             // REGISTER FAILED
+
+            Debug.Log(www.downloadHandler.text);
 
             // Activate the register failed icon
             incorrectDetailsImage.gameObject.SetActive(true);

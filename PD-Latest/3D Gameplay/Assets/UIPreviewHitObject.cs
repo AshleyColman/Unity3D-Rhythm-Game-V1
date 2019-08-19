@@ -11,10 +11,15 @@ public class UIPreviewHitObject : MonoBehaviour {
     public Image previewHitObjectInnerImage; // Inner component of the preview hit object
 
     // Floats
-    private float timer; // Timer 
+    public float timer; // Timer 
     private float deactivateTime; // Time to deactivate the hit object
 
     // Properties
+    
+    public float Timer
+    {
+        set { timer = value; }
+    }
 
     public bool Paused
     {

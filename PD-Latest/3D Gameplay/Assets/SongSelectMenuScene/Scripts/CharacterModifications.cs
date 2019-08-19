@@ -5,6 +5,7 @@ public class CharacterModifications : MonoBehaviour {
     // Gameobjects
     public GameObject leaderboard; // Leaderboard to disable when activating the characterModificationPanel
     public GameObject characterModificationsPanel; // The character modifications panel
+    public GameObject playerProfile; // Player profile
 
     // Bools
     private bool characterModificationsPanelActive; // Used for controlling the visiblity of the panel
@@ -26,6 +27,8 @@ public class CharacterModifications : MonoBehaviour {
             characterModificationsPanel.gameObject.SetActive(true);
             // Disable the leaderboard panel
             leaderboard.gameObject.SetActive(false);
+            // Disable player profile
+            playerProfile.gameObject.SetActive(false);
             // Set to true
             characterModificationsPanelActive = true;
         }

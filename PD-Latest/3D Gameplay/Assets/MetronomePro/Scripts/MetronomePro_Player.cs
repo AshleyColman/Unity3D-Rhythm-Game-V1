@@ -21,7 +21,6 @@ public class MetronomePro_Player : MonoBehaviour
 
     [Space(5)]
     public TextMeshProUGUI actualPosition;
-    public Image playAndPauseButton;
     public Image songPlayerBar;
     public TMP_Dropdown velocityScale;
     public Slider songPlayerSlider;
@@ -62,7 +61,7 @@ public class MetronomePro_Player : MonoBehaviour
     // The song selected
     private int songSelectedIndex = 0;
 
-
+    private MetronomePro metronomePro;
 
 
     void Start()
@@ -70,6 +69,8 @@ public class MetronomePro_Player : MonoBehaviour
 
         // Find the reference to the songDatabase
         songDatabase = FindObjectOfType<SongDatabase>();
+
+        metronomePro = FindObjectOfType<MetronomePro>();
 
         // Stop any song and reset values
         StopSong();
@@ -90,7 +91,7 @@ public class MetronomePro_Player : MonoBehaviour
     // Sends Song Data to Metronome Pro script
     public void SendSongData()
     {
-        FindObjectOfType<MetronomePro>().GetSongData(Bpm, OffsetMS, Base, Step);
+        metronomePro.GetSongData(Bpm, OffsetMS, Base, Step);
     }
 
 
@@ -151,12 +152,12 @@ public class MetronomePro_Player : MonoBehaviour
                 StopSong();
             }
 
-            if (FindObjectOfType<MetronomePro>().neverPlayed)
+            if (metronomePro.neverPlayed)
             {
-                FindObjectOfType<MetronomePro>().CalculateIntervals();
+                metronomePro.CalculateIntervals();
             }
 
-            FindObjectOfType<MetronomePro>().CalculateActualStep();
+            metronomePro.CalculateActualStep();
 
             actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
 
@@ -185,15 +186,13 @@ public class MetronomePro_Player : MonoBehaviour
             active = false;
             playing = false;
             songAudioSource.Pause();
-            FindObjectOfType<MetronomePro>().Pause();
-            playAndPauseButton.sprite = playSprite;
+            metronomePro.Pause();
 
         }
         else
         {
             songAudioSource.Play();
-            FindObjectOfType<MetronomePro>().Play();
-            playAndPauseButton.sprite = pauseSprite;
+            metronomePro.Play();
             playing = true;
             active = true;
         }
@@ -209,7 +208,6 @@ public class MetronomePro_Player : MonoBehaviour
 
         songAudioSource.Stop();
         songAudioSource.time = 0;
-        playAndPauseButton.sprite = playSprite;
         amount = 0f;
         songPlayerSlider.value = 0f;
         songPlayerBar.fillAmount = 0f;
@@ -220,7 +218,7 @@ public class MetronomePro_Player : MonoBehaviour
 
         actualPosition.text = "00:00";
 
-        FindObjectOfType<MetronomePro>().Stop();
+        metronomePro.Stop();
     }
 
     // Next Song

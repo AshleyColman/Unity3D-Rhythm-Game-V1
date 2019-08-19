@@ -664,6 +664,9 @@ public class PlacedObject : MonoBehaviour {
             // Add the object type to the database
             Database.database.objectType.Add(editorHitObjectList[i].hitObjectType);
         }
+
+        // Save
+        Database.database.Save();
     }
 
     // Disable the save button

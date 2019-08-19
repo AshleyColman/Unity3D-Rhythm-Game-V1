@@ -733,7 +733,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_fontColor.a
-    path: CreatorCanvas/Creators
+    path: OverlayCanvas/StatusPanel/StatusText
     classID: 114
     script: {fileID: 1453722849, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
   - curve:
@@ -755,7 +755,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_fontColor.a
-    path: OverlayCanvas/StatusPanel/StatusText
+    path: Canvas/Creators
     classID: 114
     script: {fileID: 1453722849, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
   m_PPtrCurves: []
@@ -858,14 +858,14 @@ AnimationClip:
       customType: 0
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 2005941466
+      path: 4126256629
       attribute: 4185109675
       script: {fileID: 1453722849, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
       typeID: 114
       customType: 0
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 4126256629
+      path: 2698309739
       attribute: 4185109675
       script: {fileID: 1453722849, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
       typeID: 114
@@ -1795,7 +1795,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_fontColor.a
-    path: CreatorCanvas/Creators
+    path: OverlayCanvas/StatusPanel/StatusText
     classID: 114
     script: {fileID: 1453722849, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
   - curve:
@@ -1817,7 +1817,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_fontColor.a
-    path: OverlayCanvas/StatusPanel/StatusText
+    path: Canvas/Creators
     classID: 114
     script: {fileID: 1453722849, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
   m_EulerEditorCurves:
