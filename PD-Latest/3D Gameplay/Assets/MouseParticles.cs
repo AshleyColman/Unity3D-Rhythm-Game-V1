@@ -36,7 +36,7 @@ public class MouseParticles : MonoBehaviour {
     {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         pos = ray.GetPoint(distance);
-        newPos = new Vector3(pos.x, pos.y, 0);
-        transform.position = newPos;
+        //newPos = new Vector3(pos.x, pos.y, 0);
+        transform.position = pos;
     }
 }

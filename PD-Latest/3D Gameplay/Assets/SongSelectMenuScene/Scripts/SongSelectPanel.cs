@@ -10,6 +10,8 @@ public class SongSelectPanel : MonoBehaviour
     // UI
     private List<Image> instantiatedBeatmapButtonImageList = new List<Image>();
     private Image instantiatedBeatmapButtonImage;
+    public Scrollbar beatmapButtonListScrollbar;
+
 
     // Gameobjects
     public GameObject beatmapButton; // The button to instantiate
@@ -28,9 +30,11 @@ public class SongSelectPanel : MonoBehaviour
 
     // Integers
     private int beatmapButtonIndexToGet;
+    private int activeButtonIndex;
 
     // Bools
     private bool hasLoadedAllBeatmapDirectories;
+    private bool hasResetSliderBarValue;
 
     // Material
     private Material childImageMaterial; // Child image for beatmap buttons
@@ -42,11 +46,14 @@ public class SongSelectPanel : MonoBehaviour
     // Scripts
     private SongSelectManager songSelectManager; // Reference to the song select manager which manages loading songs, used to get the beatmap img addresses for loading images
 
+
+
     // Use this for initialization
     void Start()
     {
         // Initialize
         beatmapButtonIndexToGet = 0;
+        hasResetSliderBarValue = false;
         hasLoadedAllBeatmapDirectories = false;  // Set to false at the start, set to true when all have loaded
         beatmapButtonPosition = new Vector3(0, 0, 500); // Set to 500 on z to fix the "moving image" problem, instantiates the images to z of 0 so the images don't move when the mouse cursor has moved
         shaderLocation = "UI/Unlit/Transparent";
@@ -54,6 +61,8 @@ public class SongSelectPanel : MonoBehaviour
         imageName = "img";
         completePath = "";
         fileCheckPath = "";
+        beatmapButtonListScrollbar.value = 0;
+
 
         // Reference
         songSelectManager = FindObjectOfType<SongSelectManager>();
@@ -67,6 +76,12 @@ public class SongSelectPanel : MonoBehaviour
             CreateSongSelectPanel();
 
             hasLoadedAllBeatmapDirectories = true;
+        }
+
+        if (beatmapButtonListScrollbar.value != 0f && hasResetSliderBarValue == false)
+        {
+            beatmapButtonListScrollbar.value = 0f;
+            hasResetSliderBarValue = true;
         }
     }
 
@@ -93,20 +108,18 @@ public class SongSelectPanel : MonoBehaviour
 
             beatmapButtonIndexToGet++;
         }
+
+        // Reset the scroll bar value
+        beatmapButtonListScrollbar.value = 0f;
     }
+
 
     // Get the beatmap directory paths
     public void GetBeatmapDirectoryPaths()
     {
         // Initialise the array with the amount of beatmap directories found
-        beatmapDirectoryPaths = new string[songSelectManager.beatmapDirectories.Length];
-
-        // Loop, get and store the beatmap directories for all beatmaps in the beatmap folder
-        for (int i = 0; i < beatmapDirectoryPaths.Length; i++)
-        {
-            // Assign the paths
-            beatmapDirectoryPaths[i] = songSelectManager.beatmapDirectories[i];
-        }
+        // Get the beatmap directoriess
+        beatmapDirectoryPaths = Directory.GetDirectories(@"c:\Beatmaps");
     }
 
     // Instantiate a new beatmap button in to the song select panel
@@ -121,6 +134,7 @@ public class SongSelectPanel : MonoBehaviour
 
         // Get the child image transform from the instantiated button so we can change the image
         beatmapButtonInstantiateChildImage = beatmapButtonInstantiate.gameObject.transform.GetChild(0);
+
 
         // Get the image component of the instantiated button
         instantiatedBeatmapButtonImage = beatmapButtonInstantiateChildImage.GetComponent<Image>();

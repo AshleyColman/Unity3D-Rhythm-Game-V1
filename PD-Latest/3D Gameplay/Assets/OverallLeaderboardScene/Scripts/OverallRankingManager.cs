@@ -24,17 +24,15 @@ public class OverallRankingManager : MonoBehaviour
     public TextMeshProUGUI personalBestButtonScoreText;
 
     // Button text variables
-    string[] rankedButtonUsername = new string[50];
-    string[] rankedButtonScore = new string[50];
+    string[] rankedButtonUsername = new string[20];
+    string[] rankedButtonScore = new string[20];
     string personalBestScore;
 
-    bool[] placeExists = new bool[50];
+    bool[] placeExists = new bool[20];
 
     bool hasCheckedPersonalBest = false;
 
     string player_id;
-
-    public Image[] playerImage = new Image[5];
 
     int totalRankingPlacements;
 
@@ -42,7 +40,7 @@ public class OverallRankingManager : MonoBehaviour
 
     void Start()
     {
-        totalRankingPlacements = 50;
+        totalRankingPlacements = 20;
         leaderboardPlaceToGet = 1;
         notChecked = true;
 

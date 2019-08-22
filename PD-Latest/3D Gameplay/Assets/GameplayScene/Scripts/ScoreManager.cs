@@ -362,19 +362,15 @@ public class ScoreManager : MonoBehaviour {
         switch (judgementPass)
         {
             case "EARLY":
-                judgementAnimation.Play("EARLY", 0, 0f);
                 totalEarly++;
                 break;
             case "GOOD":
-                judgementAnimation.Play("GOOD", 0, 0f);
                 totalGood++;
                 break;
             case "PERFECT":
-                judgementAnimation.Play("PERFECT", 0, 0f);
                 totalPerfect++;
                 break;
             case "MISS":
-                judgementAnimation.Play("MISS", 0, 0f);
                 totalMiss++;
                 break;
         }

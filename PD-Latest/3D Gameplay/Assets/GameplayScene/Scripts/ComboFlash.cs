@@ -4,6 +4,7 @@ public class ComboFlash : MonoBehaviour {
 
     // Animation
     public Animator comboFlashAnimator; // The combo flash animator
+    public Animator glassFlashAnimator; // Glass combo flash animator
 
     // Bools
     private bool hasFlashed; // Used for making sure the combo only flashes once
@@ -60,12 +61,14 @@ public class ComboFlash : MonoBehaviour {
         {
             // Play the right side combo flash animation
             comboFlashAnimator.Play("ComboFlashAnimation");
+            glassFlashAnimator.Play("GameplayGlassFlash");
             previousComboFlashRight = true;
         }
         else if (previousComboFlashRight == true)
         {
             // Play the left side combo flash animation
             comboFlashAnimator.Play("ComboFlashAnimationLeft");
+            glassFlashAnimator.Play("GameplayGlassFlash");
             previousComboFlashRight = false;
         }
     }

@@ -176,10 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78ae9d6c5fcfbf4439249a2f8d70c2be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timelineHitObjectSpawnTime: 0
   timelineSlider: {fileID: 0}
-  metronome_Player: {fileID: 0}
-  visibleTracker: {fileID: 0}
 --- !u!114 &114699778406207114
 MonoBehaviour:
   m_ObjectHideFlags: 1

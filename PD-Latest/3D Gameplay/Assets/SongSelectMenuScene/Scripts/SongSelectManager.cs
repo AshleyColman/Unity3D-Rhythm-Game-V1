@@ -8,8 +8,8 @@ public class SongSelectManager : MonoBehaviour {
 
     // UI
     public TextMeshProUGUI songTitleText;
+    public TextMeshProUGUI creatorAndDateText, beatmapInformationText;
     public TextMeshProUGUI difficultyOptionEasyLevelText, difficultyOptionAdvancedLevelText, difficultyOptionExtraLevelText;
-    public TextMeshProUGUI difficultyText, shadowDifficultyText;
     public Button difficultyOptionEasyButton, difficultyOptionAdvancedButton, difficultyOptionExtraButton;
     public Image pressedKeySImage, pressedKeyDImage, pressedKeyFImage, pressedKeyJImage, pressedKeyKImage, pressedKeyLImage;
     public Image disabledPressedKeySImage, disabledPressedKeyDImage, disabledPressedKeyFImage, disabledPressedKeyJImage,
@@ -35,6 +35,7 @@ public class SongSelectManager : MonoBehaviour {
     private string lastBeatmapDifficulty; // Last selected beatmap difficulty
     private string easyBeatmapFileName, advancedBeatmapFileName, extraBeatmapFileName; // Beatmap file names
     private string easyDifficultyName, advancedDifficultyName, extraDifficultyName; // Beatmap difficulty names
+    private string beatmapCreator, beatmapCreatedDate;
 
     // Integers
     private int selectedBeatmapDirectoryIndex, previousBeatmapDirectoryIndex; // Beatmap directory indexs
@@ -49,6 +50,8 @@ public class SongSelectManager : MonoBehaviour {
     private bool beatmapKeyExistsS, beatmapKeyExistsD, beatmapKeyExistsF, beatmapKeyExistsJ, beatmapKeyExistsK,
         beatmapKeyExistsL; // Beatmap keys featured in the beatmap
     private bool hasPlayedSongPreviewOnce; // Used to play the start preview once upon entering the song select screen for the first time so the song plays at the current set time once.
+
+    public AudioSource songAudioSource;
 
     // Scripts
     private SongSelectPreview songSelectPreview; // Get reference to song select preview to control playing the song previews
@@ -90,7 +93,6 @@ public class SongSelectManager : MonoBehaviour {
         metronomeForEffects = FindObjectOfType<MetronomeForEffects>();
         beatmapRanking = FindObjectOfType<BeatmapRanking>();
         songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
-
 
         // Functions
         CheckBeatmapDirectories(); // Get and check the beatmaps in the directory
@@ -136,9 +138,6 @@ public class SongSelectManager : MonoBehaviour {
     // Load beatmap song select information
     public void LoadBeatmapSongSelectInformation(int _selectedBeatmapDirectoryIndex, string _beatmapDifficulty, bool _hasPressedArrowKey)
     {
-        // Update the song select scene difficulty text for the difficulty selected
-        UpdateDifficultyNameText(_beatmapDifficulty);
-
         // Update the personal best leaderboard button color to the difficulty currently selected
         switch (_beatmapDifficulty)
         {
@@ -176,6 +175,8 @@ public class SongSelectManager : MonoBehaviour {
             Database.database.Load(beatmapDirectories[_selectedBeatmapDirectoryIndex], _beatmapDifficulty);
             // Load the song select UI variables from the database
             beatmapSongName = Database.database.LoadedSongName;
+            beatmapCreator = Database.database.LoadedBeatmapCreator;
+            beatmapCreatedDate = Database.database.LoadedBeatmapCreatedDate;
             beatmapSongArtist = Database.database.LoadedSongArtist;
             songPreviewStartTime = Database.database.LoadedSongPreviewStartTime;
             beatmapSongBpm = Database.database.LoadedBPM;
@@ -211,6 +212,14 @@ public class SongSelectManager : MonoBehaviour {
 
             // Change the current song selected text to the information loaded from the current directory
             songTitleText.text = beatmapSongName + " [ " + beatmapSongArtist + " ] ";
+
+            // Update the other beatmap information text
+            string totalObjects = Database.database.loadedPositionX.Count.ToString();
+   
+
+            beatmapInformationText.text = "[ Created by " + beatmapCreator + " ] [ " + beatmapCreatedDate + " ] " +
+            "[ Objects: " + totalObjects + " ] " + " [ BPM: " + beatmapSongBpm.ToString() + " ]" +
+                " [ Duration: " + UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.clip.length) + " ]";
 
             // Enable the required keys for the beatmap images
             EnableKeysRequiredForBeatmap();
@@ -501,14 +510,6 @@ public class SongSelectManager : MonoBehaviour {
         LoadBeatmapFileThatExists((_selectedBeatmapDirectoryIndex), _hasPressedArrowKey);
     }
 
-    // Update the song select scene difficulty text for the difficulty selected
-    private void UpdateDifficultyNameText(string _beatmapDifficulty)
-    {
-        // Update the song select scene difficulty text for the difficulty selected
-        difficultyText.text = _beatmapDifficulty.ToUpper();
-        shadowDifficultyText.text = _beatmapDifficulty.ToUpper();
-    }
-
     // Enable the keys required for the beatmap
     public void EnableKeysRequiredForBeatmap()
     {
@@ -596,6 +597,13 @@ public class SongSelectManager : MonoBehaviour {
     {
         selectedBeatmapDirectoryIndex++;
     }
+    
+    // Get random beatmap index
+    public void RandomSelectedBeatmapDirectoryIndex()
+    {
+        selectedBeatmapDirectoryIndex = Random.Range(0, beatmapDirectories.Length);
+    }
+
 
     // Decrement selected directory index
     public void DecrementSelectedBeatmapDirectoryIndex()

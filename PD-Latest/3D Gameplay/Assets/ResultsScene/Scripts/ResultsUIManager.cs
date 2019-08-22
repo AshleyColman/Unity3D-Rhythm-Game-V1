@@ -18,12 +18,12 @@ public class ResultsUIManager : MonoBehaviour {
     public TextMeshProUGUI scoreText;
     public Button easyButton, advancedButton, extraButton;
 
+    // Color
+    public Color pColor, sColor, aColor, bColor, cColor, dColor, eColor, fColor;
+    
+
     // Gameobjects
     public GameObject tripleTimeMod, doubleTimeMod, halfTimeMod, instantDeathMod, noFailMod, modGlow;
-    public GameObject gradeIcon;
-
-    // Animation
-    public Animator gradeIconAnimator;
 
     // Particles
     public ParticleSystem pRankExplosion, sRankExplosion, aRankExplosion, bRankExplosion, cRankExplosion, dRankExplosion, eRankExplosion, fRankExplosion;
@@ -60,8 +60,6 @@ public class ResultsUIManager : MonoBehaviour {
         // Reference
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
         gameplayToResultsManager = FindObjectOfType<GameplayToResultsManager>();
-
-        gradeIcon.gameObject.SetActive(false);
 
         // Disable all difficulty buttons
         easyButton.gameObject.SetActive(false);
@@ -101,11 +99,7 @@ public class ResultsUIManager : MonoBehaviour {
         // Display the grade icon after a time limit
         if (gradeDisplayTimer >= gradeDisplayTime)
         {
-            if (gradeIcon.gameObject.activeSelf == false)
-            {
-                gradeIcon.gameObject.SetActive(true);
-                DisplayGradeIcon();
-            }
+            DisplayGradeIcon();
         }
     }
 
@@ -139,39 +133,30 @@ public class ResultsUIManager : MonoBehaviour {
         switch (gameplayToResultsManager.GradeAchieved)
         {
             case "P":
-                gradeIconAnimator.Play("BunnyPRank");
                 pRankExplosion.gameObject.SetActive(true);
                 break;
             case "S":
-                gradeIconAnimator.Play("BunnySRank");
                 sRankExplosion.gameObject.SetActive(true);
                 break;
             case "A":
-                gradeIconAnimator.Play("BunnyARank");
                 aRankExplosion.gameObject.SetActive(true);
                 break;
             case "B":
-                gradeIconAnimator.Play("BunnyBRank");
                 bRankExplosion.gameObject.SetActive(true);
                 break;
             case "C":
-                gradeIconAnimator.Play("BunnyCRank");
                 cRankExplosion.gameObject.SetActive(true);
                 break;
             case "D":
-                gradeIconAnimator.Play("BunnyDRank");
                 dRankExplosion.gameObject.SetActive(true);
                 break;
             case "E":
-                gradeIconAnimator.Play("BunnyERank");
                 eRankExplosion.gameObject.SetActive(true);
                 break;
             case "F":
-                gradeIconAnimator.Play("BunnyFRank");
                 fRankExplosion.gameObject.SetActive(true);
                 break;
             default:
-                gradeIconAnimator.Play("BunnyFRank");
                 fRankExplosion.gameObject.SetActive(true);
                 break;
         }
@@ -216,6 +201,12 @@ public class ResultsUIManager : MonoBehaviour {
             goodText.text = newGood.ToString();
             earlyText.text = newEarly.ToString();
             missText.text = newMiss.ToString();
+
+            if (gameplayToResultsManager.Percentage == "" || gameplayToResultsManager.Percentage == null)
+            {
+                gameplayToResultsManager.Percentage = "0";
+            }
+
             percentageText.text = gameplayToResultsManager.Percentage + "%";
             CheckScore(newScore);
 

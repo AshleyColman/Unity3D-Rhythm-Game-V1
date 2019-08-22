@@ -34,7 +34,7 @@ public class BeatmapSetup : MonoBehaviour {
     private string songName, songArtist, beatmapCreator;
     private const string FILE_EXTENSION = ".dia";
     private string statusBeatmapSaved, statusBeatmapReset, statusDeletedHitObject;
-
+    private string beatmapCreatedDate;
 
     // integers
     private int songClipChosenIndex;
@@ -46,6 +46,12 @@ public class BeatmapSetup : MonoBehaviour {
 
 
     // Properties
+
+    public string BeatmapCreatedDate
+    {
+        get { return beatmapCreatedDate; }
+    }
+
     public string BeatmapEasyDifficultyLevel
     {
         get { return beatmapEasyDifficultyLevel; }
@@ -204,6 +210,15 @@ public class BeatmapSetup : MonoBehaviour {
         var folder = Directory.CreateDirectory(@"C:\Beatmaps\" + beatmapFolderName); 
         // Save the folder directory to save the files into later
         folderDirectory = @"C:\Beatmaps\" + beatmapFolderName + @"\";
+
+        // Get the current date
+        GetCurrentDate();
+    }
+
+    // Get the current date
+    public void GetCurrentDate()
+    {
+        beatmapCreatedDate = DateTime.Now.ToString("MM/dd/yyyy h:mm");
     }
 
     // Insert beatmap difficulty

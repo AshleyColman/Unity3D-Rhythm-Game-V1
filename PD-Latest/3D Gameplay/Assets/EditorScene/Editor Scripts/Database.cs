@@ -46,6 +46,8 @@ public class Database : MonoBehaviour {
     private string loadedBeatmapEasyDifficultyLevel; // Loaded easy level
     private string loadedBeatmapAdvancedDifficultyLevel; // Loaded advanced level
     private string loadedBeatmapExtraDifficultyLevel; // Loaded extra level
+    private string loadedBeatmapCreatedDate; // Loaded date of beatmap creation
+    private int loadedKeyMode; // Key mode number
 
     // Bools
     private bool pressedKeyS, pressedKeyD, pressedKeyF, pressedKeyJ, pressedKeyK, pressedKeyL; // Keys pressed for beatmap
@@ -55,6 +57,16 @@ public class Database : MonoBehaviour {
 
 
     // Properties
+
+    public int KeyMode
+    {
+        get { return KeyMode; }
+    }
+
+    public string LoadedBeatmapCreatedDate
+    {
+        get { return loadedBeatmapCreatedDate; }
+    }
 
     public string LoadedBeatmapEasyDifficultyLevel
     {
@@ -201,6 +213,7 @@ public class Database : MonoBehaviour {
         beatmap.beatmapExtraDifficultyLevel = beatmapSetup.BeatmapExtraDifficultyLevel;
         beatmap.songClipChosenIndex = beatmapSetup.SongClipChosenIndex;
         beatmap.songPreviewStartTime = beatmapSetup.SongPreviewStartTime;
+        beatmap.beatmapCreatedDate = beatmapSetup.BeatmapCreatedDate;
 
         // Timing information for the beatmap from the metronome
         beatmap.BPM = metronomePro.Bpm;
@@ -216,7 +229,7 @@ public class Database : MonoBehaviour {
         beatmap.pressedKeyJ = placedObject.PressedKeyJ;
         beatmap.pressedKeyK = placedObject.PressedKeyK;
         beatmap.pressedKeyL = placedObject.PressedKeyL;
-
+        beatmap.keyMode = placedObject.KeyMode;
 
         bf.Serialize(stream, beatmap);
         stream.Close();
@@ -272,6 +285,7 @@ public class Database : MonoBehaviour {
         loadedBeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
         loadedSongClipChosenIndex = beatmap.songClipChosenIndex;
         loadedSongPreviewStartTime = beatmap.songPreviewStartTime;
+        loadedBeatmapCreatedDate = beatmap.beatmapCreatedDate;
 
         // Timing information for the beatmap from the metronome
         loadedBPM = beatmap.BPM;
@@ -284,6 +298,7 @@ public class Database : MonoBehaviour {
         loadedPressedKeyJ = beatmap.pressedKeyJ;
         loadedPressedKeyK = beatmap.pressedKeyK;
         loadedPressedKeyL = beatmap.pressedKeyL;
+        loadedKeyMode = beatmap.keyMode;
 
         // Load beatmap table name for leaderboards
         loadedLeaderboardTableName = beatmap.leaderboardTableName;
@@ -304,6 +319,7 @@ public class Database : MonoBehaviour {
         loadedBeatmapEasyDifficultyLevel = "";
         loadedBeatmapAdvancedDifficultyLevel = "";
         loadedBeatmapExtraDifficultyLevel = "";
+        loadedBeatmapCreatedDate = "";
         loadedSongPreviewStartTime = 0;
         loadedBPM = 0;
         loadedOffsetMS = 0;
@@ -314,6 +330,7 @@ public class Database : MonoBehaviour {
         loadedPressedKeyJ = false;
         loadedPressedKeyK = false;
         loadedPressedKeyL = false;
+        loadedKeyMode = 0;
     }
 
     // Clear all placed objects in the editor

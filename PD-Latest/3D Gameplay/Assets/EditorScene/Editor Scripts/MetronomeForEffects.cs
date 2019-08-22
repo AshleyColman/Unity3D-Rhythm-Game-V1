@@ -27,7 +27,6 @@ public class MetronomeForEffects : MonoBehaviour
 
     // Song Select Animators
     public Animator titleAnimator;
-    public Animator difficultyTextAnimator;
     public Animator flashImageAnimator;
     // Gameplay difficulty panel animators
     public Animator easyDifficultyPanelAnimator, advancedDifficultyPanelAnimator, extraDifficultyPanelAnimator;
@@ -37,6 +36,9 @@ public class MetronomeForEffects : MonoBehaviour
     public Animator blurFlashAnimator;
     // Gameplay fever time bar animators
     public Animator bar25PercentAnimator, bar50PercentAnimator, bar75PercentAnimator, bar100PercentAnimator;
+    // SongSelect beatmap button list animator
+    public Animator beatmapButtonListAnimator;
+
 
     // Integers
     public List<float> songTickTimes;
@@ -148,7 +150,10 @@ public class MetronomeForEffects : MonoBehaviour
         {
             // Get the reference to the audio source
             songAudioGameObject = GameObject.FindGameObjectWithTag("AudioSource");
-            songAudioSource = songAudioGameObject.GetComponent<AudioSource>();
+            if (songAudioGameObject == null)
+            {
+                songAudioSource = songAudioGameObject.GetComponent<AudioSource>();
+            }
         }
 
         // If the song audio source has been found
@@ -220,8 +225,6 @@ public class MetronomeForEffects : MonoBehaviour
                             // Check for next tick next time
                             currentTick++;
 
-                            PlayDifficultyTextAnimation();
-
                             // Difficulty Flash Animations
                             if (currentTick >= flashTick)
                             {
@@ -270,9 +273,6 @@ public class MetronomeForEffects : MonoBehaviour
                                 flashTick += 4;
                                 // PlayBeatFlashAnimation();
                                 // PlayDifficultyTextAnimation();
-
-                                // Play the blur flash animation
-                                PlayBlurFlashAnimation();
                             }
                             
                         }
@@ -380,8 +380,11 @@ public class MetronomeForEffects : MonoBehaviour
     // Song Select Scene tick functions
     void SongSelectSceneOnTick()
     {
+        if (beatmapButtonListAnimator != null)
+        {
+            beatmapButtonListAnimator.Play("BeatmapButtonScrollList", 0, 0f);
+        }
     }
-
 
     // Gameplay Scene tick functions
     void GameplaySceneOnTick()
@@ -468,23 +471,6 @@ public class MetronomeForEffects : MonoBehaviour
                 break;
             case "extra":
                 flashImageAnimator.Play("EXTRABeatFlashImage", 0, 0f);
-                break;
-        }
-    }
-
-    // Song Select Scene difficulty beat flash animation
-    private void PlayDifficultyTextAnimation()
-    {
-        switch (beatmapDifficultySelected)
-        {
-            case "easy":
-                difficultyTextAnimator.Play("EASYDifficultyText", 0, 0f);
-                break;
-            case "advanced":
-                difficultyTextAnimator.Play("ADVANCEDDifficultyText", 0, 0f);
-                break;
-            case "extra":
-                difficultyTextAnimator.Play("EXTRADifficultyText", 0, 0f);
                 break;
         }
     }

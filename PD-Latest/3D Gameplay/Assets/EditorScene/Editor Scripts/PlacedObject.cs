@@ -54,7 +54,7 @@ public class PlacedObject : MonoBehaviour {
     private float deactivateObjectTimer; // Timer for controlling checks on deactivating timeline hit objects
     private List<float> tickTimesList = new List<float>(); // Tick times for comparing and calculating the closest tick time based on user key press time
     private List<int> nullObjectsList = new List<int>(); // List of all null gameobjects
-
+    private int keyMode;
 
 
 
@@ -87,6 +87,11 @@ public class PlacedObject : MonoBehaviour {
 
 
     // Propertiess
+
+    public int KeyMode
+    {
+        get { return keyMode; }
+    }
 
     public bool PressedKeyS
     {
@@ -136,6 +141,7 @@ public class PlacedObject : MonoBehaviour {
         nullTimelineObjectIndex = 0;
         hitObjectSavedType = 0;
         hitObjectSpawnTime = 0;
+        keyMode = 0;
         timelineBarHandlePositionY = 9999;
         hasPressedSpacebar = false;
         objectSpawnTimeIsTaken = false;
@@ -176,36 +182,48 @@ public class PlacedObject : MonoBehaviour {
             {
                 // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
                 AddEditorHitObjectToList(hitObjectTypeBlueValue);
+
+                pressedKeyJ = true;
             }
             // PURPLE Key Pressed
             else if (Input.GetKeyDown(KeyCode.K))
             {
                 // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
                 AddEditorHitObjectToList(hitObjectTypePurpleValue);
+
+                pressedKeyK = true;
             }
             // RED Key Pressed
             else if (Input.GetKeyDown(KeyCode.L))
             {
                 // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
                 AddEditorHitObjectToList(hitObjectTypeRedValue);
+
+                pressedKeyL = true;
             }
             // GREEN Key Pressed
             else if (Input.GetKeyDown(KeyCode.U) || Input.GetKeyDown(KeyCode.S))
             {
                 // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
                 AddEditorHitObjectToList(hitObjectTypeGreenValue);
+
+                pressedKeyS = true;
             }
             // YELLOW Key Pressed
             else if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.D))
             {
                 // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
                 AddEditorHitObjectToList(hitObjectTypeYellowValue);
+
+                pressedKeyD = true;
             }
             // ORANGE Key Pressed
             else if (Input.GetKeyDown(KeyCode.O) || Input.GetKeyDown(KeyCode.F))
             {
                 // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
                 AddEditorHitObjectToList(hitObjectTypeOrangeValue);
+
+                pressedKeyF = true;
             }
         }
 
@@ -239,6 +257,31 @@ public class PlacedObject : MonoBehaviour {
                     pressedKeyF = true;
                     break;
             }
+        }
+
+        if (pressedKeyJ == true)
+        {
+            keyMode++;
+        }
+        if (pressedKeyK == true)
+        {
+            keyMode++;
+        }
+        if (pressedKeyL == true)
+        {
+            keyMode++;
+        }
+        if (pressedKeyS == true)
+        {
+            keyMode++;
+        }
+        if (pressedKeyD == true)
+        {
+            keyMode++;
+        }
+        if (pressedKeyF == true)
+        {
+            keyMode++;
         }
     }
 
@@ -684,6 +727,8 @@ public class PlacedObject : MonoBehaviour {
         pressedKeyJ = false;
         pressedKeyK = false;
         pressedKeyL = false;
+
+        keyMode = 0;
     }
 
 

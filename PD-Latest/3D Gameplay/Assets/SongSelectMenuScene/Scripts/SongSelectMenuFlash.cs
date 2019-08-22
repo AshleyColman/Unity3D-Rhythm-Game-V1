@@ -94,7 +94,11 @@ public class SongSelectMenuFlash : MonoBehaviour {
             // Decrement the beatmap selected index to load the previous song
             songSelectManager.DecrementSelectedBeatmapDirectoryIndex();
         }
-
+        else if (_keyPressed == "RANDOM")
+        {
+            // LOAD RANDOM BEATMAP
+            songSelectManager.RandomSelectedBeatmapDirectoryIndex();
+        }
         // Load the beatmap file that exists
         songSelectManager.LoadBeatmapFileThatExists(songSelectManager.SelectedBeatmapDirectoryIndex, hasPressedArrowKey);
 

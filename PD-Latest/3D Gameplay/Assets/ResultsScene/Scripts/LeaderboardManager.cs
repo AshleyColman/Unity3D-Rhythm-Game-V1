@@ -17,7 +17,7 @@ public class LeaderboardManager : MonoBehaviour {
     private string failedToUploadScore; 
     private string uploadingScoreToGameServer;
     private string scoreSuccessfullyUploaded;
-    private string guestUsername;
+    private string notLoggedIn;
 
     // Integers
     private int newUserScoreToUpload;
@@ -47,9 +47,9 @@ public class LeaderboardManager : MonoBehaviour {
         // Initialize
         notChecked = true; // For checking if scores have uploaded or attempted once
         failedToUploadScore = "Failed to upload score";
+        notLoggedIn = "Log in to submit your scores";
         uploadingScoreToGameServer = "Uploading score to the game server...";
         scoreSuccessfullyUploaded = "Score successfully uploaded";
-        guestUsername = "GUEST";
 
         // Reference
         gameplayToResultsManager = FindObjectOfType<GameplayToResultsManager>();
@@ -60,39 +60,42 @@ public class LeaderboardManager : MonoBehaviour {
 
     void Update()
     {
-        if (notChecked == true)
+        if (MySQLDBManager.loggedIn & MySQLDBManager.username != "GUEST")
         {
-            StartCoroutine(UploadUserScore());
-            notChecked = false;
-        }
-
-        if (hasCheckedCurrentUserScore == false)
-        {
-            // Retrieve the user current total score from the database
-            StartCoroutine(RetrieveUserCurrentTotalScore());
-        }
-        else
-        {
-            // If the user score has been retrieved
-            if (hasUpdatedUserOverallTotalScore == false && hasCheckedCurrentUserScore == true)
+            if (notChecked == true)
             {
-                if (hasExistingScoreInOverallRankings == true)
+                StartCoroutine(UploadUserScore());
+                notChecked = false;
+            }
+
+            if (hasCheckedCurrentUserScore == false)
+            {
+                // Retrieve the user current total score from the database
+                StartCoroutine(RetrieveUserCurrentTotalScore());
+            }
+            else
+            {
+                // If the user score has been retrieved
+                if (hasUpdatedUserOverallTotalScore == false && hasCheckedCurrentUserScore == true)
                 {
-                    if (hasIncrementedScore == false)
+                    if (hasExistingScoreInOverallRankings == true)
+                    {
+                        if (hasIncrementedScore == false)
+                        {
+                            // Add the just played score to the score retrieved
+                            newUserScoreToUpload = gameplayToResultsManager.Score + currentUserScore;
+                            hasIncrementedScore = true;
+                        }
+
+                        StartCoroutine(UpdateOverallLeaderboardTotalScore());
+                    }
+                    else
                     {
                         // Add the just played score to the score retrieved
-                        newUserScoreToUpload = gameplayToResultsManager.Score + currentUserScore;
-                        hasIncrementedScore = true;
+                        newUserScoreToUpload = gameplayToResultsManager.Score;
+
+                        StartCoroutine(UpdateOverallLeaderboardTotalScore());
                     }
-
-                    StartCoroutine(UpdateOverallLeaderboardTotalScore());
-                }
-                else
-                {
-                    // Add the just played score to the score retrieved
-                    newUserScoreToUpload = gameplayToResultsManager.Score;
-
-                    StartCoroutine(UpdateOverallLeaderboardTotalScore());
                 }
             }
         }
@@ -157,10 +160,6 @@ public class LeaderboardManager : MonoBehaviour {
         {
             username = MySQLDBManager.username;
         }
-        else
-        {
-            username = guestUsername;
-        }
 
         WWWForm form = new WWWForm();
 
@@ -178,7 +177,9 @@ public class LeaderboardManager : MonoBehaviour {
             //Debug.Log("Retrieved overall ranking current total score");
             // Assign the retrieved score
             string currentUserScoreString = www.downloadHandler.text;
+
             currentUserScore = Convert.ToInt32(currentUserScoreString);
+      
             // Set to true as we have retrieved the score
             hasCheckedCurrentUserScore = true;
             hasExistingScoreInOverallRankings = true;
@@ -201,11 +202,6 @@ public class LeaderboardManager : MonoBehaviour {
         {
             username = MySQLDBManager.username;
         }
-        else
-        {
-            username = guestUsername;
-        }
-
 
         WWWForm form = new WWWForm();
 
@@ -250,7 +246,14 @@ public class LeaderboardManager : MonoBehaviour {
     // Change text to uploading
     private void UpdateStatusTextUploading()
     {
-        uploadStatusText.text = uploadingScoreToGameServer;
+        if (MySQLDBManager.loggedIn == true && MySQLDBManager.username != "GUEST")
+        {
+            uploadStatusText.text = uploadingScoreToGameServer;
+        }
+        else
+        {
+            uploadStatusText.text = notLoggedIn;
+        }
     }
 
     // Change text to upload successful

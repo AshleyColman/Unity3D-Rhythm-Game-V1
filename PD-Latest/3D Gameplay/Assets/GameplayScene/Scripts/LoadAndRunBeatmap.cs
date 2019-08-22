@@ -18,6 +18,9 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     // Animation
     public Animator pressPlayAnimator; // Animates the Press Play Text at the start of the song
 
+    public Animator hitObjectAnimator;
+
+
     // Colors
     public Color easyDifficultyColor, advancedDifficultyColor, extraDifficultyColor; // Song progress bar colors based on beatmap difficulty
 
@@ -41,6 +44,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     private float songTimer; // The current time in the song
     private float trackStartTime; // The time that the song started from
     private float[] hitObjectSpawnTimes;  // Hit object spawn times
+    private float levelChangerAnimationTimer;
 
     // Vectors
     private Vector3[] hitObjectPositions; // Hit object positions containing all 3 xyz values from the other lists
@@ -62,6 +66,12 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     GameplayToResultsManager gameplayToResultsManager;
 
     // Properties
+
+    public float LevelChangerAnimationTimer
+    {
+        get { return levelChangerAnimationTimer; }
+    }
+
 
     // Get all hit object have been hit
     public bool AllHitObjectsHaveBeenHit
@@ -139,8 +149,13 @@ public class LoadAndRunBeatmap : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // Check keyboard input to start gameplay
-        CheckToStartGameplay();
+        levelChangerAnimationTimer += Time.deltaTime;
+
+        if (levelChangerAnimationTimer >= 2f)
+        {
+            // Check keyboard input to start gameplay
+            CheckToStartGameplay();
+        }
 
         // Update the song timer with the current song time if gameplay has started
         UpdateSongTimer();
@@ -163,11 +178,27 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         if (poolDictionary.ContainsKey(_tag) == true)
         {
             GameObject objectToSpawn = poolDictionary[_tag].Dequeue();
-
+            hitObjectAnimator = objectToSpawn.GetComponent<Animator>();
             objectToSpawn.gameObject.SetActive(true);
             objectToSpawn.transform.position = _position;
             //objectToSpawn.transform.rotation = Quaternion.Euler(0, 45, 0);
-            objectToSpawn.transform.rotation = Quaternion.Euler(-90, 0, 45);
+            //objectToSpawn.transform.rotation = Quaternion.Euler(-90, 0, 45);
+            objectToSpawn.transform.rotation = Quaternion.Euler(90, 0, 45);
+
+            // Play the animation based on the animation speed
+            switch (playerSkillsManager.FadeSpeedSelected)
+            {
+                case "SLOW":
+                    hitObjectAnimator.Play("SlowHitObject", 0, 0f);
+                    break;
+                case "NORMAL":
+                    hitObjectAnimator.Play("HitObject", 0, 0f);
+                    break;
+                case "FAST":
+                    hitObjectAnimator.Play("FastHitObject", 0, 0f);
+                    break;
+            }
+
             poolDictionary[_tag].Enqueue(objectToSpawn);
 
             spawnedList.Add(objectToSpawn);

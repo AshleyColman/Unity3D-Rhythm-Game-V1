@@ -7,8 +7,8 @@ public class HitSoundPreview : MonoBehaviour {
     private AudioSource hitSoundAudioSource; // The audio source that plays the hit sounds
 
     // Integers
-    private int hitSoundChosenIndex; // The hit sound selected
-    private float hitSoundVolume, missSoundVolume; // Hit and miss sound volume
+    public int hitSoundChosenIndex; // The hit sound selected
+    public float hitSoundVolume, missSoundVolume; // Hit and miss sound volume
 
     // Scripts
     private LevelChanger levelChanger; // Level changer for changing scenes
@@ -34,6 +34,7 @@ public class HitSoundPreview : MonoBehaviour {
     {
         PlayerPrefs.SetInt("hitSoundChosenIndex", hitSoundChosenIndex);
         PlayerPrefs.Save();
+        Debug.Log("hitSoundChosenIndex " + hitSoundChosenIndex);
     }
 
     // Set player prefs hit sound volume
@@ -41,6 +42,8 @@ public class HitSoundPreview : MonoBehaviour {
     {
         PlayerPrefs.SetFloat("hitSoundVolume", hitSoundVolume);
         PlayerPrefs.Save();
+
+        Debug.Log("hitSoundVolume" + hitSoundVolume);
     }
 
     // Load the hit sound volume
@@ -48,7 +51,9 @@ public class HitSoundPreview : MonoBehaviour {
     {
         if (PlayerPrefs.HasKey("hitSoundVolume"))
         {
-            hitSoundChosenIndex = PlayerPrefs.GetInt("hitSoundVolume");
+            hitSoundVolume = PlayerPrefs.GetFloat("hitSoundVolume");
+
+            Debug.Log("hitSoundVolume" + hitSoundVolume);
         }
     }
 
@@ -59,6 +64,8 @@ public class HitSoundPreview : MonoBehaviour {
         if (PlayerPrefs.HasKey("hitSoundChosenIndex"))
         {
             hitSoundChosenIndex = PlayerPrefs.GetInt("hitSoundChosenIndex");
+
+            Debug.Log("hitSoundChosenIndex" + hitSoundChosenIndex);
         }
     }
      
@@ -74,6 +81,8 @@ public class HitSoundPreview : MonoBehaviour {
             hitSoundVolume = hitSoundVolume - 0.1f;
         }
 
+        PlayHitSound();
+
         SetPlayerPrefsHitSoundVolume();
     }
 
@@ -84,6 +93,8 @@ public class HitSoundPreview : MonoBehaviour {
         {
             hitSoundVolume = hitSoundVolume + 0.1f;
         }
+
+        PlayHitSound();
 
         SetPlayerPrefsHitSoundVolume();
     }

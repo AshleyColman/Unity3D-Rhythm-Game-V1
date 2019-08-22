@@ -5,9 +5,15 @@ using TMPro;
 public class PlayerSkillsManager : MonoBehaviour {
 
     // UI
-    public TextMeshProUGUI modSelectedText; // The song select text that updates when a mod has been selected
-    public TextMeshProUGUI scoreMultiplierText; // Score multiplier text in character select panel
+    public TextMeshProUGUI scoreMultiplierText, shadowScoreMultiplierText; // Score multiplier text in character select panel
+    public TextMeshProUGUI modNameText, modDescriptionText;
     public Image tripleTimeSelectedKey, doubleTimeSelectedKey, halfTimeSelectedKey, noFailSelectedKey, instantDeathSelectedKey;
+    public Image characterImageKey;
+
+    public GameObject optionsPanel, songSelectPanel;
+    public Scrollbar songSelectPanelScrollBar;
+
+    public TextMeshProUGUI optionPanelText;
 
     // Gameobjects
     GameObject[] playerSkillsManagerArray; // Array of playerSkillsManager game objects
@@ -18,7 +24,7 @@ public class PlayerSkillsManager : MonoBehaviour {
     // Integers
     private float fadeSpeedSlow, fadeSpeedNormal, fadeSpeedFast; // Fade speed values
     private int scoreMultiplier; // Score multiplier values
-    private sbyte fadeSpeedSelectedIndex; // Fade speed index selected
+    private int fadeSpeedSelectedIndex; // Fade speed index selected
 
     // Strings
     private string fadeSpeedSelected, scoreMultiplier075, scoreMultiplier100, scoreMultiplier105, scoreMultiplier110; // The fade speed selected, score multipliers
@@ -26,11 +32,14 @@ public class PlayerSkillsManager : MonoBehaviour {
         instantDeathTextValue; // Mod selected text values
     private string modSelected; // The mod selected
 
+
     // Bools
     private bool gameplayModKeysUpdated; // Controls updating the gameplay mod keys
 
     // Color
     public Color goodMultiplierColor, okayMultiplierColor, badMultiplierColor, defaultMultiplierColor; // Multiplier text colors
+
+    public Color purpleColor, redColor, greenColor, orangeColor, yellowColor, blueColor, blackColor;
 
     // Scripts
     private LevelChanger levelChanger; // Level changer for changing scenes
@@ -39,6 +48,10 @@ public class PlayerSkillsManager : MonoBehaviour {
     // Keycodes
     private KeyCode destroyKey; // Key that destroys this gameobject
     
+
+
+
+
     // Properties
 
     // Get the mod selected
@@ -87,11 +100,16 @@ public class PlayerSkillsManager : MonoBehaviour {
         instantDeathTextValue = "INSTANT DEATH";
         destroyKey = KeyCode.Escape;
 
+        optionPanelText.text = "";
+        modNameText.text = "";
+        modDescriptionText.text = "";
+
+        characterImageKey.color = blackColor;
+
         // References
         levelChanger = FindObjectOfType<LevelChanger>();
 
         // Functions
-        PlayFadeSpeedSelectedAnimation(); // Play the fade speed preview animation based on the speed selected
         LoadPlayerPrefsFadeSpeedSelectedIndex(); // Load the selected fade speed index from player prefs if it exists
     }
 
@@ -146,6 +164,55 @@ public class PlayerSkillsManager : MonoBehaviour {
 
     }
 
+    public void UpdateOptionPanelText(string _option)
+    {
+        switch (_option)
+        {
+            case "CHARACTER":
+                optionPanelText.text = "Equip character skills that impact gameplay and scoring";
+                break;
+            case "INCREASE VOLUME":
+                optionPanelText.text = "Increase hit sound volume";
+                break;
+            case "DECREASE VOLUME":
+                optionPanelText.text = "Decrease hit sound volume";
+                break;
+            case "NEXT SOUND":
+                optionPanelText.text = "Next hit sound";
+                break;
+            case "PREVIOUS SOUND":
+                optionPanelText.text = "Previous hit sound";
+                break;
+            case "PROFILE":
+                optionPanelText.text = "Change your profile image";
+                break;
+            case "FADE":
+                optionPanelText.text = "Change hit object fade speed";
+                break;
+            default:
+                 optionPanelText.text = "Choose an option";
+            break;
+        }
+    }
+
+    public void ShowOptions()
+    {
+        if (optionsPanel.activeSelf == true)
+        {
+            songSelectPanel.gameObject.SetActive(true);
+            songSelectPanelScrollBar.gameObject.SetActive(true);
+            optionsPanel.gameObject.SetActive(false);
+        }
+        else
+        {
+            songSelectPanel.gameObject.SetActive(false);
+            songSelectPanelScrollBar.gameObject.SetActive(false);
+            optionsPanel.gameObject.SetActive(true);
+            optionPanelText.text = "Choose an option";
+            PlayFadeSpeedSelectedAnimation();
+        }
+    }
+
     // Enable one of the speed mods during gameplay based on the mod selected
     private void EnableSpeedModsInGameplay()
     {
@@ -184,18 +251,22 @@ public class PlayerSkillsManager : MonoBehaviour {
         {
             case 75:
                 scoreMultiplierText.text = scoreMultiplier075;
+                shadowScoreMultiplierText.text = scoreMultiplier075;
                 scoreMultiplierText.color = badMultiplierColor;
                 break;
             case 100:
                 scoreMultiplierText.text = scoreMultiplier100;
+                shadowScoreMultiplierText.text = scoreMultiplier100;
                 scoreMultiplierText.color = defaultMultiplierColor;
                 break;
             case 105:
                 scoreMultiplierText.text = scoreMultiplier105;
+                shadowScoreMultiplierText.text = scoreMultiplier105;
                 scoreMultiplierText.color = okayMultiplierColor;
                 break;
             case 110:
                 scoreMultiplierText.text = scoreMultiplier110;
+                shadowScoreMultiplierText.text = scoreMultiplier110;
                 scoreMultiplierText.color = goodMultiplierColor;
                 break;
         }
@@ -246,9 +317,6 @@ public class PlayerSkillsManager : MonoBehaviour {
     // Reset equiped skills
     public void ResetEquipedSkills()
     {
-        // Reset
-        UpdateModSelectedText("");
-
         modSelected = "";
 
         // Reset the multiplier score text with default value
@@ -257,17 +325,10 @@ public class PlayerSkillsManager : MonoBehaviour {
         UpdateSelectedModKeys();
     }
 
-    // Update mod selected text
-    private void UpdateModSelectedText(string modSelectedPass)
-    {
-        modSelectedText.text = modSelectedPass;
-    }
-
     // Equip half time skill
     public void EquipHalfTimeSkill()
     {
         modSelected = "HALF TIME";
-        UpdateModSelectedText(halfTimeTextValue);
 
         UpdateScoreMultiplierText(75);
 
@@ -279,8 +340,6 @@ public class PlayerSkillsManager : MonoBehaviour {
     {
         modSelected = "DOUBLE TIME";
 
-        UpdateModSelectedText(doubleTimeTextValue);
-
         UpdateScoreMultiplierText(105);
 
         UpdateSelectedModKeys();
@@ -290,8 +349,6 @@ public class PlayerSkillsManager : MonoBehaviour {
     public void EquipTripleTimeSkill()
     {
         modSelected = "TRIPLE TIME";
-
-        UpdateModSelectedText(tripleTimeTextValue);
 
         tripleTimeSelectedKey.gameObject.SetActive(true);
 
@@ -305,8 +362,6 @@ public class PlayerSkillsManager : MonoBehaviour {
     {
         modSelected = "JUDGEMENT+";
 
-        UpdateModSelectedText(judgementPlusTextValue);
-
         UpdateScoreMultiplierText(105);
 
         UpdateSelectedModKeys();
@@ -317,8 +372,6 @@ public class PlayerSkillsManager : MonoBehaviour {
     {
         modSelected = "NO FAIL";
 
-        UpdateModSelectedText(noFailTextValue);
-
         UpdateScoreMultiplierText(75);
 
         UpdateSelectedModKeys();
@@ -328,8 +381,6 @@ public class PlayerSkillsManager : MonoBehaviour {
     public void EquipInstantDeathSkill()
     {
         modSelected = "INSTANT DEATH";
-
-        UpdateModSelectedText(instantDeathTextValue);
 
         UpdateScoreMultiplierText(100);
 
@@ -382,7 +433,7 @@ public class PlayerSkillsManager : MonoBehaviour {
     {
         if (PlayerPrefs.HasKey("fadeSpeedSelectedIndex"))
         {
-            fadeSpeedSelectedIndex = (sbyte)PlayerPrefs.GetInt("fadeSpeedSelectedIndex");
+            fadeSpeedSelectedIndex = PlayerPrefs.GetInt("fadeSpeedSelectedIndex");
 
             PlayFadeSpeedSelectedAnimation();
         }
@@ -391,17 +442,23 @@ public class PlayerSkillsManager : MonoBehaviour {
     // Check fade speed selected and play animation in song select scene
     public void PlayFadeSpeedSelectedAnimation()
     {
-        switch (fadeSpeedSelectedIndex)
+        if (fadeSpeedAnimator != null)
         {
-            case 0:
-                fadeSpeedAnimator.Play("FadeSpeedSlow");
-                break;
-            case 1:
-                fadeSpeedAnimator.Play("FadeSpeedNormal");
-                break;
-            case 2:
-                fadeSpeedAnimator.Play("FadeSpeedFast");
-                break;
+            if (optionsPanel.gameObject.activeSelf == true)
+            {
+                switch (fadeSpeedSelectedIndex)
+                {
+                    case 0:
+                        fadeSpeedAnimator.Play("FadeSpeedSlow");
+                        break;
+                    case 1:
+                        fadeSpeedAnimator.Play("FadeSpeedNormal");
+                        break;
+                    case 2:
+                        fadeSpeedAnimator.Play("FadeSpeedFast");
+                        break;
+                }
+            }
         }
     }
 
@@ -430,6 +487,39 @@ public class PlayerSkillsManager : MonoBehaviour {
         }
     }
 
+    // Updates the title and description text onhover
+    public void UpdateModText(string _mod)
+    {
+        switch (_mod)
+        {
+            case "TRIPLE TIME":
+                modNameText.text = "TRIPLE TIME";
+                modDescriptionText.text = "Makes the song play very fast";
+                break;
+            case "DOUBLE TIME":
+                modNameText.text = "DOUBLE TIME";
+                modDescriptionText.text = "Makes the song play faster";
+                break;
+            case "HALF TIME":
+                modNameText.text = "HALF TIME";
+                modDescriptionText.text = "Makes the song play slower";
+                break;
+            case "NO FAIL":
+                modNameText.text = "NO FAIL";
+                modDescriptionText.text = "Prevents you from failing";
+                break;
+            case "INSTANT DEATH":
+                modNameText.text = "INSTANT DEATH";
+                modDescriptionText.text = "Fail if judgement below PERFECT";
+                break;
+            case "RESET":
+                modNameText.text = "";
+                modDescriptionText.text = "";
+                break;
+                
+        }
+    }
+
     // Update the mod keys selected for Eri based on whats been selected
     private void UpdateSelectedModKeys()
     {
@@ -439,24 +529,31 @@ public class PlayerSkillsManager : MonoBehaviour {
         halfTimeSelectedKey.gameObject.SetActive(false);
         noFailSelectedKey.gameObject.SetActive(false);
         instantDeathSelectedKey.gameObject.SetActive(false);
+        characterImageKey.color = blackColor;
+
 
         // Activate the mod key based on the mod selected
         switch (modSelected)
         {
             case "TRIPLE TIME":
                 tripleTimeSelectedKey.gameObject.SetActive(true);
+                characterImageKey.color = greenColor;
                 break;
             case "DOUBLE TIME":
                 doubleTimeSelectedKey.gameObject.SetActive(true);
+                characterImageKey.color = orangeColor;
                 break;
             case "HALF TIME":
                 halfTimeSelectedKey.gameObject.SetActive(true);
+                characterImageKey.color = blueColor;
                 break;
             case "NO FAIL":
                 noFailSelectedKey.gameObject.SetActive(true);
+                characterImageKey.color = purpleColor;
                 break;
             case "INSTANT DEATH":
                 instantDeathSelectedKey.gameObject.SetActive(true);
+                characterImageKey.color = redColor;
                 break;
         }
     }

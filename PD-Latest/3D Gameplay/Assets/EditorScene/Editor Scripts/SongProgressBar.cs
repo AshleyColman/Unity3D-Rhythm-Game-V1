@@ -35,6 +35,7 @@ public class SongProgressBar : MonoBehaviour {
     private  LevelChanger levelChanger; // Required  for only disabling the songProgressBar in the editor and not gameplay
     private SongDatabase songDatabase; // Required for getting the song list from the songDatabase
     private PlayerSkillsManager playerSkillsManager; // Player skills manager for controlling audio speed based on mods
+    private LoadAndRunBeatmap loadAndRunBeatmap;
 
     // Properties
     
@@ -59,6 +60,8 @@ public class SongProgressBar : MonoBehaviour {
         levelChanger = FindObjectOfType<LevelChanger>();
         songDatabase = FindObjectOfType<SongDatabase>();
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
+        loadAndRunBeatmap = FindObjectOfType<LoadAndRunBeatmap>();
+
     }
 
     void Update()
@@ -82,7 +85,7 @@ public class SongProgressBar : MonoBehaviour {
             if (levelChanger.CurrentLevelIndex == levelChanger.GameplaySceneIndex || levelChanger.CurrentLevelIndex == levelChanger.ResultsSceneIndex)
             {
                 // Check for starting the song key input
-                if (Input.GetKeyDown(KeyCode.Space) && hasPressedSpacebar == false)
+                if (Input.GetKeyDown(KeyCode.Space) && hasPressedSpacebar == false && loadAndRunBeatmap.LevelChangerAnimationTimer >= 2f)
                 {
                     // Spacebar has been pressed
                     hasPressedSpacebar = true;

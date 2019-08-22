@@ -13,7 +13,8 @@ public class BeatmapButton : MonoBehaviour
     private BeatmapRanking beatmapRanking;
 
     public AudioClip click;
-    public AudioClip onPointerEnter;
+
+    public GameObject buttonGlow;
 
     private GameObject menuSFXGameObject;
     private AudioSource menuSFXAudioSource;

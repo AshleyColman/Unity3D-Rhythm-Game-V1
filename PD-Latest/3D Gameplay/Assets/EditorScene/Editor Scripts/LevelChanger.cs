@@ -94,6 +94,18 @@ public class LevelChanger : MonoBehaviour
             case 0:
                 animator.Play("LevelChanger_White_FadeIn");
             break;
+            case 1:
+                animator.Play("LevelChanger_Gameplay_FadeIn");
+                break;
+            case 2:
+                animator.Play("LevelChanger_Gameplay_FadeIn");
+                break;
+            case 3: animator.Play("LevelChanger_Gameplay_FadeIn");
+                break;
+            case 4:
+                animator.Play("LevelChanger_Gameplay_FadeIn");
+                break;
+
         }
 
     }
@@ -161,13 +173,7 @@ public class LevelChanger : MonoBehaviour
 
     private void PlaySceneLoadOutAnimation()
     {
-        switch (currentLevelIndex)
-        {
-            case 0:
-                animator.Play("LevelChanger_MainMenu_FadeOut");
-                break;
-        }
-
+        animator.Play("LevelChanger_MainMenu_FadeOut");
     }
 
     // On fade transition complete

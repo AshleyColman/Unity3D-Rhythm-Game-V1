@@ -1,13 +1,17 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class FeverTimeManager : MonoBehaviour {
 
     // UI
     public Slider feverTimeBar; // Fever time bar that fills up
-    public Image feverTimeBarFillImage; // Fill image
+    public Slider whiteFeverTimebar; // White background bar
+    public Image feverTimeBarFillImage;
     public Image feverTimeBorderImage; // Border image that appears during fever time
+    public TextMeshProUGUI multiplierText, shadowMultiplierText; // Multiplier text 
+
 
     // Gameobjects
     public GameObject feverTimeBackground; // FeverTime background 
@@ -18,6 +22,8 @@ public class FeverTimeManager : MonoBehaviour {
     // Animation
     public Animator feverTimeBackgroundAnimator;
     public Animator bar25PercentAnimator, bar50PercentAnimator, bar75PercentAnimator, bar100PercentAnimator;
+    public Animator multiplierTextAnimator;
+    public Animator feverTimeSideParticlesAnimator;
 
     // Integers
     private int feverTimeBarMaxValue; // Max value for the fever time bar
@@ -46,6 +52,8 @@ public class FeverTimeManager : MonoBehaviour {
     private bool hasPlayedFeverTimeFadeAnimation;
     private bool hasSet0Percent, hasSet25Percent, hasSet50Percent, hasSet75Percent, hasSet100Percent; // Controls setting the bar to x percent once per activation
 
+    private string defaultMultiplier, feverTimeMultiplier;
+
     // Audio
     public AudioSource menuSFXAudioSource; // Menu SFX audio source
     public AudioClip feverTimeReadySound; // Soundclip when fever bar is full
@@ -60,7 +68,7 @@ public class FeverTimeManager : MonoBehaviour {
     // Scripts
     private ScoreManager scoreManager; // Controls scoring/combo
     private MetronomeForEffects metronomeForEffects; // Metronome for effects for beat sync functions
-
+    private LoadAndRunBeatmap loadAndRunBeatmap; 
 
     // Properties
 
@@ -104,6 +112,7 @@ public class FeverTimeManager : MonoBehaviour {
         scoreManager = FindObjectOfType<ScoreManager>();
         // Get the reference to the metronomeForEffects 
         metronomeForEffects = FindObjectOfType<MetronomeForEffects>();
+        loadAndRunBeatmap = FindObjectOfType<LoadAndRunBeatmap>();
 
         // Initialize 
         timeStartedLerping = 0f;
@@ -116,6 +125,12 @@ public class FeverTimeManager : MonoBehaviour {
         lerpValue75Percent = 0.75f;
         lerpValue100Percent = 1.0f;
         lerpValue = 0f;
+        defaultMultiplier = "1x";
+        feverTimeMultiplier = "2x";
+
+        multiplierText.text = defaultMultiplier;
+
+        feverTimeSideParticlesAnimator.gameObject.SetActive(false);
 
         feverTimeCombo = 0;
         shouldLerpDown = false;
@@ -136,6 +151,7 @@ public class FeverTimeManager : MonoBehaviour {
         hasSet75Percent = false;
         hasSet100Percent = false;
         feverTimeBar.value = 0;
+        whiteFeverTimebar.value = 0;
     }
 
     // Update is called once per frame
@@ -144,8 +160,11 @@ public class FeverTimeManager : MonoBehaviour {
         // If gameplay has not started yet
         if (gameplayStarted == false)
         {
-            // Check if the game has started yet from the spacebar being pressed
-            CheckGameplayStarted();
+            if (loadAndRunBeatmap.LevelChangerAnimationTimer >= 2f)
+            {
+                // Check if the game has started yet from the spacebar being pressed
+                CheckGameplayStarted();
+            }
         }
 
         // Only run if the gameplay has started
@@ -184,6 +203,7 @@ public class FeverTimeManager : MonoBehaviour {
 
             // Lerp the fever time bar value down
             feverTimeBar.value = LerpFeverBarDown();
+            whiteFeverTimebar.value = LerpFeverBarDown() + 0.1f;
         }
     }
 
@@ -286,7 +306,7 @@ public class FeverTimeManager : MonoBehaviour {
     private void SetBarTo25Percent()
     {
         feverTimeBar.value = 0.25f;
-
+        whiteFeverTimebar.value = 0.26f;
         lerpValue = lerpValue25Percent;
 
         fullFeverTimeBarCount = 1;
@@ -309,6 +329,7 @@ public class FeverTimeManager : MonoBehaviour {
     private void SetBarTo50Percent()
     {
         feverTimeBar.value = 0.50f;
+        whiteFeverTimebar.value = 0.51f;
 
         lerpValue = lerpValue50Percent;
 
@@ -329,6 +350,7 @@ public class FeverTimeManager : MonoBehaviour {
     private void SetBarTo75Percent()
     {
         feverTimeBar.value = 0.75f;
+        whiteFeverTimebar.value = 0.76f;
 
         lerpValue = lerpValue75Percent;
 
@@ -349,7 +371,7 @@ public class FeverTimeManager : MonoBehaviour {
     private void SetBarTo100Percent()
     {
         feverTimeBar.value = 1f;
-
+        whiteFeverTimebar.value = 1f;
         lerpValue = lerpValue100Percent;
 
         fullFeverTimeBarCount = 4;
@@ -384,8 +406,17 @@ public class FeverTimeManager : MonoBehaviour {
         // Check if the feverTimeBar value is at 0
         if (feverTimeBar.value == feverTimeBarMinValue && hasSet0Percent == false)
         {
+            feverTimeSideParticlesAnimator.gameObject.SetActive(false);
+
             // 0 bars are full
             fullFeverTimeBarCount = 0;
+
+            // Update multiplier text 
+            multiplierText.text = defaultMultiplier;
+            shadowMultiplierText.text = defaultMultiplier;
+
+            // Play animation
+            multiplierTextAnimator.Play("DefaultMultiplier");
 
             // Reset combo
             feverTimeCombo = 0;
@@ -479,8 +510,20 @@ public class FeverTimeManager : MonoBehaviour {
     // Activate fever time
     private void ActivateFeverTime()
     {
+        feverTimeSideParticlesAnimator.gameObject.SetActive(true);
+        feverTimeSideParticlesAnimator.Play("FeverTimeSideParticles");
+
+        // Update multiplier text 
+        multiplierText.text = feverTimeMultiplier;
+        shadowMultiplierText.text = feverTimeMultiplier;
+
+        // Play animation
+        multiplierTextAnimator.Play("FeverTimeMultiplier");
+
         // Calculate the duration of fever time based on the amount of bars earned
         CalculateFeverTimeDuration();
+
+
 
         // Change the bar color
         feverTimeBarFillImage.color = activatedBarColor;

@@ -16,6 +16,7 @@ public class Beatmap
     public string beatmapCreator;
     public string beatmapDifficulty;
     public string beatmapFolderDirectory;
+    public string beatmapCreatedDate;
 
     public string beatmapEasyDifficultyLevel;
     public string beatmapAdvancedDifficultyLevel;
@@ -30,6 +31,8 @@ public class Beatmap
     public bool pressedKeyJ;
     public bool pressedKeyK;
     public bool pressedKeyL;
+
+    public int keyMode;
 
     public bool beatmapRanked;
 

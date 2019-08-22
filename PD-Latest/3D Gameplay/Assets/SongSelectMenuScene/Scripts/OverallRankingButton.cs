@@ -4,7 +4,7 @@ using TMPro;
 public class OverallRankingButton : MonoBehaviour {
 
     public TextMeshProUGUI songRankingText, overallRankingText;
-    public Canvas overallRankingCanvas;
+    public GameObject overallRankingCanvas;
 
     // Show the song ranking text
     public void ShowSongRankingText()
