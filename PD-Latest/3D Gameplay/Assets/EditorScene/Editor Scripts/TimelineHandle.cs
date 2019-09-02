@@ -18,17 +18,19 @@ public class TimelineHandle : MonoBehaviour {
     void OnBecameInvisible()
     {
         // If the song is playing (do a check)
-        if (MetronomePro_Player.playing == true)
+        if (MetronomePro_Player.playing == true && MetronomePro_Player != null)
         {
-            x = timeline.transform.position.x;
-            float y = timeline.transform.position.y;
-            float z = timeline.transform.position.z;
+            if (timeline != null)
+            {
+                x = timeline.transform.position.x;
+                float y = timeline.transform.position.y;
+                float z = timeline.transform.position.z;
 
-            x -= 684;
-            Vector3 newTimelinePosition = new Vector3(x, y, z);
-            timeline.transform.position = newTimelinePosition;
+                x -= 684;
+                Vector3 newTimelinePosition = new Vector3(x, y, z);
+                timeline.transform.position = newTimelinePosition;
+            }
         }
-
     }
 
 

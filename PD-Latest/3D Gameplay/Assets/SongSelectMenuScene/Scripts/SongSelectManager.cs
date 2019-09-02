@@ -50,7 +50,7 @@ public class SongSelectManager : MonoBehaviour {
     private bool beatmapKeyExistsS, beatmapKeyExistsD, beatmapKeyExistsF, beatmapKeyExistsJ, beatmapKeyExistsK,
         beatmapKeyExistsL; // Beatmap keys featured in the beatmap
     private bool hasPlayedSongPreviewOnce; // Used to play the start preview once upon entering the song select screen for the first time so the song plays at the current set time once.
-
+    private bool hasSelectedCurrentBeatmapButton;
     public AudioSource songAudioSource;
 
     // Scripts
@@ -243,6 +243,33 @@ public class SongSelectManager : MonoBehaviour {
         {
             // As we tried to access a file with no difficulties remain on the current index
             selectedBeatmapDirectoryIndex = previousBeatmapDirectoryIndex;
+        }
+    }
+
+    private void Update()
+    {
+        SelectCurrentBeatmapButton();
+    }
+
+    // Reset
+    public void ResetCurrentSelectedBeatmapButton()
+    {
+        hasSelectedCurrentBeatmapButton = false;
+    }
+
+    // Select the current beatmap button
+    private void SelectCurrentBeatmapButton()
+    {
+        if (hasSelectedCurrentBeatmapButton == false)
+        {
+            if (songSelectPanel.HasLoadedAllBeatmapButtons == true)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+
+                songSelectPanel.instantiatedBeatmapButtonList[selectedBeatmapDirectoryIndex].GetComponent<Button>().Select();
+
+                hasSelectedCurrentBeatmapButton = true;
+            }
         }
     }
 

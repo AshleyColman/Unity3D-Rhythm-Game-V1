@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class EnterGameScene : MonoBehaviour {
 
@@ -19,14 +20,21 @@ public class EnterGameScene : MonoBehaviour {
     private bool modeButtonAnimationHasPlayed; // Controls the mode button animation
     private bool hasLoggedIn; // Has the user logged in
 
+    // Buttons
+    public TMP_InputField registerUsernameInputField, loginUsernameInputField;
+
     // Strings
     private string successfullySignedInValue = "Successfully signed in" + '\n' + "Select a mode";
-   
+
+    StartSceneEnterGame startSceneEnterGame;
+
     private void Start()
     {
         // Initialize
         modeButtonAnimationHasPlayed = false;
         hasLoggedIn = false;
+
+        startSceneEnterGame = FindObjectOfType<StartSceneEnterGame>();
 
         // Check if the user has logged in
         CheckIfLoggedIn();
@@ -60,6 +68,9 @@ public class EnterGameScene : MonoBehaviour {
                     // Disable the press anywhere diamonds
                     pressAnywhereLeftDiamond.gameObject.SetActive(false);
                     pressAnywhereRightDiamond.gameObject.SetActive(false);
+
+                    // Select play mode button
+                    startSceneEnterGame.SelectPlayModeButton();
                 }
                 else
                 {
@@ -100,6 +111,9 @@ public class EnterGameScene : MonoBehaviour {
         registerCanvas.gameObject.SetActive(true);
         // Disable enter game canvas
         enterGameCanvas.gameObject.SetActive(false);
+
+        // Enable navigation
+        registerUsernameInputField.Select();
     }
 
     // Go to the login canvas
@@ -109,5 +123,8 @@ public class EnterGameScene : MonoBehaviour {
         loginCanvas.gameObject.SetActive(true);
         // Disable enter game canvas
         enterGameCanvas.gameObject.SetActive(false);
+
+        // Enable navigation
+        loginUsernameInputField.Select();
     }
 }

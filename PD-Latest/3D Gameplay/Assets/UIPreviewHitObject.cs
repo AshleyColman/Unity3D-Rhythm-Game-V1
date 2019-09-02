@@ -26,19 +26,12 @@ public class UIPreviewHitObject : MonoBehaviour {
         set { paused = value; }
     }
 
-    private void OnEnable()
-    {
-        // Reset
-        timer = 0f;
-        paused = false;
-    }
-
     // Use this for initialization
     void Start () {
         timer = 0f;
         deactivateTime = 1.20f;
         paused = false;
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -53,7 +46,7 @@ public class UIPreviewHitObject : MonoBehaviour {
             if (timer >= deactivateTime)
             {
                 // Deactivate the gameobject
-                this.gameObject.SetActive(false);
+                Destroy(this.gameObject);
             }
         }
 	}

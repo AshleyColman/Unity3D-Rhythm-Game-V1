@@ -53,21 +53,35 @@ public class MetronomePro : MonoBehaviour {
 	double interval;
 
 	public bool neverPlayed = true;
+    private bool metronomeIsMuted;
 
     private int division;
 
     BeatsnapManager beatsnapmanager;
+    EditorUIManager editorUIManager;
+    LivePreview livePreview;
+    PlacedObject placedObject;
 
+
+    public bool MetronomeIsMuted
+    {
+        set { metronomeIsMuted = value; }
+    }
 
     void Start () {
 
         beatsnapmanager = FindObjectOfType<BeatsnapManager>();
+        editorUIManager = FindObjectOfType<EditorUIManager>();
+        livePreview = FindObjectOfType<LivePreview>();
+        placedObject = FindObjectOfType<PlacedObject>();
 
-		imgBeat1.color = Color.gray;
+        imgBeat1.color = Color.gray;
 		imgBeat2.color = Color.gray;
 		imgBeat3.color = Color.gray;
 		imgBeat4.color = Color.gray;
-		txtBPM.text = "BPM: " + Bpm.ToString("F");
+        metronomeIsMuted = false;
+
+        txtBPM.text = "BPM: " + Bpm.ToString("F");
 	}
 
 	public void GetSongData (float _bpm, float _offsetMS, int _base, int _step) {
@@ -195,6 +209,8 @@ public class MetronomePro : MonoBehaviour {
 
 			active = true;
 		} catch {
+
+            editorUIManager.UpdateDescriptionText("You must select a song first");
 			Debug.LogWarning ("There isn't an Audio Clip assigned in the Player.");
 		}
 	}
@@ -233,41 +249,123 @@ public class MetronomePro : MonoBehaviour {
 		ToMainThread.AssignNewAction ().ExecuteOnMainThread (CalculateTicks());
 	}
 		
+
+    // Calculate decremented metronome values
+    public void CalculateDecrementMetronomeValues()
+    {
+        if (CurrentTick != 0)
+        {
+            // Decrement tick
+            CurrentTick--;
+        }
+
+        if (CurrentStep != 0)
+        {
+            // Decrement current step
+            CurrentStep--;
+        }
+
+        // Decrement current step
+        if (CurrentStep < 1)
+        {
+            CurrentStep = 4;
+        }
+
+
+        // If the Current Step is greater than the Step, reset it and increment the Measure
+        if (CurrentStep >= Step)
+        {
+            metronomeAudioSource.clip = highClip;
+        }
+        else
+        {
+            metronomeAudioSource.clip = lowClip;
+        }
+
+        // Call OnTick functions
+        StartCoroutine(OnTick());
+    }
+
+    // Calculate Incremented metronome values
+    public void CalculateIncrementMetronomeValues()
+    {
+        // Increment current tick
+        CurrentTick++;
+
+        // If the Current Step is greater than the Step, reset it and increment the Measure
+        if (CurrentStep >= Step)
+        {
+            CurrentStep = 1;
+            CurrentMeasure++;
+            metronomeAudioSource.clip = highClip;
+        }
+        else
+        {
+            CurrentStep++;
+            metronomeAudioSource.clip = lowClip;
+        }
+
+        // Call OnTick functions
+        StartCoroutine(OnTick());
+    }
+
+
 	// Metronome Main function, this calculates the times to make a Tick, Step Count, Metronome Sounds, etc.
-	IEnumerator CalculateTicks () {
+	public IEnumerator CalculateTicks () {
 		if (!active)
 			yield return null;
 
         if (songAudioSource != null)
         {
-            if (CurrentTick < songTickTimes.Count)
+
+            // Live preview UI object hit sounds
+            if (livePreview != null)
             {
-                // Check if the song time is greater than the current tick Time
-                if (songAudioSource.time >= songTickTimes[CurrentTick])
+                if (livePreview.PreviewOn == true)
                 {
-
-                    CurrentTick++;
-
-                    if (CurrentTick >= songTickTimes.Count)
+                    if (livePreview.oldestHitObjectIndex < placedObject.editorHitObjectList.Count)
                     {
-                        active = false;
+                        if (songAudioSource.time >= placedObject.editorHitObjectList[livePreview.OldestHitObjectIndex].hitObjectSpawnTime)
+                        {
+                            // Increment to check next spawned UI preview hit object
+                            livePreview.oldestHitObjectIndex++;
+                            // Play hit sound
+                            metronomeAudioSource.PlayOneShot(highClip);
+                        }
                     }
+                }
+            }
 
-                    // If the Current Step is greater than the Step, reset it and increment the Measure
-                    if (CurrentStep >= Step)
+            if (CurrentTick < songTickTimes.Count && metronomeIsMuted == false)
+            {
+                {
+                    // Check if the song time is greater than the current tick Time
+                    if (songAudioSource.time >= songTickTimes[CurrentTick])
                     {
-                        CurrentStep = 1;
-                        CurrentMeasure++;
-                        metronomeAudioSource.clip = highClip;
-                    }
-                    else
-                    {
-                        CurrentStep++;
-                        metronomeAudioSource.clip = lowClip;
-                    }
 
-                    // Call OnTick functions
-                    StartCoroutine(OnTick());
+                        CurrentTick++;
+
+                        if (CurrentTick >= songTickTimes.Count)
+                        {
+                            active = false;
+                        }
+
+                        // If the Current Step is greater than the Step, reset it and increment the Measure
+                        if (CurrentStep >= Step)
+                        {
+                            CurrentStep = 1;
+                            CurrentMeasure++;
+                            metronomeAudioSource.clip = highClip;
+                        }
+                        else
+                        {
+                            CurrentStep++;
+                            metronomeAudioSource.clip = lowClip;
+                        }
+
+                        // Call OnTick functions
+                        StartCoroutine(OnTick());
+                    }
                 }
             }
         }
@@ -285,8 +383,9 @@ public class MetronomePro : MonoBehaviour {
         }
 
 
+
         // Play Audio Tick
-        if (metronomeMuted == false)
+        if (metronomeIsMuted == false)
         {
             metronomeAudioSource.Play();
         }
@@ -327,12 +426,12 @@ public class MetronomePro : MonoBehaviour {
     // Mute the metronome so no sound plays on click
     public void MuteMetronome()
     {
-        metronomeMuted = true;
+        metronomeIsMuted = true;
     }
 
     // Unmute the metronome so sound plays on click
     public void UnmuteMetronome()
     {
-        metronomeMuted = false;
+        metronomeIsMuted = false;
     }
 }

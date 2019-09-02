@@ -20,10 +20,15 @@ public class Registration : MonoBehaviour {
     // Strings
     private string username, password, registerSuccessValue;
 
+    private StartSceneEnterGame startSceneEnterGame;
+
+
     private void Start()
     {
         // Initialize
         registerSuccessValue = "Account created successfully";
+
+        startSceneEnterGame = FindObjectOfType<StartSceneEnterGame>();
     }
 
     // Activate the username field description game object
@@ -85,12 +90,13 @@ public class Registration : MonoBehaviour {
 
             // Update press anywhere text
             pressAnywhereText.text = registerSuccessValue;
+
+            // Select login button
+            startSceneEnterGame.SelectLoginButton();
         }
         else
         {
             // REGISTER FAILED
-
-            Debug.Log(www.downloadHandler.text);
 
             // Activate the register failed icon
             incorrectDetailsImage.gameObject.SetActive(true);
@@ -112,6 +118,9 @@ public class Registration : MonoBehaviour {
     {
         // Disable the register canvas
         registerCanvas.gameObject.SetActive(false);
+
+        // Select register button
+        startSceneEnterGame.SelectRegisterButton();
 
         // Disable the loading icon
         DisableAccountProgressLoadingIcon();

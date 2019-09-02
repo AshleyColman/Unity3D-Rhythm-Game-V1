@@ -17,7 +17,7 @@ public class Beatmap
     public string beatmapDifficulty;
     public string beatmapFolderDirectory;
     public string beatmapCreatedDate;
-
+    public string beatmapCreatorMessage;
     public string beatmapEasyDifficultyLevel;
     public string beatmapAdvancedDifficultyLevel;
     public string beatmapExtraDifficultyLevel;

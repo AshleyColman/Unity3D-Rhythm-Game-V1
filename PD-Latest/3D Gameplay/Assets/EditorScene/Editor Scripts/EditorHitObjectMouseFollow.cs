@@ -11,18 +11,31 @@ public class EditorHitObjectMouseFollow : MonoBehaviour {
 
     // Scripts
     private PlacedObject placedObject;
-
+    private WorldObjectMouseFollow worldObjectMouseFollow;
+    private GridSnapManager gridSnapManager;
 
     private void Start()
     {
         // Reference
         placedObject = FindObjectOfType<PlacedObject>();
+        gridSnapManager = FindObjectOfType<GridSnapManager>();
+        worldObjectMouseFollow = this.gameObject.GetComponent<WorldObjectMouseFollow>();
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        if (gridSnapManager.SnappingEnabled == true)
+        {
+            worldObjectMouseFollow.enabled = false;
+        }
+        else
+        {
+            worldObjectMouseFollow.enabled = true;
+        }
+
+        /*
         // If M key is pressed start updating the instantiated editor hit object position
         if (Input.GetKeyDown(KeyCode.M) && raycastObjectDragActive == false)
         {
@@ -43,6 +56,7 @@ public class EditorHitObjectMouseFollow : MonoBehaviour {
             // Play the placed sound
             PlayPlacedSound();
         }
+        */
     }
 
     // Play selectedSound

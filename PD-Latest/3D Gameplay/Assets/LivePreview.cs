@@ -24,6 +24,7 @@ public class LivePreview : MonoBehaviour {
     public int objectType; // Object type index
     public int spawnHitObjectIndex; // Index of the hit object to spawn next
     public int currentHitObjectIndex; // Calculated hit object index based on the current time of the timeline
+    public int oldestHitObjectIndex; // Oldest preview hit object to have spawned
     float previewStartTime; // Time that starts the preview
     float previewEndTime; // Time that ends the preview
     public float currentSongTime;
@@ -41,7 +42,7 @@ public class LivePreview : MonoBehaviour {
 
     // Bools
     public bool previewOn, previewPaused, previewOff, previewLooping;
-
+    private bool hasSpawnedFirstUIObject;
     // Transform
     public Transform canvas; // Spawn location
 
@@ -49,8 +50,21 @@ public class LivePreview : MonoBehaviour {
     private PlacedObject placedObject;
     private MetronomePro metronomePro;
     private MetronomePro_Player metronomePro_Player;
+    private EditorUIManager editorUIManager;
 
     public List<UIPreviewHitObject> UIPreviewHitObjectScriptList = new List<UIPreviewHitObject>();
+
+    // Properties
+    public bool PreviewOn
+    {
+        get { return previewOn; }
+    }
+
+    public int OldestHitObjectIndex
+    {
+        get { return oldestHitObjectIndex; }
+        set { oldestHitObjectIndex = value; }
+    }
 
     private void Start()
     {
@@ -58,11 +72,13 @@ public class LivePreview : MonoBehaviour {
         previewOn = false;
         previewOff = true;
         previewPaused = false;
+        hasSpawnedFirstUIObject = false;
         animationTotalFrames = 120;
         startFrame = 0;
 
 
         // Reference
+        editorUIManager = FindObjectOfType<EditorUIManager>();
         placedObject = FindObjectOfType<PlacedObject>();
         metronomePro = FindObjectOfType<MetronomePro>();
         metronomePro_Player = FindObjectOfType<MetronomePro_Player>();
@@ -81,33 +97,19 @@ public class LivePreview : MonoBehaviour {
         CheckPreviewLoop();
     }
 
+    // Get the first spawn object id
+    private void GetFirstSpawnObjectID(int _index)
+    {
+        if (hasSpawnedFirstUIObject == false)
+        {
+            oldestHitObjectIndex = _index;
+            hasSpawnedFirstUIObject = true;
+        }
+    }
+
     // Calculate the current preview object index based on the current time in the timeline
     private void CalculateCurrentPreviewObjectIndex()
     {
-        // List starts at 0
-        // Calculate the index we're at based on song time
-        // Song time is 60 seconds
-        // current index is 60
-        // clear list/information
-        // instantiate object 0 with the editorhitobject information from "current index: 60"
-
-
-
-        // Check how many hit object spawn times we're ahead of
-        // Only spawn the hit object for the NEXT hit object not the others 
-        // Prevents spawning 50 or more etc hit objects if the user has clicked ahead in the timeline
-        // For example clicking 1 minute in = calculate which hit object index we are to spawn next and don't spawn the previous objects
-
-
-
-        // Object 1 time: 2
-        // song time = 7
-        // object 2 time = 10
-
-        // check if greater
-        // sets index to 1
-
-
         // Check the list if not empty
         if (placedObject.editorHitObjectList.Count != 0)
         {
@@ -137,11 +139,16 @@ public class LivePreview : MonoBehaviour {
 
         // Calculate the current preview object index based on the current time in the timeline
         CalculateCurrentPreviewObjectIndex();
+        // Update the oldest hit object index 
+        oldestHitObjectIndex = currentHitObjectIndex;
+        //CalculateViewablePreviewObjectIndexRange();
     }
 
     // Start/Resume/Pause the live preview - toggle
     public void StartOrPauseLivePreview()
     {
+        // Deactivate the instantiated editable hit object
+        DeactivateInstantiatedEditableHitObject();
 
         // If the preview is paused or the preview is currently off
         if (previewPaused == true || previewOff == true)
@@ -157,9 +164,23 @@ public class LivePreview : MonoBehaviour {
         }
     }
 
+    // Deactivate the instantiated editable hit object
+    private void DeactivateInstantiatedEditableHitObject()
+    {
+        // Disable the editable hit object if active
+        if (editorUIManager.instantiatedEditableHitObject.gameObject.activeSelf == true)
+        {
+            editorUIManager.instantiatedEditableHitObject.gameObject.SetActive(false);
+        }
+    }
+
     // Resume the live preview
     private void ResumeLivePreview()
     {
+        // Calculate current hit object index
+        CalculateCurrentPreviewObjectIndex();
+        oldestHitObjectIndex = currentHitObjectIndex;
+
         // Resume the preview animations
         ResumePreviewAnimations();
 
@@ -172,6 +193,9 @@ public class LivePreview : MonoBehaviour {
 
         // Turn on the song
         metronomePro_Player.PlayOrPauseSong();
+
+        // Mute metronome
+        metronomePro.MuteMetronome();
     }
 
     // Pause the live preview
@@ -210,6 +234,10 @@ public class LivePreview : MonoBehaviour {
         // Ensure preview is on and not paused
         previewOn = true;
         previewPaused = false;
+
+
+        // Reset first spawn object id
+        hasSpawnedFirstUIObject = false;
     }
 
     // Clear all preview information
@@ -276,6 +304,11 @@ public class LivePreview : MonoBehaviour {
     // Instantiate a preview hit object and add to the list
     private void SpawnPreviewHitObject(int _index, int _previewObjectType, Vector3 _previewObjectPosition)
     {
+        // Check if first ui object has spawned, get the id of first object
+        GetFirstSpawnObjectID(_index);
+
+
+
         // Instantiate
         GameObject obj = Instantiate(previewHitObject, Vector3.zero, Quaternion.identity);
 
@@ -304,6 +337,145 @@ public class LivePreview : MonoBehaviour {
         previewHitObjectAnimatorList[_index].Play("PreviewHitObject", 0, 0f);
     }
 
+
+    // Calculate the range of all viewable preview hit objects on screen based on the current time of the song
+    public void CalculateViewablePreviewObjectIndexRange()
+    {
+        // Clear the list
+        viewablePreviewObjectsList.Clear();
+        previewHitObjectAnimatorList.Clear();
+        UIPreviewHitObjectScriptList.Clear();
+
+        // Check the list is not empty
+        if (placedObject.editorHitObjectList.Count != 0)
+        {
+            // Loop through all the editor hit objects saved
+            for (int i = 0; i < placedObject.editorHitObjectList.Count; i++)
+            {
+                // Check for the firt hit object index that is within the range of the current song time - 1;
+                //if ((placedObject.editorHitObjectList[i].hitObjectSpawnTime - 1) >= (metronomePro.songAudioSource.time - 1)
+                //&& metronomePro.songAudioSource.time <= placedObject.editorHitObjectList[i].hitObjectSpawnTime)
+                if ((metronomePro.songAudioSource.time) >= (placedObject.editorHitObjectList[i].hitObjectSpawnTime - 1) &&
+                    metronomePro.songAudioSource.time <= placedObject.editorHitObjectList[i].hitObjectSpawnTime)
+                {
+                    //Debug.Log("added");
+
+                    // Add the index of the object that can be viewed
+                    viewablePreviewObjectsList.Add(i);
+                }
+                else
+                {
+                    //Debug.Log("outside of range");
+                }
+            }
+
+            if (viewablePreviewObjectsList.Count != 0)
+            {
+                // Instantiate all viewable preview hit objects 
+                InstantiateViewablePreviewHitObjects();
+            }
+        }
+    }
+
+    // Instantiate all viewable preview hit objects 
+    private void InstantiateViewablePreviewHitObjects()
+    {
+        // Loop through all viewable objects
+        for (int i = 0; i < viewablePreviewObjectsList.Count; i++)
+        {
+            int objectIndex = viewablePreviewObjectsList[i];
+
+            // Instantiate
+            GameObject obj = Instantiate(previewHitObject, Vector3.zero, Quaternion.identity);
+
+            // Get the object type for the preview object
+            objectType = placedObject.editorHitObjectList[objectIndex].hitObjectType;
+
+            // Get the object position for the preview object
+            objectPosition = placedObject.editorHitObjectList[objectIndex].hitObjectPosition;
+
+            // Update the parent spawn to be in the canvas
+            obj.transform.SetParent(canvas, false);
+
+            // Update the position
+            obj.transform.position = objectPosition;
+
+            // Update the rotation
+            obj.transform.rotation = Quaternion.Euler(-90, 0, 45);
+
+            // Add to instantiated objects list
+            instantiatedPreviewHitObjects.Add(obj);
+
+            // Add the preview hit objects animator to the list to control animation playback
+            previewHitObjectAnimatorList.Add(obj.GetComponent<Animator>());
+
+            // Add the UIPreviewHitObject script attached to the preview hit object to the list for controlling pausing deactivation
+            UIPreviewHitObjectScriptList.Add(obj.GetComponent<UIPreviewHitObject>());
+
+            // Update the color of the glow and inner components
+            ChangePreviewObjectColor(i, objectType);
+
+            // Calculate the frame the animator should play from for the preview object based on the spawn time and current song time
+            SetPreviewObjectAnimationStartTime(objectIndex, i);
+
+            // Update the preview timer
+            //UpdatePreviewHitObjectTimer(objectIndex, i);
+        }
+    }
+
+    // Calculate the frame the animator should play from for the preview object based on the spawn time and current song time
+    private void SetPreviewObjectAnimationStartTime(int _objectIndex, int _animatorIndex)
+    {
+        currentSongTime = metronomePro.songAudioSource.time;
+        previewObjectAnimationStartTime = (placedObject.editorHitObjectList[_objectIndex].hitObjectSpawnTime - 1);
+        previewObjectAnimationEndTime = (previewObjectAnimationStartTime + 1.20f);
+
+        float spawnDuration = 1f;
+
+        // Calculate the difference between the spawn time and current song time
+        difference = (currentSongTime - previewObjectAnimationStartTime);
+
+        // Calculate the percentage difference
+        //percentage = (currentSongTime / previewObjectAnimationEndTime) * 100;
+        percentage = (difference / spawnDuration) * 100;
+
+        // Get the start frame by getting the percentage of frames completed
+        startFrame = (int)Mathf.Round(animationTotalFrames * percentage) / 100;
+
+        // Calculate the time to play the animation from
+        playTime = ((1f / animationTotalFrames) * startFrame);
+
+        previewHitObjectAnimatorList[_animatorIndex].Play("PreviewHitObject", 0, playTime);
+    }
+
+    private void UpdatePreviewHitObjectTimer(int _index, int _scriptIndex)
+    {
+
+        // Calculate the difference based on the current time compared to the spawn/end time
+        float difference = 0;
+        float hitObjectSpawnTime = 0;
+        float hitObjectEndTime = 0;
+        float currentSongTime = 0;
+
+
+        currentSongTime = metronomePro.songAudioSource.time;
+        hitObjectSpawnTime = (placedObject.editorHitObjectList[_index].hitObjectSpawnTime - 1);
+        hitObjectEndTime = (hitObjectSpawnTime + 1.10f);
+
+        if (currentSongTime > hitObjectSpawnTime)
+        {
+            difference = (currentSongTime - hitObjectSpawnTime);
+        }
+        Debug.Log(currentSongTime + "  " + hitObjectSpawnTime);
+
+        // Update the timer value based on the spawn time
+        newPreviewHitObjectTimerValue = difference;
+
+        // Update the timer of the preview hit object
+        UIPreviewHitObjectScriptList[_scriptIndex].Timer = newPreviewHitObjectTimerValue;
+    }
+
+
     // Pause preview animations
     private void PausePreviewAnimations()
     {
@@ -313,14 +485,17 @@ public class LivePreview : MonoBehaviour {
             // Loop through all preview hit object animators and pause the animation
             for (int i = 0; i < previewHitObjectAnimatorList.Count; i++)
             {
-                // If the game object is currently active 
-                if (instantiatedPreviewHitObjects[i].gameObject.activeSelf == true)
+                if (instantiatedPreviewHitObjects[i] != null)
                 {
-                    // Set speed to 0 to pause the animation
-                    previewHitObjectAnimatorList[i].speed = 0;
+                    // If the game object is currently active 
+                    if (instantiatedPreviewHitObjects[i].gameObject.activeSelf == true)
+                    {
+                        // Set speed to 0 to pause the animation
+                        previewHitObjectAnimatorList[i].speed = 0;
 
-                    // Pause deactivation of the preview hit object
-                    UIPreviewHitObjectScriptList[i].Paused = true;
+                        // Pause deactivation of the preview hit object
+                        UIPreviewHitObjectScriptList[i].Paused = true;
+                    }
                 }
             }
         }
@@ -335,14 +510,17 @@ public class LivePreview : MonoBehaviour {
             // Loop through all preview hit object animators and resume the animation
             for (int i = 0; i < previewHitObjectAnimatorList.Count; i++)
             {
-                // If the game object is currently active 
-                if (instantiatedPreviewHitObjects[i].gameObject.activeSelf == true)
+                if (instantiatedPreviewHitObjects[i] != null)
                 {
-                    // Set speed to 0 to pause the animation
-                    previewHitObjectAnimatorList[i].speed = 1;
+                    // If the game object is currently active 
+                    if (instantiatedPreviewHitObjects[i].gameObject.activeSelf == true)
+                    {
+                        // Set speed to 0 to pause the animation
+                        previewHitObjectAnimatorList[i].speed = 1;
 
-                    // Resume activation of the preview hit object to allow the timer to continue for deactivation
-                    UIPreviewHitObjectScriptList[i].Paused = false;
+                        // Resume activation of the preview hit object to allow the timer to continue for deactivation
+                        UIPreviewHitObjectScriptList[i].Paused = false;
+                    }
                 }
             }
         }
@@ -530,6 +708,8 @@ public class LivePreview : MonoBehaviour {
         }
     }
 
+    
+
     // Play the preview from the manually entered start time 
     public void PlayPreviewFromSetStartTime()
     {
@@ -571,120 +751,4 @@ public class LivePreview : MonoBehaviour {
 
 
 
-    // Calculate the range of all viewable preview hit objects on screen based on the current time of the song
-    public void CalculateViewablePreviewObjectIndexRange()
-    {
-        // Clear the list
-        viewablePreviewObjectsList.Clear();
-        previewHitObjectAnimatorList.Clear();
-        UIPreviewHitObjectScriptList.Clear();
-        
-        // Check the list is not empty
-        if (placedObject.editorHitObjectList.Count != 0)
-        {
-            // Loop through all the editor hit objects saved
-            for (int i = 0; i < placedObject.editorHitObjectList.Count; i++)
-            {
-                // Check for the firt hit object index that is within the range of the current song time - 1;
-                //if ((placedObject.editorHitObjectList[i].hitObjectSpawnTime - 1) >= (metronomePro.songAudioSource.time - 1)
-                //&& metronomePro.songAudioSource.time <= placedObject.editorHitObjectList[i].hitObjectSpawnTime)
-                if ((metronomePro.songAudioSource.time) >= (placedObject.editorHitObjectList[i].hitObjectSpawnTime - 1) &&
-                    metronomePro.songAudioSource.time <= placedObject.editorHitObjectList[i].hitObjectSpawnTime)
-                {
-                    Debug.Log("added");
-                    // Add the index of the object that can be viewed
-                    viewablePreviewObjectsList.Add(i);
-                }
-                else
-                {
-                    Debug.Log("outside of range");
-                }
-            }
-
-            if (viewablePreviewObjectsList.Count != 0)
-            {
-                // Instantiate all viewable preview hit objects 
-                InstantiateViewablePreviewHitObjects();
-            }
-
-
-        }
-    }
-
-    // Instantiate all viewable preview hit objects 
-    private void InstantiateViewablePreviewHitObjects()
-    {
-        // Loop through all viewable objects
-        for (int i = 0; i < viewablePreviewObjectsList.Count; i++)
-        {
-            int objectIndex = viewablePreviewObjectsList[i];
-
-            // Instantiate
-            GameObject obj = Instantiate(previewHitObject, Vector3.zero, Quaternion.identity);
-
-            // Get the object type for the preview object
-            objectType = placedObject.editorHitObjectList[objectIndex].hitObjectType;
-
-            // Get the object position for the preview object
-            objectPosition = placedObject.editorHitObjectList[objectIndex].hitObjectPosition;
-
-            // Update the parent spawn to be in the canvas
-            obj.transform.SetParent(canvas, false);
-
-            // Update the position
-            obj.transform.position = objectPosition;
-
-            // Update the rotation
-            obj.transform.rotation = Quaternion.Euler(-90, 0, 45);
-
-            // Add to instantiated objects list
-            instantiatedPreviewHitObjects.Add(obj);
-
-            // Add the preview hit objects animator to the list to control animation playback
-            previewHitObjectAnimatorList.Add(obj.GetComponent<Animator>());
-
-            // Add the UIPreviewHitObject script attached to the preview hit object to the list for controlling pausing deactivation
-            UIPreviewHitObjectScriptList.Add(obj.GetComponent<UIPreviewHitObject>());
-
-            // Update the color of the glow and inner components
-            ChangePreviewObjectColor(i, objectType);
-
-            // Calculate the frame the animator should play from for the preview object based on the spawn time and current song time
-            SetPreviewObjectAnimationStartTime(objectIndex, i);
-        }
-    }
-
-    // Calculate the frame the animator should play from for the preview object based on the spawn time and current song time
-    private void SetPreviewObjectAnimationStartTime(int _objectIndex, int _animatorIndex)
-    {
-        currentSongTime = metronomePro.songAudioSource.time;
-        previewObjectAnimationStartTime = (placedObject.editorHitObjectList[_objectIndex].hitObjectSpawnTime - 1);
-        previewObjectAnimationEndTime = (previewObjectAnimationStartTime + 1.20f);
-
-        float spawnDuration = 1f;
-
-        // Calculate the difference between the spawn time and current song time
-        difference = (currentSongTime - previewObjectAnimationStartTime);
-
-        // Calculate the percentage difference
-        //percentage = (currentSongTime / previewObjectAnimationEndTime) * 100;
-        percentage = (difference / spawnDuration) * 100;
-
-        // Get the start frame by getting the percentage of frames completed
-        startFrame = (int)Mathf.Round(animationTotalFrames * percentage) / 100;
-
-        // Calculate the time to play the animation from
-        playTime = ((1f / animationTotalFrames) * startFrame);
-
-        previewHitObjectAnimatorList[_animatorIndex].Play("PreviewHitObject", 0, playTime);
-    }
-
-    private void UpdatePreviewHitObjectTimer(int _index)
-    {
-        // New preview hit object timer value to control deactivating the preview hit object at the correct time
-        newPreviewHitObjectTimerValue = ((1.20f / animationTotalFrames) * startFrame);
-
-        // Update the timer of the preview hit object
-        UIPreviewHitObjectScriptList[_index].Timer = newPreviewHitObjectTimerValue;
-    }
 }

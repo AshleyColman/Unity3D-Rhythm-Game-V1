@@ -34,7 +34,6 @@ public class HitSoundPreview : MonoBehaviour {
     {
         PlayerPrefs.SetInt("hitSoundChosenIndex", hitSoundChosenIndex);
         PlayerPrefs.Save();
-        Debug.Log("hitSoundChosenIndex " + hitSoundChosenIndex);
     }
 
     // Set player prefs hit sound volume
@@ -42,8 +41,6 @@ public class HitSoundPreview : MonoBehaviour {
     {
         PlayerPrefs.SetFloat("hitSoundVolume", hitSoundVolume);
         PlayerPrefs.Save();
-
-        Debug.Log("hitSoundVolume" + hitSoundVolume);
     }
 
     // Load the hit sound volume
@@ -52,8 +49,6 @@ public class HitSoundPreview : MonoBehaviour {
         if (PlayerPrefs.HasKey("hitSoundVolume"))
         {
             hitSoundVolume = PlayerPrefs.GetFloat("hitSoundVolume");
-
-            Debug.Log("hitSoundVolume" + hitSoundVolume);
         }
     }
 
@@ -65,7 +60,6 @@ public class HitSoundPreview : MonoBehaviour {
         {
             hitSoundChosenIndex = PlayerPrefs.GetInt("hitSoundChosenIndex");
 
-            Debug.Log("hitSoundChosenIndex" + hitSoundChosenIndex);
         }
     }
      

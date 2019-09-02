@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class StartSceneEnterGame : MonoBehaviour {
 
@@ -23,7 +25,7 @@ public class StartSceneEnterGame : MonoBehaviour {
     private string loginTextValue;
     private string selectModeValue;
 
-    
+    public Button registerButton, loginButton, playModeButton;
 
     // Use this for initialization
     void Start () {
@@ -60,10 +62,29 @@ public class StartSceneEnterGame : MonoBehaviour {
                 // Set to true
                 hasClicked = true;
 
+                // Select the register button
+                SelectRegisterButton();
+
                 // Play sound effect
                 menuSFXAudioSource.PlayOneShot(menuSFXMenuSourceClip);
             }
         }
+    }
+
+    public void SelectRegisterButton()
+    {
+        // Select the register button
+        registerButton.Select();
+    }
+
+    public void SelectPlayModeButton()
+    {
+        playModeButton.Select();
+    }
+
+    public void SelectLoginButton()
+    {
+        loginButton.Select();
     }
 
     private void ShowLoginPanel()

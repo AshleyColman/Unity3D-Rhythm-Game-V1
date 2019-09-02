@@ -15,7 +15,7 @@ public class SongSelectPanel : MonoBehaviour
 
     // Gameobjects
     public GameObject beatmapButton; // The button to instantiate
-    private List<GameObject> instantiatedBeatmapButtonList = new List<GameObject>();
+    public List<GameObject> instantiatedBeatmapButtonList = new List<GameObject>();
     private GameObject beatmapButtonInstantiate; // The instantiated beatmap button
     public Transform buttonListContent; // Where the beatmap buttons instantiate to
     private Transform beatmapButtonInstantiateChildImage; // Child image for the beatmap button
@@ -35,7 +35,7 @@ public class SongSelectPanel : MonoBehaviour
     // Bools
     private bool hasLoadedAllBeatmapDirectories;
     private bool hasResetSliderBarValue;
-
+    private bool hasLoadedAllBeatmapButtons;
     // Material
     private Material childImageMaterial; // Child image for beatmap buttons
     public Material defautChildImageMaterial; // Default image that is displayed when no file can be found 
@@ -46,7 +46,11 @@ public class SongSelectPanel : MonoBehaviour
     // Scripts
     private SongSelectManager songSelectManager; // Reference to the song select manager which manages loading songs, used to get the beatmap img addresses for loading images
 
-
+    // Properties
+    public bool HasLoadedAllBeatmapButtons
+    {
+        get { return hasLoadedAllBeatmapButtons; }
+    }
 
     // Use this for initialization
     void Start()
@@ -62,7 +66,6 @@ public class SongSelectPanel : MonoBehaviour
         completePath = "";
         fileCheckPath = "";
         beatmapButtonListScrollbar.value = 0;
-
 
         // Reference
         songSelectManager = FindObjectOfType<SongSelectManager>();
@@ -111,6 +114,9 @@ public class SongSelectPanel : MonoBehaviour
 
         // Reset the scroll bar value
         beatmapButtonListScrollbar.value = 0f;
+
+        // Set to true
+        hasLoadedAllBeatmapButtons = true;
     }
 
 

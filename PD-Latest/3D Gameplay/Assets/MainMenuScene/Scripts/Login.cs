@@ -19,7 +19,8 @@ public class Login : MonoBehaviour {
     private string username, password, guestUsername;
 
     // Scripts
-    private EnterGameScene enterGameScene; 
+    private EnterGameScene enterGameScene;
+    private StartSceneEnterGame startSceneEnterGame;
 
     private void Start()
     {
@@ -28,6 +29,7 @@ public class Login : MonoBehaviour {
 
         // References
         enterGameScene = FindObjectOfType<EnterGameScene>();
+        startSceneEnterGame = FindObjectOfType<StartSceneEnterGame>();
     }
 
     // Login to the game offline/online as a guest account
@@ -41,6 +43,9 @@ public class Login : MonoBehaviour {
         DisableLoginCanvas();
         // Enable the logged in canvas
         EnableLoggedInCanvas();
+
+        // Select the play button
+        startSceneEnterGame.SelectPlayModeButton();
     }
 
     // Call the login function
@@ -108,6 +113,9 @@ public class Login : MonoBehaviour {
         loginCanvas.gameObject.SetActive(false);
         // Disable the loading icon
         DisableAccountProgressLoadingIcon();
+
+        // Select register button
+        startSceneEnterGame.SelectRegisterButton();
     }
 
     // Enable the enter game canvas

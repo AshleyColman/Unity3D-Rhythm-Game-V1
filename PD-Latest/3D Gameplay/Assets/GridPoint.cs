@@ -7,12 +7,12 @@ public class GridPoint : MonoBehaviour {
     // Scripts
     public GridSnapManager gridSnapManager;
 
-    private MouseFollow mouseFollow;
+    private WorldObjectMouseFollow worldObjectMouseFollow;
 
     private void Start()
     {
         // Reference 
-        mouseFollow = hitObjectCursor.GetComponent<MouseFollow>();
+        worldObjectMouseFollow = hitObjectCursor.GetComponent<WorldObjectMouseFollow>();
     }
 
     // Snap the hit object to position if the mouse has entered the grid button
@@ -25,7 +25,7 @@ public class GridPoint : MonoBehaviour {
             hitObjectCursor.transform.position = this.gameObject.transform.position;
 
             // Deactivate making the hit object snap
-            mouseFollow.enabled = false;
+            worldObjectMouseFollow.enabled = false;
         }
     }
 }

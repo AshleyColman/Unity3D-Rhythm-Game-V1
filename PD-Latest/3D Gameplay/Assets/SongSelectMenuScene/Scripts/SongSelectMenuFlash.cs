@@ -82,13 +82,13 @@ public class SongSelectMenuFlash : MonoBehaviour {
         beatmapRanking.ResetLeaderboard();
 
         // Load next or previous beatmap based on the key pressed
-        if (_keyPressed == "RIGHT")
+        if (_keyPressed == "LEFT")
         {
             // LOAD NEXT BEATMAP
             // Increment the beatmap index to load the next beatmap
             songSelectManager.IncrementSelectedBeatmapDirectoryIndex();
         }
-        else if (_keyPressed == "LEFT")
+        else if (_keyPressed == "RIGHT")
         {
             // LOAD PREVIOUS BEATMAP
             // Decrement the beatmap selected index to load the previous song
@@ -186,5 +186,7 @@ public class SongSelectMenuFlash : MonoBehaviour {
     public void ClearBeatmapLoaded()
     {
         Database.database.Clear();
+
+        songSelectManager.ResetCurrentSelectedBeatmapButton();
     }
 }

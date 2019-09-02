@@ -62,21 +62,104 @@ public class MetronomePro_Player : MonoBehaviour
     private int songSelectedIndex = 0;
 
     private MetronomePro metronomePro;
-
+    private LevelChanger levelChanger;
+    private LivePreview livePreview;
+    private EditorUIManager editorUIManager;
 
     void Start()
     {
 
         // Find the reference to the songDatabase
         songDatabase = FindObjectOfType<SongDatabase>();
-
+        editorUIManager = FindObjectOfType<EditorUIManager>();
         metronomePro = FindObjectOfType<MetronomePro>();
+        livePreview = FindObjectOfType<LivePreview>();
+        levelChanger = FindObjectOfType<LevelChanger>();
 
         // Stop any song and reset values
         StopSong();
 
         // Send Song Data to Metronome
         SendSongData();
+    }
+
+    // Check input to change the song play back speed
+    private void CheckSongPlaybackSpeedInput()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            if (velocityScale.value == 0)
+            {
+                // Reset
+                velocityScale.value = 12;
+            }
+            else
+            {
+                // Decrease the velocity playback speed value
+                velocityScale.value--;
+            }
+
+            // Error check and reset if too high
+            if (velocityScale.value > 12)
+            {
+                // Reset
+                velocityScale.value = 0;
+            }
+
+
+            // Change the song play back speed
+            ChangeSongPlaybackSpeed();
+        }
+    }
+
+    // Change the song play back speed
+    public void ChangeSongPlaybackSpeed()
+    {
+        switch (velocityScale.value)
+        {
+            case 0:
+                songAudioSource.pitch = 2.00f;
+                break;
+            case 1:
+                songAudioSource.pitch = 1.75f;
+                break;
+            case 2:
+                songAudioSource.pitch = 1.50f;
+                break;
+            case 3:
+                songAudioSource.pitch = 1.25f;
+                break;
+            case 4:
+                songAudioSource.pitch = 1;
+                break;
+            case 5:
+                songAudioSource.pitch = 0.75f;
+                break;
+            case 6:
+                songAudioSource.pitch = 0.50f;
+                break;
+            case 7:
+                songAudioSource.pitch = 0.45f;
+                break;
+            case 8:
+                songAudioSource.pitch = 0.40f;
+                break;
+            case 9:
+                songAudioSource.pitch = 0.35f;
+                break;
+            case 10:
+                songAudioSource.pitch = 0.30f;
+                break;
+            case 11:
+                songAudioSource.pitch = 0.25f;
+                break;
+            case 12:
+                songAudioSource.pitch = 0.20f;
+                break;
+            default:
+                songAudioSource.pitch = 1;
+                break;
+        }
     }
 
     // Gets the song selected from the song button list
@@ -98,42 +181,8 @@ public class MetronomePro_Player : MonoBehaviour
     // Sets a New Song and Metronome Velocity using Velocity Scale Dropdown Value
     public void SetNewVelocity()
     {
-        if (velocityScale.value == 4)
-        {
-            songAudioSource.pitch = 1;
-        }
-        else if (velocityScale.value == 5)
-        {
-            songAudioSource.pitch = 0.75f;
-        }
-        else if (velocityScale.value == 6)
-        {
-            songAudioSource.pitch = 0.50f;
-        }
-        else if (velocityScale.value == 7)
-        {
-            songAudioSource.pitch = 0.25f;
-        }
-        else if (velocityScale.value == 3)
-        {
-            songAudioSource.pitch = 1.25f;
-        }
-        else if (velocityScale.value == 2)
-        {
-            songAudioSource.pitch = 1.50f;
-        }
-        else if (velocityScale.value == 1)
-        {
-            songAudioSource.pitch = 1.75f;
-        }
-        else if (velocityScale.value == 0)
-        {
-            songAudioSource.pitch = 2.00f;
-        }
-        else
-        {
-            songAudioSource.pitch = 1;
-        }
+        // Change the song play back speed
+        ChangeSongPlaybackSpeed();
     }
 
     // Sets a New Song Position if the user clicked on Song Player Slider
@@ -247,35 +296,67 @@ public class MetronomePro_Player : MonoBehaviour
         // PlayOrPauseSong();
     }
 
+    // Update the song progress bar ui 
+    public void UpdateSongProgressUI()
+    {
+        amount = (songAudioSource.time) / (songAudioSource.clip.length);
+        songPlayerBar.fillAmount = amount;
+        timelinePositionSliderImage.fillAmount = amount;
+        handleSlider.value = amount;
+        timelinePositionHandleSlider.value = amount;
+        reversedTimelineHandleSlider.value = amount;
+
+        actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
+    }
+
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
     void Update()
     {
-        if (active)
-        {
-            if (playing)
-            {
-                if (songAudioSource.isPlaying)
-                {
-                    amount = (songAudioSource.time) / (songAudioSource.clip.length);
-                    songPlayerBar.fillAmount = amount;
-                    timelinePositionSliderImage.fillAmount = amount;
-                    handleSlider.value = amount;
-                    timelinePositionHandleSlider.value = amount;
-                    reversedTimelineHandleSlider.value = amount;
+        // Check input to change the song play back speed
+        CheckSongPlaybackSpeedInput();
 
-                    actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
+        if (songAudioSource.clip != null)
+        {
+            if (active)
+            {
+                if (playing)
+                {
+                    if (songAudioSource.isPlaying)
+                    {
+                        UpdateSongProgressUI();
+                    }
+                    else
+                    {
+                        StopSong();
+                    }
+                }
+            }
+            // Play song when user press Space button
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                // Check if the live preview panel is open
+                // If live preview is active play live preview
+                // Else play the song normally
+                if (levelChanger.CurrentLevelIndex == levelChanger.EditorSceneIndex)
+                {
+                    if (editorUIManager.previewPanel.activeSelf == true)
+                    {
+                        livePreview.StartOrPauseLivePreview();
+                    }
+                    else
+                    {
+                        // Unmute metronome
+                        metronomePro.UnmuteMetronome();
+
+                        PlayOrPauseSong();
+                    }
                 }
                 else
                 {
-                    StopSong();
+                    PlayOrPauseSong();
                 }
-            }
-        }
 
-        // Play song when user press Space button
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            PlayOrPauseSong();
+            }
         }
     }
 }

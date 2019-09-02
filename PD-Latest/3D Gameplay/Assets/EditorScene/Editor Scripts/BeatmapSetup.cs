@@ -16,8 +16,10 @@ public class BeatmapSetup : MonoBehaviour {
     public Button saveButton;
     public Button resetButton;
     public Button newSongButton;
+    public Button resetConfirmationButtonNo;
     public TMP_InputField songPreviewStartTimeInputField;    // The textbox to get the vlaue of the start time
     public TextMeshProUGUI statusText; // Displays status and user activity
+    public TextMeshProUGUI songPreviewStartTimeText;
 
     // Gameobjects
     public GameObject difficultyButtonsPanel;
@@ -27,6 +29,7 @@ public class BeatmapSetup : MonoBehaviour {
     public GameObject songPreviewStartTimePanel;    // The song preview start time panel
     public GameObject statusPanel; // Status panel for displaying information on user activity in the editor
     public GameObject saveBeatmapPanel; // Save beatmap panel
+    public GameObject resetBeatmapInformationPanel; // Reset beatmap information confirmation panel
 
     // strings
     private string beatmapEasyDifficultyLevel, beatmapAdvancedDifficultyLevel, beatmapExtraDifficultyLevel;
@@ -43,7 +46,6 @@ public class BeatmapSetup : MonoBehaviour {
     // bools
     private bool settingUp; // Is true when in the setup screen, used for allowing keyboard press without starting the editor
     private bool hasUpdatedUIText;
-
 
     // Properties
 
@@ -128,29 +130,34 @@ public class BeatmapSetup : MonoBehaviour {
         {
             beatmapCreator = "GUEST";
         }
+
     }
 
-    // Get the song preview time from the input field box
-    public void ActivateSongPreviewStartTimePanel()
+    private void Update()
     {
-        // Enable the song preview start time panel
-        songPreviewStartTimePanel.gameObject.SetActive(true);
+        // Display reset confirmation panel 
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            // Display
+            resetBeatmapInformationPanel.gameObject.SetActive(true);
+            // Select the reset panel NO button
+            resetConfirmationButtonNo.Select();
+        }
     }
 
-    // Save the text field information then disable
-    public void GetSongPreviewStartTime()
+    // Deactivate the reset confirmation panel
+    public void DeactivateResetConfirmationPanel()
     {
-        // Get the time from the input field
-        songPreviewStartTime = float.Parse(songPreviewStartTimeInputField.text);
+        resetBeatmapInformationPanel.gameObject.SetActive(false);
+    }
 
-        // Disble the song preview start time panel
-        songPreviewStartTimePanel.gameObject.SetActive(false);
+    // Save the song preview start time
+    public void GetSongPreviewStartTime(float _time)
+    {
+        songPreviewStartTime = _time;
 
-        // Enable the save button
-        //saveButton.interactable = true;
-
-        // Activate save button panel and disable settings panel
-        ActivateSaveBeatmapPanel();
+        // Update the song preview start time text
+        songPreviewStartTimeText.text =  "BEATMAP SONG PREVIEW START TIME: " + UtilityMethods.FromSecondsToMinutesAndSeconds(songPreviewStartTime);
     }
 
     // Activate the save beatmap panel
@@ -260,8 +267,8 @@ public class BeatmapSetup : MonoBehaviour {
         // Disable the difficulty level panel
         difficultyLevelPanel.gameObject.SetActive(false);
 
-        // Activate the song preview start time input field and button
-        ActivateSongPreviewStartTimePanel();
+        // Activate save button panel and disable settings panel
+        ActivateSaveBeatmapPanel();
     }
 
     // Update the song name, artist and difficulty with the values entered

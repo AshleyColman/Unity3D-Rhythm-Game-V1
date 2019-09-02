@@ -120,7 +120,7 @@ public class LoadAndRunBeatmap : MonoBehaviour {
         // Functions
         totalHitObjects = Database.database.loadedPositionX.Count; // Assign the total number of hit objects based on how many x positions there are
         totalHitObjectListSize = totalHitObjects; // Get total number of objects to spawn
-        CalculateNewHitObjectYPositions(); // Calculate all the y positions for the hit objects, preventing overlap during gameplay
+        //CalculateNewHitObjectYPositions(); // Calculate all the y positions for the hit objects, preventing overlap during gameplay
         LoadHitObjectPositions(); // Load the hit object xyz positions from the beatmap file
         LoadHitObjectSpawnTimes(); // Load and update the hit object spawn times with the fade speed selected value
         UpdateGameplayUI(); // When gameplay scene has loaded update the UI text
@@ -198,6 +198,8 @@ public class LoadAndRunBeatmap : MonoBehaviour {
                     hitObjectAnimator.Play("FastHitObject", 0, 0f);
                     break;
             }
+
+            objectToSpawn.transform.SetAsFirstSibling();
 
             poolDictionary[_tag].Enqueue(objectToSpawn);
 

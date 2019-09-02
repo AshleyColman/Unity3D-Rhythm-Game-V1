@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class BeatsnapManager : MonoBehaviour {
 
@@ -9,6 +10,8 @@ public class BeatsnapManager : MonoBehaviour {
     public Slider beatsnapPoint; // Get beatsnap point
     public Slider timelineSlider; // Get main timeline slider
     private Slider instantiatedBeatsnap; // Instantiated beatsnap slider
+    public TextMeshProUGUI beatsnapTimingOnText, beatsnapTimingOffText; // Text for toggling beatsnap timing on or off
+    private Slider objSlider;
 
     // Gameobjects
     public GameObject timelineCurrentTimeHandle; // Get the main timeline sliders current song position handle, used for getting the position of and spawning beatsnap objects at its current position
@@ -18,6 +21,8 @@ public class BeatsnapManager : MonoBehaviour {
 
     // Bools
     private bool hasCheckedTickDifference;
+    private bool beatsnapTimingEnabled;
+
 
     // Integers
     private float instantiationTime;// The time between intantiations
@@ -30,6 +35,7 @@ public class BeatsnapManager : MonoBehaviour {
     private float beatsnapTime; // Beatsnap time value
     public List<float> beatsnapSliderValueList = new List<float>(); // Slider values of all instantiated beatsnap point sliders
     public List<float> beatsnapTickTimesList = new List<float>();
+    public List<Slider> beatsnapGameObjectList = new List<Slider>();
     public float nextPoolTickTime; // The next time to change the current pool hit object to once its gone past its tick time
     public float currentTickTime; // Get the closest tick time based on the current song time
     private int totalBeatsnapPrefabsCount; // Total number of beatsnap prefabs instantiated
@@ -47,6 +53,11 @@ public class BeatsnapManager : MonoBehaviour {
     private MetronomePro metronomePro; // Reference to metronomePro for tick times
     private PlacedObject placedObject;
 
+    // Properties
+    public bool BeatsnapTimingEnabled
+    {
+        get { return beatsnapTimingEnabled; }
+    }
 
 
     [System.Serializable]
@@ -64,6 +75,10 @@ public class BeatsnapManager : MonoBehaviour {
     {
         // Initialize
         instantiationTime = 0.1f;
+        beatsnapTimingEnabled = true;
+
+        beatsnapTimingOffText.gameObject.SetActive(false);
+        beatsnapTimingOnText.gameObject.SetActive(true);
 
         // Reference
         metronomePro = FindObjectOfType<MetronomePro>();
@@ -87,6 +102,10 @@ public class BeatsnapManager : MonoBehaviour {
                 obj.transform.localRotation = Quaternion.Euler(0, 0, 0);
  
                 obj.gameObject.SetActive(false);
+
+                // Add to the list
+                beatsnapGameObjectList.Add(obj);
+
                 objectPool.Enqueue(obj);
             }
 
@@ -94,6 +113,33 @@ public class BeatsnapManager : MonoBehaviour {
         }
     }
 
+    // Convert all song tick times to slider values
+    public void CalculateBeatsnapSliderListValues()
+    {
+        for (int i = 0; i < metronomePro.songTickTimes.Count; i++)
+        {
+            sliderValue = placedObject.CalculateTimelineHitObjectSliderValue((float)metronomePro.songTickTimes[i]);
+            beatsnapSliderValueList.Add(sliderValue);
+        }
+    }
+
+    // Toggle beatsnap timing on or off
+    public void ToggleBeatsnapTiming()
+    {
+        if (beatsnapTimingEnabled == true)
+        {
+            beatsnapTimingOffText.gameObject.SetActive(true);
+            beatsnapTimingOnText.gameObject.SetActive(false);
+            beatsnapTimingEnabled = false;
+        }
+        else if (beatsnapTimingEnabled == false)
+        {
+            beatsnapTimingOffText.gameObject.SetActive(false);
+            beatsnapTimingOnText.gameObject.SetActive(true);
+            beatsnapTimingEnabled = true;
+        }
+
+    }
 
     // Generate beatsnap
     public void SetupBeatsnaps()
