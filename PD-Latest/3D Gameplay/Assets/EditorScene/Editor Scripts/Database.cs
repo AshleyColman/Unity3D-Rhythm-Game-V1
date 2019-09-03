@@ -219,6 +219,9 @@ public class Database : MonoBehaviour {
         beatmap.BPM = metronomePro.Bpm;
         beatmap.offsetMS = metronomePro.OffsetMS;
 
+        Debug.Log("saved bpm: " + beatmap.BPM);
+        Debug.Log("saved offsetMS: " + beatmap.offsetMS);
+
         // Save leaderboard table name
         beatmap.leaderboardTableName = leaderboardTableName;
 

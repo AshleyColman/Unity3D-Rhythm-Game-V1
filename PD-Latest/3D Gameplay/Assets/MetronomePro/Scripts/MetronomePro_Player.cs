@@ -65,7 +65,7 @@ public class MetronomePro_Player : MonoBehaviour
     private LevelChanger levelChanger;
     private LivePreview livePreview;
     private EditorUIManager editorUIManager;
-
+    private EditSelectToEditorManager editSelectToEditorManager;
     void Start()
     {
 
@@ -75,12 +75,20 @@ public class MetronomePro_Player : MonoBehaviour
         metronomePro = FindObjectOfType<MetronomePro>();
         livePreview = FindObjectOfType<LivePreview>();
         levelChanger = FindObjectOfType<LevelChanger>();
+        editSelectToEditorManager = FindObjectOfType<EditSelectToEditorManager>();
 
         // Stop any song and reset values
         StopSong();
 
-        // Send Song Data to Metronome
-        SendSongData();
+
+
+        // Object was destroyed before scene loaded - creating a new file
+        if (editSelectToEditorManager == null)
+        {
+            // Send Song Data to Metronome
+            SendSongData();
+        }
+
     }
 
     // Check input to change the song play back speed

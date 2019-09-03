@@ -13,6 +13,8 @@ public class SongSelectMenuFlash : MonoBehaviour {
     private SongSelectManager songSelectManager; // Song select manager for loading beatmaps                                     
     private BeatmapRanking beatmapRanking; // Loads beatmap leaderboard information
     private PlayerProfile playerProfile; // Loads player profile information
+    private EditSelectSceneSongSelectManager editSelectSceneSongSelectManager; // Edit select scene song select manager
+    private LevelChanger levelChanger;
 
     void Start () {
 
@@ -26,13 +28,20 @@ public class SongSelectMenuFlash : MonoBehaviour {
         songSelectManager = FindObjectOfType<SongSelectManager>();
         beatmapRanking = FindObjectOfType<BeatmapRanking>();
         playerProfile = FindObjectOfType<PlayerProfile>();
-	}
+        editSelectSceneSongSelectManager = FindObjectOfType<EditSelectSceneSongSelectManager>();
+        levelChanger = FindObjectOfType<LevelChanger>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
 
-        // Check for keyboard arrow input
-        CheckArrowKeyboardInput();
+        // Only check for arrow key input for changing beatmaps if on the song select scenes
+        if (levelChanger.CurrentLevelIndex == levelChanger.SongSelectSceneIndex)
+        {
+            // Check for keyboard arrow input
+            CheckArrowKeyboardInput();
+        }
+
     }
 
     // Check for keyboard arrow input
@@ -161,25 +170,74 @@ public class SongSelectMenuFlash : MonoBehaviour {
         beatmapRanking.ResetNotChecked();
     }
 
+    // Load the beatmap which the song select menu beatmap button has assigned to it (BUTTON FUNCTION)
+    public void LoadEditSelectSceneBeatmapButtonSong(int _beatmapToLoadIndex)
+    {
+        // Clear all loaded beatmaps
+        ClearEditSelectSceneBeatmapLoaded();
+
+        // Disable the keys required for the beatmap
+        editSelectSceneSongSelectManager.DisableKeysRequiredForBeatmap();
+
+        // Has pressed arrow key
+        hasPressedArrowKey = true;
+
+        // Assign the beatmap to load index to the beatmap to load index pass from the button clicked in the song select scene
+        editSelectSceneSongSelectManager.SelectedBeatmapDirectoryIndex = _beatmapToLoadIndex;
+
+        // Load the beatmap if the file exists
+        editSelectSceneSongSelectManager.LoadBeatmapFileThatExists(editSelectSceneSongSelectManager.SelectedBeatmapDirectoryIndex, hasPressedArrowKey);
+
+        // Set back to false
+        hasPressedArrowKey = false;
+    }
+
+
     // Select the Extra difficulty, update and flash
     public void LoadBeatmapExtraDifficulty()
     {
-        // Load extra difficulty information and beatmap file from database
-        songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.SelectedBeatmapDirectoryIndex, extraBeatmapDifficulty, hasPressedArrowKey);
+        if (levelChanger.CurrentLevelIndex == levelChanger.SongSelectSceneIndex)
+        {
+            // Load extra difficulty information and beatmap file from database
+            songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.SelectedBeatmapDirectoryIndex, extraBeatmapDifficulty, hasPressedArrowKey);
+        }
+        else if (levelChanger.CurrentLevelIndex == levelChanger.EditSelectSceneIndex)
+        {
+            // Load extra difficulty information and beatmap file from database
+            editSelectSceneSongSelectManager.LoadBeatmapSongSelectInformation(editSelectSceneSongSelectManager.SelectedBeatmapDirectoryIndex, extraBeatmapDifficulty,
+                hasPressedArrowKey);
+        }
     }
 
     // Select the Advanced difficulty, update and flash
     public void LoadBeatmapAdvancedDifficulty()
     {
-        // Load extra difficulty information and beatmap file from database
-        songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.SelectedBeatmapDirectoryIndex, defaultBeatmapDifficulty, hasPressedArrowKey);
+        if (levelChanger.CurrentLevelIndex == levelChanger.SongSelectSceneIndex)
+        {
+            // Load advanced difficulty information and beatmap file from database
+            songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.SelectedBeatmapDirectoryIndex, defaultBeatmapDifficulty, hasPressedArrowKey);
+        }
+        else if (levelChanger.CurrentLevelIndex == levelChanger.EditSelectSceneIndex)
+        {
+            // Load advanced difficulty information and beatmap file from database
+            editSelectSceneSongSelectManager.LoadBeatmapSongSelectInformation(editSelectSceneSongSelectManager.SelectedBeatmapDirectoryIndex, defaultBeatmapDifficulty, hasPressedArrowKey);
+        }
     }
 
     // Select the Easy difficulty, update and flash
     public void LoadBeatmapEasyDifficulty()
     {
-        // Load extra difficulty information and beatmap file from database
-        songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.SelectedBeatmapDirectoryIndex, easyBeatmapDifficulty, hasPressedArrowKey);
+        if (levelChanger.CurrentLevelIndex == levelChanger.SongSelectSceneIndex)
+        {
+            // Load easy difficulty information and beatmap file from database
+            songSelectManager.LoadBeatmapSongSelectInformation(songSelectManager.SelectedBeatmapDirectoryIndex, easyBeatmapDifficulty, hasPressedArrowKey);
+        }
+        else if (levelChanger.CurrentLevelIndex == levelChanger.EditSelectSceneIndex)
+        {
+            // Load easy difficulty information and beatmap file from database
+            editSelectSceneSongSelectManager.LoadBeatmapSongSelectInformation(editSelectSceneSongSelectManager.SelectedBeatmapDirectoryIndex,
+                easyBeatmapDifficulty, hasPressedArrowKey);
+        }
     }
 
     // Clear all beatmap information from the difficulty file
@@ -188,5 +246,13 @@ public class SongSelectMenuFlash : MonoBehaviour {
         Database.database.Clear();
 
         songSelectManager.ResetCurrentSelectedBeatmapButton();
+    }
+
+    // Clear all beatmap information from the difficulty file
+    public void ClearEditSelectSceneBeatmapLoaded()
+    {
+        Database.database.Clear();
+
+        editSelectSceneSongSelectManager.ResetCurrentSelectedBeatmapButton();
     }
 }

@@ -352,7 +352,6 @@ public class EditSelectSceneSongSelectManager : MonoBehaviour {
         // If the easy.dia file exists
         if (File.Exists(userCreatedBeatmapDirectories[_selectedBeatmapDirectoryIndex] + @"\" + easyBeatmapFileName))
         {
-            Debug.Log("easy exists " + _selectedBeatmapDirectoryIndex);
             // ALLOW GAMEPLAY
             // Set bool to true as the file exists
             easyDifficultyExist = true;
@@ -380,7 +379,6 @@ public class EditSelectSceneSongSelectManager : MonoBehaviour {
         // If the advanced.dia file exists
         if (File.Exists(userCreatedBeatmapDirectories[_selectedBeatmapDirectoryIndex] + @"\" + advancedBeatmapFileName))
         {
-            Debug.Log("advanced exists " + _selectedBeatmapDirectoryIndex);
             // ALLOW GAMEPLAY
             // Set bool to exist as the file exists
             advancedDifficultyExist = true;
@@ -391,7 +389,6 @@ public class EditSelectSceneSongSelectManager : MonoBehaviour {
         }
         else
         {
-            Debug.Log("extra exists " + _selectedBeatmapDirectoryIndex);
             // Disable the button
             difficultyOptionAdvancedButton.interactable = false;
             // Disable the event trigger to prevent it trying to load the advanced file that doesn't exist

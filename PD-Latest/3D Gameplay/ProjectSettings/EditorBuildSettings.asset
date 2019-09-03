@@ -27,5 +27,5 @@ EditorBuildSettings:
     path: Assets/OverallLeaderboardScene/Scenes/OverallLeaderboardScene.unity
     guid: 042ef9a5f3221a5498f9e2dc2844b92b
   - enabled: 1
-    path: Assets/EditSelectScene/Scenes/EditSelectScene.unity
-    guid: 333842035d41a0046a464cc5a47c0905
+    path: Assets/SongSelectMenuScene/Scenes/SongSelectMenu 1.unity
+    guid: 680317b2141d9ea4f84160e4c2211818

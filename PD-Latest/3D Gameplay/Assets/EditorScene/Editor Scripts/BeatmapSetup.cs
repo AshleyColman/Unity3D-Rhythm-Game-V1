@@ -52,56 +52,67 @@ public class BeatmapSetup : MonoBehaviour {
     public string BeatmapCreatedDate
     {
         get { return beatmapCreatedDate; }
+        set { beatmapCreatedDate = value; }
     }
 
     public string BeatmapEasyDifficultyLevel
     {
         get { return beatmapEasyDifficultyLevel; }
+        set { beatmapEasyDifficultyLevel = value; }
     }
 
     public string BeatmapAdvancedDifficultyLevel
     {
         get { return beatmapAdvancedDifficultyLevel; }
+        set { beatmapAdvancedDifficultyLevel = value; }
     }
 
     public string BeatmapExtraDifficultyLevel
     {
         get { return beatmapExtraDifficultyLevel; }
+        set { beatmapExtraDifficultyLevel = value; }
     }
 
     public string SongName
     {
         get { return songName; }
+        set { songName = value; }
     }
 
     public string SongArtist
     {
         get { return songArtist; }
+        set { songArtist = value; }
     }
 
     public string BeatmapCreator
     {
         get { return beatmapCreator; }
+        set { beatmapCreator = value; }
     }
 
     public int SongClipChosenIndex
     {
         get { return songClipChosenIndex; }
+        set { songClipChosenIndex = value; }
     }
 
     public float SongPreviewStartTime
     {
         get { return songPreviewStartTime; }
+        set { songPreviewStartTime = value; }
     }
 
     public string FolderDirectory
     {
         get { return folderDirectory; }
+        set { folderDirectory = value; }
     }
 
     public string BeatmapDifficulty
     {
         get { return beatmapDifficulty; }
+        set { beatmapDifficulty = value; }
     }
 
 

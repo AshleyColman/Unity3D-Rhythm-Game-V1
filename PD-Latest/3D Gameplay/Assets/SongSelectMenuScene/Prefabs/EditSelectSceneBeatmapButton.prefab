@@ -185,7 +185,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 114779472667436260}
-        m_MethodName: LoadBeatmap
+        m_MethodName: LoadEditSelectSceneBeatmap
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

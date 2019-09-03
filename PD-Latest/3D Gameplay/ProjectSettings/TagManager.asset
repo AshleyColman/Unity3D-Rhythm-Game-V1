@@ -45,6 +45,7 @@ TagManager:
   - BeatsnapPoint
   - AudioSource
   - EditableHitObject
+  - EditorManager
   layers:
   - Default
   - TransparentFX

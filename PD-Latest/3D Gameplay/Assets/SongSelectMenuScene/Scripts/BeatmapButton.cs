@@ -11,7 +11,7 @@ public class BeatmapButton : MonoBehaviour
     private SongSelectMenuFlash songSelectMenuFlash;
     private SongSelectManager songSelectManager;
     private BeatmapRanking beatmapRanking;
-
+    private EditSelectSceneSongSelectManager editSelectSceneSongSelectManager;
     public AudioClip click;
 
     public GameObject buttonGlow;
@@ -27,7 +27,8 @@ public class BeatmapButton : MonoBehaviour
         menuSFXAudioSource = menuSFXGameObject.GetComponent<AudioSource>();
         songSelectManager = FindObjectOfType<SongSelectManager>();
         beatmapRanking = FindObjectOfType<BeatmapRanking>();
-	}
+        editSelectSceneSongSelectManager = FindObjectOfType<EditSelectSceneSongSelectManager>();
+    }
 
     // Load the beatmap assigned to the button when clicked
     public void LoadBeatmap()
@@ -42,10 +43,30 @@ public class BeatmapButton : MonoBehaviour
         PlaySongPreview();
     }
 
+    // Load the beatmap assigned to the button when clicked
+    public void LoadEditSelectSceneBeatmap()
+    {
+        if (songSelectMenuFlash == null)
+        {
+            songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
+        }
+
+        songSelectMenuFlash.LoadEditSelectSceneBeatmapButtonSong(beatmapButtonIndex);
+
+        PlayEditSelectSceneSongPreview();
+    }
+
     // Play the song preview when clicked
     private void PlaySongPreview()
     {
         songSelectManager.PlaySongPreview();
+    }
+
+
+    // Play the song preview when clicked
+    private void PlayEditSelectSceneSongPreview()
+    {
+        editSelectSceneSongSelectManager.PlaySongPreview();
     }
 
     // Set the beatmap butotn index during instantiation

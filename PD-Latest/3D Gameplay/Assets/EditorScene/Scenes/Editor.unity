@@ -11582,7 +11582,7 @@ GameObject:
   - component: {fileID: 435480790}
   m_Layer: 0
   m_Name: EditorManager
-  m_TagString: Untagged
+  m_TagString: EditorManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -56994,7 +56994,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -124001975
+  randomSeed: -1468792179
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -64352,7 +64352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2113434118
 MonoBehaviour:
   m_ObjectHideFlags: 0

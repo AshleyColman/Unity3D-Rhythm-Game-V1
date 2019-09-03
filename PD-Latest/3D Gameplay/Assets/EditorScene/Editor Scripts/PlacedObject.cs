@@ -764,6 +764,37 @@ public class PlacedObject : MonoBehaviour {
         }
     }
 
+
+    // Load the editor hit object and timeline object based from the file if editing an existing file
+    public void LoadEditorHitObjectFromFile(int _objectType, float _spawnTime, Vector3 _position)
+    {
+        // Set the instantiate position to the editor hit object position but with a Y of 0
+        InstantiateEditorPlacedHitObject(_objectType);
+
+        // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
+        InstantiateTimelineObject(_objectType, _spawnTime);
+
+        // Create a new editor hit object (class object) and assign all the variables such as position, spawn time and type
+        EditorHitObject newEditorHitObject = new EditorHitObject();
+
+        newEditorHitObject.hitObjectPosition = _position;
+
+
+        newEditorHitObject.hitObjectType = _objectType;
+        newEditorHitObject.hitObjectSpawnTime = _spawnTime;
+
+        // Add the newEditorHitObject to the editorHitObjectList
+        editorHitObjectList.Add(newEditorHitObject);
+
+
+        // Reorder the editorHitObject list
+        SortListOrders();
+
+        // Update the timeline objects
+        UpdateTimelineObjects();
+    }
+
+
     // Sort all lists based on spawn time so they're in order
     public void SortListOrders()
     {
