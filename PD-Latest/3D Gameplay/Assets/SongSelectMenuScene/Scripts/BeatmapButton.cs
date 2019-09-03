@@ -32,6 +32,11 @@ public class BeatmapButton : MonoBehaviour
     // Load the beatmap assigned to the button when clicked
     public void LoadBeatmap()
     {
+        if (songSelectMenuFlash == null)
+        {
+            songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
+        }
+
         songSelectMenuFlash.LoadBeatmapButtonSong(beatmapButtonIndex);
 
         PlaySongPreview();

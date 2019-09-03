@@ -26,3 +26,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/OverallLeaderboardScene/Scenes/OverallLeaderboardScene.unity
     guid: 042ef9a5f3221a5498f9e2dc2844b92b
+  - enabled: 1
+    path: Assets/EditSelectScene/Scenes/EditSelectScene.unity
+    guid: 333842035d41a0046a464cc5a47c0905

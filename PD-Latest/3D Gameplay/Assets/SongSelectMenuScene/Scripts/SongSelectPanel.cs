@@ -14,7 +14,7 @@ public class SongSelectPanel : MonoBehaviour
 
 
     // Gameobjects
-    public GameObject beatmapButton; // The button to instantiate
+    public GameObject beatmapButton, editSelectSceneBeatmapButton; // The button to instantiate
     public List<GameObject> instantiatedBeatmapButtonList = new List<GameObject>();
     private GameObject beatmapButtonInstantiate; // The instantiated beatmap button
     public Transform buttonListContent; // Where the beatmap buttons instantiate to
@@ -23,7 +23,7 @@ public class SongSelectPanel : MonoBehaviour
     // Strings
     private string imageName;
     private string imageType;
-    private string[] beatmapDirectoryPaths; // The beatmap directory paths
+    public string[] beatmapDirectoryPaths; // The beatmap directory paths
     private string shaderLocation;
     string completePath;
     string fileCheckPath;
@@ -45,6 +45,8 @@ public class SongSelectPanel : MonoBehaviour
 
     // Scripts
     private SongSelectManager songSelectManager; // Reference to the song select manager which manages loading songs, used to get the beatmap img addresses for loading images
+    private LevelChanger levelChanger; // Level changer
+    private EditSelectSceneSongSelectManager editSelectSceneSongSelectManager; // Song select manager for the edit select scene
 
     // Properties
     public bool HasLoadedAllBeatmapButtons
@@ -69,6 +71,8 @@ public class SongSelectPanel : MonoBehaviour
 
         // Reference
         songSelectManager = FindObjectOfType<SongSelectManager>();
+        editSelectSceneSongSelectManager = FindObjectOfType<EditSelectSceneSongSelectManager>();
+        levelChanger = FindObjectOfType<LevelChanger>();
     }
 
     private void Update()
@@ -91,26 +95,55 @@ public class SongSelectPanel : MonoBehaviour
     // Create all beatmap buttons to go in the song select panel
     private void CreateSongSelectPanel()
     {
-        // Load the beatmap buttons in the scroll list
-        for (int beatmapButtonIndex = 0; beatmapButtonIndex < songSelectManager.beatmapDirectories.Length; beatmapButtonIndex++)
+        if (levelChanger.CurrentLevelIndex == levelChanger.SongSelectSceneIndex)
         {
-            // Instantiate a new beatmap button to go in the song select panel
-            InstantiateBeatmapButton(beatmapButtonIndexToGet);
+            // Load the beatmap buttons in the scroll list
+            for (int beatmapButtonIndex = 0; beatmapButtonIndex < songSelectManager.beatmapDirectories.Length; beatmapButtonIndex++)
+            {
+                // Instantiate a new beatmap button to go in the song select panel
+                InstantiateBeatmapButton(beatmapButtonIndexToGet);
+                // Increment the beatmapButtonIndexToGet (Increments after each coroutine only so it loads the image 1 after another)
+                beatmapButtonIndexToGet++;
+            }
 
-            // Increment the beatmapButtonIndexToGet (Increments after each coroutine only so it loads the image 1 after another)
-            beatmapButtonIndexToGet++;
+            /// Reset
+            beatmapButtonIndexToGet = 0;
+
+
+            for (int i = 0; i < songSelectManager.beatmapDirectories.Length; i++)
+            {
+                // Change the beatmap image
+                StartCoroutine(LoadNewBeatmapButtonImage(beatmapButtonIndexToGet));
+
+                beatmapButtonIndexToGet++;
+            }
+        }
+        else if (levelChanger.CurrentLevelIndex == levelChanger.EditSelectSceneIndex)
+        {
+            // Load the beatmap buttons for all user accessible beatmaps
+            for (int beatmapButtonIndex = 0; beatmapButtonIndex < beatmapDirectoryPaths.Length; beatmapButtonIndex++)
+            {
+                // Instantiate a new beatmap button to go in the song select panel
+                InstantiateBeatmapButton(beatmapButtonIndexToGet);
+                // Increment the beatmapButtonIndexToGet (Increments after each coroutine only so it loads the image 1 after another)
+                beatmapButtonIndexToGet++;
+            }
+
+            /// Reset
+            beatmapButtonIndexToGet = 0;
+
+            for (int i = 0; i < beatmapDirectoryPaths.Length; i++)
+            {
+                // Change the beatmap image
+                StartCoroutine(LoadNewBeatmapButtonImage(beatmapButtonIndexToGet));
+
+                beatmapButtonIndexToGet++;
+            }
         }
 
-        /// Reset
-        beatmapButtonIndexToGet = 0;
 
-        for (int i = 0; i < songSelectManager.beatmapDirectories.Length; i++)
-        {
-            // Change the beatmap image
-            StartCoroutine(LoadNewBeatmapButtonImage(beatmapButtonIndexToGet));
 
-            beatmapButtonIndexToGet++;
-        }
+
 
         // Reset the scroll bar value
         beatmapButtonListScrollbar.value = 0f;
@@ -128,15 +161,45 @@ public class SongSelectPanel : MonoBehaviour
         beatmapDirectoryPaths = Directory.GetDirectories(@"c:\Beatmaps");
     }
 
+    // Get all the directories that the logged in user is allowed to edit in the edit select song scene
+    public void GetLoggedInUserEditableBeatmapDirectories()
+    {
+        if (editSelectSceneSongSelectManager == null)
+        {
+            editSelectSceneSongSelectManager = FindObjectOfType<EditSelectSceneSongSelectManager>();
+        }
+
+        // Update the array size
+        beatmapDirectoryPaths = new string[editSelectSceneSongSelectManager.userCreatedBeatmapDirectories.Count];
+
+        // Loop through all user created beatmap directories
+        for (int i = 0; i < editSelectSceneSongSelectManager.userCreatedBeatmapDirectories.Count; i++)
+        {
+
+            // Get the directory
+            beatmapDirectoryPaths[i] = editSelectSceneSongSelectManager.userCreatedBeatmapDirectories[i];
+        }
+    }
+
     // Instantiate a new beatmap button in to the song select panel
     private void InstantiateBeatmapButton(int _beatmapButtonIndex)
     {
-        // Assign the index and image to this button
-        beatmapButtonInstantiate = Instantiate(beatmapButton, beatmapButtonPosition, Quaternion.Euler(0, 0, -45),
-        buttonListContent) as GameObject;
+        if (levelChanger.CurrentLevelIndex == levelChanger.SongSelectSceneIndex)
+        {
+            // Assign the index and image to this button
+            beatmapButtonInstantiate = Instantiate(beatmapButton, beatmapButtonPosition, Quaternion.Euler(0, 0, -45),
+            buttonListContent) as GameObject;
+        }
+        else if (levelChanger.CurrentLevelIndex == levelChanger.EditSelectSceneIndex)
+        {
+            // Assign the index and image to this button
+            beatmapButtonInstantiate = Instantiate(editSelectSceneBeatmapButton, beatmapButtonPosition, Quaternion.Euler(0, 0, 0),
+            buttonListContent) as GameObject;
+        }
 
-        // Add the instantiated button to the list
-        instantiatedBeatmapButtonList.Add(beatmapButtonInstantiate);
+
+            // Add the instantiated button to the list
+            instantiatedBeatmapButtonList.Add(beatmapButtonInstantiate);
 
         // Get the child image transform from the instantiated button so we can change the image
         beatmapButtonInstantiateChildImage = beatmapButtonInstantiate.gameObject.transform.GetChild(0);
@@ -162,11 +225,27 @@ public class SongSelectPanel : MonoBehaviour
     // Load a new beatmap image for the beatmap button instantiated
     private IEnumerator LoadNewBeatmapButtonImage(int _beatmapButtonIndex)
     {
-        completePath = "file://" + songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
-            @"\" + imageName + imageType;
+        if (levelChanger.CurrentLevelIndex == levelChanger.SongSelectSceneIndex)
+        {
+            completePath = "file://" + songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
+                @"\" + imageName + imageType;
 
-        fileCheckPath = songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
-            @"\" + imageName + imageType;
+            fileCheckPath = songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
+                @"\" + imageName + imageType;
+        }
+        else if (levelChanger.CurrentLevelIndex == levelChanger.EditSelectSceneIndex)
+        {
+            completePath = "file://" + beatmapDirectoryPaths[_beatmapButtonIndex] +
+                @"\" + imageName + imageType;
+
+            fileCheckPath = editSelectSceneSongSelectManager.beatmapDirectories[_beatmapButtonIndex] +
+                @"\" + imageName + imageType;
+        }
+
+
+
+
+
 
         // Check if the image file exists
         // If the file doesn't exist

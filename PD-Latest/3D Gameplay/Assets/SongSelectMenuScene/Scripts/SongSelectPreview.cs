@@ -69,6 +69,11 @@ public class SongSelectPreview : MonoBehaviour
     // Play the song preview
     public void PlaySongSelectScenePreview(float _songPreviewStartTime, int _songClipChosenIndex)
     {
+        if (songDatabase == null)
+        {
+            // Get the reference
+            songDatabase = FindObjectOfType<SongDatabase>();
+        }
         // Play song
         songAudioSource.clip = songDatabase.songClip[_songClipChosenIndex];
         songAudioSource.volume = songVolume;

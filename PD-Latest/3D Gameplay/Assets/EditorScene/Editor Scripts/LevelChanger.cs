@@ -12,7 +12,7 @@ public class LevelChanger : MonoBehaviour
 
     // Integers
     private int mainMenuSceneIndex, editorSceneIndex, songSelectSceneIndex, gameplaySceneIndex, resultsSceneIndex, overallLeaderboardSceneIndex,
-        currentLevelIndex, lastFrameLevelIndex, levelToLoad;
+        currentLevelIndex, lastFrameLevelIndex, levelToLoad, editSelectSceneIndex;
 
     private float fadeOutTimer;
 
@@ -52,6 +52,11 @@ public class LevelChanger : MonoBehaviour
         get { return overallLeaderboardSceneIndex; }
     }
 
+    public int EditSelectSceneIndex
+    {
+        get { return editSelectSceneIndex; }
+    }
+
     public int CurrentLevelIndex
     {
         get { return currentLevelIndex; }
@@ -79,6 +84,7 @@ public class LevelChanger : MonoBehaviour
         gameplaySceneIndex = 3;
         resultsSceneIndex = 4;
         overallLeaderboardSceneIndex = 5;
+        editSelectSceneIndex = 6;
         levelToLoad = 0;
         hasBackLevel = false;
         currentLevelIndex = SceneManager.GetActiveScene().buildIndex;

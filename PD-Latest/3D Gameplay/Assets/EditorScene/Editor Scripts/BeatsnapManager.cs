@@ -209,6 +209,8 @@ public class BeatsnapManager : MonoBehaviour {
         {
             // Calculate the intervals
             metronomePro.CalculateIntervals();
+            // Calculate step
+            metronomePro.CalculateActualStep();
 
             // Get total number of beatsnap prefabs in the lists
             totalBeatsnapPrefabsCount = poolDictionary[0].Count;

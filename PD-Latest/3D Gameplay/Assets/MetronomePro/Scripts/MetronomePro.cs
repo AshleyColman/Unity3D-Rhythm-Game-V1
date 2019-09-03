@@ -317,7 +317,6 @@ public class MetronomePro : MonoBehaviour {
 
         if (songAudioSource != null)
         {
-
             // Live preview UI object hit sounds
             if (livePreview != null)
             {
