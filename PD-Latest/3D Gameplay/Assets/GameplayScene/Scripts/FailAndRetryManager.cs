@@ -15,7 +15,7 @@ public class FailAndRetryManager : MonoBehaviour {
     public AudioClip failSoundClip; // Fail sound that plays when the user has failed - health reached 0
 
     // Bools
-    private bool hasFailed, canFail, hasPressedRetryKey; // Fail control
+    public bool hasFailed, canFail, hasPressedRetryKey; // Fail control
 
     // Strings
     private string failScoreValue, failComboValue, failPerfectValue, failGoodValue, failEarlyValue, failMissValue, failedAtTimeValue; // Fail statistic values
@@ -79,6 +79,11 @@ public class FailAndRetryManager : MonoBehaviour {
         {
             // If the no fail mod has been selected prevent the player from failing
             canFail = false;
+        }
+        else
+        {
+            // Set to true
+            canFail = true;
         }
     }
 

@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class PlayerProfile : MonoBehaviour {
 
     // Ints
-    public int totalPlacements, totalProfilesChecked, totalExistingProfiles;
+    public int totalPlacements, totalProfilesChecked, totalExistingProfiles, totalURLImagesToUpload;
 
     // Strings
     private string playerName, playerImageUrl;
@@ -65,7 +65,10 @@ public class PlayerProfile : MonoBehaviour {
         get { return playerImageUrlArray; }
     }
 
-
+    public int TotalURLImagesToUpload
+    {
+        get { return totalURLImagesToUpload; }
+    }
 
 
     // Use this for initialization
@@ -131,7 +134,6 @@ public class PlayerProfile : MonoBehaviour {
     }
 
 
-
     // Loop through all player profile placements and assign the information
     private void AssignPlayerProfileInformation()
     {
@@ -192,6 +194,15 @@ public class PlayerProfile : MonoBehaviour {
                 levelArray[placementToCheck] = placeData[placementToCheck][21];
                 messageArray[placementToCheck] = placeData[placementToCheck][22];
                 dateJoinedArray[placementToCheck] = placeData[placementToCheck][23];
+
+
+
+                // Check if the player image url is null
+                if (playerImageUrlArray[placementToCheck] != null)
+                {
+                    // Increment the total amount of totalURLImages to upload
+                    totalURLImagesToUpload++;
+                }
             }
         }
     }
@@ -486,15 +497,16 @@ public class PlayerProfile : MonoBehaviour {
     }
 
     // Reset all player profile information
-    private void ResetPlayerProfileVariables()
+    public void ResetPlayerProfileVariables()
     {
         playerName = "";
         playerImageUrl = "";
 
         profileHasLoaded = false;
-        informationAssigned = false;
-
+        informationAssigned = false; // Allow information to be assigned again
+        totalProfilesChecked = 0; // Reset profiles check
         totalExistingProfiles = 99; // Reset to 99 to prevent instant assign on first frame
+        totalURLImagesToUpload = 0; // Reset total url images to upload
 
         // RESET ARRAYS
         // Loop through all the placements

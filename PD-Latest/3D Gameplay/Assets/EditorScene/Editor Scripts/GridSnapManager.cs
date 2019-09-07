@@ -7,11 +7,11 @@ public class GridSnapManager : MonoBehaviour
     public bool snappingEnabled; // Controls whether the hit object is snapped to nearest grid points
 
     // Gameobjects
-    public GameObject grid70Diamond, grid70Point; // Grid point options
+    public GameObject grid80Diamond, grid70Diamond, grid70Point, grid60Point; // Grid point options
 
     public TMP_Dropdown gridDropDown; // Selects the grid to display
 
-    private int selectedGridIndex;
+    public int selectedGridIndex;
 
     public bool SnappingEnabled
     {
@@ -24,7 +24,7 @@ public class GridSnapManager : MonoBehaviour
         snappingEnabled = true;
 
         // Set grid drop down value
-        gridDropDown.value = 1;
+        gridDropDown.value = 2;
     }
 
 
@@ -43,15 +43,17 @@ public class GridSnapManager : MonoBehaviour
     // Disable all grids
     private void DeactivateAllGrids()
     {
+        grid80Diamond.gameObject.SetActive(false);
         grid70Diamond.gameObject.SetActive(false);
         grid70Point.gameObject.SetActive(false);
+        grid60Point.gameObject.SetActive(false);
     }
 
     // Activate the next grid based on the index
     public void ActivateNextGrid()
     {
         // If greater than the max grids available
-        if (selectedGridIndex > 2)
+        if (selectedGridIndex > 4)
         {
             // Reset
             selectedGridIndex = 0;
@@ -63,16 +65,28 @@ public class GridSnapManager : MonoBehaviour
                 selectedGridIndex = 0;
                 grid70Diamond.gameObject.SetActive(false);
                 grid70Point.gameObject.SetActive(false);
+                grid60Point.gameObject.SetActive(false);
+                grid80Diamond.gameObject.SetActive(false);
                 snappingEnabled = false;
                 break;
             case 1:
                 selectedGridIndex = 1;
-                grid70Diamond.gameObject.SetActive(true);
+                grid80Diamond.gameObject.SetActive(true);
                 snappingEnabled = true;
                 break;
             case 2:
                 selectedGridIndex = 2;
+                grid70Diamond.gameObject.SetActive(true);
+                snappingEnabled = true;
+                break;
+            case 3:
+                selectedGridIndex = 3;
                 grid70Point.gameObject.SetActive(true);
+                snappingEnabled = true;
+                break;
+            case 4:
+                selectedGridIndex = 4;
+                grid60Point.gameObject.SetActive(true);
                 snappingEnabled = true;
                 break;
         }
@@ -93,16 +107,28 @@ public class GridSnapManager : MonoBehaviour
                 selectedGridIndex = 0;
                 grid70Diamond.gameObject.SetActive(false);
                 grid70Point.gameObject.SetActive(false);
+                grid60Point.gameObject.SetActive(false);
+                grid80Diamond.gameObject.SetActive(false);
                 snappingEnabled = false;
                 break;
             case 1:
                 selectedGridIndex = 1;
-                grid70Diamond.gameObject.SetActive(true);
+                grid80Diamond.gameObject.SetActive(true);
                 snappingEnabled = true;
                 break;
             case 2:
                 selectedGridIndex = 2;
+                grid70Diamond.gameObject.SetActive(true);
+                snappingEnabled = true;
+                break;
+            case 3:
+                selectedGridIndex = 3;
                 grid70Point.gameObject.SetActive(true);
+                snappingEnabled = true;
+                break;
+            case 4:
+                selectedGridIndex = 4;
+                grid60Point.gameObject.SetActive(true);
                 snappingEnabled = true;
                 break;
         }

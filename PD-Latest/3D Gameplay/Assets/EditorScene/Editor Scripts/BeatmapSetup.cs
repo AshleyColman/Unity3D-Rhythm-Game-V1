@@ -38,10 +38,12 @@ public class BeatmapSetup : MonoBehaviour {
     private const string FILE_EXTENSION = ".dia";
     private string statusBeatmapSaved, statusBeatmapReset, statusDeletedHitObject;
     private string beatmapCreatedDate;
-
+    
     // integers
     private int songClipChosenIndex;
     private float songPreviewStartTime;  // Song preview start time in th song select screen
+    private float statusPanelDeactivateTime;
+    private float statusPanelTimer;
 
     // bools
     private bool settingUp; // Is true when in the setup screen, used for allowing keyboard press without starting the editor
@@ -132,6 +134,8 @@ public class BeatmapSetup : MonoBehaviour {
         // Setting up at the start 
         settingUp = true;
 
+        statusPanelDeactivateTime = 5f;
+
         // Get the user logged in and set the creator to that user
         if (MySQLDBManager.loggedIn)
         {
@@ -153,6 +157,16 @@ public class BeatmapSetup : MonoBehaviour {
             resetBeatmapInformationPanel.gameObject.SetActive(true);
             // Select the reset panel NO button
             resetConfirmationButtonNo.Select();
+        }
+
+        if (statusPanel.gameObject.activeSelf == true)
+        {
+            statusPanelTimer += Time.deltaTime;
+
+            if (statusPanelTimer >= statusPanelDeactivateTime)
+            {
+                statusPanel.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -180,6 +194,9 @@ public class BeatmapSetup : MonoBehaviour {
     // Turn off the settings panels
     public void DeactivateSettingsPanel()
     {
+        // Disable all panels 
+        DisableAllFinishedBeatmapSetupPanels();
+
         settingsPanel.gameObject.SetActive(false);
     }
 
@@ -292,26 +309,51 @@ public class BeatmapSetup : MonoBehaviour {
     // Change the beatmap song selected
     public void OpenSongSelectMenu()
     {
-        // Set the song panel to active
-        songSelectPanel.gameObject.SetActive(true);
+        if (songSelectPanel.gameObject.activeSelf == false)
+        {
+            // Set the song panel to active
+            songSelectPanel.gameObject.SetActive(true);
+        }
+        else
+        {
+            // Set the song panel to active
+            songSelectPanel.gameObject.SetActive(false);
+        }
+
+    }
+
+    // Disable all panels that were left on 
+    private void DisableAllFinishedBeatmapSetupPanels()
+    {
+        // Activate the difficulty level buttons
+        difficultyLevelPanel.gameObject.SetActive(false);
+
+        saveBeatmapPanel.gameObject.SetActive(false);
     }
 
     // Activate the difficulty buttons
     public void ActivateDifficultyTypeButtons()
     {
+        // Disable all panels
+
         // Activate settings panel
         settingsPanel.gameObject.SetActive(true);
 
         difficultyButtonsPanel.gameObject.SetActive(true);
+
+        /*
         finishedButton.interactable = false;
         resetButton.interactable = false;
         newSongButton.interactable = false;
-        newSongButton.interactable = false;
+        */
     }
 
     // Show the success save status
     public void DisplayStatus(string _status)
     {
+        // Reset timer
+        statusPanelTimer = 0f;
+
         // Activate panel
         statusPanel.gameObject.SetActive(true);
 

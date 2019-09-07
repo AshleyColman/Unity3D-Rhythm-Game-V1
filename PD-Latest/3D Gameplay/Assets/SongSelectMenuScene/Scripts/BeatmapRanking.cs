@@ -11,6 +11,8 @@ public class BeatmapRanking : MonoBehaviour {
     // UI
     public Button leaderboardLoadingIconButton;
 
+    public GameObject[] leaderboardButtonContainer = new GameObject[20]; // All leaderboard buttons empty gameobjects
+
     public Button[] leaderboardProfileButton = new Button[20];
 
     public TextMeshProUGUI[] rankedButtonUsernameAndScoreText = new TextMeshProUGUI[20];
@@ -39,10 +41,11 @@ public class BeatmapRanking : MonoBehaviour {
     public bool hasPersonalBest;
     public bool hasCheckedPersonalBest;
     public bool hasLoadedLeaderbaord;
-    public bool hasCheckedImages;
+    public bool hasLoadedImages;
     public bool hasCheckedPlayerProfiles;
     public bool[] placeExists;
     public bool[] placeChecked;
+    public bool completeLeaderboardReady;
 
     // Strings
     private string username;
@@ -59,7 +62,7 @@ public class BeatmapRanking : MonoBehaviour {
     // Integers
     private sbyte leaderboardPlaceToGet;
     private sbyte totalRankingPlacements;
-    public int totalPlacesChecked, totalLeaderboardPlacementsUpdated, totalImagesUpdated;
+    public int totalPlacesChecked, totalLeaderboardPlacementsUpdated, totalImagesUpdated, totalURLImagesUpdated;
 
     // Colors
     public Color pColor, sColor, aColor, bColor, cColor, dColor, eColor, fColor, defaultColor;
@@ -84,6 +87,10 @@ public class BeatmapRanking : MonoBehaviour {
         get { return placeExists; }  
     }
 
+    public bool CompleteLeaderboardReady
+    {
+        get { return completeLeaderboardReady; }
+    }
 
     void Start()
     {
@@ -95,7 +102,6 @@ public class BeatmapRanking : MonoBehaviour {
         hasCheckedPersonalBest = false;
         hasLoadedLeaderbaord = false;
         notChecked = true;
-        hasCheckedImages = false;
         hasCheckedPlayerProfiles = false;
 
         perfectTextValue = "P: ";
@@ -121,6 +127,7 @@ public class BeatmapRanking : MonoBehaviour {
         totalPlacesChecked = 0;
         totalRankingPlacements = 20;
         leaderboardPlaceToGet = 1;
+        totalURLImagesUpdated = 0;
 
         // Reference
         uploadPlayerImage = FindObjectOfType<UploadPlayerImage>();
@@ -213,9 +220,6 @@ public class BeatmapRanking : MonoBehaviour {
 
                 // Set has loaded leaderbaord to true to prevent the leaderbaord from continuing to upload every frame
                 hasLoadedLeaderbaord = true;
-
-                // Turn off the leaderbaord loading icon
-                DeactivateLeaderboardLoadingIcon();
             }
 
             if (MySQLDBManager.loggedIn == true)
@@ -261,6 +265,9 @@ public class BeatmapRanking : MonoBehaviour {
             // If profiles have not been loaded yet
             if (hasCheckedPlayerProfiles == false)
             {
+                // Reset all profiles information
+                playerProfile.ResetPlayerProfileVariables();
+
                 // Load player profile information
                 playerProfile.GetPlayerProfiles();
 
@@ -274,6 +281,32 @@ public class BeatmapRanking : MonoBehaviour {
         {
             LoadLeaderboardPlayerImages();
         }
+
+
+        // If all images have been loaded
+        if (hasLoadedImages == true)
+        {
+            // If all images have been uploaded
+            if (totalImagesUpdated >= playerProfile.TotalExistingProfiles && totalURLImagesUpdated >= playerProfile.TotalURLImagesToUpload)
+            {
+                completeLeaderboardReady = true;
+            }
+
+            // Enable all leaderboard button containers if all information has been uploaded and all profile images have been uploaded
+            if (completeLeaderboardReady == true)
+            {
+                // If the first button is not active
+                if (leaderboardButtonContainer[0].gameObject.activeSelf == false)
+                {
+                    // Deactivate the leaderboard loading icon
+                    DeactivateLeaderboardLoadingIcon();
+
+                    // Activate all leaderboard button containers
+                    ActivateAllLeaderboardButtons();
+                }
+            }
+        }
+
     }
 
     // Load all leaderboard player images
@@ -282,32 +315,39 @@ public class BeatmapRanking : MonoBehaviour {
         // Load leaderboard images
         if (notChecked == false && hasCheckedPersonalBest == true && totalLeaderboardPlacementsUpdated == totalRankingPlacements)
         {
-            // Loop through all existing profiles on the leaderboard
-            for (int i = 0; i < playerProfile.TotalExistingProfiles; i++)
+            // If all images have not been loaded yet
+            if (hasLoadedImages == false)
             {
-                // If a url exists for the leaderboard spot
-                if (playerProfile.playerImageUrlArray[i] != "")
+                // Loop through all existing profiles on the leaderboard
+                for (int i = 0; i < playerProfile.TotalExistingProfiles; i++)
                 {
-                    // Load the player image (passing the URL and index)
-                    StartCoroutine(LoadPlayerImg(playerProfile.playerImageUrlArray[i], i));
-                }
-                else
-                {
-                    // Load the default image
-                    LoadDefaultMaterial(i);
+                    // If a url exists for the leaderboard spot
+                    if (playerProfile.playerImageUrlArray[i] != "")
+                    {
+                        // Load the player image (passing the URL and index)
+                        StartCoroutine(LoadPlayerImg(playerProfile.playerImageUrlArray[i], i));
+                    }
+                    else
+                    {
+                        // Load the default image
+                        LoadDefaultMaterial(i);
+                    }
+
+                    // Activate leaderboard profile button
+                    leaderboardProfileButton[i].gameObject.SetActive(true);
                 }
 
-                // Activate leaderboard profile button
-                leaderboardProfileButton[i].gameObject.SetActive(true);
-            }
+                // If a personal best record exists
+                if (hasPersonalBest == true)
+                {
+                    // Retrieve the players image for personal best placement
+                    personalBestImage.material = uploadPlayerImage.PlayerImage.material;
+                    personalBestImage.gameObject.SetActive(false);
+                    personalBestImage.gameObject.SetActive(true);
+                }
 
-            // If a personal best record exists
-            if (hasPersonalBest == true)
-            {
-                // Retrieve the players image for personal best placement
-                personalBestImage.material = uploadPlayerImage.PlayerImage.material;
-                personalBestImage.gameObject.SetActive(false);
-                personalBestImage.gameObject.SetActive(true);
+                // Set to true as all images have been loaded
+                hasLoadedImages = true;
             }
         }
     }
@@ -329,29 +369,41 @@ public class BeatmapRanking : MonoBehaviour {
     // Load the player image
     IEnumerator LoadPlayerImg(string _url, int _placement)
     {
-        totalImagesUpdated++;
-
         if (_url != "")
         {
-            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
+            if (_url != null)
             {
-                yield return uwr.SendWebRequest();
-
-                if (uwr.isNetworkError || uwr.isHttpError)
+                using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
                 {
-                    Debug.Log(uwr.error);
-                }
-                else
-                {
-                    // Get downloaded asset bundle
-                    var texture = DownloadHandlerTexture.GetContent(uwr);
+                    yield return uwr.SendWebRequest();
 
-                    // Update the image for the placement
-                    rankedButtonRankImage[_placement].material.mainTexture = texture;
+                    if (uwr.isNetworkError || uwr.isHttpError)
+                    {
+                        Debug.Log(uwr.error);
 
-                    // Set image to false then to true to activate new image
-                    rankedButtonRankImage[_placement].gameObject.SetActive(true);
+                        totalImagesUpdated++;
+                    }
+                    else
+                    {
+                        // Get downloaded asset bundle
+                        var texture = DownloadHandlerTexture.GetContent(uwr);
+
+                        // Update the image for the placement
+                        rankedButtonRankImage[_placement].material.mainTexture = texture;
+
+                        // Set image to false then to true to activate new image
+                        rankedButtonRankImage[_placement].gameObject.SetActive(true);
+
+                        totalImagesUpdated++;
+                        // Increment total url images updated
+                        totalURLImagesUpdated++;
+                    }
                 }
+            }
+            else
+            {
+                // Load the default image
+                LoadDefaultMaterial(_placement);
             }
         }
     }
@@ -527,6 +579,9 @@ public class BeatmapRanking : MonoBehaviour {
             leaderboardProfileButton[placementToCheck].gameObject.SetActive(false);
         }
 
+        // Deactivate all leaderboard buttons
+        DeactivateAllLeaderboardButtons();
+
         // Reset personal best information
         personalBestScore = "";
         personalBestPerfect = "";
@@ -555,6 +610,8 @@ public class BeatmapRanking : MonoBehaviour {
         
         // Reset the leaderbaord loading animation
         hasLoadedLeaderbaord = false;
+
+        totalURLImagesUpdated = 0;
     }
 
     // Reset the leaderboard checking variables
@@ -564,8 +621,9 @@ public class BeatmapRanking : MonoBehaviour {
         notChecked = true;
         hasPersonalBest = false;
         hasCheckedPersonalBest = false;
-        hasCheckedImages = false;
         hasCheckedPlayerProfiles = false;
+        hasLoadedImages = false;
+
 
         leaderboardPlaceToGet = 1;
         totalLeaderboardPlacementsUpdated = 0;
@@ -596,6 +654,26 @@ public class BeatmapRanking : MonoBehaviour {
                 return fColor;
             default:
                 return defaultColor;
+        }
+    }
+
+    // Deactivate all leaderboard buttons
+    private void DeactivateAllLeaderboardButtons()
+    {
+        for (int i = 0; i < totalRankingPlacements; i++)
+        {
+            leaderboardButtonContainer[i].gameObject.SetActive(false);
+        }
+
+        completeLeaderboardReady = false;
+    }
+
+    // Activate all leaderboard buttons
+    private void ActivateAllLeaderboardButtons()
+    {
+        for (int i = 0; i < totalRankingPlacements; i++)
+        {
+            leaderboardButtonContainer[i].gameObject.SetActive(true);
         }
     }
 }

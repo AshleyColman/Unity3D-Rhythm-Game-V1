@@ -10,6 +10,7 @@ public class UIKeyPressManager : MonoBehaviour {
     public Animator UIKeyPressAnimatorK; // Animate the K key
     public Animator UIKeyPressAnimatorL; // Animate the L key
 
+    public Animator UIKeyPressFeverTimeAnimator;
 
     // Update is called once per frame
     void Update()
@@ -21,6 +22,12 @@ public class UIKeyPressManager : MonoBehaviour {
     // Check for key down/held input
     private void CheckForKeyInput()
     {
+        // Spacebar has been pressed
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            UIKeyPressFeverTimeAnimator.Play("UIKeyFeverTimeButton_Pressed", 0, 0f);
+        }
+
         // If the green key has been pressed
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.Z))
         {

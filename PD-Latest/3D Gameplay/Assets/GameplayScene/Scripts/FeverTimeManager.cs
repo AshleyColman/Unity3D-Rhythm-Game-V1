@@ -68,7 +68,18 @@ public class FeverTimeManager : MonoBehaviour {
     // Scripts
     private ScoreManager scoreManager; // Controls scoring/combo
     private MetronomeForEffects metronomeForEffects; // Metronome for effects for beat sync functions
-    private LoadAndRunBeatmap loadAndRunBeatmap; 
+    private LoadAndRunBeatmap loadAndRunBeatmap;
+
+
+
+
+    // Animation
+    public Animator comboFlashAnimator; // The combo flash animator
+    public Animator glassFlashAnimator; // Glass combo flash animator
+
+    private bool previousComboFlashRight; // Was the previous flash from the right side?
+
+
 
     // Properties
 
@@ -152,7 +163,11 @@ public class FeverTimeManager : MonoBehaviour {
         hasSet100Percent = false;
         feverTimeBar.value = 0;
         whiteFeverTimebar.value = 0;
+
+        // Initialize
+        previousComboFlashRight = false; // Set to false at the start so the first flash is on the right side
     }
+
 
     // Update is called once per frame
     void Update() {
@@ -283,19 +298,19 @@ public class FeverTimeManager : MonoBehaviour {
         // Only check for combo if fever time is not activated
         if (feverTimeActivated == false)
         {
-            if (feverTimeCombo == 25 && hasSet25Percent == false)
+            if (feverTimeCombo == 50 && hasSet25Percent == false)
             {
                 SetBarTo25Percent();
             }
-            else if (feverTimeCombo == 50 && hasSet50Percent == false)
+            else if (feverTimeCombo == 100 && hasSet50Percent == false)
             {
                 SetBarTo50Percent();
             }
-            else if (feverTimeCombo == 75 && hasSet75Percent == false)
+            else if (feverTimeCombo == 150 && hasSet75Percent == false)
             {
                 SetBarTo75Percent();
             }
-            else if (feverTimeCombo == 100 && hasSet100Percent == false)
+            else if (feverTimeCombo == 200 && hasSet100Percent == false)
             {
                 SetBarTo100Percent();
             }
@@ -305,6 +320,8 @@ public class FeverTimeManager : MonoBehaviour {
     // Bar has reached 25 percent
     private void SetBarTo25Percent()
     {
+        FlashComboFlashImage();
+
         feverTimeBar.value = 0.25f;
         whiteFeverTimebar.value = 0.26f;
         lerpValue = lerpValue25Percent;
@@ -328,6 +345,8 @@ public class FeverTimeManager : MonoBehaviour {
     // Bar has reached 50 percent
     private void SetBarTo50Percent()
     {
+        FlashComboFlashImage();
+
         feverTimeBar.value = 0.50f;
         whiteFeverTimebar.value = 0.51f;
 
@@ -349,6 +368,8 @@ public class FeverTimeManager : MonoBehaviour {
     // Bar has reached 75 percent
     private void SetBarTo75Percent()
     {
+        FlashComboFlashImage();
+
         feverTimeBar.value = 0.75f;
         whiteFeverTimebar.value = 0.76f;
 
@@ -370,6 +391,8 @@ public class FeverTimeManager : MonoBehaviour {
     // Bar has reached 100 percent
     private void SetBarTo100Percent()
     {
+        FlashComboFlashImage();
+
         feverTimeBar.value = 1f;
         whiteFeverTimebar.value = 1f;
         lerpValue = lerpValue100Percent;
@@ -557,4 +580,25 @@ public class FeverTimeManager : MonoBehaviour {
     {
         feverTimeCombo++;
     }
+
+    // Animate the flash on screen
+    public void FlashComboFlashImage()
+    {
+        // Do a left or right side flash by checking whether the last combo flash was the right side
+        if (previousComboFlashRight == false)
+        {
+            // Play the right side combo flash animation
+            comboFlashAnimator.Play("ComboFlashAnimation");
+            glassFlashAnimator.Play("GameplayGlassFlash");
+            previousComboFlashRight = true;
+        }
+        else if (previousComboFlashRight == true)
+        {
+            // Play the left side combo flash animation
+            comboFlashAnimator.Play("ComboFlashAnimationLeft");
+            glassFlashAnimator.Play("GameplayGlassFlash");
+            previousComboFlashRight = false;
+        }
+    }
+
 }

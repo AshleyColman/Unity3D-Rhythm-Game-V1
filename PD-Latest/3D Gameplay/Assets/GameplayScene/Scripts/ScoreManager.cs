@@ -46,7 +46,6 @@ public class ScoreManager : MonoBehaviour {
     private PlayerSkillsManager playerSkillsManager; // Control player skills
     private FailAndRetryManager failAndRetryManager; // Controls failing/retrying
     private Rankbar rankbar; // Rank bar for displaying rank progress 
-    private ComboFlash comboFlash; // Controls combo flash animations
     private FeverTimeManager feverTimeManager; // Fever time manager
 
     // Properties
@@ -119,7 +118,6 @@ public class ScoreManager : MonoBehaviour {
         rankbar = FindObjectOfType<Rankbar>();
         hitSoundPreview = FindObjectOfType<HitSoundPreview>();
         playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
-        comboFlash = FindObjectOfType<ComboFlash>();
         feverTimeManager = FindObjectOfType<FeverTimeManager>();
 
         // Functions
@@ -349,9 +347,6 @@ public class ScoreManager : MonoBehaviour {
 
         // Check the combo for spawning the correct particle effect
         CheckComboParticles();
-
-        // Check if a combo flash can be played
-        comboFlash.CheckCanFlash();
     }
 
     // Update judgement text

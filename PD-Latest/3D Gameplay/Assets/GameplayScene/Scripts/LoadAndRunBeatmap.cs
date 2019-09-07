@@ -180,6 +180,13 @@ public class LoadAndRunBeatmap : MonoBehaviour {
             GameObject objectToSpawn = poolDictionary[_tag].Dequeue();
             hitObjectAnimator = objectToSpawn.GetComponent<Animator>();
             objectToSpawn.gameObject.SetActive(true);
+
+            
+            //float positionX = _position.x;
+            //float positionY = _position.y;
+            //float positionZ = 100;
+            //_position = new Vector3(positionX, positionY, positionZ);
+
             objectToSpawn.transform.position = _position;
             //objectToSpawn.transform.rotation = Quaternion.Euler(0, 45, 0);
             //objectToSpawn.transform.rotation = Quaternion.Euler(-90, 0, 45);

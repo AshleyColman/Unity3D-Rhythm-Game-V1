@@ -247,6 +247,9 @@ public class EditSelectSceneSongSelectManager : MonoBehaviour {
             // Add to the list
             userCreatedBeatmapDirectories.Add(beatmapDirectories[_selectedBeatmapDirectoryIndex]);
         }
+
+        // Clear the loaded file information
+        Database.database.Clear();
     }
 
     // Check if the beatmap file loaded was created by the user logged in

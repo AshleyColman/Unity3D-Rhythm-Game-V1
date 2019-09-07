@@ -81,9 +81,13 @@ public class UploadPlayerImage : MonoBehaviour {
         else
         {
             // SUCCESS 
+            
+            if (www.downloadHandler.text != "")
+            {
+                // Load the player image with the value from the database - user image url saved
+                StartCoroutine(LoadPlayerImg(www.downloadHandler.text));
+            }
 
-            // Load the player image with the value from the database - user image url saved
-            StartCoroutine(LoadPlayerImg(www.downloadHandler.text));
         }
     }
 

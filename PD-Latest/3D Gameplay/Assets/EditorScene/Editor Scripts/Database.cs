@@ -185,6 +185,23 @@ public class Database : MonoBehaviour {
 
     public void Save()
     {
+        // Get reference if null
+        // Reference
+        if (beatmapSetup == null)
+        {
+            beatmapSetup = FindObjectOfType<BeatmapSetup>();
+        }
+
+        if (placedObject == null)
+        {
+            placedObject = FindObjectOfType<PlacedObject>();
+        }
+
+        if (metronomePro == null)
+        {
+            metronomePro = FindObjectOfType<MetronomePro>();
+        }
+
         // Get the difficulty name that the user has inputted
         // Get the beatmap directory for saving to the right beatmap folder
 
@@ -218,9 +235,6 @@ public class Database : MonoBehaviour {
         // Timing information for the beatmap from the metronome
         beatmap.BPM = metronomePro.Bpm;
         beatmap.offsetMS = metronomePro.OffsetMS;
-
-        Debug.Log("saved bpm: " + beatmap.BPM);
-        Debug.Log("saved offsetMS: " + beatmap.offsetMS);
 
         // Save leaderboard table name
         beatmap.leaderboardTableName = leaderboardTableName;

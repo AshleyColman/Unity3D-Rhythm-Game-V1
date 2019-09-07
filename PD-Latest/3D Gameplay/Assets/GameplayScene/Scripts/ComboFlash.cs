@@ -2,6 +2,7 @@
 
 public class ComboFlash : MonoBehaviour {
 
+    /*
     // Animation
     public Animator comboFlashAnimator; // The combo flash animator
     public Animator glassFlashAnimator; // Glass combo flash animator
@@ -72,4 +73,5 @@ public class ComboFlash : MonoBehaviour {
             previousComboFlashRight = false;
         }
     }
+    */
 }

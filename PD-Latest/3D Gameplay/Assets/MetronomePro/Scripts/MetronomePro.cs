@@ -68,6 +68,12 @@ public class MetronomePro : MonoBehaviour {
         set { metronomeIsMuted = value; }
     }
 
+    public int Division
+    {
+        get { return division; }
+        set { division = value; }
+    }
+
     void Start () {
 
         beatsnapmanager = FindObjectOfType<BeatsnapManager>();
@@ -322,20 +328,23 @@ public class MetronomePro : MonoBehaviour {
             {
                 if (livePreview.PreviewOn == true)
                 {
-                    if (livePreview.oldestHitObjectIndex < placedObject.editorHitObjectList.Count)
+                    if (livePreview.hasCalculatedOldestHitObjectIndex == true)
                     {
-                        if (songAudioSource.time >= placedObject.editorHitObjectList[livePreview.OldestHitObjectIndex].hitObjectSpawnTime)
+                        if (livePreview.oldestHitObjectIndex < placedObject.editorHitObjectList.Count)
                         {
-                            // Increment to check next spawned UI preview hit object
-                            livePreview.oldestHitObjectIndex++;
-                            // Play hit sound
-                            metronomeAudioSource.PlayOneShot(highClip);
+                            if (songAudioSource.time >= placedObject.editorHitObjectList[livePreview.oldestHitObjectIndex].hitObjectSpawnTime)
+                            {
+                                // Increment to check next spawned UI preview hit object
+                                livePreview.oldestHitObjectIndex++;
+                                // Play hit sound
+                                metronomeAudioSource.PlayOneShot(highClip);
+                            }
                         }
                     }
                 }
             }
 
-            if (CurrentTick < songTickTimes.Count && metronomeIsMuted == false)
+            if (CurrentTick < songTickTimes.Count)
             {
                 {
                     // Check if the song time is greater than the current tick Time
@@ -354,12 +363,22 @@ public class MetronomePro : MonoBehaviour {
                         {
                             CurrentStep = 1;
                             CurrentMeasure++;
-                            metronomeAudioSource.clip = highClip;
+
+                            // Only change the sound if the metronome is muted (so preview notes don't play the wrong sound)
+                            if (metronomeIsMuted == false)
+                            {
+                                metronomeAudioSource.clip = highClip;
+                            }
                         }
                         else
                         {
                             CurrentStep++;
-                            metronomeAudioSource.clip = lowClip;
+
+                            // Only change the sound if the metronome is muted (so preview notes don't play the wrong sound)
+                            if (metronomeIsMuted == false)
+                            {
+                                metronomeAudioSource.clip = lowClip;
+                            }
                         }
 
                         // Call OnTick functions

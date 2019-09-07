@@ -113,6 +113,40 @@ public class BeatsnapManager : MonoBehaviour {
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.B) && metronomePro.songAudioSource.clip != null)
+        {
+            // Select the next beatsnap division
+            SelectNextBeatsnapDivision();
+        }
+    }
+
+    // Select the next beatsnap division
+    private void SelectNextBeatsnapDivision()
+    {
+        if (metronomePro.Division == 0)
+        {
+            // Load 8 beatsnap division
+            metronomePro.UpdateBeatsnapDivision(8);
+        }
+        else if (metronomePro.Division == 8)
+        {
+            // Load 16 beatsnap division
+            metronomePro.UpdateBeatsnapDivision(16);
+        }
+        else if (metronomePro.Division == 16)
+        {
+            // Load 0 beatsnap division
+            metronomePro.UpdateBeatsnapDivision(0);
+        }
+
+
+
+        // Sort the beatsnaps with the new division
+        SortBeatsnapsWithDivision();
+    }
+
     // Convert all song tick times to slider values
     public void CalculateBeatsnapSliderListValues()
     {

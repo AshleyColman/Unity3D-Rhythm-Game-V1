@@ -10,17 +10,19 @@ public class LeaderboardCreate : MonoBehaviour {
     private string beatmapCreator;
     // Scripts
     private BeatmapSetup beatmapSetup;
-
+    private EditSelectToEditorManager editSelectToEditorManager;
 
     void Start()
     {
         // Reference
         beatmapSetup = FindObjectOfType<BeatmapSetup>();
+        editSelectToEditorManager = FindObjectOfType<EditSelectToEditorManager>();
     }
 
     // Create a leaderboard for the beatmap
     public void CreateLeaderboard()
     {
+        // Create a new leaderbaord in the database
         StartCoroutine(CreateNewBeatmapLeaderboard());
     }
 

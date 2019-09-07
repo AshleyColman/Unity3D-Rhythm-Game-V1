@@ -237,48 +237,36 @@ public class PlacedObject : MonoBehaviour {
     {
         // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
         AddEditorHitObjectToList(hitObjectTypeBlueValue);
-
-        pressedKeyJ = true;
     }
 
     public void PlacePurpleHitObject()
     {
         // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
         AddEditorHitObjectToList(hitObjectTypePurpleValue);
-
-        pressedKeyK = true;
     }
 
     public void PlaceRedHitObject()
     {
         // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
         AddEditorHitObjectToList(hitObjectTypeRedValue);
-
-        pressedKeyL = true;
     }
 
     public void PlaceGreenHitObject()
     {
         // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
         AddEditorHitObjectToList(hitObjectTypeGreenValue);
-
-        pressedKeyS = true;
     }
 
     public void PlaceYellowHitObject()
     {
         // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
         AddEditorHitObjectToList(hitObjectTypeYellowValue);
-
-        pressedKeyD = true;
     }
 
     public void PlaceOrangeHitObject()
     {
         // Add a new editor hit object to the editorHitObjectList, and instantiate a new timeline object for this hit object on the timeline
         AddEditorHitObjectToList(hitObjectTypeOrangeValue);
-
-        pressedKeyF = true;
     }
 
     // Check the keys contained within the beatmap
@@ -848,6 +836,9 @@ public class PlacedObject : MonoBehaviour {
     // Save all list information to the database script
     public void SaveListsToDatabase()
     {
+        // Check all keys for beatmap
+        CheckKeysForBeatmap();
+
         // Sort the editorHitObjects based on the spawn time
         SortListOrders();
 

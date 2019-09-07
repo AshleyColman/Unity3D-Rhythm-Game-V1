@@ -111,7 +111,9 @@ public class LevelChanger : MonoBehaviour
             case 4:
                 animator.Play("LevelChanger_Gameplay_FadeIn");
                 break;
-
+            case 6:
+                animator.Play("LevelChanger_Gameplay_FadeIn");
+                break;
         }
 
     }
@@ -221,5 +223,11 @@ public class LevelChanger : MonoBehaviour
             levelToLoad = songSelectSceneIndex;
             hasBackLevel = true;
         }
+        if (currentLevelIndex == editSelectSceneIndex)
+        {
+            levelToLoad = mainMenuSceneIndex;
+            hasBackLevel = true;
+        }
+
     }
 }

@@ -17,6 +17,7 @@ public class EditorUIManager : MonoBehaviour {
     public TextMeshProUGUI descriptionText;
 
     private MetronomePro metronomePro;
+    private LivePreview livePreview;
 
     public GameObject instantiatedEditableHitObject;
 
@@ -29,6 +30,7 @@ public class EditorUIManager : MonoBehaviour {
     private void Start()
     {
         metronomePro = FindObjectOfType<MetronomePro>();
+        livePreview = FindObjectOfType<LivePreview>();
 
         // Initialize the panel array
         panelList.Add(gameplayTestPanel);

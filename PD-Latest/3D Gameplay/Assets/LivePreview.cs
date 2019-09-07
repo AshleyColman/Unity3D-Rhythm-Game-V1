@@ -43,6 +43,7 @@ public class LivePreview : MonoBehaviour {
     // Bools
     public bool previewOn, previewPaused, previewOff, previewLooping;
     private bool hasSpawnedFirstUIObject;
+    public bool hasCalculatedOldestHitObjectIndex;
     // Transform
     public Transform canvas; // Spawn location
 
@@ -72,6 +73,7 @@ public class LivePreview : MonoBehaviour {
         previewOn = false;
         previewOff = true;
         previewPaused = false;
+        hasCalculatedOldestHitObjectIndex = false;
         hasSpawnedFirstUIObject = false;
         animationTotalFrames = 120;
         startFrame = 0;
@@ -102,9 +104,55 @@ public class LivePreview : MonoBehaviour {
     {
         if (hasSpawnedFirstUIObject == false)
         {
-            oldestHitObjectIndex = _index;
+            //oldestHitObjectIndex = _index;
             hasSpawnedFirstUIObject = true;
         }
+    }
+
+
+    // Displays the live preview notes from the current point in the song when the preview panel button has been clicked
+    public void DisplayLivePreview()
+    {
+        hasCalculatedOldestHitObjectIndex = false;
+        // Calculate current hit object index
+        CalculateCurrentPreviewObjectIndex();
+        oldestHitObjectIndex = currentHitObjectIndex;
+        // Resume the preview animations
+        ResumePreviewAnimations();
+
+        // Preview is now active
+        previewOff = false;
+        // Turn pause off
+        previewPaused = false;
+        // Resume the preview spawning
+        previewOn = true;
+
+        // Has calculated
+        hasCalculatedOldestHitObjectIndex = true;
+        // Mute metronome
+        metronomePro.MuteMetronome();
+    }
+
+
+
+
+    // Reset all preview information and turn it off
+    public void ResetAndTurnPreviewOff()
+    {
+        // Clear all preview object information
+        ClearPreviewInformation();
+
+        // Reset index's
+        currentHitObjectIndex = 0;
+        oldestHitObjectIndex = 0;
+
+        // Ensure preview is on and not paused
+        previewOn = false;
+        previewPaused = false;
+        previewOff = true;
+
+        // Reset first spawn object id
+        hasSpawnedFirstUIObject = false;
     }
 
     // Calculate the current preview object index based on the current time in the timeline
@@ -174,8 +222,11 @@ public class LivePreview : MonoBehaviour {
         }
     }
 
+
+
+
     // Resume the live preview
-    private void ResumeLivePreview()
+    public void ResumeLivePreview()
     {
         // Calculate current hit object index
         CalculateCurrentPreviewObjectIndex();
@@ -466,7 +517,6 @@ public class LivePreview : MonoBehaviour {
         {
             difference = (currentSongTime - hitObjectSpawnTime);
         }
-        Debug.Log(currentSongTime + "  " + hitObjectSpawnTime);
 
         // Update the timer value based on the spawn time
         newPreviewHitObjectTimerValue = difference;
