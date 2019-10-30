@@ -1,0 +1,262 @@
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+using System.IO;
+using UnityEngine.Networking;
+using UnityEngine.Video;
+
+public class BackgroundManager : MonoBehaviour
+{
+    // Animator
+    public Animator backgroundImageTransitionAnimator, videoPlayerTransitionAnimator;
+
+    // UI
+    public Image img, img2;
+    public Image videoTickBoxSelectedImage;
+    public Texture2D imageTexture;
+
+    // Video 
+    public VideoPlayer videoPlayer, videoPlayer2;
+
+    private int activeVideoPlayerIndex, activeBackgroundImageIndex;
+
+    // Strings
+    public string filePath = "";
+    private const string imageName = "img";
+    private const string imageType = ".png";
+    private const string videoName = "video";
+    private const string videoType = ".mp4";
+    private string completeImagePath = "", completeVideoPath = "";
+
+    // Bools
+    private bool loadSecondBackgroundImage, loadSecondVideoPlayer;
+    private bool videoTickBoxSelected;
+
+    // Properties
+    public int ActiveVideoPlayerIndex
+    {
+        get { return activeVideoPlayerIndex; }
+    }
+
+    public int ActiveBackgroundImageIndex
+    {
+        get { return activeBackgroundImageIndex; }
+    }
+
+    public bool VideoTickBoxSelected
+    {
+        get { return videoTickBoxSelected; }
+    }
+
+    void Awake()
+    {
+        videoTickBoxSelected = false;
+        videoTickBoxSelectedImage.gameObject.SetActive(false);
+        loadSecondBackgroundImage = false;
+        loadSecondVideoPlayer = false;
+    }
+
+    // Toggle video tick box on or off 
+    public void ToggleVideoTickBox()
+    {
+        // Change bools when button is clicked
+        if (videoTickBoxSelected == true)
+        {
+            // Disable tick image
+            videoTickBoxSelectedImage.gameObject.SetActive(false);
+
+            // Set to false
+            videoTickBoxSelected = false;
+        }
+        else if (videoTickBoxSelected == false)
+        {
+            // Enable tick image
+            videoTickBoxSelectedImage.gameObject.SetActive(true);
+
+            // Set to true
+            videoTickBoxSelected = true;
+        }
+    }
+
+    IEnumerator LoadImg()
+    {
+        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture("file://" + completeImagePath))
+        {
+            yield return uwr.SendWebRequest();
+
+            if (uwr.isNetworkError || uwr.isHttpError)
+            {
+                //Debug.Log(uwr.error);
+            }
+            else
+            {
+                // Get downloaded asset bundle
+                var texture = DownloadHandlerTexture.GetContent(uwr);
+
+                img.material.mainTexture = texture;
+
+                // Set image to false then to true to activate new image
+                img.gameObject.SetActive(false);
+                img.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    IEnumerator LoadNextBackgroundImg()
+    {
+        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture("file://" + completeImagePath))
+        {
+            yield return uwr.SendWebRequest();
+
+            if (uwr.isNetworkError || uwr.isHttpError)
+            {
+                //Debug.Log(uwr.error);
+            }
+            else
+            {
+                // Get downloaded asset bundle
+                var texture = DownloadHandlerTexture.GetContent(uwr);
+
+
+                if (loadSecondBackgroundImage == false)
+                {
+                    // Set to true to load second background image next time
+                    loadSecondBackgroundImage = true;
+
+                    // Set active index
+                    activeBackgroundImageIndex = 1;
+
+                    // Activate the selecteSongImage as an image file has been found
+                    img.gameObject.SetActive(true);
+
+                    // Load image for background image 1
+                    img.material.mainTexture = texture;
+
+                    // Set image to false then to true to activate new image
+                    img.gameObject.SetActive(false);
+                    img.gameObject.SetActive(true);
+
+                    // Play transition animation
+                    backgroundImageTransitionAnimator.Play("BackgroundImage2ToBackgroundImage1_Animation", 0, 0f);
+                }
+                else if (loadSecondBackgroundImage == true)
+                {
+                    // Set to false to load first background image next time
+                    loadSecondBackgroundImage = false;
+
+                    // Set active index
+                    activeBackgroundImageIndex = 2;
+
+                    // Activate the selectedSongImage as an image file has been found
+                    img2.gameObject.SetActive(true);
+
+                    // Load image for background image 1
+                    img2.material.mainTexture = texture;
+
+                    // Set image to false then to true to activate new image
+                    img2.gameObject.SetActive(false);
+                    img2.gameObject.SetActive(true);
+
+                    // Play transition animation
+                    backgroundImageTransitionAnimator.Play("BackgroundImage1ToBackgroundImage2_Animation", 0, 0f);
+                }
+            }
+        }
+    }
+
+    // Load video file from beatmap folder
+    private void LoadVideo()
+    {
+        // Set the video player url
+        videoPlayer.url = completeVideoPath;
+    }
+
+    // Load the next video
+    private void LoadNextVideo()
+    {
+        if (loadSecondVideoPlayer == false)
+        {
+            // Set to true to load second videoPlayer next time
+            loadSecondVideoPlayer = true;
+
+            // Set active index
+            activeVideoPlayerIndex = 1;
+
+            // Activate the first videoPlayer
+            videoPlayer.gameObject.SetActive(true);
+
+            // Set the video player url
+            videoPlayer.url = completeVideoPath;
+
+            // Play transition animation
+            videoPlayerTransitionAnimator.Play("VideoPlayer2ToVideoPlayer1_Animation", 0, 0f);
+        }
+        else if (loadSecondVideoPlayer == true)
+        {
+            // Set to false to load first videoPlayer next time
+            loadSecondVideoPlayer = false;
+
+            // Set active index
+            activeVideoPlayerIndex = 2;
+
+            // Activate the 2nd video player
+            videoPlayer2.gameObject.SetActive(true);
+
+            // Set the video player 2 url
+            videoPlayer2.url = completeVideoPath;
+
+            // Play transition animation
+            videoPlayerTransitionAnimator.Play("VideoPlayer1ToVideoPlayer2_Animation", 0, 0f);
+        }
+    }
+
+    // Load only the background image
+    public void LoadImageOnly(string _filePath)
+    {
+        // Image file path
+        filePath = _filePath + @"\";
+        completeImagePath = filePath + imageName + imageType;
+
+        if (File.Exists(completeImagePath))
+        {
+            // Disable video players
+            videoPlayer.gameObject.SetActive(false);
+            videoPlayer2.gameObject.SetActive(false);
+
+            // Load the background image
+            StartCoroutine(LoadNextBackgroundImg());
+        }
+    }
+
+    // Load video if video file is found, load image if video is not found
+    public void LoadVideoOrImage(string _filePath)
+    {
+        // Video file path
+        filePath = _filePath + @"\";
+        completeVideoPath = filePath + videoName + videoType;
+
+        // Image file path
+        filePath = _filePath + @"\";
+        completeImagePath = filePath + imageName + imageType;
+
+        // If the video file has been found
+        if (File.Exists(completeVideoPath))
+        {
+            // Load the video
+            LoadNextVideo();
+
+            // Disable background images
+            img.gameObject.SetActive(false);
+            img2.gameObject.SetActive(false);
+        }
+        else if (File.Exists(completeImagePath))
+        {
+            // Disable video players
+            videoPlayer.gameObject.SetActive(false);
+            videoPlayer2.gameObject.SetActive(false);
+
+            // Load the background image
+            StartCoroutine(LoadNextBackgroundImg());
+        }
+    }
+}
