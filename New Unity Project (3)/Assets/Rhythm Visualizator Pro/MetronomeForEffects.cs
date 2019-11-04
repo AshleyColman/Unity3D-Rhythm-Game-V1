@@ -10,11 +10,6 @@ public class MetronomeForEffects : MonoBehaviour
     // Audio
     public AudioSource songAudioSource;
 
-    // Bools
-    private bool active;
-    private bool neverPlayed;
-    private bool hasCalculatedCurrentTick; // Used for calculating the current tick in the song
-
     // Integers
     private int currentBeatShapeAnimatorIndex;
 
@@ -25,12 +20,11 @@ public class MetronomeForEffects : MonoBehaviour
     private float timer;
     public float tickTimeDifference; // Time difference between ticks
     public float measureDuration; // Time that makes up a measure in the song
-    private int currentTick;
-    private int flashTick;
+    public int currentTick;
     private int Step;
     private int Base;
-    private int CurrentMeasure;
-    private int CurrentStep;
+    public int CurrentMeasure;
+    public int CurrentStep;
 
     // Scripts
     private MenuManager menuManager;
@@ -45,9 +39,6 @@ public class MetronomeForEffects : MonoBehaviour
         Base = 4;
         CurrentMeasure = 0;
         CurrentStep = 0;
-        flashTick = 2;
-        active = false;
-        neverPlayed = false;
 
         bpm = 175f;
         offsetMS = 280;
@@ -66,6 +57,53 @@ public class MetronomeForEffects : MonoBehaviour
     {
         bpm = _bpm;
         offsetMS = _offsetMS;
+    }
+
+
+    // Calculate the current tick past based on the current song time
+    public void CalculateCurrentTick()
+    {
+        int latestTick = 0;
+        timer = songAudioSource.time;
+
+        for (int iCount = 0; iCount < songTickTimes.Count; iCount++)
+        {
+            // Check the current song time against the tick times, see which tick time we're at
+            if (timer >= songTickTimes[iCount])
+            {
+                // Get the latest tick
+                latestTick = iCount;
+            }
+        }
+
+        currentTick = latestTick;
+    }
+
+
+    // Calculate Actual Step when the user changes song position in the UI
+    public void CalculateActualStep()
+    {
+        // Get the Actual Step searching the closest Song Tick Time using the Actual Song Time
+        for (int i = 0; i < songTickTimes.Count; i++)
+        {
+            if (songAudioSource.time < songTickTimes[i])
+            {
+                CurrentMeasure = (i / Base);
+                CurrentStep = (int)((((float)i / (float)Base) - (i / Base)) * 4);
+                if (CurrentStep == 0)
+                {
+                    CurrentMeasure = 0;
+                    CurrentStep = 4;
+                }
+                else
+                {
+                    CurrentMeasure++;
+                }
+
+                //currentTick = i;
+                break;
+            }
+        }
     }
 
     // Calculate Time Intervals for the song
@@ -116,17 +154,19 @@ public class MetronomeForEffects : MonoBehaviour
                         // Check for next tick next time
                         currentTick++;
 
-
-                        // Difficulty Flash Animations
-                        if (currentTick >= flashTick)
+                        // If the Current Step is greater than the Step, reset it and increment the Measure
+                        if (CurrentStep >= Step)
                         {
-                            // Play the difficuly flash animation
-                            flashTick += 4;
-
-                            // ON MEASURE
+                            CurrentStep = 1;
+                            CurrentMeasure++;
 
                             StartMenuOnMeasure();
                             SongSelectSceneOnMeasure();
+
+                        }
+                        else
+                        {
+                            CurrentStep++;
                         }
                     }
                 }
@@ -195,31 +235,6 @@ public class MetronomeForEffects : MonoBehaviour
         measureDuration = tickTimeDifference * 4;
 
         return measureDuration;
-    }
-
-   // Reset and allow current tick to be recalculated when the song has changed
-    public void ResetCalculateCurrentTick()
-    {
-        hasCalculatedCurrentTick = false;
-    }
-
-
-    // Calculate the current tick past based on the current song time
-    public void CalculateCurrentTick()
-    {
-        int latestTick = 0;
-
-        for (int iCount = 0; iCount < songTickTimes.Count; iCount++)
-        {
-            // Check the current song time against the tick times, see which tick time we're at
-            if (timer >= songTickTimes[iCount] && timer < songTickTimes[iCount + 1])
-            {
-                // Get the latest tick
-                latestTick = iCount;
-            }
-        }
-
-        currentTick = latestTick;
     }
 
     // Reset the menu animation that plays with the song

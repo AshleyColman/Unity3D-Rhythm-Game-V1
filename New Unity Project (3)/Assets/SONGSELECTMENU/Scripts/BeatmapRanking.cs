@@ -10,6 +10,9 @@ using TMPro;
 public class BeatmapRanking : MonoBehaviour
 {
     // UI
+    public TMP_ColorGradient xColorGradient, pColorGradient, sColorGradient, aColorGradient, bColorGradient, cColorGradient, dColorGradient, eColorGradient;
+
+
     public Scrollbar leaderboardScrollbar;
     public Button leaderboardLoadingIconButton;
     public Texture2D englandFlagTexture;
@@ -187,7 +190,7 @@ public class BeatmapRanking : MonoBehaviour
                     // Set grade
                     rankedButtonGradeText[placementToCheck].text = rankedButtonGrade[placementToCheck];
                     // Set grade text color
-                    rankedButtonGradeText[placementToCheck].color = SetGradeColor(rankedButtonGrade[placementToCheck]);
+                    rankedButtonGradeText[placementToCheck].colorGradientPreset = SetGradeColor(rankedButtonGrade[placementToCheck]);
                 }
 
                 totalLeaderboardPlacementsUpdated++;
@@ -221,7 +224,7 @@ public class BeatmapRanking : MonoBehaviour
                     // Set grade
                     personalBestButtonGradeText.text = personalBestGrade;
                     // Set grade text color
-                    personalBestButtonGradeText.color = SetGradeColor(personalBestGrade);
+                    personalBestButtonGradeText.colorGradientPreset = SetGradeColor(personalBestGrade);
                 }
             }
         }
@@ -591,28 +594,28 @@ public class BeatmapRanking : MonoBehaviour
     }
 
     // Set the grade icon color based on the grade passed
-    public Color SetGradeColor(string _grade)
+    public TMP_ColorGradient SetGradeColor(string _grade)
     {
         switch (_grade)
         {
-            case "SS":
-                return ssColor;
+            case "X":
+                return xColorGradient;
+            case "P":
+                return pColorGradient;
             case "S":
-                return sColor;
+                return sColorGradient;
             case "A":
-                return aColor;
+                return aColorGradient;
             case "B":
-                return bColor;
+                return bColorGradient;
             case "C":
-                return cColor;
+                return cColorGradient;
             case "D":
-                return dColor;
+                return dColorGradient;
             case "E":
-                return eColor;
-            case "F":
-                return fColor;
+                return eColorGradient;
             default:
-                return defaultColor;
+                return eColorGradient;
         }
     }
 

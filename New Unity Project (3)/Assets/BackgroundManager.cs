@@ -32,6 +32,9 @@ public class BackgroundManager : MonoBehaviour
     private bool loadSecondBackgroundImage, loadSecondVideoPlayer;
     private bool videoTickBoxSelected;
 
+    // Scripts
+    private MessagePanel messagePanel;
+
     // Properties
     public int ActiveVideoPlayerIndex
     {
@@ -56,6 +59,11 @@ public class BackgroundManager : MonoBehaviour
         loadSecondVideoPlayer = false;
     }
 
+    private void Start()
+    {
+        messagePanel = FindObjectOfType<MessagePanel>();
+    }
+
     // Toggle video tick box on or off 
     public void ToggleVideoTickBox()
     {
@@ -65,6 +73,9 @@ public class BackgroundManager : MonoBehaviour
             // Disable tick image
             videoTickBoxSelectedImage.gameObject.SetActive(false);
 
+            // Display message panel
+            messagePanel.DisplayVideoToggleOffMessage();
+
             // Set to false
             videoTickBoxSelected = false;
         }
@@ -72,6 +83,9 @@ public class BackgroundManager : MonoBehaviour
         {
             // Enable tick image
             videoTickBoxSelectedImage.gameObject.SetActive(true);
+
+            // Display message panel
+            messagePanel.DisplayVideoToggleOnMessage();
 
             // Set to true
             videoTickBoxSelected = true;
@@ -117,6 +131,10 @@ public class BackgroundManager : MonoBehaviour
                 // Get downloaded asset bundle
                 var texture = DownloadHandlerTexture.GetContent(uwr);
 
+                // Check texture size
+                float textureWidth = texture.width;
+                float textureHeight = texture.height;
+                float aspectRatio = (textureWidth / textureHeight);
 
                 if (loadSecondBackgroundImage == false)
                 {
@@ -131,6 +149,9 @@ public class BackgroundManager : MonoBehaviour
 
                     // Load image for background image 1
                     img.material.mainTexture = texture;
+
+                    // Set aspect ratio
+                    SetAspectRatio(aspectRatio, img);
 
                     // Set image to false then to true to activate new image
                     img.gameObject.SetActive(false);
@@ -153,6 +174,9 @@ public class BackgroundManager : MonoBehaviour
                     // Load image for background image 1
                     img2.material.mainTexture = texture;
 
+                    // Set aspect ratio
+                    SetAspectRatio(aspectRatio, img2);
+
                     // Set image to false then to true to activate new image
                     img2.gameObject.SetActive(false);
                     img2.gameObject.SetActive(true);
@@ -161,6 +185,18 @@ public class BackgroundManager : MonoBehaviour
                     backgroundImageTransitionAnimator.Play("BackgroundImage1ToBackgroundImage2_Animation", 0, 0f);
                 }
             }
+        }
+    }
+
+    private void SetAspectRatio(float _aspectRatio, Image _img)
+    {
+        if (_aspectRatio == 1)
+        {
+            _img.rectTransform.sizeDelta = new Vector2(950, 950);
+        }
+        else
+        {
+            _img.rectTransform.sizeDelta = new Vector2(1650, 950);
         }
     }
 

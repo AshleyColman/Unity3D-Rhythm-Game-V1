@@ -41,15 +41,15 @@ public class SongSelectPanel : MonoBehaviour
     string easyFileCheckPath, advancedFileCheckPath, extraFileCheckPath;
     string currentDifficultySorting;
     const string easyDifficultySortingValue = "easy", advancedDifficultySortingValue = "advanced", extraDifficultySortingValue = "extra",
-        allDifficultySortingValue = "all";
+        allDifficultySortingValue = "all", defaultDifficultySortingValue = "default";
 
     // Integers
     private int beatmapButtonIndexToGet;
-    private int activeButtonIndex;
+    private int currentLoadedButtonIndex;
+    private int currentSortedListSize;
 
     // Bools
     private bool hasLoadedAllBeatmapDirectories;
-    private bool hasResetSliderBarValue;
     private bool hasLoadedAllBeatmapButtons;
     private bool easyDifficultyTickBoxSelected, advancedDifficultyTickBoxSelected, extraDifficultyTickBoxSelected;
 
@@ -64,8 +64,8 @@ public class SongSelectPanel : MonoBehaviour
     private SongSelectManager songSelectManager; // Reference to the song select manager which manages loading songs, used to get the beatmap img addresses for loading images
     private EditSelectSceneSongSelectManager editSelectSceneSongSelectManager; // Song select manager for the edit select scene
     private MenuManager menuManager;
-
-
+    private SongSelectMenuFlash songSelectMenuFlash;
+    private MessagePanel messagePanel;
 
     // Move button list content scroll rect up and down variables
     private GameObject currentSelectedBeatmapButton;
@@ -77,17 +77,25 @@ public class SongSelectPanel : MonoBehaviour
     private float newButtonListContentPositionY;
     private Vector3 newButtonListContentPosition;
 
-
-
-
-
     // Sorting lists
     public List<BeatmapButton> beatmapButtonList = new List<BeatmapButton>();
+    public List<BeatmapButton> artistSortedBeatmapButtonList = new List<BeatmapButton>();
+    public List<BeatmapButton> creatorSortedBeatmapButtonList = new List<BeatmapButton>();
+    public List<BeatmapButton> easyDifficultySortedBeatmapButtonList = new List<BeatmapButton>();
+    public List<BeatmapButton> advancedDifficultySortedBeatmapButtonList = new List<BeatmapButton>();
+    public List<BeatmapButton> extraDifficultySortedBeatmapButtonList = new List<BeatmapButton>();
+    public List<BeatmapButton> allDifficultySortedBeatmapButtonList = new List<BeatmapButton>();
+    public List<BeatmapButton> searchedBeatmapsList = new List<BeatmapButton>();
 
     // Properties
     public bool HasLoadedAllBeatmapButtons
     {
         get { return hasLoadedAllBeatmapButtons; }
+    }
+
+    public string CurrentDifficultySorting
+    {
+        get { return currentDifficultySorting; }
     }
 
     // Use this for initialization
@@ -98,7 +106,6 @@ public class SongSelectPanel : MonoBehaviour
         easyDifficultyTickBoxSelected = true;
         advancedDifficultyTickBoxSelected = true;
         extraDifficultyTickBoxSelected = true;
-        hasResetSliderBarValue = false;
         hasLoadedAllBeatmapDirectories = false;  // Set to false at the start, set to true when all have loaded
         beatmapButtonPosition = new Vector3(0, 0, 500); // Set to 500 on z to fix the "moving image" problem, instantiates the images to z of 0 so the images don't move when the mouse cursor has moved
         shaderLocation = "UI/Unlit/Transparent";
@@ -112,6 +119,8 @@ public class SongSelectPanel : MonoBehaviour
         menuManager = FindObjectOfType<MenuManager>();
         songSelectManager = FindObjectOfType<SongSelectManager>();
         editSelectSceneSongSelectManager = FindObjectOfType<EditSelectSceneSongSelectManager>();
+        songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
+        messagePanel = FindObjectOfType<MessagePanel>();
     }
 
     private void Update()
@@ -126,20 +135,6 @@ public class SongSelectPanel : MonoBehaviour
 
         // Check input for song select panel objects
         CheckSongSelectPanelInput();
-
-        if (hasResetSliderBarValue == false)
-        {
-            StartCoroutine(ResetScrollValue());
-        }
-    }
-
-    private IEnumerator ResetScrollValue()
-    {
-        yield return new WaitForSeconds(0.2f);
-
-        beatmapButtonListScrollbar.value = 1f;
-
-        hasResetSliderBarValue = true;
     }
 
     // Check input for song select panel features
@@ -149,30 +144,151 @@ public class SongSelectPanel : MonoBehaviour
         if (Input.anyKeyDown)
         {
             // Check for mouse or navigation input
-            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow))
+            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)
+                || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Return))
             {
                 // Get the selected 
                 currentSelectedBeatmapButton = EventSystem.current.currentSelectedGameObject;
-                selectedBeatmapButtonScript = currentSelectedBeatmapButton.GetComponent<BeatmapButton>();
-                currentSelectedBeatmapButtonIndex = beatmapButtonList.IndexOf(selectedBeatmapButtonScript);
+                if (currentSelectedBeatmapButton != null)
+                {
+                    selectedBeatmapButtonScript = currentSelectedBeatmapButton.GetComponent<BeatmapButton>();
 
-                // Get the current position of the button list content panel
-                buttonListContentPositionX = buttonListContent.transform.localPosition.x;
-                buttonListContentPositionY = buttonListContent.transform.localPosition.y;
-                buttonListContentPositionZ = buttonListContent.transform.localPosition.z;
+                    switch (currentDifficultySorting)
+                    {
+                        case defaultDifficultySortingValue:
+                            currentSelectedBeatmapButtonIndex = beatmapButtonList.IndexOf(selectedBeatmapButtonScript);
+                            currentSortedListSize = beatmapButtonList.Count;
+                            break;
+                        case easyDifficultySortingValue:
+                            currentSelectedBeatmapButtonIndex = easyDifficultySortedBeatmapButtonList.IndexOf(selectedBeatmapButtonScript);
+                            currentSortedListSize = easyDifficultySortedBeatmapButtonList.Count;
+                            break;
+                        case advancedDifficultySortingValue:
+                            currentSelectedBeatmapButtonIndex = advancedDifficultySortedBeatmapButtonList.IndexOf(selectedBeatmapButtonScript);
+                            currentSortedListSize = advancedDifficultySortedBeatmapButtonList.Count;
+                            break;
+                        case extraDifficultySortingValue:
+                            currentSelectedBeatmapButtonIndex = extraDifficultySortedBeatmapButtonList.IndexOf(selectedBeatmapButtonScript);
+                            currentSortedListSize = extraDifficultySortedBeatmapButtonList.Count;
+                            break;
+                        case allDifficultySortingValue:
+                            currentSelectedBeatmapButtonIndex = allDifficultySortedBeatmapButtonList.IndexOf(selectedBeatmapButtonScript);
+                            currentSortedListSize = allDifficultySortedBeatmapButtonList.Count;
+                            break;
+                        case "searched":
+                            currentSelectedBeatmapButtonIndex = searchedBeatmapsList.IndexOf(selectedBeatmapButtonScript);
+                            currentSortedListSize = searchedBeatmapsList.Count;
+                            break;
+                    }
 
-                // Scroll the beatmap button content panel up
-                ScrollListUp();
+                    // Get the current position of the button list content panel
+                    buttonListContentPositionX = buttonListContent.transform.localPosition.x;
+                    buttonListContentPositionY = buttonListContent.transform.localPosition.y;
+                    buttonListContentPositionZ = buttonListContent.transform.localPosition.z;
 
-                // Scroll the beatmap button content panel up
-                ScrollListDown();
+                    // Scroll the beatmap button content panel up
+                    ScrollListUp();
+
+                    // Scroll the beatmap button content panel up
+                    ScrollListDown();
+                }
+
+                // Select the next difficulty
+                SelectNextDifficulty();
             }
             else
             {
-                // Select search bar if any keyboard key has been pressed
-                beatmapSearchInputField.ActivateInputField();
+                if (beatmapSearchInputField.isFocused == false)
+                {
+                    // Select search bar if any keyboard key has been pressed
+                    beatmapSearchInputField.ActivateInputField();
+                }
             }
         }
+    }
+
+    // Select the next difficulty
+    private void SelectNextDifficulty()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            for (int i = 0; i < beatmapButtonList.Count; i++)
+            {
+                // Find index where the beatmap button index matches up with the current selected beatmap directory index
+                if (beatmapButtonList[i].BeatmapButtonIndex == songSelectManager.SelectedBeatmapDirectoryIndex)
+                {
+                    // If right arrow key was pressed
+                    if (Input.GetKeyDown(KeyCode.RightArrow))
+                    {
+                        // Select based on current selected difficulty
+                        switch (songSelectManager.CurrentBeatmapDifficulty)
+                        {
+                            // If the current selected difficulty is easy
+                            case "easy":
+                                // Check if advanced difficulty exists
+                                if (beatmapButtonList[i].HasAdvancedDifficulty == true)
+                                {
+                                    // Load the advanced difficulty 
+                                    songSelectMenuFlash.LoadBeatmapDifficulty("advanced");
+                                }
+                                break;
+                            case "advanced":
+                                if (beatmapButtonList[i].HasExtraDifficulty == true)
+                                {
+                                    songSelectMenuFlash.LoadBeatmapDifficulty("extra");
+                                }
+                                break;
+                        }
+                    }
+
+                    // If left arrow key was pressed
+                    if (Input.GetKeyDown(KeyCode.LeftArrow))
+                    {
+                        // Select based on current selected difficulty
+                        switch (songSelectManager.CurrentBeatmapDifficulty)
+                        {
+                            // If the current selected difficulty is easy
+                            case "advanced":
+                                // Check if advanced difficulty exists
+                                if (beatmapButtonList[i].HasEasyDifficulty == true)
+                                {
+                                    // Load the easy difficulty 
+                                    songSelectMenuFlash.LoadBeatmapDifficulty("easy");
+                                }
+                                break;
+                            case "extra":
+                                if (beatmapButtonList[i].HasAdvancedDifficulty == true)
+                                {
+                                    songSelectMenuFlash.LoadBeatmapDifficulty("advanced");
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Set the button scroll list to the top
+    public void SetButtonScrollListToTop()
+    {
+        // Create the new Y position
+        newButtonListContentPositionY = buttonListContentPositionY - 10000;
+        newButtonListContentPosition = new Vector3(buttonListContentPositionX, newButtonListContentPositionY, buttonListContentPositionZ);
+
+        // Assign new position to move the button list content panel up
+        buttonListContent.transform.localPosition = newButtonListContentPosition;
+    }
+
+    // Set the button scroll list to the bottom
+    public void SetButtonScrollListToBottom()
+    {
+        // Create the new Y position
+        newButtonListContentPositionY = buttonListContentPositionY + 10000;
+        newButtonListContentPosition = new Vector3(buttonListContentPositionX, newButtonListContentPositionY, buttonListContentPositionZ);
+
+        // Assign new position to move the button list content panel up
+        buttonListContent.transform.localPosition = newButtonListContentPosition;
     }
 
     // Scroll the beatmap button content panel up
@@ -180,7 +296,7 @@ public class SongSelectPanel : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            if (currentSelectedBeatmapButtonIndex < beatmapButtonList.Count - 4)
+            if (currentSelectedBeatmapButtonIndex < currentSortedListSize - 4 && currentSelectedBeatmapButtonIndex > 2)
             {
                 // Create the new Y position
                 newButtonListContentPositionY = buttonListContentPositionY - 110;
@@ -197,7 +313,7 @@ public class SongSelectPanel : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            if (currentSelectedBeatmapButtonIndex > 3)
+            if (currentSelectedBeatmapButtonIndex > 3 && currentSelectedBeatmapButtonIndex < currentSortedListSize - 3)
             {
                 // Create the new Y position
                 newButtonListContentPositionY = buttonListContentPositionY + 110;
@@ -231,7 +347,7 @@ public class SongSelectPanel : MonoBehaviour
             }
 
             // Set default navigation for all instantiated beatmap buttons
-            SetDefaultBeatmapButtonNavigation();
+            //SetDefaultBeatmapButtonNavigation();
 
             // Set to true
             hasLoadedAllBeatmapButtons = true;
@@ -239,11 +355,13 @@ public class SongSelectPanel : MonoBehaviour
             // Sort by default
             SortBeatmapButtonsDefault();
 
+            // Update beatmap button navigation
+            UpdateBeatmapButtonNavigation("default");
+
             // Select first button in the list 
             beatmapButtonList[0].GetComponent<Button>().Select();
         }
     }
-
 
     // Get the beatmap directory paths
     public void GetBeatmapDirectoryPaths()
@@ -273,13 +391,45 @@ public class SongSelectPanel : MonoBehaviour
         }
     }
 
-    // Set default navigation for all instantiated buttons
-    private void SetDefaultBeatmapButtonNavigation()
+    // Update beatmap button navigation
+    private void UpdateBeatmapButtonNavigation(string _sortingMethod)
     {
-        for (int i = 0; i < instantiatedBeatmapButtonList.Count; i++)
+        // Create a new list
+        List<BeatmapButton> listToSortBy = new List<BeatmapButton>();
+
+        // Get the list to sort based on the sorting method
+        switch (_sortingMethod)
+        {
+            case "default":
+                listToSortBy = beatmapButtonList;
+                break;
+            case "artist":
+                listToSortBy = artistSortedBeatmapButtonList;
+                break;
+            case "creator":
+                listToSortBy = creatorSortedBeatmapButtonList;
+                break;
+            case "easyDifficulty":
+                listToSortBy = easyDifficultySortedBeatmapButtonList;
+                break;
+            case "advancedDifficulty":
+                listToSortBy = advancedDifficultySortedBeatmapButtonList;
+                break;
+            case "extraDifficulty":
+                listToSortBy = extraDifficultySortedBeatmapButtonList;
+                break;
+            case "allDifficulty":
+                listToSortBy = allDifficultySortedBeatmapButtonList;
+                break;
+            case "searched":
+                listToSortBy = searchedBeatmapsList;
+                break;
+        }
+
+        for (int i = 0; i < listToSortBy.Count; i++)
         {
             // Get current button setting navigation for
-            Button button = instantiatedBeatmapButtonList[i].GetComponent<Button>();
+            Button button = listToSortBy[i].GetComponent<Button>();
             Button buttonDown;
             Button buttonUp;
 
@@ -290,7 +440,7 @@ public class SongSelectPanel : MonoBehaviour
             navigation.mode = Navigation.Mode.Explicit;
 
             // Get button down
-            if (i == instantiatedBeatmapButtonList.Count - 1)
+            if (i == listToSortBy.Count - 1)
             {
                 // If at end of list set down navigation to own button
                 buttonDown = button;
@@ -298,7 +448,7 @@ public class SongSelectPanel : MonoBehaviour
             else
             {
                 // Set button down to the next button in the list
-                buttonDown = instantiatedBeatmapButtonList[i + 1].GetComponent<Button>();
+                buttonDown = listToSortBy[i + 1].GetComponent<Button>();
             }
 
             // Get button up
@@ -310,9 +460,8 @@ public class SongSelectPanel : MonoBehaviour
             else
             {
                 // Set button up to the previous button in the list
-                buttonUp = instantiatedBeatmapButtonList[i - 1].GetComponent<Button>();
+                buttonUp = listToSortBy[i - 1].GetComponent<Button>();
             }
-
 
             // Set navigation
             navigation.selectOnDown = buttonDown;
@@ -332,14 +481,6 @@ public class SongSelectPanel : MonoBehaviour
             beatmapButtonInstantiate = Instantiate(beatmapButton, beatmapButtonPosition, Quaternion.Euler(0, 0, 0),
             buttonListContent) as GameObject;
         }
-        /*
-        else if (levelChanger.CurrentLevelIndex == levelChanger.EditSelectSceneIndex)
-        {
-            // Assign the index and image to this button
-            beatmapButtonInstantiate = Instantiate(editSelectSceneBeatmapButton, beatmapButtonPosition, Quaternion.Euler(0, 0, 0),
-            buttonListContent) as GameObject;
-        }
-        */
 
         // Add the instantiated button to the list
         instantiatedBeatmapButtonList.Add(beatmapButtonInstantiate);
@@ -347,7 +488,6 @@ public class SongSelectPanel : MonoBehaviour
         // Get the child image transform from the instantiated button so we can change the image
         Transform beatmapButtonPanelChild = beatmapButtonInstantiate.gameObject.transform.GetChild(1);
         beatmapButtonInstantiateChildImage = beatmapButtonPanelChild.gameObject.transform.GetChild(0);
-
 
         // Get the image component of the instantiated button
         instantiatedBeatmapButtonImage = beatmapButtonInstantiateChildImage.GetComponent<Image>();
@@ -380,16 +520,6 @@ public class SongSelectPanel : MonoBehaviour
             fileCheckPath = songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
                 @"\" + imageName + imageType;
         }
-        /*
-        else if (levelChanger.CurrentLevelIndex == levelChanger.EditSelectSceneIndex)
-        {
-            completePath = "file://" + beatmapDirectoryPaths[_beatmapButtonIndex] +
-                @"\" + imageName + imageType;
-
-            fileCheckPath = editSelectSceneSongSelectManager.beatmapDirectories[_beatmapButtonIndex] +
-                @"\" + imageName + imageType;
-        }
-        */
 
         // Check if the image file exists
         // If the file doesn't exist
@@ -537,106 +667,432 @@ public class SongSelectPanel : MonoBehaviour
     // Sort beatmap buttons by advanced difficulty
     public void SortBeatmapButtonsAdvancedDifficulty()
     {
-        // Loop through all button scripts
-        for (int i = 0; i < beatmapButtonList.Count; i++)
+        // If the beatmaps are currently sorted by "searched beatmaps"
+        if (currentDifficultySorting == "searched")
         {
-            // Check if beatmap button has advanced difficulty
-            if (beatmapButtonList[i].HasAdvancedDifficulty == false)
+            // Only sort the searched beatmaps
+            // Loop through all button scripts
+            for (int i = 0; i < searchedBeatmapsList.Count; i++)
             {
-                // Disable all buttons that do not have advanced difficulty
-                beatmapButtonList[i].gameObject.SetActive(false);
-            }
-            else if (beatmapButtonList[i].HasAdvancedDifficulty == true)
-            {
-                // Enable all buttons that have advanced difficulty
-                beatmapButtonList[i].gameObject.SetActive(true);
+                // Check if beatmap button has easy difficulty
+                if (searchedBeatmapsList[i].HasAdvancedDifficulty == false)
+                {
+                    // Disable all buttons that do not have easy difficulty
+                    searchedBeatmapsList[i].gameObject.SetActive(false);
+                }
+                else if (beatmapButtonList[i].HasAdvancedDifficulty == true)
+                {
+                    // Enable all buttons that have easy difficulty
+                    searchedBeatmapsList[i].gameObject.SetActive(true);
 
-                // Enable color
-                beatmapButtonList[i].overlayColorImage.color = advancedDifficultyColor;
+                    // Enable color
+                    searchedBeatmapsList[i].overlayColorImage.color = advancedDifficultyColor;
+                }
             }
+
+            // Update beatmap button navigation
+            UpdateBeatmapButtonNavigation("searched");
+
+            // Set the scroll view back to the top of the screen
+            SetButtonScrollListToTop();
+
+            // Select first button in the list
+            if (searchedBeatmapsList.Count != 0)
+            {
+                searchedBeatmapsList[0].GetComponent<Button>().Select();
+            }
+
+            // Update the beatmap button index based on the current sorting
+            UpdateSortedButtonIndex();
+
+            // Update the total beatmap count based on the current sorting
+            totalBeatmapCountText.text = "/ " + searchedBeatmapsList.Count.ToString();
         }
+        else
+        {
+            // Clear the list
+            advancedDifficultySortedBeatmapButtonList.Clear();
 
-        // Set current sorting difficulty
-        currentDifficultySorting = advancedDifficultySortingValue;
+            // Loop through all button scripts
+            for (int i = 0; i < beatmapButtonList.Count; i++)
+            {
+                // Check if beatmap button has advanced difficulty
+                if (beatmapButtonList[i].HasAdvancedDifficulty == false)
+                {
+                    // Disable all buttons that do not have advanced difficulty
+                    beatmapButtonList[i].gameObject.SetActive(false);
+                }
+                else if (beatmapButtonList[i].HasAdvancedDifficulty == true)
+                {
+                    // Enable all buttons that have advanced difficulty
+                    beatmapButtonList[i].gameObject.SetActive(true);
+
+                    // Enable color
+                    beatmapButtonList[i].overlayColorImage.color = advancedDifficultyColor;
+
+                    // Add to the sorted list
+                    advancedDifficultySortedBeatmapButtonList.Add(beatmapButtonList[i]);
+                }
+            }
+
+            // Update beatmap button navigation
+            UpdateBeatmapButtonNavigation("advancedDifficulty");
+
+            // Set current sorting difficulty
+            currentDifficultySorting = advancedDifficultySortingValue;
+
+            // Set the scroll view back to the top of the screen
+            SetButtonScrollListToTop();
+
+            // Select first button in the list
+            if (advancedDifficultySortedBeatmapButtonList.Count != 0)
+            {
+                advancedDifficultySortedBeatmapButtonList[0].GetComponent<Button>().Select();
+            }
+
+            // Update the beatmap button index based on the current sorting
+            UpdateSortedButtonIndex();
+
+            // Update the total beatmap count based on the current sorting
+            totalBeatmapCountText.text = "/ " + advancedDifficultySortedBeatmapButtonList.Count.ToString();
+        }
     }
 
     // Sort beatmap buttons by extra difficulty
     public void SortBeatmapButtonsExtraDifficulty()
     {
-        // Loop through all button scripts
-        for (int i = 0; i < beatmapButtonList.Count; i++)
+        // If the beatmaps are currently sorted by "searched beatmaps"
+        if (currentDifficultySorting == "searched")
         {
-            // Check if beatmap button has extra difficulty
-            if (beatmapButtonList[i].HasExtraDifficulty == false)
+            // Only sort the searched beatmaps
+            // Loop through all button scripts
+            for (int i = 0; i < searchedBeatmapsList.Count; i++)
             {
-                // Disable all buttons that do not have extra difficulty
-                beatmapButtonList[i].gameObject.SetActive(false);
-            }
-            else if (beatmapButtonList[i].HasExtraDifficulty == true)
-            {
-                // Enable all buttons that have extra difficulty
-                beatmapButtonList[i].gameObject.SetActive(true);
+                // Check if beatmap button has extra difficulty
+                if (searchedBeatmapsList[i].HasExtraDifficulty == false)
+                {
+                    // Disable all buttons that do not have easy difficulty
+                    searchedBeatmapsList[i].gameObject.SetActive(false);
+                }
+                else
+                {
+                    // Enable all buttons that have extra difficulty
+                    searchedBeatmapsList[i].gameObject.SetActive(true);
 
-                // Enable color
-                beatmapButtonList[i].overlayColorImage.color = extraDifficultyColor;
+                    // Enable color
+                    searchedBeatmapsList[i].overlayColorImage.color = extraDifficultyColor;
+                }
             }
+
+            // Update beatmap button navigation
+            UpdateBeatmapButtonNavigation("searched");
+
+            // Set the scroll view back to the top of the screen
+            SetButtonScrollListToTop();
+
+            // Select first button in the list
+            if (searchedBeatmapsList.Count != 0)
+            {
+                searchedBeatmapsList[0].GetComponent<Button>().Select();
+            }
+
+            // Update the beatmap button index based on the current sorting
+            UpdateSortedButtonIndex();
+
+            // Update the total beatmap count based on the current sorting
+            totalBeatmapCountText.text = "/ " + searchedBeatmapsList.Count.ToString();
         }
+        else
+        {
+            // Clear the list
+            extraDifficultySortedBeatmapButtonList.Clear();
 
-        // Set current sorting difficulty
-        currentDifficultySorting = extraDifficultySortingValue;
+            // Loop through all button scripts
+            for (int i = 0; i < beatmapButtonList.Count; i++)
+            {
+                // Check if beatmap button has extra difficulty
+                if (beatmapButtonList[i].HasExtraDifficulty == false)
+                {
+                    // Disable all buttons that do not have extra difficulty
+                    beatmapButtonList[i].gameObject.SetActive(false);
+                }
+                else if (beatmapButtonList[i].HasExtraDifficulty == true)
+                {
+                    // Enable all buttons that have extra difficulty
+                    beatmapButtonList[i].gameObject.SetActive(true);
+
+                    // Enable color
+                    beatmapButtonList[i].overlayColorImage.color = extraDifficultyColor;
+
+                    // Add to the sorted list
+                    extraDifficultySortedBeatmapButtonList.Add(beatmapButtonList[i]);
+                }
+            }
+
+            // Update beatmap button navigation
+            UpdateBeatmapButtonNavigation("extraDifficulty");
+
+            // Set current sorting difficulty
+            currentDifficultySorting = extraDifficultySortingValue;
+
+            // Set the scroll view back to the top of the screen
+            SetButtonScrollListToTop();
+
+            // Select first button in the list
+            if (extraDifficultySortedBeatmapButtonList.Count != 0)
+            {
+                extraDifficultySortedBeatmapButtonList[0].GetComponent<Button>().Select();
+            }
+
+            // Update the beatmap button index based on the current sorting
+            UpdateSortedButtonIndex();
+
+            // Update the total beatmap count based on the current sorting
+            totalBeatmapCountText.text = "/ " + extraDifficultySortedBeatmapButtonList.Count.ToString();
+        }
     }
 
     // Sort beatmap buttons by easy difficulty
     public void SortBeatmapButtonsEasyDifficulty()
     {
-        // Loop through all button scripts
-        for (int i = 0; i < beatmapButtonList.Count; i++)
+        // If the beatmaps are currently sorted by "searched beatmaps"
+        if (currentDifficultySorting == "searched")
         {
-            // Check if beatmap button has easy difficulty
-            if (beatmapButtonList[i].HasEasyDifficulty == false)
+            // Only sort the searched beatmaps
+            // Loop through all button scripts
+            for (int i = 0; i < searchedBeatmapsList.Count; i++)
             {
-                // Disable all buttons that do not have easy difficulty
-                beatmapButtonList[i].gameObject.SetActive(false);
-            }
-            else if (beatmapButtonList[i].HasEasyDifficulty == true)
-            {
-                // Enable all buttons that have easy difficulty
-                beatmapButtonList[i].gameObject.SetActive(true);
+                // Check if beatmap button has easy difficulty
+                if (searchedBeatmapsList[i].HasEasyDifficulty == false)
+                {
+                    // Disable all buttons that do not have easy difficulty
+                    searchedBeatmapsList[i].gameObject.SetActive(false);
+                }
+                else
+                {
+                    // Enable all buttons that have easy difficulty
+                    searchedBeatmapsList[i].gameObject.SetActive(true);
 
-                // Enable color
-                beatmapButtonList[i].overlayColorImage.color = easyDifficultyColor;
+                    // Enable color
+                    searchedBeatmapsList[i].overlayColorImage.color = easyDifficultyColor;
+                }
             }
+
+            // Update beatmap button navigation
+            UpdateBeatmapButtonNavigation("searched");
+
+            // Set the scroll view back to the top of the screen
+            SetButtonScrollListToTop();
+
+            // Select first button in the list
+            if (searchedBeatmapsList.Count != 0)
+            {
+                searchedBeatmapsList[0].GetComponent<Button>().Select();
+            }
+
+            // Update the beatmap button index based on the current sorting
+            UpdateSortedButtonIndex();
+
+            // Update the total beatmap count based on the current sorting
+            totalBeatmapCountText.text = "/ " + searchedBeatmapsList.Count.ToString();
         }
+        else
+        {
+            // Clear the list
+            easyDifficultySortedBeatmapButtonList.Clear();
 
-        // Set current sorting difficulty
-        currentDifficultySorting = easyDifficultySortingValue;
+            // Loop through all button scripts
+            for (int i = 0; i < beatmapButtonList.Count; i++)
+            {
+                // Check if beatmap button has easy difficulty
+                if (beatmapButtonList[i].HasEasyDifficulty == false)
+                {
+                    // Disable all buttons that do not have easy difficulty
+                    beatmapButtonList[i].gameObject.SetActive(false);
+                }
+                else
+                {
+                    // Enable all buttons that have easy difficulty
+                    beatmapButtonList[i].gameObject.SetActive(true);
+
+                    // Enable color
+                    beatmapButtonList[i].overlayColorImage.color = easyDifficultyColor;
+
+                    // Add to the sorted list
+                    easyDifficultySortedBeatmapButtonList.Add(beatmapButtonList[i]);
+                }
+            }
+
+            // Update beatmap button navigation
+            UpdateBeatmapButtonNavigation("easyDifficulty");
+
+            // Set current sorting difficulty
+            currentDifficultySorting = easyDifficultySortingValue;
+
+            // Set the scroll view back to the top of the screen
+            SetButtonScrollListToTop();
+
+            // Select first button in the list
+            if (easyDifficultySortedBeatmapButtonList.Count != 0)
+            {
+                easyDifficultySortedBeatmapButtonList[0].GetComponent<Button>().Select();
+            }
+
+            // Update the beatmap button index based on the current sorting
+            UpdateSortedButtonIndex();
+
+            // Update the total beatmap count based on the current sorting
+            totalBeatmapCountText.text = "/ " + easyDifficultySortedBeatmapButtonList.Count.ToString();
+        }
     }
 
     // Sort beatmap buttons by all difficulties
     public void SortBeatmapButtonsAllDifficulties()
     {
-        // Loop through all button scripts
-        for (int i = 0; i < beatmapButtonList.Count; i++)
+        // If the beatmaps are currently sorted by "searched beatmaps"
+        if (currentDifficultySorting == "searched")
         {
-            // Check if the beatmap button contains all 3 difficulties
-            if (beatmapButtonList[i].HasEasyDifficulty == true && beatmapButtonList[i].HasAdvancedDifficulty == true &&
-                beatmapButtonList[i].HasExtraDifficulty == true)
+            // Only sort the searched beatmaps
+            // Loop through all button scripts
+            for (int i = 0; i < searchedBeatmapsList.Count; i++)
             {
-                // Enable all buttons that have them all
-                beatmapButtonList[i].gameObject.SetActive(true);
+                // Check if the beatmap button contains all 3 difficulties
+                if (beatmapButtonList[i].HasEasyDifficulty == true && beatmapButtonList[i].HasAdvancedDifficulty == true &&
+                    beatmapButtonList[i].HasExtraDifficulty == true)
+                {
+                    // Disable all buttons that do not have easy difficulty
+                    searchedBeatmapsList[i].gameObject.SetActive(false);
+                }
+                else
+                {
+                    // Enable all buttons that have extra difficulty
+                    searchedBeatmapsList[i].gameObject.SetActive(true);
 
-                // Enable color
-                beatmapButtonList[i].overlayColorImage.color = allDifficultyColor;
+                    // Enable color
+                    searchedBeatmapsList[i].overlayColorImage.color = allDifficultyColor;
+                }
             }
-            else
+
+            // Update beatmap button navigation
+            UpdateBeatmapButtonNavigation("searched");
+
+            // Set the scroll view back to the top of the screen
+            SetButtonScrollListToTop();
+
+            // Select first button in the list
+            if (searchedBeatmapsList.Count != 0)
             {
-                // Disable button
-                beatmapButtonList[i].gameObject.SetActive(false);
+                searchedBeatmapsList[0].GetComponent<Button>().Select();
             }
+
+            // Update the beatmap button index based on the current sorting
+            UpdateSortedButtonIndex();
+
+            // Update the total beatmap count based on the current sorting
+            totalBeatmapCountText.text = "/ " + searchedBeatmapsList.Count.ToString();
+        }
+        else
+        {
+            // Clear the list
+            allDifficultySortedBeatmapButtonList.Clear();
+
+            // Loop through all button scripts
+            for (int i = 0; i < beatmapButtonList.Count; i++)
+            {
+                // Check if the beatmap button contains all 3 difficulties
+                if (beatmapButtonList[i].HasEasyDifficulty == true && beatmapButtonList[i].HasAdvancedDifficulty == true &&
+                    beatmapButtonList[i].HasExtraDifficulty == true)
+                {
+                    // Enable all buttons that have them all
+                    beatmapButtonList[i].gameObject.SetActive(true);
+
+                    // Enable color
+                    beatmapButtonList[i].overlayColorImage.color = allDifficultyColor;
+
+                    // Add to the sorted list
+                    allDifficultySortedBeatmapButtonList.Add(beatmapButtonList[i]);
+                }
+                else
+                {
+                    // Disable button
+                    beatmapButtonList[i].gameObject.SetActive(false);
+                }
+            }
+
+            // Update beatmap button navigation
+            UpdateBeatmapButtonNavigation("allDifficulty");
+
+            // Set current sorting difficulty
+            currentDifficultySorting = allDifficultySortingValue;
+
+            // Set the scroll view back to the top of the screen
+            SetButtonScrollListToTop();
+
+            // Select first button in the list
+            if (allDifficultySortedBeatmapButtonList.Count != 0)
+            {
+                allDifficultySortedBeatmapButtonList[0].GetComponent<Button>().Select();
+            }
+
+            // Update the beatmap button index based on the current sorting
+            UpdateSortedButtonIndex();
+
+            // Update the total beatmap count based on the current sorting
+            totalBeatmapCountText.text = "/ " + allDifficultySortedBeatmapButtonList.Count.ToString();
+        }
+    }
+
+    // Update the sorted button index
+    private void UpdateSortedButtonIndex()
+    {
+        // Create new list
+        List<BeatmapButton> listToSort = new List<BeatmapButton>();
+
+        // Get the list to sort the index by based on the current sorting
+        switch (currentDifficultySorting)
+        {
+            case defaultDifficultySortingValue:
+                listToSort = beatmapButtonList;
+                break;
+            case easyDifficultySortingValue:
+                listToSort = easyDifficultySortedBeatmapButtonList;
+                break;
+            case advancedDifficultySortingValue:
+                listToSort = advancedDifficultySortedBeatmapButtonList;
+                break;
+            case extraDifficultySortingValue:
+                listToSort = extraDifficultySortedBeatmapButtonList;
+                break;
+            case allDifficultySortingValue:
+                listToSort = allDifficultySortedBeatmapButtonList;
+                break;
+            case "searched":
+                listToSort = searchedBeatmapsList;
+                break;
         }
 
-        // Set current sorting difficulty
-        currentDifficultySorting = allDifficultySortingValue;
+        // Assign the new index based on current sorting
+        for (int i = 0; i < listToSort.Count; i++)
+        {
+            switch (currentDifficultySorting)
+            {
+                case defaultDifficultySortingValue:
+                    listToSort[i].DefaultButtonIndex = i;
+                    break;
+                case easyDifficultySortingValue:
+                    listToSort[i].EasyDifficultyButtonIndex = i;
+                    break;
+                case advancedDifficultySortingValue:
+                    listToSort[i].AdvancedDifficultyButtonIndex = i;
+                    break;
+                case extraDifficultySortingValue:
+                    listToSort[i].ExtraDifficultyButtonIndex = i;
+                    break;
+                case allDifficultySortingValue:
+                    listToSort[i].AllDifficultyButtonIndex = i;
+                    break;
+            }
+        }
     }
 
     // Sort buttons by default - everything enabled
@@ -652,8 +1108,29 @@ public class SongSelectPanel : MonoBehaviour
             beatmapButtonList[i].overlayColorImage.color = defaultDifficultyColor;
         }
 
-        // Set current sorting difficulty
-        currentDifficultySorting = extraDifficultySortingValue;
+        // Set current sorting difficulty to default
+        currentDifficultySorting = defaultDifficultySortingValue;
+
+        // Set beatmaps to alphabetical 
+        SortBeatmapButtonsSongNameAlphabetical();
+
+        // Update beatmap button navigation
+        UpdateBeatmapButtonNavigation("default");
+
+        // Set the scroll view back to the top of the screen
+        SetButtonScrollListToTop();
+
+        // Select first button in the list
+        if (beatmapButtonList.Count != 0)
+        {
+            beatmapButtonList[0].GetComponent<Button>().Select();
+        }
+
+        // Update the beatmap button index based on the current sorting
+        UpdateSortedButtonIndex();
+
+        // Update the total beatmap count based on the current sorting
+        totalBeatmapCountText.text = "/ " + beatmapButtonList.Count.ToString();
     }
 
     // Toggle easy difficulty levels
@@ -664,11 +1141,17 @@ public class SongSelectPanel : MonoBehaviour
         {
             // Set to false
             easyDifficultyTickBoxSelected = false;
+
+            // Display message panel
+            messagePanel.DisplayEasyDifficultyToggleOffMessageValue();
         }
         else if (easyDifficultyTickBoxSelected == false)
         {
             // Set to true
             easyDifficultyTickBoxSelected = true;
+
+            // Display message panel
+            messagePanel.DisplayEasyDifficultyToggleOnMessageValue();
         }
 
         // Loop through all button scripts
@@ -708,11 +1191,17 @@ public class SongSelectPanel : MonoBehaviour
         {
             // Set to false
             advancedDifficultyTickBoxSelected = false;
+
+            // Display message panel
+            messagePanel.DisplayAdvancedDifficultyToggleOffMessageValue();
         }
         else if (advancedDifficultyTickBoxSelected == false)
         {
             // Set to true
             advancedDifficultyTickBoxSelected = true;
+
+            // Display message panel
+            messagePanel.DisplayAdvancedDifficultyToggleOnMessageValue();
         }
 
         // Loop through all button scripts
@@ -752,11 +1241,17 @@ public class SongSelectPanel : MonoBehaviour
         {
             // Set to false
             extraDifficultyTickBoxSelected = false;
+
+            // Display message panel
+            messagePanel.DisplayExtraDifficultyToggleOffMessageValue();
         }
         else if (extraDifficultyTickBoxSelected == false)
         {
             // Set to true
             extraDifficultyTickBoxSelected = true;
+
+            // Display message panel
+            messagePanel.DisplayExtraDifficultyToggleOnMessageValue();
         }
 
         // Loop through all button scripts
@@ -788,78 +1283,199 @@ public class SongSelectPanel : MonoBehaviour
         }
     }
 
-
     // Sort beatmap buttons by song name alphabetical order 
     public void SortBeatmapButtonsSongNameAlphabetical()
     {
-        // Sort the buttons based on the song name
-        beatmapButtonList = beatmapButtonList.OrderBy(x => x.songNameText.text).ToList();
-
-        // Loop through all button scripts
-        for (int i = 0; i < beatmapButtonList.Count; i++)
+        // Sort the difficulty buttons based on the current difficulty sorting in place
+        switch (currentDifficultySorting)
         {
-            // Update order of UI buttons
-            beatmapButtonList[i].transform.SetAsLastSibling();
+            case "default":
+                // Sort the buttons based on the song name
+                beatmapButtonList = beatmapButtonList.OrderBy(x => x.songNameText.text).ToList();
+                SetListButtonsAsLastSibling("default");
+                break;
+            case "easy":
+                easyDifficultySortedBeatmapButtonList = easyDifficultySortedBeatmapButtonList.OrderBy(x => x.songNameText.text).ToList();
+                SetListButtonsAsLastSibling("easyDifficulty");
+                break;
+            case "advanced":
+                advancedDifficultySortedBeatmapButtonList = advancedDifficultySortedBeatmapButtonList.OrderBy(x => x.songNameText.text).ToList();
+                SetListButtonsAsLastSibling("advancedDifficulty");
+                break;
+            case "extra":
+                extraDifficultySortedBeatmapButtonList = extraDifficultySortedBeatmapButtonList.OrderBy(x => x.songNameText.text).ToList();
+                SetListButtonsAsLastSibling("extraDifficulty");
+                break;
+            case "all":
+                allDifficultySortedBeatmapButtonList = allDifficultySortedBeatmapButtonList.OrderBy(x => x.songNameText.text).ToList();
+                SetListButtonsAsLastSibling("allDifficulty");
+                break;
+            case "searched":
+                searchedBeatmapsList = searchedBeatmapsList.OrderBy(x => x.songNameText.text).ToList();
+                SetListButtonsAsLastSibling("searched");
+                break;
         }
+
+        // Update the sorted button index
+        UpdateSortedButtonIndex();
     }
 
     // Sort beatmap buttons by artist alphabetical order 
     public void SortBeatmapButtonsArtistAlphabetical()
     {
-        // Sort the buttons based on the artist 
-        beatmapButtonList = beatmapButtonList.OrderBy(x => x.artistText.text).ToList();
-
-        // Loop through all button scripts
-        for (int i = 0; i < beatmapButtonList.Count; i++)
+        // Sort the difficulty buttons based on the current difficulty sorting in place
+        switch (currentDifficultySorting)
         {
-            // Update order of UI buttons
-            beatmapButtonList[i].transform.SetAsLastSibling();
+            case "default":
+                // Sort the buttons based on the artist
+                beatmapButtonList = beatmapButtonList.OrderBy(x => x.artistText.text).ToList();
+                SetListButtonsAsLastSibling("default");
+                break;
+            case "easy":
+                easyDifficultySortedBeatmapButtonList = easyDifficultySortedBeatmapButtonList.OrderBy(x => x.artistText.text).ToList();
+                SetListButtonsAsLastSibling("easyDifficulty");
+                break;
+            case "advanced":
+                advancedDifficultySortedBeatmapButtonList = advancedDifficultySortedBeatmapButtonList.OrderBy(x => x.artistText.text).ToList();
+                SetListButtonsAsLastSibling("advancedDifficulty");
+                break;
+            case "extra":
+                extraDifficultySortedBeatmapButtonList = extraDifficultySortedBeatmapButtonList.OrderBy(x => x.artistText.text).ToList();
+                SetListButtonsAsLastSibling("extraDifficulty");
+                break;
+            case "all":
+                allDifficultySortedBeatmapButtonList = allDifficultySortedBeatmapButtonList.OrderBy(x => x.artistText.text).ToList();
+                SetListButtonsAsLastSibling("allDifficulty");
+                break;
+            case "searched":
+                searchedBeatmapsList = searchedBeatmapsList.OrderBy(x => x.artistText.text).ToList();
+                SetListButtonsAsLastSibling("searched");
+                break;
         }
+
+        // Update the sorted button index
+        UpdateSortedButtonIndex();
     }
 
     // Search beatmaps with the search bar
     public void SearchBeatmaps()
     {
-        // Sort beatmaps
-        SortBeatmapButtonsDefault();
+        // Clear the list
+        searchedBeatmapsList.Clear();
 
         // Turn input to upper case
         string beatmapSearchValue = beatmapSearchInputField.text.ToUpper();
 
-        // Loop through all button scripts
-        for (int i = 0; i < beatmapButtonList.Count; i++)
+        // Button search variables
+        string songNameText;
+        string artistText;
+        string beatmapCreatorText;
+
+        // If all characters have been erased
+        if (beatmapSearchValue.Length == 0)
         {
-            // Search all buttons to see if the current input field text is the same as the song name, artist, beatmap creator or difficulty levels
-            if (beatmapButtonList[i].songNameText.text.Contains(beatmapSearchValue) ||
-                beatmapButtonList[i].artistText.text.Contains(beatmapSearchValue) ||
-                beatmapButtonList[i].beatmapCreatorText.text.Contains(beatmapSearchValue) ||
-                beatmapButtonList[i].easyDifficultyLevelText.text.Contains(beatmapSearchValue) ||
-                beatmapButtonList[i].advancedDifficultyLevelText.text.Contains(beatmapSearchValue) ||
-                beatmapButtonList[i].extraDifficultyLevelText.text.Contains(beatmapSearchValue))
+            // Sort beatmap buttons to default
+            SortBeatmapButtonsDefault();
+        }
+        else
+        {
+            // Loop through all button scripts
+            for (int i = 0; i < beatmapButtonList.Count; i++)
             {
-                // Activate button
-                beatmapButtonList[i].gameObject.SetActive(true);
+                songNameText = beatmapButtonList[i].songNameText.text.ToUpper();
+                artistText = beatmapButtonList[i].artistText.text.ToUpper();
+                beatmapCreatorText = beatmapButtonList[i].beatmapCreatorText.text.ToUpper();
+
+                // Search all buttons to see if the current input field text is the same as the song name, artist, beatmap creator or difficulty levels
+                if (songNameText.Contains(beatmapSearchValue) || artistText.Contains(beatmapSearchValue) || beatmapCreatorText.Contains(beatmapSearchValue))
+                {
+                    // Activate button
+                    beatmapButtonList[i].gameObject.SetActive(true);
+                    // Add to the current searched list
+                    searchedBeatmapsList.Add(beatmapButtonList[i]);
+
+                    // Set color to default purple
+                    beatmapButtonList[i].overlayColorImage.color = defaultDifficultyColor;
+                }
+                else
+                {
+                    // Disable button
+                    beatmapButtonList[i].gameObject.SetActive(false);
+                }
             }
-            else
-            {
-                // Disable button
-                beatmapButtonList[i].gameObject.SetActive(false);
-            }
+
+            // Update beatmap button navigation
+            UpdateBeatmapButtonNavigation("searched");
+
+            // Set current sorting difficulty
+            currentDifficultySorting = "searched";
+
+            // Set the scroll view back to the top of the screen
+            SetButtonScrollListToTop();
+
+            // Update the beatmap button index based on the current sorting
+            UpdateSortedButtonIndex();
+
+            // Update the total beatmap count based on the current sorting
+            totalBeatmapCountText.text = "/ " + searchedBeatmapsList.Count.ToString();
+        }
+    }
+
+    // Deselect beatmap search bar functions
+    public void DeselectBeatmapSearchbar()
+    {
+        if (beatmapSearchInputField.text.Length == 0 || searchedBeatmapsList.Count == 0)
+        {
+            // Sort buttons back to default
+            SortBeatmapButtonsDefault();
+        }
+    }
+
+    // After typing in the search beatmap input field select the first button
+    public void SelectSearchedBeatmapFirstButton()
+    {
+        // Select first button in the list
+        if (searchedBeatmapsList.Count != 0)
+        {
+            searchedBeatmapsList[0].GetComponent<Button>().Select();
         }
     }
 
     // Sort beatmap buttons by creator alphabetical order 
     public void SortBeatmapButtonsCreatorAlphabetical()
     {
-        // Sort the buttons based on the beatmap creator
-        beatmapButtonList = beatmapButtonList.OrderBy(x => x.beatmapCreatorText.text).ToList();
-
-        // Loop through all button scripts
-        for (int i = 0; i < beatmapButtonList.Count; i++)
+        // Sort the difficulty buttons based on the current difficulty sorting in place
+        switch (currentDifficultySorting)
         {
-            // Update order of UI buttons
-            beatmapButtonList[i].transform.SetAsLastSibling();
+            case "default":
+                // Sort the buttons based on the beatmap creator
+                beatmapButtonList = beatmapButtonList.OrderBy(x => x.beatmapCreatorText.text).ToList();
+                SetListButtonsAsLastSibling("default");
+                break;
+            case "easy":
+                easyDifficultySortedBeatmapButtonList = easyDifficultySortedBeatmapButtonList.OrderBy(x => x.beatmapCreatorText.text).ToList();
+                SetListButtonsAsLastSibling("easyDifficulty");
+                break;
+            case "advanced":
+                advancedDifficultySortedBeatmapButtonList = advancedDifficultySortedBeatmapButtonList.OrderBy(x => x.beatmapCreatorText.text).ToList();
+                SetListButtonsAsLastSibling("advancedDifficulty");
+                break;
+            case "extra":
+                extraDifficultySortedBeatmapButtonList = extraDifficultySortedBeatmapButtonList.OrderBy(x => x.beatmapCreatorText.text).ToList();
+                SetListButtonsAsLastSibling("extraDifficulty");
+                break;
+            case "all":
+                allDifficultySortedBeatmapButtonList = allDifficultySortedBeatmapButtonList.OrderBy(x => x.beatmapCreatorText.text).ToList();
+                SetListButtonsAsLastSibling("allDifficulty");
+                break;
+            case "searched":
+                searchedBeatmapsList = searchedBeatmapsList.OrderBy(x => x.beatmapCreatorText.text).ToList();
+                SetListButtonsAsLastSibling("searched");
+                break;
         }
+
+        // Update the sorted button index
+        UpdateSortedButtonIndex();
     }
 
     // Sort beatmap buttons by difficulty level 
@@ -869,24 +1485,77 @@ public class SongSelectPanel : MonoBehaviour
         switch (currentDifficultySorting)
         {
             case easyDifficultySortingValue:
-                beatmapButtonList = beatmapButtonList.OrderBy(x => x.easyDifficultyLevelText.text).ToList();
+                // Sort the list
+                easyDifficultySortedBeatmapButtonList = easyDifficultySortedBeatmapButtonList.OrderBy(x => x.easyDifficultyLevelText.text).ToList();
+                // Order the buttons in the list
+                SetListButtonsAsLastSibling("easyDifficulty");
+                // Update navigation for the buttons
+                UpdateBeatmapButtonNavigation("easyDifficulty");
                 break;
             case advancedDifficultySortingValue:
-                beatmapButtonList = beatmapButtonList.OrderBy(x => x.advancedDifficultyLevelText.text).ToList();
+                advancedDifficultySortedBeatmapButtonList = advancedDifficultySortedBeatmapButtonList.OrderBy(x => x.advancedDifficultyLevelText.text).ToList();
+                SetListButtonsAsLastSibling("advancedDifficulty");
+                UpdateBeatmapButtonNavigation("advancedDifficulty");
                 break;
             case extraDifficultySortingValue:
-                beatmapButtonList = beatmapButtonList.OrderBy(x => x.extraDifficultyLevelText.text).ToList();
+                extraDifficultySortedBeatmapButtonList = extraDifficultySortedBeatmapButtonList.OrderBy(x => x.extraDifficultyLevelText.text).ToList();
+                SetListButtonsAsLastSibling("extraDifficulty");
+                UpdateBeatmapButtonNavigation("extraDifficulty");
                 break;
             case allDifficultySortingValue:
-                beatmapButtonList = beatmapButtonList.OrderBy(x => x.extraDifficultyLevelText.text).ToList();
+                allDifficultySortedBeatmapButtonList = allDifficultySortedBeatmapButtonList.OrderBy(x => x.extraDifficultyLevelText.text).ToList();
+                SetListButtonsAsLastSibling("allDifficulty");
+                UpdateBeatmapButtonNavigation("allDifficulty");
+                break;
+            case "searched":
+                //searchedBeatmapsList = searchedBeatmapsList.OrderBy(x => x.extraDifficultyLevelText.text).ToList();
+                //SetListButtonsAsLastSibling("searched");
+                //UpdateBeatmapButtonNavigation("searched");
+                break;
+        }
+
+        // Update beatmap button sorting
+        UpdateSortedButtonIndex();
+    }
+
+    // Set list buttons as last siblings in the UI canvas
+    private void SetListButtonsAsLastSibling(string _sorting)
+    {
+        List<BeatmapButton> listToSort = new List<BeatmapButton>();
+
+        switch (_sorting)
+        {
+            case "default":
+                listToSort = beatmapButtonList;
+                break;
+            case "easyDifficulty":
+                listToSort = easyDifficultySortedBeatmapButtonList;
+                break;
+            case "advancedDifficulty":
+                listToSort = advancedDifficultySortedBeatmapButtonList;
+                break;
+            case "extraDifficulty":
+                listToSort = extraDifficultySortedBeatmapButtonList;
+                break;
+            case "allDifficulty":
+                listToSort = allDifficultySortedBeatmapButtonList;
+                break;
+            case "searched":
+                listToSort = searchedBeatmapsList;
                 break;
         }
 
         // Loop through all button scripts
-        for (int i = 0; i < beatmapButtonList.Count; i++)
+        for (int i = 0; i < listToSort.Count; i++)
         {
             // Update order of UI buttons
-            beatmapButtonList[i].transform.SetAsLastSibling();
+            listToSort[i].transform.SetAsLastSibling();
         }
+
+        // Select first button on list
+        listToSort[0].GetComponent<Button>().Select();
+
+        // Set the scroll view back to the top of the screen
+        SetButtonScrollListToTop();
     }
 }
