@@ -5,7 +5,11 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Rhythm Visualizator Pro/Scenes/Example Scene No Music Player and
+      FPS Camera.unity
+    guid: 3f1400c2e2f8b9d459f35c180a16d913
   m_configObjects: {}

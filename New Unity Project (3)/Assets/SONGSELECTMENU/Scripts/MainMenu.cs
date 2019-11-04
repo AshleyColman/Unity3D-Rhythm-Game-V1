@@ -10,16 +10,17 @@ public class MainMenu : MonoBehaviour
 
     // Scripts
     private MenuManager menuManager;
+    private BackgroundManager backgroundManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        quickplayTextValue = "Play the rhythm game";
-        editorTextValue = "Create your own beatmap for others to play";
-        rankingsTextValue = "See the game rankings";
-        settingsTextValue = "Configure game settings";
-        discordTextValue = "Join the discord channel";
-        exitTextValue = "Thanks for playing!";
+        quickplayTextValue = "PLAY THE RHYTHM GAME";
+        editorTextValue = "EDIT OR CREATE YOUR OWN BEATMAP";
+        rankingsTextValue = "SEE GAME RANKINGS";
+        settingsTextValue = "CONFIGURE SETTINGS";
+        discordTextValue = "JOIN THE DISCORD CHANNEL";
+        exitTextValue = "THANKS FOR PLAYING";
 
         quickplayModeKey = KeyCode.Alpha1;
         editorModeKey = KeyCode.Alpha2;
@@ -32,6 +33,13 @@ public class MainMenu : MonoBehaviour
 
         // Reference
         menuManager = FindObjectOfType<MenuManager>();
+        backgroundManager = FindObjectOfType<BackgroundManager>();
+
+
+        backgroundManager.img.gameObject.SetActive(false);
+        backgroundManager.img2.gameObject.SetActive(false);
+        backgroundManager.videoPlayer.gameObject.SetActive(false);
+        backgroundManager.videoPlayer.gameObject.SetActive(false);
     }
 
     private void Update()

@@ -10,7 +10,7 @@ public class SongSelectPreview : MonoBehaviour
     // Audio
     public AudioSource songAudioSource;
     // Integers
-    private float songVolume = 1f;
+    private float songVolume = 0.1f;
     private float amount;
     private float songAudioSourceTime;
     private int songClipChosenIndex;

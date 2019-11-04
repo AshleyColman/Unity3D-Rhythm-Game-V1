@@ -97,8 +97,6 @@ public class EditSelectSceneSongSelectManager : MonoBehaviour
         // Functions
         CheckBeatmapDirectories(); // Get and check the beatmaps in the directory
 
-        CheckIfBeatmapWasCreatedByUser(); // Check all beatmap files to see if the beatmap was created by the user logged in
-
         // Property initalize
         previousBeatmapDirectoryIndex = selectedBeatmapDirectoryIndex; // Assign the previous beatmap index to the current beatmap index
 
@@ -244,23 +242,6 @@ public class EditSelectSceneSongSelectManager : MonoBehaviour
 
         // Clear the loaded file information
         Database.database.Clear();
-    }
-
-    // Check if the beatmap file loaded was created by the user logged in
-    private void CheckIfBeatmapWasCreatedByUser()
-    {
-        // Loop through all user created beatmap directories
-        for (int i = 0; i < beatmapDirectories.Length; i++)
-        {
-            // Load the creator file information if it exists
-            LoadBeatmapFileThatExistsCreatorInformation(i);
-        }
-
-        // If all files have been checked and there exists 1 directory found to contain the logged in user as it's creator
-        if (userCreatedBeatmapDirectories.Count != 0)
-        {
-            songSelectPanel.GetLoggedInUserEditableBeatmapDirectories(); // Get the directory paths for all the user editable beatmaps
-        }
     }
 
     private void Update()
