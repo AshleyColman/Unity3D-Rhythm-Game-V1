@@ -20,13 +20,12 @@ public class SongSelectPreview : MonoBehaviour
     private bool playing = false;
 
     // Scripts
-    private SongDatabase songDatabase; // Required for loading all the songs in the game
-
+    private ScriptManager scriptManager;
 
     void Start()
     {
         // Get the reference
-        songDatabase = FindObjectOfType<SongDatabase>();
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
@@ -61,7 +60,7 @@ public class SongSelectPreview : MonoBehaviour
     public void PlaySongPreview()
     {
         // Play song
-        songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
+        songAudioSource.clip = scriptManager.songDatabase.songClip[songClipChosenIndex];
         songAudioSource.volume = songVolume;
         songAudioSource.Play();
         playing = true;
@@ -71,16 +70,16 @@ public class SongSelectPreview : MonoBehaviour
     // Play the song preview
     public void PlaySongSelectScenePreview(float _songPreviewStartTime, int _songClipChosenIndex)
     {
-        if (songDatabase == null)
+        if (scriptManager.songDatabase == null)
         {
             // Get the reference
-            songDatabase = FindObjectOfType<SongDatabase>();
+            scriptManager.songDatabase = FindObjectOfType<SongDatabase>();
         }
         // Play song
-        songAudioSource.clip = songDatabase.songClip[_songClipChosenIndex];
+        songAudioSource.clip = scriptManager.songDatabase.songClip[_songClipChosenIndex];
         songAudioSource.volume = songVolume;
 
-        if (_songPreviewStartTime >= 0 && _songPreviewStartTime < songDatabase.songClip[_songClipChosenIndex].length)
+        if (_songPreviewStartTime >= 0 && _songPreviewStartTime < scriptManager.songDatabase.songClip[_songClipChosenIndex].length)
         {
             songAudioSource.time = _songPreviewStartTime;
         }

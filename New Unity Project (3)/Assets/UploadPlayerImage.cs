@@ -8,14 +8,11 @@ public class UploadPlayerImage : MonoBehaviour
 {
 
     // UI
+    public TextMeshProUGUI playerNameText;
     public TMP_InputField imageUrlInputField;
-    public TextMeshProUGUI errorText;
     public Image playerImage;
     public GameObject uploadPlayerImagePanel;
     public Button uploadImageButton;
-
-    // Gameobjects
-    public GameObject accountProgressIcon;
 
     // Strings
     private string image_url, username;
@@ -28,14 +25,26 @@ public class UploadPlayerImage : MonoBehaviour
 
     private void Start()
     {
+        // TESTING REMOVE THIS
+        MySQLDBManager.username = "Ashley";
+        
         if (MySQLDBManager.loggedIn == false || MySQLDBManager.username == "GUEST")
         {
-            uploadImageButton.interactable = false;
+            //uploadImageButton.interactable = false;
+
+            // Set player name
+            playerNameText.text = "GUEST";
         }
         else
         {
             // Attempt to load the image on entering the game
             StartCoroutine(RetrievePlayerImage());
+
+            if (MySQLDBManager.loggedIn == true)
+            {
+                // Set player name
+                playerNameText.text = MySQLDBManager.username.ToUpper();
+            }
         }
     }
 
@@ -48,10 +57,10 @@ public class UploadPlayerImage : MonoBehaviour
             StartCoroutine(AttemptToUploadPlayerImage());
 
             // Clear the text field
-            imageUrlInputField.text = "";
+            //imageUrlInputField.text = "";
 
             // Enable the loading icon
-            EnableAccountProgressLoadingIcon();
+            //EnableAccountProgressLoadingIcon();
         }
         else
         {
@@ -135,12 +144,6 @@ public class UploadPlayerImage : MonoBehaviour
         {
             // SUCCESS 
 
-            // Disable the loading icon
-            DisableAccountProgressLoadingIcon();
-
-            // Turn off the panel
-            DeactivatePlayerImagePanel();
-
             // Load the player image with the value from the image url input field
             StartCoroutine(LoadPlayerImg(image_url));
         }
@@ -148,34 +151,14 @@ public class UploadPlayerImage : MonoBehaviour
         if (www.downloadHandler.text != "0")
         {
             // ERROR - UPLOAD FAILED
-
-            // Disable the loading icon
-            DisableAccountProgressLoadingIcon();
-
-            // Display error message
-            errorText.gameObject.SetActive(true);
         }
     }
 
-
-    // Disable the loading icon
-    private void DisableAccountProgressLoadingIcon()
-    {
-        accountProgressIcon.gameObject.SetActive(false);
-    }
-
-    // Enable the loading icon
-    private void EnableAccountProgressLoadingIcon()
-    {
-        accountProgressIcon.gameObject.SetActive(true);
-    }
 
     // Activate the player image panel
     public void ActivatePlayerImagePanel()
     {
         uploadPlayerImagePanel.gameObject.SetActive(true);
-
-        errorText.gameObject.SetActive(false);
     }
 
     // Deactivate the player image panel

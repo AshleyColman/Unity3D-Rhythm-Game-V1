@@ -32,10 +32,7 @@ public class SongProgressBar : MonoBehaviour
     private bool hasPressedSpacebar; // Used for tracking if the spacebar has been pressed which starts the song, prevents restarting of the song if spacebar is pressed again
 
     // Scripts
-    private BeatmapSetup beatmapSetup; // Get the reference to the beatmap setup to disable starting the song when space is pressed whilst in the editor
-    private SongDatabase songDatabase; // Required for getting the song list from the songDatabase
-    private PlayerSkillsManager playerSkillsManager; // Player skills manager for controlling audio speed based on mods
-    private LoadAndRunBeatmap loadAndRunBeatmap;
+    private ScriptManager scriptManager;
 
     // Properties
 
@@ -56,11 +53,7 @@ public class SongProgressBar : MonoBehaviour
 
 
         // Reference
-        beatmapSetup = FindObjectOfType<BeatmapSetup>();
-        songDatabase = FindObjectOfType<SongDatabase>();
-        playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
-        loadAndRunBeatmap = FindObjectOfType<LoadAndRunBeatmap>();
-
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     void Update()
@@ -167,7 +160,7 @@ public class SongProgressBar : MonoBehaviour
         // Has pressed the spacebar
         hasPressedSpacebar = true;
         // Play song
-        songAudioSource.clip = songDatabase.songClip[songClipChosenIndex];
+        songAudioSource.clip = scriptManager.songDatabase.songClip[songClipChosenIndex];
         songAudioSource.volume = songVolume;
         songAudioSource.Play();
         playing = true;

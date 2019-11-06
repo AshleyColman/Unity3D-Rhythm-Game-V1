@@ -52,13 +52,7 @@ public class SongSelectManager : MonoBehaviour
     public AudioSource songAudioSource;
 
     // Scripts
-    private SongSelectPreview songSelectPreview; // Get reference to song select preview to control playing the song previews
-    private BackgroundManager backgroundManager; // Reference to the background image manager for loading the beatmap image
-    private LoadLastBeatmapManager loadLastBeatmapManager; // Reference to the load last beatmap manager for loading the last song in the song select screen
-    private SongSelectPanel songSelectPanel; // Reference to the SongSelectPanel for loading the song beatmap buttons with the directories found
-    private MetronomeForEffects metronomeForEffects; // MetronomeForEffects - controls beat animations
-    private BeatmapRanking beatmapRanking; // Beatmapranking
-    private SongSelectMenuFlash songSelectMenuFlash; // Menu flash control
+    private ScriptManager scriptManager;
 
     // Properties
 
@@ -109,24 +103,18 @@ public class SongSelectManager : MonoBehaviour
         disabledLevelTextValue = "X";
 
         // Reference
-        songSelectPanel = FindObjectOfType<SongSelectPanel>();
-        songSelectPreview = FindObjectOfType<SongSelectPreview>();
-        backgroundManager = FindObjectOfType<BackgroundManager>();
-        loadLastBeatmapManager = FindObjectOfType<LoadLastBeatmapManager>();
-        metronomeForEffects = FindObjectOfType<MetronomeForEffects>();
-        beatmapRanking = FindObjectOfType<BeatmapRanking>();
-        songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
+        scriptManager = FindObjectOfType<ScriptManager>();
 
         // Functions
         CheckBeatmapDirectories(); // Get and check the beatmaps in the directory
 
         // Outside script functions
-        songSelectPanel.GetBeatmapDirectoryPaths(); // Get the directory paths for all the beatmap folders in the beatmap directory
+        scriptManager.songSelectPanel.GetBeatmapDirectoryPaths(); // Get the directory paths for all the beatmap folders in the beatmap directory
 
         // Property initalize
-        selectedBeatmapDirectoryIndex = loadLastBeatmapManager.LastBeatmapDirectoryIndex; // Load the last beatmap directory index
+        selectedBeatmapDirectoryIndex = scriptManager.loadLastBeatmapManager.LastBeatmapDirectoryIndex; // Load the last beatmap directory index
         previousBeatmapDirectoryIndex = selectedBeatmapDirectoryIndex; // Assign the previous beatmap index to the current beatmap index
-        currentBeatmapDifficulty = loadLastBeatmapManager.LastBeatmapDifficulty; // Check if the last selected difficulty was set or not (first time entering game or not)
+        currentBeatmapDifficulty = scriptManager.loadLastBeatmapManager.LastBeatmapDifficulty; // Check if the last selected difficulty was set or not (first time entering game or not)
 
         // Load the beatmap if it exists
         LoadBeatmapFileThatExists(selectedBeatmapDirectoryIndex);
@@ -145,7 +133,7 @@ public class SongSelectManager : MonoBehaviour
         beatmapDirectoryCount = beatmapDirectories.Length;
 
         // Set total beatmap count text
-        songSelectPanel.totalBeatmapCountText.text = "/ " + beatmapDirectoryCount.ToString();
+        scriptManager.songSelectPanel.totalBeatmapCountText.text = "/ " + beatmapDirectoryCount.ToString();
         
         // Beatmap count error check
         // If there's more than 0 beatmaps
@@ -237,10 +225,10 @@ public class SongSelectManager : MonoBehaviour
 
 
             // If video tick box is enabled load a video if it exists
-            if (backgroundManager.VideoTickBoxSelected == true)
+            if (scriptManager.backgroundManager.VideoTickBoxSelected == true)
             {
                 // Load video or background image based on url
-                backgroundManager.LoadVideoOrImage(beatmapDirectories[_selectedBeatmapDirectoryIndex]);
+                scriptManager.backgroundManager.LoadVideoOrImage(beatmapDirectories[_selectedBeatmapDirectoryIndex]);
 
                 // Play the background video
                 PlayVideo();
@@ -248,7 +236,7 @@ public class SongSelectManager : MonoBehaviour
             else
             {
                 // Load only the background image
-                backgroundManager.LoadImageOnly(beatmapDirectories[_selectedBeatmapDirectoryIndex]);
+                scriptManager.backgroundManager.LoadImageOnly(beatmapDirectories[_selectedBeatmapDirectoryIndex]);
             }
 
 
@@ -259,10 +247,10 @@ public class SongSelectManager : MonoBehaviour
                 PlaySongPreview();
 
                 // Reset, update and play the metronome effects for the song select scene
-                metronomeForEffects.GetSongData(beatmapSongBpm, beatmapSongOffset);
-                metronomeForEffects.CalculateIntervals();
-                metronomeForEffects.CalculateActualStep();
-                metronomeForEffects.CalculateCurrentTick();
+                scriptManager.metronomeForEffects.GetSongData(beatmapSongBpm, beatmapSongOffset);
+                scriptManager.metronomeForEffects.CalculateIntervals();
+                scriptManager.metronomeForEffects.CalculateActualStep();
+                scriptManager.metronomeForEffects.CalculateCurrentTick();
 
                 // Set to true
                 hasPlayedSongPreviewOnce = true;
@@ -283,16 +271,16 @@ public class SongSelectManager : MonoBehaviour
             beatmapCreatorText.text = "Designed by " + beatmapCreator;
 
             // Play current selected beatmap count animation
-            songSelectPanel.selectedBeatmapCountTextAnimator.Play("SelectedBeatmapNumberText_Animation", 0, 0f);
+            scriptManager.songSelectPanel.selectedBeatmapCountTextAnimator.Play("SelectedBeatmapNumberText_Animation", 0, 0f);
 
             // Save the selected beatmap index
-            loadLastBeatmapManager.SetPlayerPrefsLastBeatmapIndex(_selectedBeatmapDirectoryIndex);
+            scriptManager.loadLastBeatmapManager.SetPlayerPrefsLastBeatmapIndex(_selectedBeatmapDirectoryIndex);
 
             // Update the previous index to be the current index
             previousBeatmapDirectoryIndex = _selectedBeatmapDirectoryIndex;
 
             // Save the last selected difficulty
-            loadLastBeatmapManager.SetPlayerPrefsLastBeatmapDifficulty(_beatmapDifficulty);
+            scriptManager.loadLastBeatmapManager.SetPlayerPrefsLastBeatmapDifficulty(_beatmapDifficulty);
 
             // Set the last selected difficulty
             currentBeatmapDifficulty = _beatmapDifficulty;
@@ -301,7 +289,7 @@ public class SongSelectManager : MonoBehaviour
             selectedBeatmapDirectoryIndex = _selectedBeatmapDirectoryIndex;
 
             // Get the leaderboard ranking information
-            beatmapRanking.GetLeaderboardTableName();
+            scriptManager.beatmapRanking.GetLeaderboardTableName();
         }
         else
         {
@@ -326,11 +314,11 @@ public class SongSelectManager : MonoBehaviour
     {
         if (hasSelectedCurrentBeatmapButton == false)
         {
-            if (songSelectPanel.HasLoadedAllBeatmapButtons == true)
+            if (scriptManager.songSelectPanel.HasLoadedAllBeatmapButtons == true)
             {
                 EventSystem.current.SetSelectedGameObject(null);
 
-                songSelectPanel.instantiatedBeatmapButtonList[selectedBeatmapDirectoryIndex].GetComponent<Button>().Select();
+                scriptManager.songSelectPanel.instantiatedBeatmapButtonList[selectedBeatmapDirectoryIndex].GetComponent<Button>().Select();
 
                 hasSelectedCurrentBeatmapButton = true;
             }
@@ -384,34 +372,34 @@ public class SongSelectManager : MonoBehaviour
     public void PlaySongPreview()
     {
         // Start the song preview as it has now been loaded
-        songSelectPreview.PlaySongSelectScenePreview(songPreviewStartTime, songClipChosenIndex);
+        scriptManager.songSelectPreview.PlaySongSelectScenePreview(songPreviewStartTime, songClipChosenIndex);
     }
 
     // Play the background video
     private void PlayVideo()
     {
         // Play video based on the current active video player
-        switch (backgroundManager.ActiveVideoPlayerIndex)
+        switch (scriptManager.backgroundManager.ActiveVideoPlayerIndex)
         {
             case 1:
                 // Stop videp player 2
-                backgroundManager.videoPlayer2.Stop();
+                scriptManager.backgroundManager.videoPlayer2.Stop();
 
                 // Play video player 1
-                backgroundManager.videoPlayer.Play();
+                scriptManager.backgroundManager.videoPlayer.Play();
 
                 // Set video play start time
-                backgroundManager.videoPlayer.time = songPreviewStartTime;
+                scriptManager.backgroundManager.videoPlayer.time = songPreviewStartTime;
                 break;
             case 2:
                 // Stop video player 1
-                backgroundManager.videoPlayer.Stop();
+                scriptManager.backgroundManager.videoPlayer.Stop();
 
                 // Play video player 2
-                backgroundManager.videoPlayer2.Play();
+                scriptManager.backgroundManager.videoPlayer2.Play();
 
                 // Set video play start time
-                backgroundManager.videoPlayer2.time = songPreviewStartTime;
+                scriptManager.backgroundManager.videoPlayer2.time = songPreviewStartTime;
                 break;
         }
     }

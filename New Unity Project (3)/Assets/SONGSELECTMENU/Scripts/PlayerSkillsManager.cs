@@ -42,13 +42,13 @@ public class PlayerSkillsManager : MonoBehaviour
     public Color purpleColor, redColor, greenColor, orangeColor, yellowColor, blueColor, blackColor;
 
     // Scripts
-    public SongProgressBar songProgressBar; // Reference required to change the song pitch when in gameplay
+    private ScriptManager scriptManager;
+
+    // Gameobjects
+    public GameObject characterScorePlusList, characterScoreMinusList, characterRankList;
 
     // Keycodes
     private KeyCode destroyKey; // Key that destroys this gameobject
-
-
-
 
 
     // Properties
@@ -80,6 +80,9 @@ public class PlayerSkillsManager : MonoBehaviour
 
     private void Start()
     {
+        scriptManager = FindObjectOfType<ScriptManager>();
+
+        /*
         // Initialize
         fadeSpeedSelectedIndex = 1;
         fadeSpeedSlow = 2f;
@@ -107,7 +110,45 @@ public class PlayerSkillsManager : MonoBehaviour
 
         // Functions
         LoadPlayerPrefsFadeSpeedSelectedIndex(); // Load the selected fade speed index from player prefs if it exists
+        */
     }
+
+    // Deactivate all character skill lists
+    public void DeactivateCharacterSkillLists()
+    {
+        characterScorePlusList.gameObject.SetActive(false);
+        characterScoreMinusList.gameObject.SetActive(false);
+        characterRankList.gameObject.SetActive(false);
+    }
+
+    public void ActivateCharacterSkillScorePlusList()
+    {
+        DeactivateCharacterSkillLists();
+
+        characterScorePlusList.gameObject.SetActive(true);
+
+        scriptManager.messagePanel.DisplayCharacterSkillScorePlusListOnMessage();
+    }
+
+    public void ActivateCharacterSkillScoreMinusList()
+    {
+        DeactivateCharacterSkillLists();
+
+        characterScoreMinusList.gameObject.SetActive(true);
+
+        scriptManager.messagePanel.DisplayCharacterSkillScoreMinusListOnMessage();
+    }
+
+    public void ActivateCharacterRankList()
+    {
+        DeactivateCharacterSkillLists();
+
+        characterRankList.gameObject.SetActive(true);
+
+        scriptManager.messagePanel.DisplayCharacterSkillRankListOnMessage();
+    }
+
+
 
     public void UpdateOptionPanelText(string _option)
     {
@@ -228,7 +269,7 @@ public class PlayerSkillsManager : MonoBehaviour
     private void ResetSongPitchToNormal()
     {
         // Change the song pitch
-        songProgressBar.songAudioSource.pitch = 1.00f;
+        scriptManager.songProgressBar.songAudioSource.pitch = 1.00f;
     }
 
     // Enable triple time in gameplay
@@ -238,7 +279,7 @@ public class PlayerSkillsManager : MonoBehaviour
         Time.timeScale = 2.0f;
 
         // Also update the pitch of the song when in gameplay
-        songProgressBar.songAudioSource.pitch = 2.00f;
+        scriptManager.songProgressBar.songAudioSource.pitch = 2.00f;
     }
 
     // Enable double time in gameplay
@@ -247,7 +288,7 @@ public class PlayerSkillsManager : MonoBehaviour
         // Set the gameplay speed to x1.5
         Time.timeScale = 1.5f;
 
-        songProgressBar.songAudioSource.pitch = 1.5f;
+        scriptManager.songProgressBar.songAudioSource.pitch = 1.5f;
     }
 
     // Enable half time in gameplay
@@ -256,7 +297,7 @@ public class PlayerSkillsManager : MonoBehaviour
         // Set the gameplay speed to x0.75
         Time.timeScale = 0.80f;
 
-        songProgressBar.songAudioSource.pitch = 0.80f;
+        scriptManager.songProgressBar.songAudioSource.pitch = 0.80f;
     }
 
     // Reset equiped skills

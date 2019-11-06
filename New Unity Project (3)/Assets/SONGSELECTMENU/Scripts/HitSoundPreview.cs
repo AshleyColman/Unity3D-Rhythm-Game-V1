@@ -12,7 +12,7 @@ public class HitSoundPreview : MonoBehaviour
     public float hitSoundVolume, missSoundVolume; // Hit and miss sound volume
 
     // Scripts
-    private HitSoundDatabase hitSoundDatabase; // Required for loading all the hit sounds in the game
+    private ScriptManager scriptManager;
 
     void Start()
     {
@@ -22,7 +22,7 @@ public class HitSoundPreview : MonoBehaviour
         missSoundVolume = 0.5f;
 
         // Reference
-        hitSoundDatabase = FindObjectOfType<HitSoundDatabase>();
+        scriptManager = FindObjectOfType<ScriptManager>();
 
         // Functions
         LoadPlayerPrefsHitSoundSelectedIndex(); // Load the saved hit sound selected index if it exists
@@ -96,7 +96,7 @@ public class HitSoundPreview : MonoBehaviour
     // Increment the hit sound selected
     public void IncrementHitSoundSelected()
     {
-        if (hitSoundChosenIndex != hitSoundDatabase.hitSoundClip.Length - 1)
+        if (hitSoundChosenIndex != scriptManager.hitSoundDatabase.hitSoundClip.Length - 1)
         {
             // Increase the hitsound chosen index
             hitSoundChosenIndex++;
@@ -128,12 +128,12 @@ public class HitSoundPreview : MonoBehaviour
     // Play the hit sound chosen
     public void PlayHitSound()
     {
-        hitSoundAudioSource.PlayOneShot(hitSoundDatabase.hitSoundClip[hitSoundChosenIndex], hitSoundVolume);
+        hitSoundAudioSource.PlayOneShot(scriptManager.hitSoundDatabase.hitSoundClip[hitSoundChosenIndex], hitSoundVolume);
     }
 
     // Play miss sound
     public void PlayMissSound()
     {
-        hitSoundAudioSource.PlayOneShot(hitSoundDatabase.missSoundClip, missSoundVolume);
+        hitSoundAudioSource.PlayOneShot(scriptManager.hitSoundDatabase.missSoundClip, missSoundVolume);
     }
 }

@@ -47,7 +47,7 @@ public class PlayerProfile : MonoBehaviour
     public GameObject playerProfile, characterSelect, leaderboard;
 
     // Scripts
-    private BeatmapRanking beatmapRanking;
+    private ScriptManager scriptManager;
 
     // Properties
     public bool InformationAssigned
@@ -118,7 +118,7 @@ public class PlayerProfile : MonoBehaviour
         playerProfilePanel.gameObject.SetActive(false);
 
         // Reference
-        beatmapRanking = FindObjectOfType<BeatmapRanking>();
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     private void Update()
@@ -365,7 +365,7 @@ public class PlayerProfile : MonoBehaviour
         for (int placementToCheck = 0; placementToCheck < totalExistingProfiles; placementToCheck++)
         {
             // If the leaderboard placement exists
-            if (beatmapRanking.PlaceExists[placementToCheck] == true)
+            if (scriptManager.beatmapRanking.PlaceExists[placementToCheck] == true)
             {
                 StartCoroutine(RetrievePlayerProfilesFromServer(placementToCheck));
             }
@@ -387,7 +387,7 @@ public class PlayerProfile : MonoBehaviour
         WWWForm form = new WWWForm();
 
         // Get the placement username - profile to load
-        string username = beatmapRanking.RankedButtonUsername[_placement];
+        string username = scriptManager.beatmapRanking.RankedButtonUsername[_placement];
 
         form.AddField("username", username);
 
@@ -456,9 +456,9 @@ public class PlayerProfile : MonoBehaviour
         // Reset to 0
         totalExistingProfiles = 0;
 
-        for (int i = 0; i < beatmapRanking.PlaceExists.Length; i++)
+        for (int i = 0; i < scriptManager.beatmapRanking.PlaceExists.Length; i++)
         {
-            if (beatmapRanking.PlaceExists[i] == true)
+            if (scriptManager.beatmapRanking.PlaceExists[i] == true)
             {
                 totalExistingProfiles++;
             }

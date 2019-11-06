@@ -19,6 +19,8 @@ public class MessagePanel : MonoBehaviour
         advancedDifficultyToggleOnMessageValue, advancedDifficultyToggleOffMessageValue, extraDifficultyToggleOnMessageValue, 
         extraDifficultyToggleOffMessageValue;
 
+    private string characterSkillScorePlusListOnMessage, characterSkillScoreMinusListOnMessage, characterSkillRankListOnMessage;
+
 
     private void Start()
     {
@@ -39,6 +41,30 @@ public class MessagePanel : MonoBehaviour
         advancedDifficultyToggleOnMessageValue = "NORMAL LEVELS ON";
         extraDifficultyToggleOffMessageValue = "HARD LEVELS OFF";
         extraDifficultyToggleOnMessageValue = "HARD LEVELS ON";
+        characterSkillScorePlusListOnMessage = "SCORE+ SKILLS";
+        characterSkillScoreMinusListOnMessage = "SCORE- SKILLS";
+        characterSkillRankListOnMessage = "RANK SKILLS";
+    }
+
+    public void DisplayCharacterSkillScoreMinusListOnMessage()
+    {
+        messagePanelImage.color = purpleColor;
+        messageText.text = characterSkillScoreMinusListOnMessage;
+        PlayMessagePanelAnimation();
+    }
+
+    public void DisplayCharacterSkillScorePlusListOnMessage()
+    {
+        messagePanelImage.color = purpleColor;
+        messageText.text = characterSkillScorePlusListOnMessage;
+        PlayMessagePanelAnimation();
+    }
+
+    public void DisplayCharacterSkillRankListOnMessage()
+    {
+        messagePanelImage.color = purpleColor;
+        messageText.text = characterSkillRankListOnMessage;
+        PlayMessagePanelAnimation();
     }
 
     public void DisplayDefaultSortingMessage()

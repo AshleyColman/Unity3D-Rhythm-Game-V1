@@ -17,11 +17,8 @@ public class BeatmapButton : MonoBehaviour
     public TextMeshProUGUI easyDifficultyLevelText, advancedDifficultyLevelText, extraDifficultyLevelText;
     public TextMeshProUGUI songNameText, artistText, beatmapCreatorText;
 
-    private SongSelectMenuFlash songSelectMenuFlash;
-    private SongSelectManager songSelectManager;
-    private BeatmapRanking beatmapRanking;
-    private EditSelectSceneSongSelectManager editSelectSceneSongSelectManager;
-    private SongSelectPanel songSelectPanel;
+    // Scripts
+    private ScriptManager scriptManager;
 
     // Properties
     public bool HasEasyDifficulty
@@ -81,11 +78,7 @@ public class BeatmapButton : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
-        songSelectManager = FindObjectOfType<SongSelectManager>();
-        beatmapRanking = FindObjectOfType<BeatmapRanking>();
-        editSelectSceneSongSelectManager = FindObjectOfType<EditSelectSceneSongSelectManager>();
-        songSelectPanel = FindObjectOfType<SongSelectPanel>();
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     // Keep button selected
@@ -97,62 +90,42 @@ public class BeatmapButton : MonoBehaviour
     // Load the beatmap assigned to the button when clicked
     public void LoadBeatmap()
     {
-        if (songSelectMenuFlash == null)
+        if (scriptManager.songSelectMenuFlash == null)
         {
-            songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
+            scriptManager.songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
         }
 
-        songSelectMenuFlash.LoadBeatmapButtonSong(beatmapButtonIndex);
-
+        scriptManager.songSelectMenuFlash.LoadBeatmapButtonSong(beatmapButtonIndex);
 
 
         // Get the list to sort the index by based on the current sorting
-        switch (songSelectPanel.CurrentDifficultySorting)
+        switch (scriptManager.songSelectPanel.CurrentDifficultySorting)
         {
             case "default":
-                songSelectPanel.selectedBeatmapCountText.text = (defaultButtonIndex + 1).ToString();
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (defaultButtonIndex + 1).ToString();
                 break;
             case "easy":
-                songSelectPanel.selectedBeatmapCountText.text = (easyDifficultyButtonIndex + 1).ToString();
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (easyDifficultyButtonIndex + 1).ToString();
                 break;
             case "advanced":
-                songSelectPanel.selectedBeatmapCountText.text = (advancedDifficultyButtonIndex + 1).ToString();
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (advancedDifficultyButtonIndex + 1).ToString();
                 break;
             case "extra":
-                songSelectPanel.selectedBeatmapCountText.text = (extraDifficultyButtonIndex + 1).ToString();
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (extraDifficultyButtonIndex + 1).ToString();
                 break;
             case "all":
-                songSelectPanel.selectedBeatmapCountText.text = (allDifficultyButtonIndex + 1).ToString();
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (allDifficultyButtonIndex + 1).ToString();
                 break;
             case "searched":
-                songSelectPanel.selectedBeatmapCountText.text = (searchedBeatmapButtonIndex + 1).ToString();
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (searchedBeatmapButtonIndex + 1).ToString();
                 break;
         }
-    }
-
-    // Load the beatmap assigned to the button when clicked
-    public void LoadEditSelectSceneBeatmap()
-    {
-        if (songSelectMenuFlash == null)
-        {
-            songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
-        }
-
-        songSelectMenuFlash.LoadEditSelectSceneBeatmapButtonSong(beatmapButtonIndex);
-
-        PlayEditSelectSceneSongPreview();
     }
 
     // Play the song preview when clicked
     private void PlaySongPreview()
     {
-        songSelectManager.PlaySongPreview();
-    }
-
-    // Play the song preview when clicked
-    private void PlayEditSelectSceneSongPreview()
-    {
-        editSelectSceneSongSelectManager.PlaySongPreview();
+        scriptManager.songSelectManager.PlaySongPreview();
     }
 
     // Set the beatmap butotn index during instantiation
@@ -165,7 +138,7 @@ public class BeatmapButton : MonoBehaviour
     public void StopBeatmapRankingCoroutines()
     {
         // Stop beatmap leaderboard ranking loads
-        beatmapRanking.StopAllCoroutines();
+        scriptManager.beatmapRanking.StopAllCoroutines();
     }
 
 }

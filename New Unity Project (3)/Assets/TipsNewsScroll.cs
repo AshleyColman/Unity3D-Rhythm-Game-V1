@@ -70,8 +70,6 @@ public class TipsNewsScroll : MonoBehaviour
         randomNumber = Random.Range(0, tips.Length);
 
         tipsText.text = tips[randomNumber];
-
-        tipTextAnimator.Play("TipTextAnimation", 0, 0f);
     }
 
 }

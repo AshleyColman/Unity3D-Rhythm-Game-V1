@@ -33,7 +33,7 @@ public class BackgroundManager : MonoBehaviour
     private bool videoTickBoxSelected;
 
     // Scripts
-    private MessagePanel messagePanel;
+    private ScriptManager scriptManager;
 
     // Properties
     public int ActiveVideoPlayerIndex
@@ -61,7 +61,7 @@ public class BackgroundManager : MonoBehaviour
 
     private void Start()
     {
-        messagePanel = FindObjectOfType<MessagePanel>();
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     // Toggle video tick box on or off 
@@ -74,7 +74,7 @@ public class BackgroundManager : MonoBehaviour
             videoTickBoxSelectedImage.gameObject.SetActive(false);
 
             // Display message panel
-            messagePanel.DisplayVideoToggleOffMessage();
+            scriptManager.messagePanel.DisplayVideoToggleOffMessage();
 
             // Set to false
             videoTickBoxSelected = false;
@@ -85,7 +85,7 @@ public class BackgroundManager : MonoBehaviour
             videoTickBoxSelectedImage.gameObject.SetActive(true);
 
             // Display message panel
-            messagePanel.DisplayVideoToggleOnMessage();
+            scriptManager.messagePanel.DisplayVideoToggleOnMessage();
 
             // Set to true
             videoTickBoxSelected = true;

@@ -66,10 +66,7 @@ public class BeatmapRanking : MonoBehaviour
     public Material defaultMaterial;
 
     // Scripts
-    private UploadPlayerImage uploadPlayerImage;
-    private PlayerProfile playerProfile; // Loading player profiles
-
-
+    private ScriptManager scriptManager;
 
     // Properties
     public string[] RankedButtonUsername
@@ -116,8 +113,7 @@ public class BeatmapRanking : MonoBehaviour
         totalURLImagesUpdated = 0;
 
         // Reference
-        uploadPlayerImage = FindObjectOfType<UploadPlayerImage>();
-        playerProfile = FindObjectOfType<PlayerProfile>();
+        scriptManager = FindObjectOfType<ScriptManager>();
 
         // Instantiate the lists
         for (int i = 0; i < placeLeaderboardData.Length; i++)
@@ -218,8 +214,13 @@ public class BeatmapRanking : MonoBehaviour
                     {
                         personalBestButtonModText.text = personalBestMod;
                     }
+                    else
+                    {
+                        personalBestButtonModText.text = "-";
+                    }
 
                     // Update flag image
+                    personalBestFlagImage.material.mainTexture = englandFlagTexture;
 
                     // Set grade
                     personalBestButtonGradeText.text = personalBestGrade;
@@ -236,10 +237,10 @@ public class BeatmapRanking : MonoBehaviour
             if (hasCheckedPlayerProfiles == false)
             {
                 // Reset all profiles information
-                playerProfile.ResetPlayerProfileVariables();
+                scriptManager.playerProfile.ResetPlayerProfileVariables();
 
                 // Load player profile information
-                playerProfile.GetPlayerProfiles();
+                scriptManager.playerProfile.GetPlayerProfiles();
 
                 // Set to true to prevent reloading each frame
                 hasCheckedPlayerProfiles = true;
@@ -247,7 +248,7 @@ public class BeatmapRanking : MonoBehaviour
         }
 
         // If all player profile information has been collected and assigned to the arrays
-        if (playerProfile.informationAssigned == true && totalImagesUpdated < playerProfile.TotalExistingProfiles)
+        if (scriptManager.playerProfile.informationAssigned == true && totalImagesUpdated < scriptManager.playerProfile.TotalExistingProfiles)
         {
             LoadLeaderboardPlayerImages();
         }
@@ -257,7 +258,8 @@ public class BeatmapRanking : MonoBehaviour
         if (hasLoadedImages == true)
         {
             // If all images have been uploaded
-            if (totalImagesUpdated >= playerProfile.TotalExistingProfiles && totalURLImagesUpdated >= playerProfile.TotalURLImagesToUpload)
+            if (totalImagesUpdated >= scriptManager.playerProfile.TotalExistingProfiles && totalURLImagesUpdated >=
+                scriptManager.playerProfile.TotalURLImagesToUpload)
             {
                 completeLeaderboardReady = true;
             }
@@ -289,13 +291,13 @@ public class BeatmapRanking : MonoBehaviour
             if (hasLoadedImages == false)
             {
                 // Loop through all existing profiles on the leaderboard
-                for (int i = 0; i < playerProfile.TotalExistingProfiles; i++)
+                for (int i = 0; i < scriptManager.playerProfile.TotalExistingProfiles; i++)
                 {
                     // If a url exists for the leaderboard spot
-                    if (playerProfile.playerImageUrlArray[i] != "")
+                    if (scriptManager.playerProfile.playerImageUrlArray[i] != "")
                     {
                         // Load the player image (passing the URL and index)
-                        StartCoroutine(LoadPlayerImg(playerProfile.playerImageUrlArray[i], i));
+                        StartCoroutine(LoadPlayerImg(scriptManager.playerProfile.playerImageUrlArray[i], i));
                     }
                     else
                     {
@@ -311,7 +313,7 @@ public class BeatmapRanking : MonoBehaviour
                 if (hasPersonalBest == true)
                 {
                     // Retrieve the players image for personal best placement
-                    personalBestImage.material = uploadPlayerImage.PlayerImage.material;
+                    personalBestImage.material = scriptManager.uploadPlayerImage.PlayerImage.material;
                     personalBestImage.gameObject.SetActive(false);
                     personalBestImage.gameObject.SetActive(true);
                 }

@@ -27,8 +27,7 @@ public class MetronomeForEffects : MonoBehaviour
     public int CurrentStep;
 
     // Scripts
-    private MenuManager menuManager;
-    private BackgroundManager backgroundManager;
+    private ScriptManager scriptManager;
 
     private void Start()
     {
@@ -48,8 +47,7 @@ public class MetronomeForEffects : MonoBehaviour
         CalculateIntervals();
 
         // Reference
-        menuManager = FindObjectOfType<MenuManager>();
-        backgroundManager = FindObjectOfType<BackgroundManager>();
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     // Get the bpm and offset information
@@ -187,7 +185,7 @@ public class MetronomeForEffects : MonoBehaviour
 
     private void SongSelectSceneOnMeasure()
     {
-        if (menuManager.songSelectMenu.gameObject.activeSelf == true)
+        if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
         {
             flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
 
@@ -195,19 +193,19 @@ public class MetronomeForEffects : MonoBehaviour
 
 
             // Background and video player images
-            if (backgroundManager.ActiveBackgroundImageIndex == 1)
+            if (scriptManager.backgroundManager.ActiveBackgroundImageIndex == 1)
             {
                 backgroundImageAnimator.Play("BackgroundImageBeat_Animation", 0, 0f);
             }
-            else if (backgroundManager.ActiveBackgroundImageIndex == 2)
+            else if (scriptManager.backgroundManager.ActiveBackgroundImageIndex == 2)
             {
                 backgroundImageAnimator2.Play("BackgroundImageBeat_Animation", 0, 0f);
             }
-            else if (backgroundManager.ActiveVideoPlayerIndex == 1)
+            else if (scriptManager.backgroundManager.ActiveVideoPlayerIndex == 1)
             {
                 videoPlayerImageAnimator.Play("BackgroundImageBeat_Animation", 0, 0f);
             }
-            else if (backgroundManager.ActiveVideoPlayerIndex == 2)
+            else if (scriptManager.backgroundManager.ActiveVideoPlayerIndex == 2)
             {
                 videoPlayerImageAnimator2.Play("BackgroundImageBeat_Animation", 0, 0f);
             }

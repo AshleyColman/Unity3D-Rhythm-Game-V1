@@ -9,8 +9,7 @@ public class MainMenu : MonoBehaviour
     private KeyCode quickplayModeKey, editorModeKey, rankingsModeKey, settingsModeKey, discordModeKey, exitModeKey;
 
     // Scripts
-    private MenuManager menuManager;
-    private BackgroundManager backgroundManager;
+    ScriptManager scriptManager;
 
     // Start is called before the first frame update
     void Start()
@@ -32,22 +31,22 @@ public class MainMenu : MonoBehaviour
         modeDescriptionText.text = quickplayTextValue;
 
         // Reference
-        menuManager = FindObjectOfType<MenuManager>();
-        backgroundManager = FindObjectOfType<BackgroundManager>();
+        scriptManager = FindObjectOfType<ScriptManager>();
 
 
-        backgroundManager.img.gameObject.SetActive(false);
-        backgroundManager.img2.gameObject.SetActive(false);
-        backgroundManager.videoPlayer.gameObject.SetActive(false);
-        backgroundManager.videoPlayer.gameObject.SetActive(false);
+        scriptManager.backgroundManager.img.gameObject.SetActive(false);
+        scriptManager.backgroundManager.img2.gameObject.SetActive(false);
+        scriptManager.backgroundManager.videoPlayer.gameObject.SetActive(false);
+        scriptManager.backgroundManager.videoPlayer.gameObject.SetActive(false);
     }
 
     private void Update()
     {
+
         if (Input.GetKeyDown(quickplayModeKey))
         {
             // Transition to song select menu
-            menuManager.MainMenuToSongSelectMenu();
+            scriptManager.menuManager.MainMenuToSongSelectMenu();
         }
 
         if (Input.GetKeyDown(editorModeKey))

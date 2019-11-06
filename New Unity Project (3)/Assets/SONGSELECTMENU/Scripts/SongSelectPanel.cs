@@ -69,13 +69,6 @@ public class SongSelectPanel : MonoBehaviour
     // Vectors
     private Vector3 beatmapButtonPosition;
 
-    // Scripts
-    private SongSelectManager songSelectManager; // Reference to the song select manager which manages loading songs, used to get the beatmap img addresses for loading images
-    private EditSelectSceneSongSelectManager editSelectSceneSongSelectManager; // Song select manager for the edit select scene
-    private MenuManager menuManager;
-    private SongSelectMenuFlash songSelectMenuFlash;
-    private MessagePanel messagePanel;
-
     // Move button list content scroll rect up and down variables
     private GameObject currentSelectedBeatmapButton;
     private BeatmapButton selectedBeatmapButtonScript;
@@ -99,6 +92,9 @@ public class SongSelectPanel : MonoBehaviour
     private List<BeatmapButton> searchedBeatmapsList = new List<BeatmapButton>();
     private List<BeatmapButton> listToSort = new List<BeatmapButton>();
     private List<BeatmapButton> emptyList = new List<BeatmapButton>();
+
+    // Scripts
+    private ScriptManager scriptManager;
 
     // Properties
     public bool HasLoadedAllBeatmapButtons
@@ -129,11 +125,7 @@ public class SongSelectPanel : MonoBehaviour
         currentDifficultySorting = allDifficultySortingValue;
 
         // Reference
-        menuManager = FindObjectOfType<MenuManager>();
-        songSelectManager = FindObjectOfType<SongSelectManager>();
-        editSelectSceneSongSelectManager = FindObjectOfType<EditSelectSceneSongSelectManager>();
-        songSelectMenuFlash = FindObjectOfType<SongSelectMenuFlash>();
-        messagePanel = FindObjectOfType<MessagePanel>();
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     private void Update()
@@ -233,13 +225,13 @@ public class SongSelectPanel : MonoBehaviour
             for (int i = 0; i < beatmapButtonList.Count; i++)
             {
                 // Find index where the beatmap button index matches up with the current selected beatmap directory index
-                if (beatmapButtonList[i].BeatmapButtonIndex == songSelectManager.SelectedBeatmapDirectoryIndex)
+                if (beatmapButtonList[i].BeatmapButtonIndex == scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex)
                 {
                     // If right arrow key was pressed
                     if (Input.GetKeyDown(KeyCode.RightArrow))
                     {
                         // Select based on current selected difficulty
-                        switch (songSelectManager.CurrentBeatmapDifficulty)
+                        switch (scriptManager.songSelectManager.CurrentBeatmapDifficulty)
                         {
                             // If the current selected difficulty is easy
                             case easyDifficultyName:
@@ -247,13 +239,13 @@ public class SongSelectPanel : MonoBehaviour
                                 if (beatmapButtonList[i].HasAdvancedDifficulty == true)
                                 {
                                     // Load the advanced difficulty 
-                                    songSelectMenuFlash.LoadBeatmapDifficulty(advancedDifficultyName);
+                                    scriptManager.songSelectMenuFlash.LoadBeatmapDifficulty(advancedDifficultyName);
                                 }
                                 break;
                             case advancedDifficultyName:
                                 if (beatmapButtonList[i].HasExtraDifficulty == true)
                                 {
-                                    songSelectMenuFlash.LoadBeatmapDifficulty(extraDifficultyName);
+                                    scriptManager.songSelectMenuFlash.LoadBeatmapDifficulty(extraDifficultyName);
                                 }
                                 break;
                         }
@@ -263,7 +255,7 @@ public class SongSelectPanel : MonoBehaviour
                     if (Input.GetKeyDown(KeyCode.LeftArrow))
                     {
                         // Select based on current selected difficulty
-                        switch (songSelectManager.CurrentBeatmapDifficulty)
+                        switch (scriptManager.songSelectManager.CurrentBeatmapDifficulty)
                         {
                             // If the current selected difficulty is easy
                             case advancedDifficultyName:
@@ -271,13 +263,13 @@ public class SongSelectPanel : MonoBehaviour
                                 if (beatmapButtonList[i].HasEasyDifficulty == true)
                                 {
                                     // Load the easy difficulty 
-                                    songSelectMenuFlash.LoadBeatmapDifficulty(easyDifficultyName);
+                                    scriptManager.songSelectMenuFlash.LoadBeatmapDifficulty(easyDifficultyName);
                                 }
                                 break;
                             case extraDifficultyName:
                                 if (beatmapButtonList[i].HasAdvancedDifficulty == true)
                                 {
-                                    songSelectMenuFlash.LoadBeatmapDifficulty(advancedDifficultyName);
+                                    scriptManager.songSelectMenuFlash.LoadBeatmapDifficulty(advancedDifficultyName);
                                 }
                                 break;
                         }
@@ -352,10 +344,10 @@ public class SongSelectPanel : MonoBehaviour
     // Create all beatmap buttons to go in the song select panel
     private void CreateSongSelectPanel()
     {
-        if (menuManager.songSelectMenu.gameObject.activeSelf == true && hasLoadedAllBeatmapButtons == false)
+        if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true && hasLoadedAllBeatmapButtons == false)
         {
             // Load the beatmap buttons in the scroll list
-            for (int beatmapButtonIndex = 0; beatmapButtonIndex < songSelectManager.beatmapDirectories.Length; beatmapButtonIndex++)
+            for (int beatmapButtonIndex = 0; beatmapButtonIndex < scriptManager.songSelectManager.beatmapDirectories.Length; beatmapButtonIndex++)
             {
                 // Instantiate a new beatmap button to go in the song select panel
                 InstantiateBeatmapButton(beatmapButtonIndexToGet);
@@ -471,7 +463,7 @@ public class SongSelectPanel : MonoBehaviour
     // Instantiate a new beatmap button in to the song select panel
     private void InstantiateBeatmapButton(int _beatmapButtonIndex)
     {
-        if (menuManager.songSelectMenu.gameObject.activeSelf == true)
+        if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
         {
             // Assign the index and image to this button
             beatmapButtonInstantiate = Instantiate(beatmapButton, beatmapButtonPosition, Quaternion.Euler(0, 0, 0),
@@ -509,12 +501,12 @@ public class SongSelectPanel : MonoBehaviour
     // Load a new beatmap image for the beatmap button instantiated
     private IEnumerator LoadNewBeatmapButtonImage(int _beatmapButtonIndex)
     {
-        if (menuManager.songSelectMenu.gameObject.activeSelf == true)
+        if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
         {
-            completePath = "file://" + songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
+            completePath = "file://" + scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
                 @"\" + imageName + imageType;
 
-            fileCheckPath = songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
+            fileCheckPath = scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
                 @"\" + imageName + imageType;
         }
 
@@ -554,19 +546,19 @@ public class SongSelectPanel : MonoBehaviour
     // Check the beatmap difficulties and enable/disable the difficulty level image
     private void CheckBeatmapDifficulties(int _beatmapButtonIndex)
     {
-        if (menuManager.songSelectMenu.gameObject.activeSelf == true)
+        if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
         {
             // Easy file path
-            easyFileCheckPath = songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
-                @"\" + songSelectManager.EasyBeatmapFileName;
+            easyFileCheckPath = scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
+                @"\" + scriptManager.songSelectManager.EasyBeatmapFileName;
 
             // Advanced file path
-            advancedFileCheckPath = songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
-                @"\" + songSelectManager.AdvancedBeatmapFileName;
+            advancedFileCheckPath = scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
+                @"\" + scriptManager.songSelectManager.AdvancedBeatmapFileName;
 
             // Extra file path
-            extraFileCheckPath = songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
-                @"\" + songSelectManager.ExtraBeatmapFileName;
+            extraFileCheckPath = scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex] +
+                @"\" + scriptManager.songSelectManager.ExtraBeatmapFileName;
         }
 
         // If the easy file exists
@@ -578,7 +570,7 @@ public class SongSelectPanel : MonoBehaviour
             beatmapButtonList[_beatmapButtonIndex].easyDifficultyLevelText.gameObject.SetActive(true);
 
             // Load the database and beatmap information for the beatmap directory selected
-            Database.database.Load(songSelectManager.beatmapDirectories[_beatmapButtonIndex], "easy");
+            Database.database.Load(scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex], "easy");
             // Load difficulty level text
             beatmapButtonList[_beatmapButtonIndex].easyDifficultyLevelText.text = Database.database.LoadedBeatmapEasyDifficultyLevel;
             // Load beatmap button text information
@@ -609,7 +601,7 @@ public class SongSelectPanel : MonoBehaviour
 
 
             // Load the database and beatmap information for the beatmap directory selected
-            Database.database.Load(songSelectManager.beatmapDirectories[_beatmapButtonIndex], "advanced");
+            Database.database.Load(scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex], "advanced");
             // Load difficulty level text
             beatmapButtonList[_beatmapButtonIndex].advancedDifficultyLevelText.text = Database.database.LoadedBeatmapAdvancedDifficultyLevel;
             // Load beatmap button text information
@@ -639,7 +631,7 @@ public class SongSelectPanel : MonoBehaviour
             beatmapButtonList[_beatmapButtonIndex].extraDifficultyLevelText.gameObject.SetActive(true);
 
             // Load the database and beatmap information for the beatmap directory selected
-            Database.database.Load(songSelectManager.beatmapDirectories[_beatmapButtonIndex], "extra");
+            Database.database.Load(scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex], "extra");
             // Load difficulty level text
             beatmapButtonList[_beatmapButtonIndex].extraDifficultyLevelText.text = Database.database.LoadedBeatmapExtraDifficultyLevel;
             // Load beatmap button text information
@@ -938,7 +930,7 @@ public class SongSelectPanel : MonoBehaviour
         SortBeatmapButtonsSongNameAlphabetical();
 
         // Update beatmap button navigation
-        //UpdateBeatmapButtonNavigation(defaultDifficultySortingValue);
+        UpdateBeatmapButtonNavigation(defaultDifficultySortingValue);
 
         // Set the scroll view back to the top of the screen
         SetButtonScrollListToTop();
@@ -966,7 +958,7 @@ public class SongSelectPanel : MonoBehaviour
             easyDifficultyTickBoxSelected = false;
 
             // Display message panel
-            messagePanel.DisplayEasyDifficultyToggleOffMessageValue();
+            scriptManager.messagePanel.DisplayEasyDifficultyToggleOffMessageValue();
         }
         else if (easyDifficultyTickBoxSelected == false)
         {
@@ -974,7 +966,7 @@ public class SongSelectPanel : MonoBehaviour
             easyDifficultyTickBoxSelected = true;
 
             // Display message panel
-            messagePanel.DisplayEasyDifficultyToggleOnMessageValue();
+            scriptManager.messagePanel.DisplayEasyDifficultyToggleOnMessageValue();
         }
 
         // Loop through all button scripts
@@ -1016,7 +1008,7 @@ public class SongSelectPanel : MonoBehaviour
             advancedDifficultyTickBoxSelected = false;
 
             // Display message panel
-            messagePanel.DisplayAdvancedDifficultyToggleOffMessageValue();
+            scriptManager.messagePanel.DisplayAdvancedDifficultyToggleOffMessageValue();
         }
         else if (advancedDifficultyTickBoxSelected == false)
         {
@@ -1024,7 +1016,7 @@ public class SongSelectPanel : MonoBehaviour
             advancedDifficultyTickBoxSelected = true;
 
             // Display message panel
-            messagePanel.DisplayAdvancedDifficultyToggleOnMessageValue();
+            scriptManager.messagePanel.DisplayAdvancedDifficultyToggleOnMessageValue();
         }
 
         // Loop through all button scripts
@@ -1066,7 +1058,7 @@ public class SongSelectPanel : MonoBehaviour
             extraDifficultyTickBoxSelected = false;
 
             // Display message panel
-            messagePanel.DisplayExtraDifficultyToggleOffMessageValue();
+            scriptManager.messagePanel.DisplayExtraDifficultyToggleOffMessageValue();
         }
         else if (extraDifficultyTickBoxSelected == false)
         {
@@ -1074,7 +1066,7 @@ public class SongSelectPanel : MonoBehaviour
             extraDifficultyTickBoxSelected = true;
 
             // Display message panel
-            messagePanel.DisplayExtraDifficultyToggleOnMessageValue();
+            scriptManager.messagePanel.DisplayExtraDifficultyToggleOnMessageValue();
         }
 
         // Loop through all button scripts
