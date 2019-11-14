@@ -14,6 +14,13 @@ public class UploadPlayerImage : MonoBehaviour
     public GameObject uploadPlayerImagePanel;
     public Button uploadImageButton;
 
+    // BEATMAP CREATOR IMAGE
+    public Image beatmapCreatorProfileImage;
+
+    // Gamebobjects
+    public GameObject beatmapCreatorProfileImageLoadingIcon;
+    public GameObject playerImageLoadingIcon;
+
     // Strings
     private string image_url, username;
 
@@ -37,8 +44,11 @@ public class UploadPlayerImage : MonoBehaviour
         }
         else
         {
+            // Set username
+            username = MySQLDBManager.username;
+
             // Attempt to load the image on entering the game
-            StartCoroutine(RetrievePlayerImage());
+            StartCoroutine(RetrievePlayerImage(username, playerImage));
 
             if (MySQLDBManager.loggedIn == true)
             {
@@ -48,6 +58,19 @@ public class UploadPlayerImage : MonoBehaviour
         }
     }
 
+    // Get and upload the beatmap creator image
+    public void CallBeatmapCreatorUploadImage(string _beatmapCreatorUsername)
+    {
+        // Activate loading icon
+        beatmapCreatorProfileImageLoadingIcon.gameObject.SetActive(true);
+
+        // Deactivate image
+        beatmapCreatorProfileImage.gameObject.SetActive(false);
+
+        // Attempt to load the image on entering the game
+        StartCoroutine(RetrievePlayerImage(_beatmapCreatorUsername, beatmapCreatorProfileImage));
+    }
+
     // Call the upload image function
     public void CallUploadImage()
     {
@@ -55,12 +78,6 @@ public class UploadPlayerImage : MonoBehaviour
         {
             // Attempt to submit player image
             StartCoroutine(AttemptToUploadPlayerImage());
-
-            // Clear the text field
-            //imageUrlInputField.text = "";
-
-            // Enable the loading icon
-            //EnableAccountProgressLoadingIcon();
         }
         else
         {
@@ -70,11 +87,10 @@ public class UploadPlayerImage : MonoBehaviour
 
 
     // Retrieve the player image
-    private IEnumerator RetrievePlayerImage()
+    private IEnumerator RetrievePlayerImage(string _username, Image _image)
     {
-        username = MySQLDBManager.username;
         WWWForm form = new WWWForm();
-        form.AddField("username", username);
+        form.AddField("username", _username);
 
         UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/retrieveuserimage.php", form);
         www.chunkedTransfer = false;
@@ -94,14 +110,14 @@ public class UploadPlayerImage : MonoBehaviour
             if (www.downloadHandler.text != "")
             {
                 // Load the player image with the value from the database - user image url saved
-                StartCoroutine(LoadPlayerImg(www.downloadHandler.text));
+                StartCoroutine(LoadPlayerImg(www.downloadHandler.text, _image));
             }
 
         }
     }
 
     // Load the player image
-    IEnumerator LoadPlayerImg(string _url)
+    IEnumerator LoadPlayerImg(string _url, Image _image)
     {
         using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
         {
@@ -116,15 +132,24 @@ public class UploadPlayerImage : MonoBehaviour
                 // Get downloaded asset bundle
                 var texture = DownloadHandlerTexture.GetContent(uwr);
 
-                playerImage.material.mainTexture = texture;
+                _image.material.mainTexture = texture;
 
                 // Set image to false then to true to activate new image
-                playerImage.gameObject.SetActive(false);
-                playerImage.gameObject.SetActive(true);
+                _image.gameObject.SetActive(false);
+                _image.gameObject.SetActive(true);
+
+
+                if (_image == playerImage)
+                {
+                    
+                }
+                else if (_image == beatmapCreatorProfileImage)
+                {
+                    beatmapCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
+                }
             }
         }
     }
-
 
     private IEnumerator AttemptToUploadPlayerImage()
     {
@@ -145,7 +170,7 @@ public class UploadPlayerImage : MonoBehaviour
             // SUCCESS 
 
             // Load the player image with the value from the image url input field
-            StartCoroutine(LoadPlayerImg(image_url));
+            StartCoroutine(LoadPlayerImg(image_url, playerImage));
         }
         // Check if the login was success or fail
         if (www.downloadHandler.text != "0")

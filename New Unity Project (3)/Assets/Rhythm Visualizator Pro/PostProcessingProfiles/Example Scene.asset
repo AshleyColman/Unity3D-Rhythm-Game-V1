@@ -54,8 +54,8 @@ MonoBehaviour:
     m_Enabled: 0
     m_Settings:
       reflection:
-        blendType: 0
-        reflectionQuality: 2
+        blendType: 1
+        reflectionQuality: 0
         maxDistance: 100
         iterationCount: 256
         stepSize: 3
@@ -68,7 +68,7 @@ MonoBehaviour:
         fresnelFade: 1
         fresnelFadePower: 1
       screenEdgeMask:
-        intensity: 0.03
+        intensity: 1
   depthOfField:
     m_Enabled: 0
     m_Settings:
@@ -80,8 +80,8 @@ MonoBehaviour:
   motionBlur:
     m_Enabled: 0
     m_Settings:
-      shutterAngle: 269.25
-      sampleCount: 16
+      shutterAngle: 37
+      sampleCount: 32
       frameBlending: 0
   eyeAdaptation:
     m_Enabled: 0
@@ -102,7 +102,7 @@ MonoBehaviour:
     m_Settings:
       bloom:
         intensity: 1.8
-        threshold: 0.74
+        threshold: 0.75
         softKnee: 0.5
         radius: 1
         antiFlicker: 1
@@ -323,7 +323,7 @@ MonoBehaviour:
       mode: 0
       color: {r: 0, g: 0, b: 0, a: 1}
       center: {x: 0.5, y: 0.5}
-      intensity: 0.222
+      intensity: 0
       smoothness: 1
       roundness: 1
       mask: {fileID: 0}

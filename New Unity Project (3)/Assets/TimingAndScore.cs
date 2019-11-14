@@ -322,6 +322,7 @@ public class TimingAndScore : MonoBehaviour
         // If the player skills manager exists
         if (playerSkillsManager != null)
         {
+            /*
             // Set the fade speeds based on the fade speed selected
             switch (playerSkillsManager.FadeSpeedSelected)
             {
@@ -341,6 +342,7 @@ public class TimingAndScore : MonoBehaviour
                     destroyedTime = 0.7f;
                     break;
             }
+            */
         }
     }
 }

@@ -8,7 +8,9 @@ public class SongSelectManager : MonoBehaviour
 {
 
     // UI
-    public TextMeshProUGUI songTitleText, songArtistText, beatmapInformationText, beatmapCreatorText;
+    public Image topColorPanelImage, bottomColorPanelImage;
+
+    public TextMeshProUGUI songTitleText, songArtistText, beatmapInformationText, beatmapCreatorText, beatmapCreatorMessageText;
     public TextMeshProUGUI difficultyButtonEasyText, difficultyButtonAdvancedText, difficultyButtonExtraText;
     public TextMeshProUGUI defaultEasyNameText, defaultAdvancedNameText, defaultExtraNameText;
     public TextMeshProUGUI selectedEasyNameText, selectedAdvancedNameText, selectedExtraNameText;
@@ -25,7 +27,7 @@ public class SongSelectManager : MonoBehaviour
     public Color easyDifficultyButtonColor, advancedDifficultyButtonColor, extraDifficultyButtonColor;
 
     // Animation
-    public Animator songSelectFlashAnimator; // The flash animator
+    public Animator songSelectFlashAnimator, songInformationPanelAnimator;
 
     // Strings
     public string[] beatmapDirectories; // All beatmap folder locations in the beatmap directory
@@ -175,6 +177,12 @@ public class SongSelectManager : MonoBehaviour
             case "easy":
                 selectedEasyNameText.gameObject.SetActive(true);
                 easySelectedGameobject.gameObject.SetActive(true);
+                topColorPanelImage.color = easyDifficultyButtonColor;
+                bottomColorPanelImage.color = easyDifficultyButtonColor;
+                beatmapCreatorMessageText.color = easyDifficultyButtonColor;
+
+                // Order the button so that it appears ontop
+                difficultyOptionEasyButton.transform.SetAsLastSibling();
 
                 // Activate the other button text
                 defaultAdvancedNameText.gameObject.SetActive(true);
@@ -185,6 +193,12 @@ public class SongSelectManager : MonoBehaviour
             case "advanced":
                 selectedAdvancedNameText.gameObject.SetActive(true);
                 advancedSelectedGameobject.gameObject.SetActive(true);
+                topColorPanelImage.color = advancedDifficultyButtonColor;
+                bottomColorPanelImage.color = advancedDifficultyButtonColor;
+                beatmapCreatorMessageText.color = advancedDifficultyButtonColor;
+
+                // Order the button so that it appears ontop
+                difficultyOptionAdvancedButton.transform.SetAsLastSibling();
 
                 // Activate the other button text
                 defaultEasyNameText.gameObject.SetActive(true);
@@ -196,6 +210,12 @@ public class SongSelectManager : MonoBehaviour
                 //FlashImage("SongSelectMenuFlashExtra");
                 selectedExtraNameText.gameObject.SetActive(true);
                 extraSelectedGameobject.gameObject.SetActive(true);
+                topColorPanelImage.color = extraDifficultyButtonColor;
+                bottomColorPanelImage.color = extraDifficultyButtonColor;
+                beatmapCreatorMessageText.color = extraDifficultyButtonColor;
+
+                // Order the button so that it appears ontop
+                difficultyOptionExtraButton.transform.SetAsLastSibling();
 
                 // Activate the other button text
                 defaultEasyNameText.gameObject.SetActive(true);
@@ -223,6 +243,11 @@ public class SongSelectManager : MonoBehaviour
             beatmapSongOffset = Database.database.LoadedOffsetMS;
             songClipChosenIndex = Database.database.LoadedSongClipChosenIndex;
 
+            // Load beatmap creator profile image
+            scriptManager.uploadPlayerImage.CallBeatmapCreatorUploadImage(beatmapCreator);
+
+            // Play animation
+            songInformationPanelAnimator.Play("SongInformationPanel_Animation", 0, 0f);
 
             // If video tick box is enabled load a video if it exists
             if (scriptManager.backgroundManager.VideoTickBoxSelected == true)
@@ -257,18 +282,17 @@ public class SongSelectManager : MonoBehaviour
             }
 
             // Change the current song selected text to the information loaded from the current directory
-            songTitleText.text = beatmapSongName + " [ " + beatmapSongArtist + " ] ";
+            songTitleText.text = beatmapSongName; 
             songArtistText.text = beatmapSongArtist;
 
             // Update the other beatmap information text
             string totalObjects = Database.database.loadedPositionX.Count.ToString();
 
-
-            beatmapInformationText.text = "Created on " + beatmapCreatedDate + "    " + "Total objects: " + totalObjects +
-                "    " + "BPM: " + beatmapSongBpm.ToString() + "    " + "Duration: " +
+            beatmapInformationText.text = beatmapCreatedDate + " | " + totalObjects + " OBJECTS | " + 
                 UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.clip.length);
 
-            beatmapCreatorText.text = "Designed by " + beatmapCreator;
+            beatmapCreatorText.text = "DESIGNED BY " + beatmapCreator.ToUpper();
+            //beatmapCreatorMessageText.text = ;
 
             // Play current selected beatmap count animation
             scriptManager.songSelectPanel.selectedBeatmapCountTextAnimator.Play("SelectedBeatmapNumberText_Animation", 0, 0f);

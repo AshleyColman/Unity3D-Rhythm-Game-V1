@@ -154,6 +154,7 @@ public class MessagePanel : MonoBehaviour
 
     public void DisplayAllDifficultySortingMessage()
     {
+        Debug.Log("1");
         messagePanelImage.color = redColor;
         messageText.text = allDifficultySortingMessageValue;
         PlayMessagePanelAnimation();

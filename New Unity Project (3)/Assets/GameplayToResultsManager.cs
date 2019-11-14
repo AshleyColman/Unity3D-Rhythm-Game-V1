@@ -176,6 +176,6 @@ public class GameplayToResultsManager : MonoBehaviour
         totalScorePossible = scoreManager.TotalScorePossible;
         totalHit = scoreManager.TotalHit;
         totalHitObjects = scoreManager.TotalHitObjects;
-        modUsed = playerSkillsManager.ModSelected;
+        //modUsed = playerSkillsManager.ModSelected;
     }
 }

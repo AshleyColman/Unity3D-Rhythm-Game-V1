@@ -6,6 +6,9 @@ public class MetronomeForEffects : MonoBehaviour
     // Animator
     public Animator flashGlassAnimator;
     public Animator backgroundImageAnimator, backgroundImageAnimator2, videoPlayerImageAnimator, videoPlayerImageAnimator2, lightPanelBeatAnimator;
+    public Animator easyDifficultyButtonSelectedAnimator, advancedDifficultyButtonSelectedAnimator, extraDifficultyButtonSelectedAnimator,
+        topColorPanelGlowAnimator, bottomColorPanelGlowAnimator;
+
 
     // Audio
     public AudioSource songAudioSource;
@@ -25,6 +28,9 @@ public class MetronomeForEffects : MonoBehaviour
     private int Base;
     public int CurrentMeasure;
     public int CurrentStep;
+
+    // Bools
+    private bool playTopPanelGlowAnimation;
 
     // Scripts
     private ScriptManager scriptManager;
@@ -180,7 +186,20 @@ public class MetronomeForEffects : MonoBehaviour
 
     void StartMenuOnMeasure()
     {
+        if (scriptManager.songSelectManager.easySelectedGameobject.activeSelf == true)
+        {
+            easyDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
+        }
 
+        if (scriptManager.songSelectManager.advancedSelectedGameobject.activeSelf == true)
+        {
+            advancedDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
+        }
+
+        if (scriptManager.songSelectManager.extraSelectedGameobject.activeSelf == true)
+        {
+            extraDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
+        }
     }
 
     private void SongSelectSceneOnMeasure()
@@ -209,6 +228,22 @@ public class MetronomeForEffects : MonoBehaviour
             {
                 videoPlayerImageAnimator2.Play("BackgroundImageBeat_Animation", 0, 0f);
             }
+
+
+            // Top and bottom panel glow animations
+            if (playTopPanelGlowAnimation == true)
+            {
+                topColorPanelGlowAnimator.Play("TopColorPanelGlow_Animation", 0, 0f);
+
+                playTopPanelGlowAnimation = false;
+            }
+            else
+            {
+                bottomColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
+
+                playTopPanelGlowAnimation = true;
+            }
+
         }
     }
 

@@ -193,6 +193,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
             //objectToSpawn.transform.rotation = Quaternion.Euler(-90, 0, 45);
             objectToSpawn.transform.rotation = Quaternion.Euler(90, 0, 45);
 
+            /*
             // Play the animation based on the animation speed
             switch (playerSkillsManager.FadeSpeedSelected)
             {
@@ -206,6 +207,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
                     hitObjectAnimator.Play("FastHitObject", 0, 0f);
                     break;
             }
+            */
 
             objectToSpawn.transform.SetAsFirstSibling();
 
@@ -251,7 +253,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
         for (int i = 0; i < totalHitObjects; i++)
         {
             // Set the hit object spawn time to equal the hit object spawn time - the fade speed selected (2, 1, 0.5)
-            Database.database.loadedHitObjectSpawnTime[i] = (Database.database.loadedHitObjectSpawnTime[i] - playerSkillsManager.GetFadeSpeedSelected());
+            //Database.database.loadedHitObjectSpawnTime[i] = (Database.database.loadedHitObjectSpawnTime[i] - playerSkillsManager.GetFadeSpeedSelected());
         }
     }
 

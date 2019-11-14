@@ -138,6 +138,7 @@ public class ScoreManager : MonoBehaviour
     // Check mod used and display mod used
     private void CheckMods()
     {
+        /*
         // Check the mods based on the mod selected and display the mod icon during gampelay
         switch (playerSkillsManager.ModSelected)
         {
@@ -162,6 +163,7 @@ public class ScoreManager : MonoBehaviour
                 modGlow.gameObject.SetActive(true);
                 break;
         }
+        */
     }
 
     // Activate white combo particles
@@ -262,7 +264,7 @@ public class ScoreManager : MonoBehaviour
         totalHit++;
 
         // Multiply the default score per note passed by the mod mutiplier
-        _scoreValue = (_scoreValue * playerSkillsManager.ScoreMultiplier);
+        //_scoreValue = (_scoreValue * playerSkillsManager.ScoreMultiplier);
 
         if (feverTimeManager.FeverTimeActivated == true)
         {
@@ -387,7 +389,7 @@ public class ScoreManager : MonoBehaviour
         if (hasFailed == false)
         {
             // If the judgement passed is not perfect, and instant death has been equiped
-            if (_judgement != "PERFECT" && playerSkillsManager.ModSelected == "INSTANT DEATH")
+            //if (_judgement != "PERFECT" && playerSkillsManager.ModSelected == "INSTANT DEATH")
             {
                 // Activate fail screen
                 failAndRetryManager.PlayerHasFailed();
@@ -416,8 +418,8 @@ public class ScoreManager : MonoBehaviour
         // Get the total number of hit objects possible in the map
         totalHitObjects = Database.database.loadedPositionX.Count;
         // Multiply the score per perfect by the multiplier, 5 is the score for a standard perfect note but will be multiplied by the default multiplier (100) to give 500 points
-        float scorePerPerfect = (5 * playerSkillsManager.ScoreMultiplier);
-        totalScorePossible = totalHitObjects * scorePerPerfect;
+        //float scorePerPerfect = (5 * playerSkillsManager.ScoreMultiplier);
+        //totalScorePossible = totalHitObjects * scorePerPerfect;
     }
 
 }

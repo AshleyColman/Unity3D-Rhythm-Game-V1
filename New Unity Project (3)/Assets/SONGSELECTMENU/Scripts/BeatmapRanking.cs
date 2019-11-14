@@ -12,18 +12,11 @@ public class BeatmapRanking : MonoBehaviour
     // UI
     public TMP_ColorGradient xColorGradient, pColorGradient, sColorGradient, aColorGradient, bColorGradient, cColorGradient, dColorGradient, eColorGradient;
 
-
     public Scrollbar leaderboardScrollbar;
-    public Button leaderboardLoadingIconButton;
     public Texture2D englandFlagTexture;
 
     public GameObject[] leaderboardButtonContainer = new GameObject[10]; // All leaderboard buttons empty gameobjects
     public Button[] leaderboardProfileButton = new Button[10];
-    public TextMeshProUGUI[] rankedButtonUsernameText = new TextMeshProUGUI[10];
-    public TextMeshProUGUI[] rankedButtonScoreText = new TextMeshProUGUI[10];
-    public TextMeshProUGUI[] rankedButtonInformationText = new TextMeshProUGUI[10];
-    public TextMeshProUGUI[] rankedButtonModText = new TextMeshProUGUI[10];
-    public TextMeshProUGUI[] rankedButtonGradeText = new TextMeshProUGUI[10];
     public TextMeshProUGUI personalBestButtonUsernameText, personalBestButtonScoreText, personalBestButtonInformationText, personalBestButtonModText,
         personalBestButtonGradeText;
     public GameObject personalBestButtonContainer;
@@ -32,6 +25,8 @@ public class BeatmapRanking : MonoBehaviour
     public Image personalBestImage;
     public Image personalBestFlagImage;
     public GameObject personalBestRank;
+
+    public GameObject loadingIcon;
 
     // Bools
     public bool notChecked;
@@ -43,6 +38,18 @@ public class BeatmapRanking : MonoBehaviour
     public bool[] placeExists;
     public bool[] placeChecked;
     public bool completeLeaderboardReady;
+
+
+
+    // NEW
+    private LeaderboardButton[] leaderboardButtonArray = new LeaderboardButton[10];
+    public Transform leaderboardButtonContentTransform;
+
+
+    // Vector3
+    private Vector3 defaultLeaderboardScrollbarPosition, offscreenLeaderboardScrollbarPosition;
+
+
 
     // Strings
     private string username;
@@ -112,6 +119,9 @@ public class BeatmapRanking : MonoBehaviour
         leaderboardPlaceToGet = 1;
         totalURLImagesUpdated = 0;
 
+        defaultLeaderboardScrollbarPosition = leaderboardScrollbar.transform.position;
+        offscreenLeaderboardScrollbarPosition = new Vector3(2000, 2000, 0);
+
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
 
@@ -119,6 +129,15 @@ public class BeatmapRanking : MonoBehaviour
         for (int i = 0; i < placeLeaderboardData.Length; i++)
         {
             placeLeaderboardData[i] = new List<string>();
+        }
+
+        // GET ALL LEADERBAORD BUTTON REFERENCES 
+        for (int i = 0; i < totalRankingPlacements; i++)
+        {
+            leaderboardButtonArray[i] = leaderboardButtonContentTransform.GetChild(i).GetComponent<LeaderboardButton>();
+
+            // Update placement text
+            leaderboardButtonArray[i].placementText.text = (i + 1).ToString() + ".";
         }
 
         // Reset the leaderboard at the start
@@ -169,24 +188,25 @@ public class BeatmapRanking : MonoBehaviour
                     rankedButtonMod[placementToCheck] = placeLeaderboardData[placementToCheck][5];
 
                     // Update the username text for the placement on the leaderbaord
-                    rankedButtonUsernameText[placementToCheck].text = rankedButtonUsername[placementToCheck];
-                    rankedButtonScoreText[placementToCheck].text = rankedButtonScore[placementToCheck];
-                    rankedButtonInformationText[placementToCheck].text = rankedButtonPercentage[placementToCheck] + "%" + "    x" + 
-                        rankedButtonCombo[placementToCheck];
+                    leaderboardButtonArray[placementToCheck].playernameText.text = rankedButtonUsername[placementToCheck];
+                    leaderboardButtonArray[placementToCheck].scoreText.text = rankedButtonScore[placementToCheck];
+                    leaderboardButtonArray[placementToCheck].comboAndPercentageText.text = rankedButtonCombo[placementToCheck] + "x | " + 
+                        rankedButtonPercentage[placementToCheck] + "%";
+                        
 
                     // Check if a mod was used, update the text with mod or without mod text
                     if (string.IsNullOrEmpty(rankedButtonMod[placementToCheck]) == false)
                     {
-                        rankedButtonModText[placementToCheck].text = rankedButtonMod[placementToCheck];
+                        leaderboardButtonArray[placementToCheck].skillText.text = rankedButtonMod[placementToCheck];
                     }
 
                     // Update the flag
-                    rankedButtonFlagImage[placementToCheck].material.mainTexture = englandFlagTexture;
+                    leaderboardButtonArray[placementToCheck].flagImage.material.mainTexture = englandFlagTexture;
 
                     // Set grade
-                    rankedButtonGradeText[placementToCheck].text = rankedButtonGrade[placementToCheck];
+                    leaderboardButtonArray[placementToCheck].rankText.text = rankedButtonGrade[placementToCheck];
                     // Set grade text color
-                    rankedButtonGradeText[placementToCheck].colorGradientPreset = SetGradeColor(rankedButtonGrade[placementToCheck]);
+                    leaderboardButtonArray[placementToCheck].rankText.colorGradientPreset = SetGradeColor(rankedButtonGrade[placementToCheck]);
                 }
 
                 totalLeaderboardPlacementsUpdated++;
@@ -268,17 +288,16 @@ public class BeatmapRanking : MonoBehaviour
             if (completeLeaderboardReady == true)
             {
                 // If the first button is not active
-                if (leaderboardButtonContainer[0].gameObject.activeSelf == false)
+                if (leaderboardButtonArray[0].contentPanel.gameObject.activeSelf == false)
                 {
-                    // Deactivate the leaderboard loading icon
-                    DeactivateLeaderboardLoadingIcon();
+                    // Turn off loading icon
+                    loadingIcon.gameObject.SetActive(false);
 
                     // Activate all leaderboard button containers
                     ActivateAllLeaderboardButtons();
                 }
             }
         }
-
     }
 
     // Load all leaderboard player images
@@ -306,7 +325,7 @@ public class BeatmapRanking : MonoBehaviour
                     }
 
                     // Activate leaderboard profile button
-                    leaderboardProfileButton[i].gameObject.SetActive(true);
+                    leaderboardButtonArray[i].profileImage.gameObject.SetActive(true);
                 }
 
                 // If a personal best record exists
@@ -361,10 +380,10 @@ public class BeatmapRanking : MonoBehaviour
                         var texture = DownloadHandlerTexture.GetContent(uwr);
 
                         // Update the image for the placement
-                        rankedButtonRankImage[_placement].material.mainTexture = texture;
+                        leaderboardButtonArray[_placement].profileImage.material.mainTexture = texture;
 
                         // Set image to false then to true to activate new image
-                        rankedButtonRankImage[_placement].gameObject.SetActive(true);
+                        leaderboardButtonArray[_placement].profileImage.gameObject.SetActive(true);
 
                         totalImagesUpdated++;
                         // Increment total url images updated
@@ -378,20 +397,6 @@ public class BeatmapRanking : MonoBehaviour
                 LoadDefaultMaterial(_placement);
             }
         }
-    }
-
-    // Activate the leaderbaord loading icon
-    private void ActivateLeaderboardLoadingIcon()
-    {
-        // Display leaderboard loading animation until the leaderbaord has loaded
-        leaderboardLoadingIconButton.gameObject.SetActive(true);
-    }
-
-    // Dectivate the leaderbaord loading icon
-    private void DeactivateLeaderboardLoadingIcon()
-    {
-        // Hide the  leaderboard loading animation until the leaderbaord has been refreshed
-        leaderboardLoadingIconButton.gameObject.SetActive(false);
     }
 
     // Retrieve beatmap leaderboard placement information for the position passed
@@ -448,9 +453,6 @@ public class BeatmapRanking : MonoBehaviour
     {
         // Get it from the database gameobject
         leaderboardTableName = Database.database.LoadedLeaderboardTableName;
-
-        // Activate the leaderboard loading icon
-        ActivateLeaderboardLoadingIcon();
 
         // Make sure to do a check on whether the leaderboard is ranked, if it is then get the leaderboard name and enable all the leaderbaord checks, if not disable
     }
@@ -527,21 +529,15 @@ public class BeatmapRanking : MonoBehaviour
             placeChecked[placementToCheck] = false;
 
             // Reset all images
-            rankedButtonRankImage[placementToCheck].gameObject.SetActive(false);
             personalBestImage.gameObject.SetActive(false);
-
-            // Disable interactivity for leaderboard profile buttons
-            leaderboardProfileButton[placementToCheck].gameObject.SetActive(false);
-
-
-
+            leaderboardButtonArray[placementToCheck].profileImage.gameObject.SetActive(false);
 
             // Null all text
-            rankedButtonUsernameText[placementToCheck].text = "-";
-            rankedButtonScoreText[placementToCheck].text = "-";
-            rankedButtonInformationText[placementToCheck].text = "-";
-            rankedButtonModText[placementToCheck].text = "-";
-            rankedButtonGradeText[placementToCheck].text = "";
+            leaderboardButtonArray[placementToCheck].playernameText.text = "";
+            leaderboardButtonArray[placementToCheck].scoreText.text = "";
+            leaderboardButtonArray[placementToCheck].comboAndPercentageText.text = "";
+            leaderboardButtonArray[placementToCheck].skillText.text = "";
+            leaderboardButtonArray[placementToCheck].rankText.text = "";
 
             personalBestButtonUsernameText.text = "-";
             personalBestButtonScoreText.text = "-";
@@ -575,7 +571,10 @@ public class BeatmapRanking : MonoBehaviour
         totalURLImagesUpdated = 0;
 
         // Reset scroll bar
-        leaderboardScrollbar.value = 0;
+        leaderboardScrollbar.value = 1;
+
+        // Turn on loading icon
+        loadingIcon.gameObject.SetActive(true);
     }
 
     // Reset the leaderboard checking variables
@@ -626,11 +625,16 @@ public class BeatmapRanking : MonoBehaviour
     {
         for (int i = 0; i < totalRankingPlacements; i++)
         {
-            leaderboardButtonContainer[i].gameObject.SetActive(false);
+            leaderboardButtonArray[i].contentPanel.gameObject.SetActive(false);
         }
 
         personalBestButtonContainer.gameObject.SetActive(false);
-    
+
+        // Update scrollbar position to be offscreen
+        leaderboardScrollbar.transform.position = offscreenLeaderboardScrollbarPosition;
+        // Turn off scroll functionality
+        leaderboardScrollbar.interactable = false;
+
         completeLeaderboardReady = false;
     }
 
@@ -639,9 +643,15 @@ public class BeatmapRanking : MonoBehaviour
     {
         for (int i = 0; i < totalRankingPlacements; i++)
         {
-            leaderboardButtonContainer[i].gameObject.SetActive(true);
+            leaderboardButtonArray[i].contentPanel.gameObject.SetActive(true);
         }
 
         personalBestButtonContainer.gameObject.SetActive(true);
+
+        // Turn on scroll functionality
+        leaderboardScrollbar.interactable = true;
+
+        // Update scrollbar position to be viewable
+        leaderboardScrollbar.transform.position = defaultLeaderboardScrollbarPosition;
     }
 }

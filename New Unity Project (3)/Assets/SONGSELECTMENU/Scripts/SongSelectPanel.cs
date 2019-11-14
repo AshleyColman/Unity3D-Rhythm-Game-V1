@@ -14,6 +14,7 @@ public class SongSelectPanel : MonoBehaviour
     public Animator selectedBeatmapCountTextAnimator;
 
     // UI
+    public TMP_Dropdown sortingDropDown, difficultySortingDropDown;
     public TextMeshProUGUI totalBeatmapCountText, selectedBeatmapCountText;
     public TMP_InputField beatmapSearchInputField;
     public Image easyDifficultyTickBoxSelectedImage, advancedDifficultyTickBoxSelectedImage, extraDifficultyTickBoxSelectedImage;
@@ -214,6 +215,49 @@ public class SongSelectPanel : MonoBehaviour
             buttonListContentPositionX = buttonListContent.transform.localPosition.x;
             buttonListContentPositionY = buttonListContent.transform.localPosition.y;
             buttonListContentPositionZ = buttonListContent.transform.localPosition.z;
+        }
+    }
+
+    // Sort by the grouping options available drop down
+    public void SortFromGroupingDropDown()
+    {
+        switch (sortingDropDown.value)
+        {
+            case 0:
+                SortBeatmapButtonsDifficultyLevel();
+                break;
+            case 1:
+                SortBeatmapButtonsSongNameAlphabetical();
+                break;
+            case 2:
+                SortBeatmapButtonsArtistAlphabetical();
+                break;
+            case 3:
+                SortBeatmapButtonsCreatorAlphabetical();
+                break;
+        }
+    }
+
+    // Sort by the difficulty drop down list value
+    public void SortFromDifficultyDropDown()
+    {
+        switch (difficultySortingDropDown.value)
+        {
+            case 0:
+                SortBeatmapButtonsDefault();
+                break;
+            case 1:
+                SortBeatmapButtonsEasyDifficulty();
+                break;
+            case 2:
+                SortBeatmapButtonsAdvancedDifficulty();
+                break;
+            case 3:
+                SortBeatmapButtonsExtraDifficulty();
+                break;
+            case 4:
+                SortBeatmapButtonsAllDifficulties();
+                break;
         }
     }
 
@@ -576,7 +620,7 @@ public class SongSelectPanel : MonoBehaviour
             // Load beatmap button text information
             beatmapButtonList[_beatmapButtonIndex].songNameText.text = Database.database.LoadedSongName;
             beatmapButtonList[_beatmapButtonIndex].artistText.text = Database.database.LoadedSongArtist;
-            beatmapButtonList[_beatmapButtonIndex].beatmapCreatorText.text = Database.database.LoadedBeatmapCreator;
+            beatmapButtonList[_beatmapButtonIndex].beatmapCreatorText.text = Database.database.LoadedBeatmapCreator.ToUpper();
             // Clear the database
             Database.database.Clear();
 
@@ -607,7 +651,7 @@ public class SongSelectPanel : MonoBehaviour
             // Load beatmap button text information
             beatmapButtonList[_beatmapButtonIndex].songNameText.text = Database.database.LoadedSongName;
             beatmapButtonList[_beatmapButtonIndex].artistText.text = Database.database.LoadedSongArtist;
-            beatmapButtonList[_beatmapButtonIndex].beatmapCreatorText.text = Database.database.LoadedBeatmapCreator;
+            beatmapButtonList[_beatmapButtonIndex].beatmapCreatorText.text = Database.database.LoadedBeatmapCreator.ToUpper();
             // Clear the database
             Database.database.Clear();
 
@@ -637,7 +681,7 @@ public class SongSelectPanel : MonoBehaviour
             // Load beatmap button text information
             beatmapButtonList[_beatmapButtonIndex].songNameText.text = Database.database.LoadedSongName;
             beatmapButtonList[_beatmapButtonIndex].artistText.text = Database.database.LoadedSongArtist;
-            beatmapButtonList[_beatmapButtonIndex].beatmapCreatorText.text = Database.database.LoadedBeatmapCreator;
+            beatmapButtonList[_beatmapButtonIndex].beatmapCreatorText.text = Database.database.LoadedBeatmapCreator.ToUpper();
             // Clear the database
             Database.database.Clear();
 
@@ -701,6 +745,9 @@ public class SongSelectPanel : MonoBehaviour
 
         // Update the total beatmap count based on the current sorting
         totalBeatmapCountText.text = "/ " + easyDifficultySortedBeatmapButtonList.Count.ToString();
+
+        // Display message panel
+        scriptManager.messagePanel.DisplayEasyDifficultySortingMessage();
     }
 
     // Sort beatmap buttons by advanced difficulty
@@ -751,6 +798,9 @@ public class SongSelectPanel : MonoBehaviour
 
         // Update the total beatmap count based on the current sorting
         totalBeatmapCountText.text = "/ " + advancedDifficultySortedBeatmapButtonList.Count.ToString();
+
+        // Display message panel
+        scriptManager.messagePanel.DisplayAdvancedDifficultySortingMessage();
     }
 
     // Sort beatmap buttons by extra difficulty
@@ -801,6 +851,9 @@ public class SongSelectPanel : MonoBehaviour
 
         // Update the total beatmap count based on the current sorting
         totalBeatmapCountText.text = "/ " + extraDifficultySortedBeatmapButtonList.Count.ToString();
+
+        // Display message panel
+        scriptManager.messagePanel.DisplayExtraDifficultySortingMessage();
     }
 
     // Sort beatmap buttons by all difficulties
@@ -852,6 +905,9 @@ public class SongSelectPanel : MonoBehaviour
 
         // Update the total beatmap count based on the current sorting
         totalBeatmapCountText.text = "/ " + allDifficultySortedBeatmapButtonList.Count.ToString();
+
+        // Display message panel
+        scriptManager.messagePanel.DisplayAllDifficultySortingMessage();
     }
 
     // Update the sorted button index
@@ -946,6 +1002,9 @@ public class SongSelectPanel : MonoBehaviour
 
         // Update the total beatmap count based on the current sorting
         totalBeatmapCountText.text = "/ " + beatmapButtonList.Count.ToString();
+
+        // Display message panel
+        scriptManager.messagePanel.DisplayDefaultSortingMessage();
     }
 
     // Toggle easy difficulty levels
@@ -1133,6 +1192,9 @@ public class SongSelectPanel : MonoBehaviour
 
         // Update the sorted button index
         UpdateSortedButtonIndex();
+
+        // Display message panel
+        scriptManager.messagePanel.DisplaySongNameSortingMessage();
     }
 
     // Sort beatmap buttons by artist alphabetical order 
@@ -1170,6 +1232,9 @@ public class SongSelectPanel : MonoBehaviour
 
         // Update the sorted button index
         UpdateSortedButtonIndex();
+
+        // Display message panel
+        scriptManager.messagePanel.DisplayArtistSortingMessage();
     }
 
     // Search beatmaps with the search bar
@@ -1291,6 +1356,9 @@ public class SongSelectPanel : MonoBehaviour
 
         // Update the sorted button index
         UpdateSortedButtonIndex();
+
+        // Display message panel
+        scriptManager.messagePanel.DisplayCreatorSortingMessage();
     }
 
     // Sort beatmap buttons by difficulty level 
@@ -1328,6 +1396,9 @@ public class SongSelectPanel : MonoBehaviour
 
         // Update beatmap button sorting
         UpdateSortedButtonIndex();
+
+        // Display message panel
+        scriptManager.messagePanel.DisplayLevelSortingMessage();
     }
 
     // Set list buttons as last siblings in the UI canvas

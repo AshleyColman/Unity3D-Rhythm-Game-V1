@@ -5,7 +5,7 @@ using UnityEngine;
 public class BlurShaderManager : MonoBehaviour
 {
     float currentTime = 0f;
-    float timeToMove = 2f;
+    float timeToMove = 1f;
     float lerpedShaderSpacingValue;
     float currentShaderSpacingValue;
     float shaderSpacingValueFadeOutValue;
@@ -26,8 +26,6 @@ public class BlurShaderManager : MonoBehaviour
         blurOut = true;
         shaderSpacingValueFadeOutValue = 0f;
         shaderSpacingValueFadeInValue = 10f;
-
-        ActivateBlurOutAnimation();
     }
 
     void Update()
@@ -39,6 +37,9 @@ public class BlurShaderManager : MonoBehaviour
     // Activate the animation
     public void ActivateBlurInAnimation()
     {
+        // Set blur to 0
+        material.SetFloat("_Size", 0f);
+        blurOut = false;
         blurIn = true;
         moving = true;
     }
@@ -46,6 +47,9 @@ public class BlurShaderManager : MonoBehaviour
     // Activate the animation
     public void ActivateBlurOutAnimation()
     {
+        // Set blur to full
+        material.SetFloat("_Size", 10f);
+        blurIn = false;
         blurOut = true;
         moving = true;
     }
@@ -65,7 +69,7 @@ public class BlurShaderManager : MonoBehaviour
             {
                 currentTime = 0f;
                 moving = false;
-                blurIn = true;
+                blurIn = false;
             }
         }
     }
@@ -78,7 +82,7 @@ public class BlurShaderManager : MonoBehaviour
             if (currentTime <= timeToMove)
             {
                 currentTime += Time.deltaTime;
-                currentShaderSpacingValue = Mathf.Lerp(shaderSpacingValueFadeOutValue, shaderSpacingValueFadeInValue, currentTime / timeToMove);
+                currentShaderSpacingValue = Mathf.Lerp(shaderSpacingValueFadeInValue, shaderSpacingValueFadeOutValue, currentTime / timeToMove);
                 material.SetFloat("_Size", currentShaderSpacingValue);
             }
             else

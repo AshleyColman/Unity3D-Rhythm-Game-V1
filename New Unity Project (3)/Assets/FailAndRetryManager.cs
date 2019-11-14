@@ -74,6 +74,7 @@ public class FailAndRetryManager : MonoBehaviour
     // Check the character mods selected from the song select scene
     private void CheckModsEquiped()
     {
+        /*
         // Check the player manager script to see if the no fail mod has been selected
         if (playerSkillsManager.ModSelected == playerSkillsManager.NoFailTextValue)
         {
@@ -85,6 +86,7 @@ public class FailAndRetryManager : MonoBehaviour
             // Set to true
             canFail = true;
         }
+        */
     }
 
     // The user has failed
