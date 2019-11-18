@@ -25,6 +25,7 @@ public class ScriptManager : MonoBehaviour
     public SongDatabase songDatabase;
     public LoadLastBeatmapManager loadLastBeatmapManager;
     public BlurShaderManager blurShaderManager;
+    public UIColorManager uiColorManager;
 
     // Start is called before the first frame update
     void Start()

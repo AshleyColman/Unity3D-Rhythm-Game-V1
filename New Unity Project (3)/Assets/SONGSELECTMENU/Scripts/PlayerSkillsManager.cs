@@ -12,6 +12,9 @@ public class PlayerSkillsManager : MonoBehaviour
     public GameObject characterScorePlusList, characterScoreMinusList, characterRankList;
     public GameObject characterPanel;
 
+    // UI
+    public Button songSelectCharacterButton;
+
     // Animation
     public Animator characterEriAnimator;
 

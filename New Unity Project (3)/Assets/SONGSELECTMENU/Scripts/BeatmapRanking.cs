@@ -12,6 +12,8 @@ public class BeatmapRanking : MonoBehaviour
     // UI
     public TMP_ColorGradient xColorGradient, pColorGradient, sColorGradient, aColorGradient, bColorGradient, cColorGradient, dColorGradient, eColorGradient;
 
+    public TMP_Dropdown leaderboardSortDropDown;
+
     public Scrollbar leaderboardScrollbar;
     public Texture2D englandFlagTexture;
 
