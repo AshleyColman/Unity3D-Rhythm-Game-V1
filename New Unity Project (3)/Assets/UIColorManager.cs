@@ -7,20 +7,17 @@ using TMPro;
 public class UIColorManager : MonoBehaviour
 {
     // Color blocks
-    private ColorBlock dropDownColorBlock, dropDownItemColorBlock, buttonColorBlock;
-    public Color dropDownNormalColor, dropDownHighlightedColor, dropDownPressedColor, dropDownSelectedColor;
-    public Color solidBlackColor, invisibleColor;
+    private ColorBlock dropDownColorBlock, dropDownItemColorBlock, tickBoxButtonColorBlock, gradientButtonColorBlock, scrollbarColorBlock;
+    public Color dropDownPressedColor, dropDownSelectedColor;
+    public Color solidBlackColor, blackColor08, invisibleColor, difficultyColor, whiteColor;
 
     private void Start()
     {
         dropDownColorBlock.colorMultiplier = 1;
         dropDownItemColorBlock.colorMultiplier = 1;
-        buttonColorBlock.colorMultiplier = 1;
-    }
-
-    public Color DropDownHighlightedColor
-    {
-        set { dropDownHighlightedColor = value; }
+        tickBoxButtonColorBlock.colorMultiplier = 1;
+        gradientButtonColorBlock.colorMultiplier = 1;
+        scrollbarColorBlock.colorMultiplier = 1;
     }
 
     // Update drop down colors
@@ -30,8 +27,12 @@ public class UIColorManager : MonoBehaviour
         UpdateDropDownColorBlock();
         // Update colorblock
         UpdateDropDownItemColorBlock();
-        // Update color block
-        UpdateButtonColorBlock();
+        // Update colorblock
+        UpdateTickBoxButtonColorBlock();
+        // Update colorblock
+        UpdateGradientButtonColorBlock();
+        // Update colorblock
+        UpdateScrollbarColorBlock();
 
         // UPdate drop down list color button
         _dropdown.colors = dropDownColorBlock;
@@ -40,34 +41,65 @@ public class UIColorManager : MonoBehaviour
         _dropdown.template.GetChild(0).GetChild(0).GetChild(0).GetComponent<Toggle>().colors = dropDownItemColorBlock;
     }
 
-    // Update the color block colors
-    private void UpdateButtonColorBlock()
+    // Update scroll bar color block
+    public void UpdateScrollbarColorBlock()
     {
-        buttonColorBlock.normalColor = invisibleColor;
-        buttonColorBlock.highlightedColor = dropDownHighlightedColor;
-        buttonColorBlock.pressedColor = dropDownHighlightedColor;
-        buttonColorBlock.selectedColor = solidBlackColor;
+        scrollbarColorBlock.normalColor = whiteColor;
+        scrollbarColorBlock.highlightedColor = difficultyColor;
+        scrollbarColorBlock.pressedColor = difficultyColor;
+        scrollbarColorBlock.selectedColor = difficultyColor;
     }
 
-    public void UpdateButtonColors(Button _button)
+    // Update scroll bar colors
+    public void UpdateScrollbarColors(Scrollbar _scrollbar)
     {
-        _button.colors = buttonColorBlock;
+        _scrollbar.colors = scrollbarColorBlock;
+    }
+
+    // Update gradient button color block
+    public void UpdateGradientButtonColorBlock()
+    {
+        gradientButtonColorBlock.normalColor = invisibleColor;
+        gradientButtonColorBlock.highlightedColor = difficultyColor;
+        gradientButtonColorBlock.pressedColor = difficultyColor;
+        gradientButtonColorBlock.selectedColor = difficultyColor;
+    }
+
+    // Update gradient buttons colors
+    public void UpdateGradientButtonColors(Button _button)
+    {
+        _button.colors = gradientButtonColorBlock;
+    }
+
+    // Update tick box colors
+    public void UpdateTickBoxButtonColorBlock()
+    {
+        tickBoxButtonColorBlock.normalColor = blackColor08;
+        tickBoxButtonColorBlock.highlightedColor = difficultyColor;
+        tickBoxButtonColorBlock.pressedColor = difficultyColor;
+        tickBoxButtonColorBlock.selectedColor = difficultyColor;
+    }
+
+    // Update tick box button
+    public void UpdateTickBoxButtonColors(Button _button)
+    {
+        _button.colors = tickBoxButtonColorBlock;
     }
 
     // Update the color block colors
     private void UpdateDropDownColorBlock()
     {
-        dropDownColorBlock.normalColor = dropDownNormalColor;
-        dropDownColorBlock.highlightedColor = dropDownHighlightedColor;
-        dropDownColorBlock.pressedColor = dropDownHighlightedColor;
-        dropDownColorBlock.selectedColor = solidBlackColor;
+        dropDownColorBlock.normalColor = blackColor08;
+        dropDownColorBlock.highlightedColor = difficultyColor;
+        dropDownColorBlock.pressedColor = difficultyColor;
+        dropDownColorBlock.selectedColor = difficultyColor;
     }
 
     // Update the color block colors
     private void UpdateDropDownItemColorBlock()
     {
-        dropDownItemColorBlock.normalColor = dropDownNormalColor;
-        dropDownItemColorBlock.highlightedColor = dropDownHighlightedColor;
+        dropDownItemColorBlock.normalColor = blackColor08;
+        dropDownItemColorBlock.highlightedColor = difficultyColor;
         dropDownItemColorBlock.pressedColor = solidBlackColor;
         dropDownItemColorBlock.selectedColor = solidBlackColor;
     }

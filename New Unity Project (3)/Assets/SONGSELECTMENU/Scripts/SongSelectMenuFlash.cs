@@ -130,6 +130,16 @@ public class SongSelectMenuFlash : MonoBehaviour
         }
     }
 
+    // Select the Extra difficulty, update and flash
+    public void LoadBeatmapExtraDifficulty()
+    {
+        if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
+        {
+            // Load advanced difficulty information and beatmap file from database
+            scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex, extraBeatmapDifficulty);
+        }
+    }
+
     // Select the Advanced difficulty, update and flash
     public void LoadBeatmapAdvancedDifficulty()
     {

@@ -11,6 +11,7 @@ public class BackgroundManager : MonoBehaviour
     public Animator backgroundImageTransitionAnimator, videoPlayerTransitionAnimator;
 
     // UI
+    public Button videoTickBoxButton;
     public Image img, img2;
     public Image videoTickBoxSelectedImage;
     public Texture2D imageTexture;

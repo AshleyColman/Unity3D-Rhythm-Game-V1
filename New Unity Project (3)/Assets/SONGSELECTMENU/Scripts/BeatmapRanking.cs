@@ -9,6 +9,9 @@ using TMPro;
 
 public class BeatmapRanking : MonoBehaviour
 {
+    // Animators
+    public GameObject[] buttonFlashAnimatorArray = new GameObject[10];
+
     // UI
     public TMP_ColorGradient xColorGradient, pColorGradient, sColorGradient, aColorGradient, bColorGradient, cColorGradient, dColorGradient, eColorGradient;
 
@@ -17,6 +20,8 @@ public class BeatmapRanking : MonoBehaviour
     public Scrollbar leaderboardScrollbar;
     public Texture2D englandFlagTexture;
 
+    public Button personalBestButton;
+    public Button[] leaderboardButton = new Button[10];
     public GameObject[] leaderboardButtonContainer = new GameObject[10]; // All leaderboard buttons empty gameobjects
     public Button[] leaderboardProfileButton = new Button[10];
     public TextMeshProUGUI personalBestButtonUsernameText, personalBestButtonScoreText, personalBestButtonInformationText, personalBestButtonModText,
@@ -31,17 +36,18 @@ public class BeatmapRanking : MonoBehaviour
     public GameObject loadingIcon;
 
     // Bools
-    public bool notChecked;
-    public bool hasPersonalBest;
-    public bool hasCheckedPersonalBest;
-    public bool hasLoadedLeaderbaord;
-    public bool hasLoadedImages;
-    public bool hasCheckedPlayerProfiles;
-    public bool[] placeExists;
-    public bool[] placeChecked;
-    public bool completeLeaderboardReady;
-
-
+    private bool notChecked;
+    private bool hasPersonalBest;
+    private bool hasCheckedPersonalBest;
+    private bool hasLoadedLeaderbaord;
+    private bool hasLoadedImages;
+    private bool hasCheckedPlayerProfiles;
+    private bool[] placeExists;
+    private bool[] placeChecked;
+    private bool completeLeaderboardReady;
+    private bool playLeaderboardFlashAnimation;
+    private bool playFullLeaderboardFlashAnimation;
+    private bool fullLeaderboardFlashAnimationFinished;
 
     // NEW
     private LeaderboardButton[] leaderboardButtonArray = new LeaderboardButton[10];
@@ -104,6 +110,9 @@ public class BeatmapRanking : MonoBehaviour
         hasLoadedLeaderbaord = false;
         notChecked = true;
         hasCheckedPlayerProfiles = false;
+        playLeaderboardFlashAnimation = true;
+        playFullLeaderboardFlashAnimation = true;
+        fullLeaderboardFlashAnimationFinished = false;
 
         placeLeaderboardData = new List<string>[10];
         personalBestLeaderboardData = new List<string>();
@@ -137,6 +146,8 @@ public class BeatmapRanking : MonoBehaviour
         for (int i = 0; i < totalRankingPlacements; i++)
         {
             leaderboardButtonArray[i] = leaderboardButtonContentTransform.GetChild(i).GetComponent<LeaderboardButton>();
+
+            buttonFlashAnimatorArray[i] = leaderboardButton[i].transform.GetChild(2).gameObject;
 
             // Update placement text
             leaderboardButtonArray[i].placementText.text = (i + 1).ToString() + ".";
@@ -201,6 +212,10 @@ public class BeatmapRanking : MonoBehaviour
                     {
                         leaderboardButtonArray[placementToCheck].skillText.text = rankedButtonMod[placementToCheck];
                     }
+                    else
+                    {
+                        leaderboardButtonArray[placementToCheck].skillText.text = "-";
+                    }
 
                     // Update the flag
                     leaderboardButtonArray[placementToCheck].flagImage.material.mainTexture = englandFlagTexture;
@@ -230,7 +245,7 @@ public class BeatmapRanking : MonoBehaviour
 
                     personalBestButtonUsernameText.text = MySQLDBManager.username;
                     personalBestButtonScoreText.text = personalBestScore;
-                    personalBestButtonInformationText.text = personalBestPercentage + "%" + "    x" + personalBestCombo;
+                    personalBestButtonInformationText.text = personalBestCombo + "x | " + personalBestPercentage;
 
                     if (string.IsNullOrEmpty(personalBestMod) == false)
                     {
@@ -246,6 +261,7 @@ public class BeatmapRanking : MonoBehaviour
 
                     // Set grade
                     personalBestButtonGradeText.text = personalBestGrade;
+
                     // Set grade text color
                     personalBestButtonGradeText.colorGradientPreset = SetGradeColor(personalBestGrade);
                 }
@@ -298,8 +314,53 @@ public class BeatmapRanking : MonoBehaviour
                     // Activate all leaderboard button containers
                     ActivateAllLeaderboardButtons();
                 }
+
+                // Play full leaderboard flash animation
+                if (playFullLeaderboardFlashAnimation == true)
+                {
+                    playFullLeaderboardFlashAnimation = false;
+                    StartCoroutine(PlayFullLeaderboardFlashAnimation());
+                }
             }
         }
+
+
+
+        // Leaderboard animation
+        if (completeLeaderboardReady == true && playLeaderboardFlashAnimation == true && fullLeaderboardFlashAnimationFinished == true)
+        {
+            playLeaderboardFlashAnimation = false;
+            StartCoroutine(PlayLeaderboardFlashAnimation());
+        }
+    }
+
+    // Play the full leaderboard flash animation
+    private IEnumerator PlayFullLeaderboardFlashAnimation()
+    {
+        for (int i = 0; i < buttonFlashAnimatorArray.Length; i++)
+        {
+            buttonFlashAnimatorArray[i].gameObject.SetActive(false);
+            buttonFlashAnimatorArray[i].gameObject.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        playFullLeaderboardFlashAnimation = false;
+        fullLeaderboardFlashAnimationFinished = true;
+    }
+
+    private IEnumerator PlayLeaderboardFlashAnimation()
+    {
+        for (int i = 0; i < buttonFlashAnimatorArray.Length; i++)
+        {
+            buttonFlashAnimatorArray[i].gameObject.SetActive(false);
+            buttonFlashAnimatorArray[i].gameObject.SetActive(true);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        yield return new WaitForSeconds(2f);
+
+        playLeaderboardFlashAnimation = true;
     }
 
     // Load all leaderboard player images
@@ -423,7 +484,6 @@ public class BeatmapRanking : MonoBehaviour
         {
             /*
               DataType:
-              DataType:
               [0] = score
               [1] = combo
               [2] = player_id
@@ -481,7 +541,7 @@ public class BeatmapRanking : MonoBehaviour
             placeList.AddRange(Regex.Split(www.downloadHandler.text, "->"));
 
             // Loop through all the data retrieved and assign to the personal best leaderboard data list
-            for (int dataType = 0; dataType < 10; dataType++)
+            for (int dataType = 0; dataType < 6; dataType++)
             {
                 // If it succeeded
                 if (www.downloadHandler.text != "1")
@@ -588,7 +648,9 @@ public class BeatmapRanking : MonoBehaviour
         hasCheckedPersonalBest = false;
         hasCheckedPlayerProfiles = false;
         hasLoadedImages = false;
-
+        playLeaderboardFlashAnimation = true;
+        playFullLeaderboardFlashAnimation = true;
+        fullLeaderboardFlashAnimationFinished = false;
 
         leaderboardPlaceToGet = 1;
         totalLeaderboardPlacementsUpdated = 0;

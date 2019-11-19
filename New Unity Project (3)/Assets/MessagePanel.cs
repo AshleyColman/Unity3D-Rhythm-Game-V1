@@ -19,8 +19,9 @@ public class MessagePanel : MonoBehaviour
         advancedDifficultyToggleOnMessageValue, advancedDifficultyToggleOffMessageValue, extraDifficultyToggleOnMessageValue, 
         extraDifficultyToggleOffMessageValue;
 
-    private string characterSkillScorePlusListOnMessage, characterSkillScoreMinusListOnMessage, characterSkillRankListOnMessage;
+    private string characterDifficultyIncreaseListMessage, characterDifficultyDecreaseListMessage, characterRankListMessage;
 
+    private string maxEquipedSkillsMessage;
 
     private void Start()
     {
@@ -41,29 +42,70 @@ public class MessagePanel : MonoBehaviour
         advancedDifficultyToggleOnMessageValue = "NORMAL LEVELS ON";
         extraDifficultyToggleOffMessageValue = "HARD LEVELS OFF";
         extraDifficultyToggleOnMessageValue = "HARD LEVELS ON";
-        characterSkillScorePlusListOnMessage = "SCORE+ SKILLS";
-        characterSkillScoreMinusListOnMessage = "SCORE- SKILLS";
-        characterSkillRankListOnMessage = "RANK SKILLS";
+        characterDifficultyIncreaseListMessage = "DIFFICULTY INCREASE SKILLS";
+        characterDifficultyDecreaseListMessage = "DIFFICULTY DECREASE SKILLS";
+        characterRankListMessage = "RANK SKILLS";
+        maxEquipedSkillsMessage = "CANNOT EXCEED 4 EQUIPED SKILLS";
     }
 
-    public void DisplayCharacterSkillScoreMinusListOnMessage()
+    public void DisplayMessage(string _message, string _color)
     {
-        messagePanelImage.color = purpleColor;
-        messageText.text = characterSkillScoreMinusListOnMessage;
+        switch (_color)
+        {
+            case "RED":
+                messagePanelImage.color = redColor;
+                break;
+            case "BLACK":
+                messagePanelImage.color = blackColor;
+                break;
+            case "PURPLE":
+                messagePanelImage.color = purpleColor;
+                break;
+            case "YELLOW":
+                messagePanelImage.color = yellowColor;
+                break;
+            case "BLUE":
+                messagePanelImage.color = blueColor;
+                break;
+        }
+
+        messageText.text = _message;
+
         PlayMessagePanelAnimation();
     }
 
-    public void DisplayCharacterSkillScorePlusListOnMessage()
+    public void DisplayUnquipedSkillMessage(string _message)
     {
-        messagePanelImage.color = purpleColor;
-        messageText.text = characterSkillScorePlusListOnMessage;
+        messagePanelImage.color = redColor;
+        messageText.text = _message;
         PlayMessagePanelAnimation();
     }
 
-    public void DisplayCharacterSkillRankListOnMessage()
+    public void DisplayMaxEquipedSkillsMessage()
+    {
+        messagePanelImage.color = redColor;
+        messageText.text = maxEquipedSkillsMessage;
+        PlayMessagePanelAnimation();
+    }
+
+    public void DisplayCharacterDifficultyIncreaseListMessage()
     {
         messagePanelImage.color = purpleColor;
-        messageText.text = characterSkillRankListOnMessage;
+        messageText.text = characterDifficultyIncreaseListMessage;
+        PlayMessagePanelAnimation();
+    }
+
+    public void DisplayCharacterDifficultyDecreaseListMessage()
+    {
+        messagePanelImage.color = purpleColor;
+        messageText.text = characterDifficultyDecreaseListMessage;
+        PlayMessagePanelAnimation();
+    }
+
+    public void DisplayCharacterRankListMessage()
+    {
+        messagePanelImage.color = purpleColor;
+        messageText.text = characterRankListMessage;
         PlayMessagePanelAnimation();
     }
 

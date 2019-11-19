@@ -20,10 +20,10 @@ public class CursorLookAtY : MonoBehaviour {
     {
 
         newRotationX = transform.localEulerAngles.x - Input.GetAxis(axisY) * sensitivity;
-        newRotationX = Mathf.Clamp(newRotationX, 0, 0.5f);
+        newRotationX = Mathf.Clamp(newRotationX, 0f, 2f);
 
         newRotationY = transform.localEulerAngles.y + Input.GetAxis(axisX) * sensitivity;
-        newRotationY = Mathf.Clamp(newRotationY, 0, 0.5f);
+        newRotationY = Mathf.Clamp(newRotationY, 0f, 2f);
 
         gameObject.transform.localEulerAngles = new Vector3(newRotationX, newRotationY, 0);
 

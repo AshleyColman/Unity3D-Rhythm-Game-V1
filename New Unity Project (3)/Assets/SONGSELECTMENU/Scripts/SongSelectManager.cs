@@ -182,7 +182,7 @@ public class SongSelectManager : MonoBehaviour
                 beatmapCreatorMessageText.color = easyDifficultyButtonColor;
 
                 // Update highlighted colors for UI buttons
-                scriptManager.uiColorManager.DropDownHighlightedColor = easyDifficultyButtonColor;
+                scriptManager.uiColorManager.difficultyColor = easyDifficultyButtonColor;
 
                 // Order the button so that it appears ontop
                 difficultyOptionEasyButton.transform.SetAsLastSibling();
@@ -201,7 +201,7 @@ public class SongSelectManager : MonoBehaviour
                 beatmapCreatorMessageText.color = advancedDifficultyButtonColor;
 
                 // Update highlighted colors for UI buttons
-                scriptManager.uiColorManager.DropDownHighlightedColor = advancedDifficultyButtonColor;
+                scriptManager.uiColorManager.difficultyColor = advancedDifficultyButtonColor;
 
                 // Order the button so that it appears ontop
                 difficultyOptionAdvancedButton.transform.SetAsLastSibling();
@@ -221,7 +221,7 @@ public class SongSelectManager : MonoBehaviour
                 beatmapCreatorMessageText.color = extraDifficultyButtonColor;
 
                 // Update highlighted colors for UI buttons
-                scriptManager.uiColorManager.DropDownHighlightedColor = extraDifficultyButtonColor;
+                scriptManager.uiColorManager.difficultyColor = extraDifficultyButtonColor;
 
                 // Order the button so that it appears ontop
                 difficultyOptionExtraButton.transform.SetAsLastSibling();
@@ -239,7 +239,18 @@ public class SongSelectManager : MonoBehaviour
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.songSelectPanel.difficultySortingDropDown);
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.songSelectPanel.sortingDropDown);
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.beatmapRanking.leaderboardSortDropDown);
-        scriptManager.uiColorManager.UpdateButtonColors(scriptManager.playerSkillsManager.songSelectCharacterButton);
+        scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.playerSkillsManager.songSelectCharacterButton);
+        scriptManager.uiColorManager.UpdateTickBoxButtonColors(scriptManager.backgroundManager.videoTickBoxButton);
+        scriptManager.uiColorManager.UpdateScrollbarColors(scriptManager.beatmapRanking.leaderboardScrollbar);
+        scriptManager.uiColorManager.UpdateScrollbarColors(scriptManager.songSelectPanel.beatmapButtonListScrollbar);
+
+        for (int i = 0; i < scriptManager.beatmapRanking.leaderboardButton.Length; i++)
+        {
+            scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.beatmapRanking.leaderboardButton[i]);
+        }
+
+        scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.beatmapRanking.personalBestButton);
+
 
         // If any difficulty files exist
         if (advancedDifficultyExist == true || extraDifficultyExist == true || easyDifficultyExist == true)
