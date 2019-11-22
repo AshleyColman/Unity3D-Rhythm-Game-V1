@@ -41,7 +41,10 @@ public class PlayerSkillsManager : MonoBehaviour
     public TextMeshProUGUI multiplierText;
     public Button songSelectCharacterButton;
     public TMP_Dropdown skillSortingDropdown;
+    public Button difficultyIncreaseFirstButton;
 
+    public Image eriCharacterImage, noCharacterImage;
+    public TextMeshProUGUI equipedCharacterNameText, equipedMultiplierText, equipedSkillsText;
 
     // Animation
     public Animator characterEriAnimator;
@@ -54,15 +57,46 @@ public class PlayerSkillsManager : MonoBehaviour
         multiplierTotal = 1f;
         speedSkillEquiped = false;
         rankSkillEquiped = false;
+
+        // Reset the song select menu character button information
+        ResetCharacterButtonInformation();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            DeactivateCharacterPanel();
+        }
+    }
+
+    // Reset the song select menu character button information
+    private void ResetCharacterButtonInformation()
+    {
+        noCharacterImage.gameObject.SetActive(true);
+        eriCharacterImage.gameObject.SetActive(false);
+        equipedMultiplierText.text = "MULTIPLIER 1.0x";
+        equipedSkillsText.text = "NO SKILLS EQUIPPED";
+        equipedCharacterNameText.text = "X";
     }
 
     // Activate character panel
     public void ActivateCharacterPanel()
     {
+        StartCoroutine(EnableCharacterPanel());
+    }
+
+    private IEnumerator EnableCharacterPanel()
+    {
         // Activate character panel
         characterPanel.gameObject.SetActive(true);
         // Activate blur in animation
         scriptManager.blurShaderManager.ActivateBlurInAnimation();
+        // Select first button
+        difficultyIncreaseFirstButton.Select();
+        yield return new WaitForSeconds(0.9f);
+        // Display current sorting
+        scriptManager.messagePanel.DisplayCharacterDifficultyIncreaseListMessage();
     }
 
     // Activate coroutine to deactivate character panel on click
@@ -277,27 +311,100 @@ public class PlayerSkillsManager : MonoBehaviour
     // Display new equiped skill button in the equiped skills list
     private void DisplayEquipedSkillButton(string _skill, float _multiplier)
     {
+        bool newSkill = false;
+
         // If 4 skills have not been assigned
         if (equipedSkills != maxEquipedSkills)
         {
-            // Update text for next equiped skill button
-            equipedSkillTextArray[equipedSkills].text = _skill;
-            equipedSkillMultiplierTextArray[equipedSkills].text = _multiplier + "x";
-            equipedSkillButtonArray[equipedSkills].gameObject.SetActive(true);
+            // Loop and see if an equipped skill button of the same type has already been equipped
+            for (int i = 0; i < maxEquipedSkills; i++)
+            {
+                if (equipedSkillTextArray[i].text == _skill)
+                {
+                    // Skill has already been equipped
+                    newSkill = false;
+                    break;
+                }
+                else
+                {
+                    // Skill has not been equipped yet
+                    newSkill = true;
+                }
+            }
 
-            // Calculate total multiplier
-            AddToTotalMultiplier(_multiplier);
+            // If a new skill, equip
+            if (newSkill == true)
+            {
+                // Loop and find the 1st inactive button to update 
+                for (int i = 0; i < maxEquipedSkills; i++)
+                {
+                    if (equipedSkillButtonArray[i].gameObject.activeSelf == false)
+                    {
+                        // Update text for next equiped skill button
+                        equipedSkillTextArray[i].text = _skill;
+                        equipedSkillMultiplierTextArray[i].text = _multiplier + "x";
+                        equipedSkillButtonArray[i].gameObject.SetActive(true);
 
-            // Update total multiplier text
-            UpdateTotalMultiplierText();
+                        // Calculate total multiplier
+                        AddToTotalMultiplier(_multiplier);
 
-            // Increment equi
-            equipedSkills++;
+                        // Update total multiplier text
+                        UpdateTotalMultiplierText();
+
+                        // Increment equi
+                        equipedSkills++;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // Display warning message
+                scriptManager.messagePanel.DisplayMessage(_skill + " IS ALREADY EQUIPPED", "RED");
+            }
         }
         else
         {
             // Display warning message
             scriptManager.messagePanel.DisplayMaxEquipedSkillsMessage();
+        }
+
+        // Update the song select menu character button information
+        UpdateCharacterButtonInformation();
+    }
+
+    // Update the song select menu character button information
+    private void UpdateCharacterButtonInformation()
+    {
+        if (equipedSkills == 0)
+        {
+            ResetCharacterButtonInformation();
+        }
+        else
+        {
+            noCharacterImage.gameObject.SetActive(false);
+            eriCharacterImage.gameObject.SetActive(true);
+            equipedMultiplierText.text = "MULTIPLIER " + multiplierTotal + "x";
+            equipedCharacterNameText.text = "ERI";
+
+            // Reset equipedSkillsText
+            equipedSkillsText.text = "";
+
+            // Update equiped skills text
+            for (int i = 0; i < maxEquipedSkills; i++)
+            {
+                if (equipedSkillButtonArray[i].gameObject.activeSelf == true)
+                {
+                    if (i != maxEquipedSkills - 1)
+                    {
+                        equipedSkillsText.text = equipedSkillsText.text + equipedSkillTextArray[i].text + ", ";
+                    }
+                    else
+                    {
+                        equipedSkillsText.text = equipedSkillsText.text + equipedSkillTextArray[i].text;
+                    }
+                }
+            }
         }
     }
 
@@ -388,6 +495,9 @@ public class PlayerSkillsManager : MonoBehaviour
 
         // Update total multiplier text
         UpdateTotalMultiplierText();
+
+        // Update the song select menu character button information
+        UpdateCharacterButtonInformation();
     }
 
     // Reset all equiped skills
@@ -414,6 +524,9 @@ public class PlayerSkillsManager : MonoBehaviour
         // Reset bools
         rankSkillEquiped = false;
         speedSkillEquiped = false;
+
+        // Reset the song select menu character button information
+        ResetCharacterButtonInformation();
     }
 
     //  Subtract from the total multiplier

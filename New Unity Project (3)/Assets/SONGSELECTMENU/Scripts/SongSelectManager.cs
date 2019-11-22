@@ -295,7 +295,7 @@ public class SongSelectManager : MonoBehaviour
             if (hasPlayedSongPreviewOnce == false)
             {
                 // Play the song preview for the first song when entering at the correct set time in the beatmap information
-                PlaySongPreview();
+                scriptManager.songSelectPreview.GetBeatmapAudio(beatmapDirectories[_selectedBeatmapDirectoryIndex], songPreviewStartTime);
 
                 // Reset, update and play the metronome effects for the song select scene
                 scriptManager.metronomeForEffects.GetSongData(beatmapSongBpm, beatmapSongOffset);
@@ -416,13 +416,6 @@ public class SongSelectManager : MonoBehaviour
     public void FlashImage(string _animation)
     {
         songSelectFlashAnimator.Play(_animation);
-    }
-
-    // Play the song preview at the saved preview time
-    public void PlaySongPreview()
-    {
-        // Start the song preview as it has now been loaded
-        scriptManager.songSelectPreview.PlaySongSelectScenePreview(songPreviewStartTime, songClipChosenIndex);
     }
 
     // Play the background video

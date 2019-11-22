@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using UnityEngine.Networking;
+using System.IO;
 
 public class SongSelectPreview : MonoBehaviour
 {
@@ -9,15 +12,19 @@ public class SongSelectPreview : MonoBehaviour
 
     // Audio
     public AudioSource songAudioSource;
+    public AudioClip beatmapFileAudioClip;
+
     // Integers
     private float songVolume = 1f;
-    private float amount;
     private float songAudioSourceTime;
-    private int songClipChosenIndex;
 
     // Bools
     private bool active;
     private bool playing = false;
+
+    // Strings
+    private string filePath, completeAudioFilePath;
+    private const string audioType = ".ogg", audioName = "audio";
 
     // Scripts
     private ScriptManager scriptManager;
@@ -28,64 +35,61 @@ public class SongSelectPreview : MonoBehaviour
         scriptManager = FindObjectOfType<ScriptManager>();
     }
 
-    // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
-    void Update()
-    {
-        /*
-        if (active)
-        {
-            if (playing)
-            {
-                if (songAudioSource.isPlaying)
-                {
-                    // Update the song slider fill amount
-                    amount = (songAudioSource.time) / (songAudioSource.clip.length);
-                    songPlayerBar.fillAmount = amount;
-                }
-            }
-        }
-        */
-    }
-
-    // Get the song chosen to load 
-    public void GetSongChosen(int _songChosenIndex)
-    {
-        // Get the index of the song chosens
-        songClipChosenIndex = _songChosenIndex;
-        // Play the song
-        PlaySongPreview();
-    }
-
     // Play the song preview
     public void PlaySongPreview()
     {
-        // Play song
-        songAudioSource.clip = scriptManager.songDatabase.songClip[songClipChosenIndex];
         songAudioSource.volume = songVolume;
         songAudioSource.Play();
         playing = true;
         active = true;
     }
 
-    // Play the song preview
-    public void PlaySongSelectScenePreview(float _songPreviewStartTime, int _songClipChosenIndex)
+    public void GetBeatmapAudio(string _filePath, float _songPreviewStartTime)
     {
-        if (scriptManager.songDatabase == null)
-        {
-            // Get the reference
-            scriptManager.songDatabase = FindObjectOfType<SongDatabase>();
-        }
-        // Play song
-        songAudioSource.clip = scriptManager.songDatabase.songClip[_songClipChosenIndex];
-        songAudioSource.volume = songVolume;
+        // Get the file address
+        filePath = _filePath + @"\";
+        completeAudioFilePath = filePath + audioName + audioType;
 
-        if (_songPreviewStartTime >= 0 && _songPreviewStartTime < scriptManager.songDatabase.songClip[_songClipChosenIndex].length)
+        if (File.Exists(completeAudioFilePath))
         {
-            songAudioSource.time = _songPreviewStartTime;
+            StartCoroutine(GetAudioFile(_filePath, _songPreviewStartTime));
         }
+        else
+        {
+            scriptManager.messagePanel.DisplayMessage("BEATMAP AUDIO FILE NOT FOUND", "RED");
+        }
+    }
 
-        songAudioSource.Play();
-        playing = true;
-        active = true;
+    private IEnumerator GetAudioFile(string _filePath, float _songPreviewStartTime)
+    {
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + completeAudioFilePath, AudioType.OGGVORBIS))
+        {
+            ((DownloadHandlerAudioClip)www.downloadHandler).streamAudio = true;
+            yield return www.SendWebRequest();
+
+            if (www.isError)
+            {
+                scriptManager.messagePanel.DisplayMessage("BEATMAP AUDIO FILE NOT FOUND", "RED");
+            }
+            else
+            {
+                beatmapFileAudioClip = DownloadHandlerAudioClip.GetContent(www);
+
+                yield return new WaitForSeconds(0.05f);
+
+                // Assign the clip
+                songAudioSource.clip = beatmapFileAudioClip;
+
+                // Play audio clip
+                if (_songPreviewStartTime >= 0 && _songPreviewStartTime < beatmapFileAudioClip.length)
+                {
+                    songAudioSource.volume = songVolume;
+                    songAudioSource.time = _songPreviewStartTime;
+                    songAudioSource.Play();
+                    playing = true;
+                    active = true;
+                }
+            }
+        }
     }
 }

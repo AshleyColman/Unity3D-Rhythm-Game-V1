@@ -7,7 +7,7 @@ public class MetronomeForEffects : MonoBehaviour
     public Animator flashGlassAnimator;
     public Animator backgroundImageAnimator, backgroundImageAnimator2, videoPlayerImageAnimator, videoPlayerImageAnimator2, lightPanelBeatAnimator;
     public Animator easyDifficultyButtonSelectedAnimator, advancedDifficultyButtonSelectedAnimator, extraDifficultyButtonSelectedAnimator,
-        topColorPanelGlowAnimator, bottomColorPanelGlowAnimator;
+        topColorPanelGlowAnimator, bottomColorPanelGlowAnimator, characterMenuColorPanelGlowAnimator;
 
 
     // Audio
@@ -239,7 +239,15 @@ public class MetronomeForEffects : MonoBehaviour
             }
             else
             {
-                bottomColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
+                // Check if character menu is open
+                if (scriptManager.playerSkillsManager.characterPanel.activeSelf == true)
+                {
+                    characterMenuColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
+                }
+                else
+                {
+                    bottomColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
+                }
 
                 playTopPanelGlowAnimation = true;
             }

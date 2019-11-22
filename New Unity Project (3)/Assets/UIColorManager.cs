@@ -9,7 +9,7 @@ public class UIColorManager : MonoBehaviour
     // Color blocks
     private ColorBlock dropDownColorBlock, dropDownItemColorBlock, tickBoxButtonColorBlock, gradientButtonColorBlock, scrollbarColorBlock;
     public Color dropDownPressedColor, dropDownSelectedColor;
-    public Color solidBlackColor, blackColor08, invisibleColor, difficultyColor, whiteColor;
+    public Color solidBlackColor, blackColor08, invisibleColor, difficultyColor, whiteColor, difficultyColor08;
 
     private void Start()
     {
@@ -23,6 +23,11 @@ public class UIColorManager : MonoBehaviour
     // Update drop down colors
     public void UpdateDropDownColors(TMP_Dropdown _dropdown)
     {
+        // Update difficulty color 08
+        var tempColor = difficultyColor;
+        tempColor.a = 0.8f;
+        difficultyColor08 = tempColor;
+
         // Update colorblock
         UpdateDropDownColorBlock();
         // Update colorblock
@@ -60,9 +65,9 @@ public class UIColorManager : MonoBehaviour
     public void UpdateGradientButtonColorBlock()
     {
         gradientButtonColorBlock.normalColor = invisibleColor;
-        gradientButtonColorBlock.highlightedColor = difficultyColor;
+        gradientButtonColorBlock.highlightedColor = difficultyColor08;
         gradientButtonColorBlock.pressedColor = difficultyColor;
-        gradientButtonColorBlock.selectedColor = difficultyColor;
+        gradientButtonColorBlock.selectedColor = difficultyColor08;
     }
 
     // Update gradient buttons colors
@@ -75,9 +80,9 @@ public class UIColorManager : MonoBehaviour
     public void UpdateTickBoxButtonColorBlock()
     {
         tickBoxButtonColorBlock.normalColor = blackColor08;
-        tickBoxButtonColorBlock.highlightedColor = difficultyColor;
+        tickBoxButtonColorBlock.highlightedColor = difficultyColor08;
         tickBoxButtonColorBlock.pressedColor = difficultyColor;
-        tickBoxButtonColorBlock.selectedColor = difficultyColor;
+        tickBoxButtonColorBlock.selectedColor = difficultyColor08;
     }
 
     // Update tick box button
@@ -90,17 +95,17 @@ public class UIColorManager : MonoBehaviour
     private void UpdateDropDownColorBlock()
     {
         dropDownColorBlock.normalColor = blackColor08;
-        dropDownColorBlock.highlightedColor = difficultyColor;
+        dropDownColorBlock.highlightedColor = difficultyColor08;
         dropDownColorBlock.pressedColor = difficultyColor;
-        dropDownColorBlock.selectedColor = difficultyColor;
+        dropDownColorBlock.selectedColor = difficultyColor08;
     }
 
     // Update the color block colors
     private void UpdateDropDownItemColorBlock()
     {
         dropDownItemColorBlock.normalColor = blackColor08;
-        dropDownItemColorBlock.highlightedColor = difficultyColor;
-        dropDownItemColorBlock.pressedColor = solidBlackColor;
-        dropDownItemColorBlock.selectedColor = solidBlackColor;
+        dropDownItemColorBlock.highlightedColor = difficultyColor08;
+        dropDownItemColorBlock.pressedColor = difficultyColor;
+        dropDownItemColorBlock.selectedColor = difficultyColor08;
     }
 }

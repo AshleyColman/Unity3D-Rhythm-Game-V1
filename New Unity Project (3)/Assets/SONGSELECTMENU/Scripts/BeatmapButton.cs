@@ -125,7 +125,7 @@ public class BeatmapButton : MonoBehaviour
     // Play the song preview when clicked
     private void PlaySongPreview()
     {
-        scriptManager.songSelectManager.PlaySongPreview();
+        scriptManager.songSelectPreview.PlaySongPreview();
     }
 
     // Set the beatmap butotn index during instantiation

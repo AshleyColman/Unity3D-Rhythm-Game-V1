@@ -164,7 +164,7 @@ public class EditSelectSceneSongSelectManager : MonoBehaviour
             if (hasPlayedSongPreviewOnce == false)
             {
                 // Play the song preview for the first song when entering at the correct set time in the beatmap information
-                PlaySongPreview();
+                //PlaySongPreview();
 
                 // Reset, update and play the metronome effects for the song select scene
                 metronomeForEffects.GetSongData(beatmapSongBpm, beatmapSongOffset);
@@ -315,13 +315,6 @@ public class EditSelectSceneSongSelectManager : MonoBehaviour
     public void FlashImage(string _animation)
     {
         songSelectFlashAnimator.Play(_animation);
-    }
-
-    // Play the song preview at the saved preview time
-    public void PlaySongPreview()
-    {
-        // Start the song preview as it has now been loaded
-        songSelectPreview.PlaySongSelectScenePreview(songPreviewStartTime, songClipChosenIndex);
     }
 
     // Check the beatmap directory for the easy difficulty file

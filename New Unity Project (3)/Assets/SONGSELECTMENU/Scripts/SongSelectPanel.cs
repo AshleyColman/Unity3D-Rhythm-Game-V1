@@ -146,28 +146,32 @@ public class SongSelectPanel : MonoBehaviour
     // Check input for song select panel features
     private void CheckSongSelectPanelInput()
     {
-        // Check for any input
-        if (Input.anyKeyDown)
+        // If the character menu is not open
+        if (scriptManager.playerSkillsManager.characterPanel.activeSelf == false)
         {
-            // Check for mouse or navigation input
-            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)
-                || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Return))
+            // Check for any input
+            if (Input.anyKeyDown)
             {
-                // Scroll the beatmap button content panel up
-                ScrollListUp();
-
-                // Scroll the beatmap button content panel up
-                ScrollListDown();
-
-                // Select the next difficulty
-                SelectNextDifficulty();
-            }
-            else
-            {
-                if (beatmapSearchInputField.isFocused == false)
+                // Check for mouse or navigation input
+                if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)
+                    || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Return))
                 {
-                    // Select search bar if any keyboard key has been pressed
-                    beatmapSearchInputField.ActivateInputField();
+                    // Scroll the beatmap button content panel up
+                    ScrollListUp();
+
+                    // Scroll the beatmap button content panel up
+                    ScrollListDown();
+
+                    // Select the next difficulty
+                    SelectNextDifficulty();
+                }
+                else
+                {
+                    if (beatmapSearchInputField.isFocused == false)
+                    {
+                        // Select search bar if any keyboard key has been pressed
+                        beatmapSearchInputField.ActivateInputField();
+                    }
                 }
             }
         }
