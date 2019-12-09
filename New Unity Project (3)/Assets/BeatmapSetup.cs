@@ -94,12 +94,6 @@ public class BeatmapSetup : MonoBehaviour
         set { beatmapCreator = value; }
     }
 
-    public int SongClipChosenIndex
-    {
-        get { return songClipChosenIndex; }
-        set { songClipChosenIndex = value; }
-    }
-
     public float SongPreviewStartTime
     {
         get { return songPreviewStartTime; }
@@ -151,15 +145,8 @@ public class BeatmapSetup : MonoBehaviour
 
     private void Update()
     {
-        // Display reset confirmation panel 
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            // Display
-            resetBeatmapInformationPanel.gameObject.SetActive(true);
-            // Select the reset panel NO button
-            resetConfirmationButtonNo.Select();
-        }
 
+        /*
         if (statusPanel.gameObject.activeSelf == true)
         {
             statusPanelTimer += Time.deltaTime;
@@ -169,6 +156,7 @@ public class BeatmapSetup : MonoBehaviour
                 statusPanel.gameObject.SetActive(false);
             }
         }
+        */
     }
 
     // Deactivate the reset confirmation panel

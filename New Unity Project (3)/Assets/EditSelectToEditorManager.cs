@@ -66,8 +66,8 @@ public class EditSelectToEditorManager : MonoBehaviour
         beatmapSetup.BeatmapExtraDifficultyLevel = Database.database.LoadedBeatmapExtraDifficultyLevel;
         beatmapSetup.SongName = Database.database.LoadedSongName;
         beatmapSetup.SongArtist = Database.database.LoadedSongArtist;
-        beatmapSetup.SongClipChosenIndex = Database.database.LoadedSongClipChosenIndex;
-        beatmapSetup.SongPreviewStartTime = Database.database.LoadedSongPreviewStartTime;
+        //beatmapSetup.SongClipChosenIndex = Database.database.LoadedSongClipChosenIndex;
+        //beatmapSetup.SongPreviewStartTime = Database.database.LoadedSongPreviewStartTime;
         beatmapSetup.BeatmapDifficulty = Database.database.LoadedBeatmapDifficulty;
     }
 
@@ -80,7 +80,7 @@ public class EditSelectToEditorManager : MonoBehaviour
         stepValue = 4;
         bpmValue = Database.database.LoadedBPM;
         offsetValue = Database.database.LoadedOffsetMS;
-        metronomePro.GetSongData(bpmValue, offsetValue, baseValue, stepValue);
+        //metronomePro.GetSongData(bpmValue, offsetValue, baseValue, stepValue);
     }
 
     // Update beatsnaps
@@ -121,7 +121,7 @@ public class EditSelectToEditorManager : MonoBehaviour
         UpdateBeatmapSetupInformation();
 
         // Select the song automatically
-        metronomePro_Player.GetSongSelected(beatmapSetup.SongClipChosenIndex);
+        //metronomePro_Player.GetSongSelected(beatmapSetup.SongClipChosenIndex);
 
         // Update the bpm, offset, base and step information
         UpdateSongTimingInformation();

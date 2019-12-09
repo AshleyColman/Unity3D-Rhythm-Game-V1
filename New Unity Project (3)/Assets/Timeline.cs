@@ -4,33 +4,27 @@ using UnityEngine;
 
 public class Timeline : MonoBehaviour
 {
+    // Gameobject
+    public GameObject reversedTimelineHandle, timeline, timelineSlider;
 
-    public GameObject timeline, reverseTimeline;
+    // Vector
+    private Vector3 timelineCurrentPosition, reversedTimelineHandlePosition, reversedTimelineHandleStartingPosition;
+    private Vector3 defaultTimelinePosition, timingSetupTimelinePosition;
 
-    Vector3 timelineCurrentPosition;
-    float x;
+    // Float
+    private float x, currentTimelineWidth;
 
-    private float currentTimelineWidth;
-
-    public GameObject reversedTimelineHandle;
-    Vector3 reversedTimelineHandlePosition;
-    Vector3 reversedTimelineHandleStartingPosition;
-
-    MetronomePro metronomePro;
-    MetronomePro_Player metronomePro_Player;
-    BeatsnapManager beatsnapManager;
-    PlacedObject placedObject;
-    EditorUIManager editorUIManager;
-    LivePreview livePreview;
+    // Scripts
+    private ScriptManager scriptManager;
 
     void Start()
     {
-        metronomePro = FindObjectOfType<MetronomePro>();
-        metronomePro_Player = FindObjectOfType<MetronomePro_Player>();
-        beatsnapManager = FindObjectOfType<BeatsnapManager>();
-        placedObject = FindObjectOfType<PlacedObject>();
-        editorUIManager = FindObjectOfType<EditorUIManager>();
-        livePreview = FindObjectOfType<LivePreview>();
+        scriptManager = FindObjectOfType<ScriptManager>();
+
+        defaultTimelinePosition = timeline.transform.localPosition;
+
+        // Setup timeline position is -450 on y axis so is positioned in the middle of screen
+        timingSetupTimelinePosition = new Vector3(0, 0, 0);
 
         // Get the starting position for the reversed timeline handle
         reversedTimelineHandleStartingPosition = reversedTimelineHandle.transform.position;
@@ -39,27 +33,38 @@ public class Timeline : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         // Get the position of the reversed timeline handle
         reversedTimelineHandlePosition = reversedTimelineHandle.transform.position;
         // Set the main timeline to the position of the reversed timeline handle
-        timeline.transform.position = reversedTimelineHandlePosition;
+        scriptManager.metronomePro_Player.timelineSlider.transform.position = reversedTimelineHandlePosition;
 
         // Timeline tick navigation through keyboard input
-        TimelineTickNavigation();
+        //TimelineTickNavigation();
 
         // Change timeline object sizes based on key input
         //ChangeTimelineSize();
+    }
+
+    // Reset the timeline to the default position
+    public void SetDefaultTimelinePosition()
+    {
+        timeline.transform.localPosition = defaultTimelinePosition;
+    }
+
+    // Set the timeline to the setup timing panel position
+    public void SetTimingSetupTimlinePosition()
+    {
+        timeline.transform.localPosition = timingSetupTimelinePosition;
     }
 
     // Timeline tick navigation through keyboard input
     private void TimelineTickNavigation()
     {
         // Check for left and right arrow input to move timeline back and forward 1 tick
-        if (metronomePro.songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
             // If the song is not playing/paused
-            if (metronomePro.songAudioSource.isPlaying == false)
+            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == false)
             {
                 var mouseScroll = Input.GetAxis("Mouse ScrollWheel");
 
@@ -83,24 +88,25 @@ public class Timeline : MonoBehaviour
     // Navigate the timeline 1 tick back
     public void TimelineNavigationBackwardOneTick()
     {
-        if (metronomePro.songTickTimes.Count != 0)
+        if (scriptManager.metronomePro.songTickTimes.Count != 0)
         {
-            if (metronomePro.CurrentTick != 0)
+            if (scriptManager.metronomePro.CurrentTick != 0)
             {
                 // Move the song and timeline back 1 tick
-                metronomePro.songAudioSource.time = (float)metronomePro.songTickTimes[metronomePro.CurrentTick - 1];
+                scriptManager.rhythmVisualizatorPro.audioSource.time = 
+                    (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick - 1];
 
                 // Calculate new metronome values
-                metronomePro.CalculateDecrementMetronomeValues();
+                scriptManager.metronomePro.CalculateDecrementMetronomeValues();
 
                 // Update text and update timeline position
-                metronomePro_Player.UpdateSongProgressUI();
+                scriptManager.metronomePro_Player.UpdateSongProgressUI();
 
                 // Sort beatsnaps
-                beatsnapManager.SortBeatsnaps();
+                scriptManager.beatsnapManager.SortBeatsnaps();
 
                 // If live preview is off
-                if (editorUIManager.previewPanel.gameObject.activeSelf == false)
+                if (scriptManager.editorUIManager.previewPanel.gameObject.activeSelf == false)
                 {
                     // Displays the hit object for the beat currently selected
                     DisplaySelectedBeatTimelineObject();
@@ -108,7 +114,7 @@ public class Timeline : MonoBehaviour
                 else
                 {
                     // Update the preview hit objects on scroll wheel 
-                    livePreview.UpdatePreviewHitObjects();
+                    scriptManager.livePreview.UpdatePreviewHitObjects();
                 }
             }
         }
@@ -117,23 +123,25 @@ public class Timeline : MonoBehaviour
     // Navigate the timeline forward one tick
     public void TimelineNavigationForwardOneTick()
     {
-        if (metronomePro.songTickTimes.Count != 0)
+        if (scriptManager.metronomePro.songTickTimes.Count != 0)
         {
-            if (metronomePro.songAudioSource.time < metronomePro.songTickTimes[metronomePro.songTickTimes.Count - 1])
+            if (scriptManager.rhythmVisualizatorPro.audioSource.time < 
+                scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.songTickTimes.Count - 1])
             {
                 // Move the song and timeline back 1 tick
-                metronomePro.songAudioSource.time = (float)metronomePro.songTickTimes[metronomePro.CurrentTick + 1];
+                scriptManager.rhythmVisualizatorPro.audioSource.time = 
+                    (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick + 1];
 
                 // Update text and update timeline position
-                metronomePro_Player.UpdateSongProgressUI();
+                scriptManager.metronomePro_Player.UpdateSongProgressUI();
 
-                metronomePro.CalculateIncrementMetronomeValues();
+                scriptManager.metronomePro.CalculateIncrementMetronomeValues();
 
                 // Sort beatsnaps
-                beatsnapManager.SortBeatsnaps();
+                scriptManager.beatsnapManager.SortBeatsnaps();
 
                 // If live preview is off
-                if (editorUIManager.previewPanel.gameObject.activeSelf == false)
+                if (scriptManager.editorUIManager.previewPanel.gameObject.activeSelf == false)
                 {
                     // Displays the hit object for the beat currently selected
                     DisplaySelectedBeatTimelineObject();
@@ -141,7 +149,7 @@ public class Timeline : MonoBehaviour
                 else
                 {
                     // Update the preview hit objects on scroll wheel 
-                    livePreview.UpdatePreviewHitObjects();
+                    scriptManager.livePreview.UpdatePreviewHitObjects();
                 }
             }
         }
@@ -152,12 +160,14 @@ public class Timeline : MonoBehaviour
     public void DisplaySelectedBeatTimelineObject()
     {
         // Check all timeline objects spawn times to see if a preview should be spawned/current selected object
-        for (int i = 0; i < placedObject.destroyTimelineObjectList.Count; i++)
+        for (int i = 0; i < scriptManager.placedObject.destroyTimelineObjectList.Count; i++)
         {
-            if (metronomePro.songAudioSource.time >= (placedObject.destroyTimelineObjectList[i].TimelineHitObjectSpawnTime - 0.0001)
-                && metronomePro.songAudioSource.time <= (placedObject.destroyTimelineObjectList[i].TimelineHitObjectSpawnTime + 0.0001))
+            if (scriptManager.rhythmVisualizatorPro.audioSource.time >= 
+                (scriptManager.placedObject.destroyTimelineObjectList[i].TimelineHitObjectSpawnTime - 0.0001)
+                && scriptManager.rhythmVisualizatorPro.audioSource.time <= 
+                (scriptManager.placedObject.destroyTimelineObjectList[i].TimelineHitObjectSpawnTime + 0.0001))
             {
-                placedObject.destroyTimelineObjectList[i].SpawnEditableHitObject("TIMELINE_NAVIGATION");
+                scriptManager.placedObject.destroyTimelineObjectList[i].SpawnEditableHitObject("TIMELINE_NAVIGATION");
                 break;
             }
         }

@@ -8,12 +8,6 @@ public class MouseFollow : MonoBehaviour {
     }
 
 
-
-
-
-
-
-
     /*
     // Floats
     private float distance;

@@ -49,10 +49,7 @@ public class LivePreview : MonoBehaviour
     public Transform canvas; // Spawn location
 
     // Scripts
-    private PlacedObject placedObject;
-    private MetronomePro metronomePro;
-    private MetronomePro_Player metronomePro_Player;
-    private EditorUIManager editorUIManager;
+    private ScriptManager scriptManager;
 
     public List<UIPreviewHitObject> UIPreviewHitObjectScriptList = new List<UIPreviewHitObject>();
 
@@ -79,12 +76,8 @@ public class LivePreview : MonoBehaviour
         animationTotalFrames = 120;
         startFrame = 0;
 
-
         // Reference
-        editorUIManager = FindObjectOfType<EditorUIManager>();
-        placedObject = FindObjectOfType<PlacedObject>();
-        metronomePro = FindObjectOfType<MetronomePro>();
-        metronomePro_Player = FindObjectOfType<MetronomePro_Player>();
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     private void Update()
@@ -131,7 +124,7 @@ public class LivePreview : MonoBehaviour
         // Has calculated
         hasCalculatedOldestHitObjectIndex = true;
         // Mute metronome
-        metronomePro.MuteMetronome();
+        scriptManager.metronomePro.MuteMetronome();
     }
 
 
@@ -160,13 +153,13 @@ public class LivePreview : MonoBehaviour
     private void CalculateCurrentPreviewObjectIndex()
     {
         // Check the list if not empty
-        if (placedObject.editorHitObjectList.Count != 0)
+        if (scriptManager.placedObject.editorHitObjectList.Count != 0)
         {
             // Loop through all the editor hit objects saved
-            for (int i = 0; i < placedObject.editorHitObjectList.Count; i++)
+            for (int i = 0; i < scriptManager.placedObject.editorHitObjectList.Count; i++)
             {
                 // Get the index of the next hit object
-                if (metronomePro.songAudioSource.time > (placedObject.editorHitObjectList[i].hitObjectSpawnTime - 1))
+                if (scriptManager.rhythmVisualizatorPro.audioSource.time > (scriptManager.placedObject.editorHitObjectList[i].hitObjectSpawnTime - 1))
                 {
                     // Update the spawn hit object index to the index of the hit object where the current song time is not greater than = next note to spawn
                     currentHitObjectIndex = (i + 1);
@@ -217,14 +210,11 @@ public class LivePreview : MonoBehaviour
     private void DeactivateInstantiatedEditableHitObject()
     {
         // Disable the editable hit object if active
-        if (editorUIManager.instantiatedEditableHitObject.gameObject.activeSelf == true)
+        if (scriptManager.editorUIManager.instantiatedEditableHitObject.gameObject.activeSelf == true)
         {
-            editorUIManager.instantiatedEditableHitObject.gameObject.SetActive(false);
+            scriptManager.editorUIManager.instantiatedEditableHitObject.gameObject.SetActive(false);
         }
     }
-
-
-
 
     // Resume the live preview
     public void ResumeLivePreview()
@@ -244,10 +234,10 @@ public class LivePreview : MonoBehaviour
         previewOn = true;
 
         // Turn on the song
-        metronomePro_Player.PlayOrPauseSong();
+        scriptManager.metronomePro_Player.PlayOrPauseSong();
 
         // Mute metronome
-        metronomePro.MuteMetronome();
+        scriptManager.metronomePro.MuteMetronome();
     }
 
     // Pause the live preview
@@ -262,7 +252,7 @@ public class LivePreview : MonoBehaviour
         previewOn = false;
 
         // Pause the song
-        metronomePro_Player.PlayOrPauseSong();
+        scriptManager.metronomePro_Player.PlayOrPauseSong();
     }
 
     // Clear all preview information
@@ -272,10 +262,10 @@ public class LivePreview : MonoBehaviour
         ClearPreviewInformation();
 
         // Play the song
-        metronomePro_Player.StopSong();
+        scriptManager.metronomePro_Player.StopSong();
 
         // Reset the time
-        metronomePro.songAudioSource.time = 0f;
+        scriptManager.rhythmVisualizatorPro.audioSource.time = 0f;
 
         // Calculate the next hit object to spawn based on the current song time
         CalculateCurrentPreviewObjectIndex();
@@ -323,22 +313,22 @@ public class LivePreview : MonoBehaviour
     private void CheckIfReadyToSpawn()
     {
         // Check if hit objects exist to preview
-        if (placedObject.editorHitObjectList.Count != 0)
+        if (scriptManager.placedObject.editorHitObjectList.Count != 0)
         {
             // If the audio is playing
-            if (metronomePro.songAudioSource.isPlaying == true)
+            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == true)
             {
                 // Only spawn if there are objects to spawn
-                if (currentHitObjectIndex < placedObject.editorHitObjectList.Count)
+                if (currentHitObjectIndex < scriptManager.placedObject.editorHitObjectList.Count)
                 {
                     // Check spawn time for hit object at the current index (-1 to consider spawn in time)
-                    if (metronomePro.songAudioSource.time >= (placedObject.editorHitObjectList[currentHitObjectIndex].hitObjectSpawnTime - 1))
+                    if (scriptManager.rhythmVisualizatorPro.audioSource.time >= (scriptManager.placedObject.editorHitObjectList[currentHitObjectIndex].hitObjectSpawnTime - 1))
                     {
                         // Get the object type for the preview object
-                        objectType = placedObject.editorHitObjectList[currentHitObjectIndex].hitObjectType;
+                        objectType = scriptManager.placedObject.editorHitObjectList[currentHitObjectIndex].hitObjectType;
 
                         // Get the object position for the preview object
-                        objectPosition = placedObject.editorHitObjectList[currentHitObjectIndex].hitObjectPosition;
+                        objectPosition = scriptManager.placedObject.editorHitObjectList[currentHitObjectIndex].hitObjectPosition;
 
                         // Instantiate a preview hit object and add to the list
                         SpawnPreviewHitObject(spawnHitObjectIndex, objectType, objectPosition);
@@ -350,7 +340,6 @@ public class LivePreview : MonoBehaviour
                 }
             }
         }
-
     }
 
     // Instantiate a preview hit object and add to the list
@@ -358,8 +347,6 @@ public class LivePreview : MonoBehaviour
     {
         // Check if first ui object has spawned, get the id of first object
         GetFirstSpawnObjectID(_index);
-
-
 
         // Instantiate
         GameObject obj = Instantiate(previewHitObject, Vector3.zero, Quaternion.identity);
@@ -399,16 +386,16 @@ public class LivePreview : MonoBehaviour
         UIPreviewHitObjectScriptList.Clear();
 
         // Check the list is not empty
-        if (placedObject.editorHitObjectList.Count != 0)
+        if (scriptManager.placedObject.editorHitObjectList.Count != 0)
         {
             // Loop through all the editor hit objects saved
-            for (int i = 0; i < placedObject.editorHitObjectList.Count; i++)
+            for (int i = 0; i < scriptManager.placedObject.editorHitObjectList.Count; i++)
             {
                 // Check for the firt hit object index that is within the range of the current song time - 1;
                 //if ((placedObject.editorHitObjectList[i].hitObjectSpawnTime - 1) >= (metronomePro.songAudioSource.time - 1)
                 //&& metronomePro.songAudioSource.time <= placedObject.editorHitObjectList[i].hitObjectSpawnTime)
-                if ((metronomePro.songAudioSource.time) >= (placedObject.editorHitObjectList[i].hitObjectSpawnTime - 1) &&
-                    metronomePro.songAudioSource.time <= placedObject.editorHitObjectList[i].hitObjectSpawnTime)
+                if ((scriptManager.rhythmVisualizatorPro.audioSource.time) >= (scriptManager.placedObject.editorHitObjectList[i].hitObjectSpawnTime - 1) &&
+                    scriptManager.rhythmVisualizatorPro.audioSource.time <= scriptManager.placedObject.editorHitObjectList[i].hitObjectSpawnTime)
                 {
                     //Debug.Log("added");
 
@@ -441,10 +428,10 @@ public class LivePreview : MonoBehaviour
             GameObject obj = Instantiate(previewHitObject, Vector3.zero, Quaternion.identity);
 
             // Get the object type for the preview object
-            objectType = placedObject.editorHitObjectList[objectIndex].hitObjectType;
+            objectType = scriptManager.placedObject.editorHitObjectList[objectIndex].hitObjectType;
 
             // Get the object position for the preview object
-            objectPosition = placedObject.editorHitObjectList[objectIndex].hitObjectPosition;
+            objectPosition = scriptManager.placedObject.editorHitObjectList[objectIndex].hitObjectPosition;
 
             // Update the parent spawn to be in the canvas
             obj.transform.SetParent(canvas, false);
@@ -478,8 +465,8 @@ public class LivePreview : MonoBehaviour
     // Calculate the frame the animator should play from for the preview object based on the spawn time and current song time
     private void SetPreviewObjectAnimationStartTime(int _objectIndex, int _animatorIndex)
     {
-        currentSongTime = metronomePro.songAudioSource.time;
-        previewObjectAnimationStartTime = (placedObject.editorHitObjectList[_objectIndex].hitObjectSpawnTime - 1);
+        currentSongTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
+        previewObjectAnimationStartTime = (scriptManager.placedObject.editorHitObjectList[_objectIndex].hitObjectSpawnTime - 1);
         previewObjectAnimationEndTime = (previewObjectAnimationStartTime + 1.20f);
 
         float spawnDuration = 1f;
@@ -510,8 +497,8 @@ public class LivePreview : MonoBehaviour
         float currentSongTime = 0;
 
 
-        currentSongTime = metronomePro.songAudioSource.time;
-        hitObjectSpawnTime = (placedObject.editorHitObjectList[_index].hitObjectSpawnTime - 1);
+        currentSongTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
+        hitObjectSpawnTime = (scriptManager.placedObject.editorHitObjectList[_index].hitObjectSpawnTime - 1);
         hitObjectEndTime = (hitObjectSpawnTime + 1.10f);
 
         if (currentSongTime > hitObjectSpawnTime)
@@ -592,33 +579,33 @@ public class LivePreview : MonoBehaviour
             {
                 case 0:
                     // Change the glow and inner components of the preview hit object color to blue
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = placedObject.blueObjectColor;
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = placedObject.blueObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = scriptManager.placedObject.blueObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = scriptManager.placedObject.blueObjectColor;
                     break;
                 case 1:
                     // Purple
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = placedObject.purpleObjectColor;
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = placedObject.purpleObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = scriptManager.placedObject.purpleObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = scriptManager.placedObject.purpleObjectColor;
                     break;
                 case 2:
                     // Red
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = placedObject.redObjectColor;
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = placedObject.redObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = scriptManager.placedObject.redObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = scriptManager.placedObject.redObjectColor;
                     break;
                 case 3:
                     // Green
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = placedObject.greenObjectColor;
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = placedObject.greenObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = scriptManager.placedObject.greenObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = scriptManager.placedObject.greenObjectColor;
                     break;
                 case 4:
                     // Yellow
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = placedObject.yellowObjectColor;
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = placedObject.yellowObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = scriptManager.placedObject.yellowObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = scriptManager.placedObject.yellowObjectColor;
                     break;
                 case 5:
                     // Orange
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = placedObject.orangeObjectColor;
-                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = placedObject.orangeObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectGlowImage.color = scriptManager.placedObject.orangeObjectColor;
+                    UIPreviewHitObjectScriptList[_index].previewHitObjectInnerImage.color = scriptManager.placedObject.orangeObjectColor;
                     break;
             }
         }
@@ -636,9 +623,9 @@ public class LivePreview : MonoBehaviour
     // Reset preview end time to the end of the song
     public void ResetPreviewEndTime()
     {
-        if (metronomePro.songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
-            previewEndTime = metronomePro.songAudioSource.clip.length;
+            previewEndTime = scriptManager.rhythmVisualizatorPro.audioSource.clip.length;
 
             // Update the preview duration text
             UpdatePreviewDurationText();
@@ -658,7 +645,7 @@ public class LivePreview : MonoBehaviour
         var newStartTimeFloat = float.Parse(startTimeInputField.text);
 
         // Check the time passed is within the song time limits
-        if (newStartTimeFloat < metronomePro.songAudioSource.clip.length)
+        if (newStartTimeFloat < scriptManager.rhythmVisualizatorPro.audioSource.clip.length)
         {
             // Update the previewStartTime with the value passed
             previewStartTime = newStartTimeFloat;
@@ -672,13 +659,13 @@ public class LivePreview : MonoBehaviour
     public void SetPreviewStartTime()
     {
         // Check if a song clip has been assigned
-        if (metronomePro.songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
             // Check the time is within the song time limits
-            if (metronomePro.songAudioSource.time < metronomePro.songAudioSource.clip.length)
+            if (scriptManager.rhythmVisualizatorPro.audioSource.time < scriptManager.rhythmVisualizatorPro.audioSource.clip.length)
             {
                 // Update the previewStartTime with the current song time
-                previewStartTime = metronomePro.songAudioSource.time;
+                previewStartTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
 
                 // Update the preview duration text
                 UpdatePreviewDurationText();
@@ -694,7 +681,7 @@ public class LivePreview : MonoBehaviour
 
 
         // Check the time passed is within the song time limits
-        if (newEndTimeFloat < metronomePro.songAudioSource.clip.length)
+        if (newEndTimeFloat < scriptManager.rhythmVisualizatorPro.audioSource.clip.length)
         {
             // Update the previewEndTime with the value passed
             previewEndTime = newEndTimeFloat;
@@ -708,13 +695,13 @@ public class LivePreview : MonoBehaviour
     public void SetPreviewEndTime()
     {
         // Check if a song clip has been assigned
-        if (metronomePro.songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
             // Check the time is within the song time limits
-            if (metronomePro.songAudioSource.time < metronomePro.songAudioSource.clip.length)
+            if (scriptManager.rhythmVisualizatorPro.audioSource.time < scriptManager.rhythmVisualizatorPro.audioSource.clip.length)
             {
                 // Update the previewStartTime with the current song time
-                previewEndTime = metronomePro.songAudioSource.time;
+                previewEndTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
 
                 // Update the preview duration text
                 UpdatePreviewDurationText();
@@ -768,10 +755,10 @@ public class LivePreview : MonoBehaviour
         ClearPreviewInformation();
 
         // Stop the song
-        metronomePro_Player.StopSong();
+        scriptManager.metronomePro_Player.StopSong();
 
         // Reset the time
-        metronomePro.songAudioSource.time = previewStartTime;
+        scriptManager.rhythmVisualizatorPro.audioSource.time = previewStartTime;
 
         // Calculate the next hit object to spawn based on the current song time
         CalculateCurrentPreviewObjectIndex();
@@ -791,7 +778,7 @@ public class LivePreview : MonoBehaviour
         if (previewLooping == true)
         {
             // If the current song time has gone past the preview end time
-            if (metronomePro.songAudioSource.time >= previewEndTime)
+            if (scriptManager.rhythmVisualizatorPro.audioSource.time >= previewEndTime)
             {
                 // Restart the preview from the start time
                 PlayPreviewFromSetStartTime();

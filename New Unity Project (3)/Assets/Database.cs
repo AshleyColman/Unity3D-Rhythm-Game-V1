@@ -229,8 +229,8 @@ public class Database : MonoBehaviour
         beatmap.beatmapEasyDifficultyLevel = beatmapSetup.BeatmapEasyDifficultyLevel;
         beatmap.beatmapAdvancedDifficultyLevel = beatmapSetup.BeatmapAdvancedDifficultyLevel;
         beatmap.beatmapExtraDifficultyLevel = beatmapSetup.BeatmapExtraDifficultyLevel;
-        beatmap.songClipChosenIndex = beatmapSetup.SongClipChosenIndex;
-        beatmap.songPreviewStartTime = beatmapSetup.SongPreviewStartTime;
+        //beatmap.songClipChosenIndex = beatmapSetup.SongClipChosenIndex;
+        //beatmap.songPreviewStartTime = beatmapSetup.SongPreviewStartTime;
         beatmap.beatmapCreatedDate = beatmapSetup.BeatmapCreatedDate;
 
         // Timing information for the beatmap from the metronome

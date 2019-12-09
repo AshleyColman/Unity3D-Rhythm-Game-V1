@@ -6,86 +6,23 @@ using TMPro;
 
 public class MetronomePro_Player : MonoBehaviour
 {
+    // Text
+    public TextMeshProUGUI actualPositionText;
 
-    [Header("Variables")]
-    public bool active;
-    public bool playing = false;
-
-    [Space(5)]
-
-    public AudioSource songAudioSource;
-    public Sprite playSprite;
-    public Sprite pauseSprite;
-
-    [Space(5)]
-    public TextMeshProUGUI actualPosition;
-    public Image songPlayerBar;
+    // Dropdown
     public TMP_Dropdown velocityScale;
-    public Slider songPlayerSlider;
-    public GameObject songPointSliderHandle;
-    public Slider handleSlider;
 
+    // Slider
+    public Slider songSlider, timelineSlider, reversedTimelineSlider, positionSlider;
 
-    // Timeline position slider 
-    public Slider timelinePositionSlider;
-    public Image timelinePositionSliderImage;
-    public GameObject timelinePositionSliderHandle;
-    public Slider timelinePositionHandleSlider;
+    private float amount;
 
-    // Reversed timeline slider
-    public Slider reversedTimelineSlider;
-    public GameObject reversedTimelineSliderHandle;
-    public Slider reversedTimelineHandleSlider;
-
-    [Header("Song Data")]
-    public AudioClip songClip;
-
-    public string songName;
-    public string songArtist;
-
-    [Space(5)]
-
-    public float Bpm = 128;
-    public float OffsetMS = 100;
-
-    private int Step = 4;
-    private int Base = 4;
-
-    float amount;
-
-    // Reference for the songDatabase for selecting and getting the song selected
-    private SongDatabase songDatabase;
-
-    // The song selected
-    private int songSelectedIndex = 0;
-
-    private MetronomePro metronomePro;
-    private LivePreview livePreview;
-    private EditorUIManager editorUIManager;
-    private EditSelectToEditorManager editSelectToEditorManager;
+    // Scripts
+    private ScriptManager scriptManager;
 
     void Start()
     {
-
-        // Find the reference to the songDatabase
-        songDatabase = FindObjectOfType<SongDatabase>();
-        editorUIManager = FindObjectOfType<EditorUIManager>();
-        metronomePro = FindObjectOfType<MetronomePro>();
-        livePreview = FindObjectOfType<LivePreview>();
-        editSelectToEditorManager = FindObjectOfType<EditSelectToEditorManager>();
-
-        // Stop any song and reset values
-        StopSong();
-
-
-
-        // Object was destroyed before scene loaded - creating a new file
-        if (editSelectToEditorManager == null)
-        {
-            // Send Song Data to Metronome
-            SendSongData();
-        }
-
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     // Check input to change the song play back speed
@@ -123,65 +60,16 @@ public class MetronomePro_Player : MonoBehaviour
         switch (velocityScale.value)
         {
             case 0:
-                songAudioSource.pitch = 2.00f;
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 0.50f;
                 break;
             case 1:
-                songAudioSource.pitch = 1.75f;
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 0.75f;
                 break;
             case 2:
-                songAudioSource.pitch = 1.50f;
-                break;
-            case 3:
-                songAudioSource.pitch = 1.25f;
-                break;
-            case 4:
-                songAudioSource.pitch = 1;
-                break;
-            case 5:
-                songAudioSource.pitch = 0.75f;
-                break;
-            case 6:
-                songAudioSource.pitch = 0.50f;
-                break;
-            case 7:
-                songAudioSource.pitch = 0.45f;
-                break;
-            case 8:
-                songAudioSource.pitch = 0.40f;
-                break;
-            case 9:
-                songAudioSource.pitch = 0.35f;
-                break;
-            case 10:
-                songAudioSource.pitch = 0.30f;
-                break;
-            case 11:
-                songAudioSource.pitch = 0.25f;
-                break;
-            case 12:
-                songAudioSource.pitch = 0.20f;
-                break;
-            default:
-                songAudioSource.pitch = 1;
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 1;
                 break;
         }
     }
-
-    // Gets the song selected from the song button list
-    public void GetSongSelected(int songSelectedIndexPass)
-    {
-        songSelectedIndex = songSelectedIndexPass;
-        // Assign the clip to the AudioSource
-        songClip = songDatabase.songClip[songSelectedIndex];
-        songAudioSource.clip = songClip;
-    }
-
-    // Sends Song Data to Metronome Pro script
-    public void SendSongData()
-    {
-        metronomePro.GetSongData(Bpm, OffsetMS, Base, Step);
-    }
-
 
     // Sets a New Song and Metronome Velocity using Velocity Scale Dropdown Value
     public void SetNewVelocity()
@@ -193,41 +81,37 @@ public class MetronomePro_Player : MonoBehaviour
     // Sets a New Song Position if the user clicked on Song Player Slider
     public void SetNewSongPosition()
     {
-        active = false;
-
-        if (songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
-            if (timelinePositionSlider.value * songAudioSource.clip.length < songAudioSource.clip.length)
+            if (positionSlider.value * scriptManager.rhythmVisualizatorPro.audioSource.clip.length <
+                scriptManager.rhythmVisualizatorPro.audioSource.clip.length)
             {
-                songAudioSource.time = (timelinePositionSlider.value * songAudioSource.clip.length);
+                scriptManager.rhythmVisualizatorPro.audioSource.time = (positionSlider.value *
+                    scriptManager.rhythmVisualizatorPro.audioSource.clip.length);
             }
-            else if ((timelinePositionSlider.value * songAudioSource.clip.length >= songAudioSource.clip.length))
+            else if ((positionSlider.value * scriptManager.rhythmVisualizatorPro.audioSource.clip.length >=
+                scriptManager.rhythmVisualizatorPro.audioSource.clip.length))
             {
                 StopSong();
             }
 
-            if (metronomePro.neverPlayed)
+            if (scriptManager.metronomePro.NeverPlayed)
             {
-                metronomePro.CalculateIntervals();
+                scriptManager.metronomePro.CalculateIntervals();
             }
 
-            metronomePro.CalculateActualStep();
+            scriptManager.metronomePro.CalculateActualStep();
 
-            actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
-
-            songPlayerBar.fillAmount = timelinePositionSlider.value;
-            timelinePositionSliderImage.fillAmount = timelinePositionSlider.value;
-
-            active = true;
+            UpdateSongProgressUI();
         }
     }
 
     // Update the hit objects time from the slider passed and set it to a song time
-    public float UpdateTimelineHitObjectSpawnTimes(Slider timelineSliderPass)
+    public float UpdateTimelineHitObjectSpawnTimes(Slider _timelineSlider)
     {
         float newTimelineHitObjectSpawnTime = 0;
         // Set the new objects spawn time based on the slider value
-        newTimelineHitObjectSpawnTime = (timelineSliderPass.value * songAudioSource.clip.length);
+        newTimelineHitObjectSpawnTime = (_timelineSlider.value * scriptManager.rhythmVisualizatorPro.audioSource.clip.length);
 
         return newTimelineHitObjectSpawnTime;
     }
@@ -235,142 +119,96 @@ public class MetronomePro_Player : MonoBehaviour
     // Play or Pause the Song and Metronome
     public void PlayOrPauseSong()
     {
-        if (playing)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == true)
         {
-            active = false;
-            playing = false;
-            songAudioSource.Pause();
-            metronomePro.Pause();
+            scriptManager.rhythmVisualizatorPro.audioSource.Pause();
+            scriptManager.metronomePro.Pause();
 
         }
         else
         {
-            songAudioSource.Play();
-            metronomePro.Play();
-            playing = true;
-            active = true;
+            scriptManager.rhythmVisualizatorPro.audioSource.Play();
+            scriptManager.metronomePro.Play();
         }
     }
-
 
     // Stop Song and Metronome, Resets all too.
     public void StopSong()
     {
         StopAllCoroutines();
-        active = false;
-        playing = false;
 
-        songAudioSource.Stop();
-        songAudioSource.time = 0;
+        scriptManager.rhythmVisualizatorPro.audioSource.Stop();
+        scriptManager.rhythmVisualizatorPro.audioSource.time = 0;
+
+        actualPositionText.text = "00:00";
+        scriptManager.metronomePro.Stop();
+
         amount = 0f;
-        songPlayerSlider.value = 0f;
-        songPlayerBar.fillAmount = 0f;
-        timelinePositionSlider.value = 0f;
-        timelinePositionSliderImage.fillAmount = 0f;
+        songSlider.value = 0f;
+        songSlider.value = 0f;
         reversedTimelineSlider.value = 0f;
-
-
-        actualPosition.text = "00:00";
-
-        metronomePro.Stop();
-    }
-
-    // Next Song
-    public void NextSong()
-    {
-        StopSong();
-
-        // Load next song data
-        // //
-
-        // songAudioSource.clip = songClip;
-        // SendSongData ();
-        // PlayOrPauseSong();
-    }
-
-    // Previous Song
-    public void PreviousSong()
-    {
-        StopSong();
-
-        // Load previous song data
-        // //
-
-        // songAudioSource.clip = songClip;
-        // SendSongData ();
-        // PlayOrPauseSong();
     }
 
     // Update the song progress bar ui 
     public void UpdateSongProgressUI()
     {
-        amount = (songAudioSource.time) / (songAudioSource.clip.length);
-        songPlayerBar.fillAmount = amount;
-        timelinePositionSliderImage.fillAmount = amount;
-        handleSlider.value = amount;
-        timelinePositionHandleSlider.value = amount;
-        reversedTimelineHandleSlider.value = amount;
+        amount = (scriptManager.rhythmVisualizatorPro.audioSource.time) / (scriptManager.rhythmVisualizatorPro.audioSource.clip.length);
+        timelineSlider.value = amount;
+        reversedTimelineSlider.value = amount;
+        songSlider.value = amount;
 
-        actualPosition.text = UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.time);
+        actualPositionText.text = UtilityMethods.FromSecondsToMinutesAndSeconds(scriptManager.rhythmVisualizatorPro.audioSource.time);
     }
 
     // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
     void Update()
     {
         // Check input to change the song play back speed
-        CheckSongPlaybackSpeedInput();
+        //CheckSongPlaybackSpeedInput();
 
-        if (songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
-            if (active)
+            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
             {
-                if (playing)
-                {
-                    if (songAudioSource.isPlaying)
-                    {
-                        UpdateSongProgressUI();
-                    }
-                    else
-                    {
-                        StopSong();
-                    }
-                }
+                UpdateSongProgressUI();
             }
-            // Play song when user press Space button
-            if (Input.GetKeyDown(KeyCode.Space))
+            else
             {
-                // Check if the live preview panel is open
-                // If live preview is active play live preview
-                // Else play the song normally
+                StopSong();
+            }
+        }
+        // Play song when user press Space button
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // Check if the live preview panel is open
+            // If live preview is active play live preview
+            // Else play the song normally
 
-                /*
-                if (levelChanger.CurrentLevelIndex == levelChanger.EditorSceneIndex)
+            /*
+            if (levelChanger.CurrentLevelIndex == levelChanger.EditorSceneIndex)
+            {
+                if (editorUIManager.previewPanel.activeSelf == true)
                 {
-                    if (editorUIManager.previewPanel.activeSelf == true)
-                    {
-                        livePreview.StartOrPauseLivePreview();
-                    }
-                    else
-                    {
-                        // Unmute metronome
-                        metronomePro.UnmuteMetronome();
-
-                        PlayOrPauseSong();
-                    }
+                    livePreview.StartOrPauseLivePreview();
                 }
                 else
                 {
+                    // Unmute metronome
+                    metronomePro.UnmuteMetronome();
+
                     PlayOrPauseSong();
                 }
-                */
-
+            }
+            else
+            {
                 PlayOrPauseSong();
             }
+            */
+
+            PlayOrPauseSong();
         }
     }
 }
-
-
 
 public static class UtilityMethods
 {

@@ -160,7 +160,6 @@ public class SongProgressBar : MonoBehaviour
         // Has pressed the spacebar
         hasPressedSpacebar = true;
         // Play song
-        songAudioSource.clip = scriptManager.songDatabase.songClip[songClipChosenIndex];
         songAudioSource.volume = songVolume;
         songAudioSource.Play();
         playing = true;

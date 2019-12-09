@@ -15,10 +15,10 @@ public class UploadPlayerImage : MonoBehaviour
     public Button uploadImageButton;
 
     // BEATMAP CREATOR IMAGE
-    public Image beatmapCreatorProfileImage;
+    public Image beatmapCreatorProfileImage, downloadBeatmapCreatorProfileImage;
 
     // Gamebobjects
-    public GameObject beatmapCreatorProfileImageLoadingIcon;
+    public GameObject beatmapCreatorProfileImageLoadingIcon, downloadCreatorProfileImageLoadingIcon;
     public GameObject playerImageLoadingIcon;
 
     // Strings
@@ -34,7 +34,8 @@ public class UploadPlayerImage : MonoBehaviour
     {
         // TESTING REMOVE THIS
         MySQLDBManager.username = "Ashley";
-        
+
+
         if (MySQLDBManager.loggedIn == false || MySQLDBManager.username == "GUEST")
         {
             //uploadImageButton.interactable = false;
@@ -59,16 +60,25 @@ public class UploadPlayerImage : MonoBehaviour
     }
 
     // Get and upload the beatmap creator image
-    public void CallBeatmapCreatorUploadImage(string _beatmapCreatorUsername)
+    public void CallBeatmapCreatorUploadImage(string _beatmapCreatorUsername, Image _image)
     {
-        // Activate loading icon
-        beatmapCreatorProfileImageLoadingIcon.gameObject.SetActive(true);
+        _image.gameObject.SetActive(false);
 
-        // Deactivate image
-        beatmapCreatorProfileImage.gameObject.SetActive(false);
+        if (_image == playerImage)
+        {
+
+        }
+        else if (_image == beatmapCreatorProfileImage)
+        {
+            beatmapCreatorProfileImageLoadingIcon.gameObject.SetActive(true);
+        }
+        else if (_image == downloadBeatmapCreatorProfileImage)
+        {
+            downloadCreatorProfileImageLoadingIcon.gameObject.SetActive(true);
+        }
 
         // Attempt to load the image on entering the game
-        StartCoroutine(RetrievePlayerImage(_beatmapCreatorUsername, beatmapCreatorProfileImage));
+        StartCoroutine(RetrievePlayerImage(_beatmapCreatorUsername, _image));
     }
 
     // Call the upload image function
@@ -101,7 +111,6 @@ public class UploadPlayerImage : MonoBehaviour
         if (www.downloadHandler.text == "1")
         {
             // ERROR - UPLOAD FAILED
-            Debug.Log("error with loading image at start");
         }
         else
         {
@@ -146,6 +155,10 @@ public class UploadPlayerImage : MonoBehaviour
                 else if (_image == beatmapCreatorProfileImage)
                 {
                     beatmapCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
+                }
+                else if (_image == downloadBeatmapCreatorProfileImage)
+                {
+                    downloadCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
                 }
             }
         }

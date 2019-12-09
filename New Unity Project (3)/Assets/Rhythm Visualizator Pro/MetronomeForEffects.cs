@@ -7,8 +7,10 @@ public class MetronomeForEffects : MonoBehaviour
     public Animator flashGlassAnimator;
     public Animator backgroundImageAnimator, backgroundImageAnimator2, videoPlayerImageAnimator, videoPlayerImageAnimator2, lightPanelBeatAnimator;
     public Animator easyDifficultyButtonSelectedAnimator, advancedDifficultyButtonSelectedAnimator, extraDifficultyButtonSelectedAnimator,
-        topColorPanelGlowAnimator, bottomColorPanelGlowAnimator, characterMenuColorPanelGlowAnimator;
-
+        topColorPanelGlowAnimator, bottomColorPanelGlowAnimator, characterMenuColorPanelGlowAnimator, overallRankingMenuColorPanelGlowAnimator,
+        downloadMenuColorPanelGlowAnimator;
+    public Animator overallRankingTitleAnimator;
+    
 
     // Audio
     public AudioSource songAudioSource;
@@ -151,9 +153,12 @@ public class MetronomeForEffects : MonoBehaviour
                 {
                     if (timer >= songTickTimes[currentTick])
                     {
-                        // Play ontick animations
-                        StartMenuSceneOnTick();
-                        SongSelectSceneOnTick();
+                        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.MenuSceneIndex)
+                        {
+                            // Play ontick animations
+                            StartMenuSceneOnTick();
+                            OverallRankingSceneOnTick();
+                        }
 
                         // Check for next tick next time
                         currentTick++;
@@ -164,9 +169,13 @@ public class MetronomeForEffects : MonoBehaviour
                             CurrentStep = 1;
                             CurrentMeasure++;
 
-                            StartMenuOnMeasure();
-                            SongSelectSceneOnMeasure();
-
+                            if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.MenuSceneIndex)
+                            {
+                                StartMenuOnMeasure();
+                                SongSelectSceneOnMeasure();
+                                OverallRankingSceneOnMeasure();
+                                DownloadMenuOnMeasure();
+                            }
                         }
                         else
                         {
@@ -184,24 +193,13 @@ public class MetronomeForEffects : MonoBehaviour
 
     }
 
+    // Start menu measure animations
     void StartMenuOnMeasure()
     {
-        if (scriptManager.songSelectManager.easySelectedGameobject.activeSelf == true)
-        {
-            easyDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
-        }
 
-        if (scriptManager.songSelectManager.advancedSelectedGameobject.activeSelf == true)
-        {
-            advancedDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
-        }
-
-        if (scriptManager.songSelectManager.extraSelectedGameobject.activeSelf == true)
-        {
-            extraDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
-        }
     }
 
+    // Song select scene measure animations
     private void SongSelectSceneOnMeasure()
     {
         if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
@@ -210,54 +208,115 @@ public class MetronomeForEffects : MonoBehaviour
 
             lightPanelBeatAnimator.Play("LightPanelBeat_Animation", 0, 0f);
 
+            PlayBackgroundBeatAnimation();
 
-            // Background and video player images
-            if (scriptManager.backgroundManager.ActiveBackgroundImageIndex == 1)
+            PlayColorPanelGlowAnimation();
+
+            if (scriptManager.songSelectManager.easySelectedGameobject.activeSelf == true)
             {
-                backgroundImageAnimator.Play("BackgroundImageBeat_Animation", 0, 0f);
-            }
-            else if (scriptManager.backgroundManager.ActiveBackgroundImageIndex == 2)
-            {
-                backgroundImageAnimator2.Play("BackgroundImageBeat_Animation", 0, 0f);
-            }
-            else if (scriptManager.backgroundManager.ActiveVideoPlayerIndex == 1)
-            {
-                videoPlayerImageAnimator.Play("BackgroundImageBeat_Animation", 0, 0f);
-            }
-            else if (scriptManager.backgroundManager.ActiveVideoPlayerIndex == 2)
-            {
-                videoPlayerImageAnimator2.Play("BackgroundImageBeat_Animation", 0, 0f);
+                easyDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
             }
 
-
-            // Top and bottom panel glow animations
-            if (playTopPanelGlowAnimation == true)
+            if (scriptManager.songSelectManager.advancedSelectedGameobject.activeSelf == true)
             {
-                topColorPanelGlowAnimator.Play("TopColorPanelGlow_Animation", 0, 0f);
-
-                playTopPanelGlowAnimation = false;
-            }
-            else
-            {
-                // Check if character menu is open
-                if (scriptManager.playerSkillsManager.characterPanel.activeSelf == true)
-                {
-                    characterMenuColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
-                }
-                else
-                {
-                    bottomColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
-                }
-
-                playTopPanelGlowAnimation = true;
+                advancedDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
             }
 
+            if (scriptManager.songSelectManager.extraSelectedGameobject.activeSelf == true)
+            {
+                extraDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
+            }
         }
     }
 
-    private void SongSelectSceneOnTick()
+    private void DownloadMenuOnMeasure()
     {
+        if (scriptManager.menuManager.downloadMenu.gameObject.activeSelf == true)
+        {
+            flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
 
+            PlayBackgroundBeatAnimation();
+
+            PlayColorPanelGlowAnimation();
+        }
+    }
+
+    // Overall ranking measure animations
+    private void OverallRankingSceneOnMeasure()
+    {
+        if (scriptManager.menuManager.overallRankingMenu.gameObject.activeSelf == true)
+        {
+            flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
+
+            PlayBackgroundBeatAnimation();
+
+            PlayColorPanelGlowAnimation();
+        }
+    }
+
+    // Overall ranking on tick
+    private void OverallRankingSceneOnTick()
+    {
+        if (scriptManager.menuManager.overallRankingMenu.gameObject.activeSelf == true)
+        {
+            overallRankingTitleAnimator.Play("TitleTextBeat_Animation", 0, 0f);
+        }
+    }
+
+    // Play the background beat animation for the current active background or video
+    private void PlayBackgroundBeatAnimation()
+    {
+        // Background and video player images
+        if (scriptManager.backgroundManager.ActiveBackgroundImageIndex == 1)
+        {
+            backgroundImageAnimator.Play("BackgroundImageBeat_Animation", 0, 0f);
+        }
+        else if (scriptManager.backgroundManager.ActiveBackgroundImageIndex == 2)
+        {
+            backgroundImageAnimator2.Play("BackgroundImageBeat_Animation", 0, 0f);
+        }
+        else if (scriptManager.backgroundManager.ActiveVideoPlayerIndex == 1)
+        {
+            videoPlayerImageAnimator.Play("BackgroundImageBeat_Animation", 0, 0f);
+        }
+        else if (scriptManager.backgroundManager.ActiveVideoPlayerIndex == 2)
+        {
+            videoPlayerImageAnimator2.Play("BackgroundImageBeat_Animation", 0, 0f);
+        }
+    }
+
+    // Play the color panel glow animations
+    private void PlayColorPanelGlowAnimation()
+    {
+        // Top and bottom panel glow animations
+        if (playTopPanelGlowAnimation == true)
+        {
+            topColorPanelGlowAnimator.Play("TopColorPanelGlow_Animation", 0, 0f);
+
+            playTopPanelGlowAnimation = false;
+        }
+        else
+        {
+            // Check if character menu is open
+            if (scriptManager.playerSkillsManager.characterPanel.activeSelf == true)
+            {
+                characterMenuColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
+            }
+            else if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
+            {
+                bottomColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
+            }
+            else if (scriptManager.menuManager.overallRankingMenu.gameObject.activeSelf == true)
+            {
+                overallRankingMenuColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
+            }
+            else if (scriptManager.menuManager.downloadMenu.gameObject.activeSelf == true)
+            {
+                downloadMenuColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
+            }
+            
+            playTopPanelGlowAnimation = true;
+        }
     }
 
     // Get the measure duration for the song

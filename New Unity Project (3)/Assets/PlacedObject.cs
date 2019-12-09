@@ -81,16 +81,9 @@ public class PlacedObject : MonoBehaviour
     public Transform canvas, timeline;
 
     // Scripts
-    private SongProgressBar songProgressBar;
-    private EditorSoundController editorSoundController; // The editorSoundController
-    private MetronomePro_Player metronomePro_Player; // Get the current song time, position of the handle and slide value for placed diamond bars on the timeline
-    private MetronomePro metronomePro; // Controls metronome
-    private EditorUIManager editorUIManager; // UI manager for controlling UI elements
-    private BeatsnapManager beatsnapManager; // Beatsnap
     private DestroyTimelineObject destroyTimelineObject; // Destroy timeline object script attached to instantiated timeline objects
     public List<DestroyTimelineObject> destroyTimelineObjectList = new List<DestroyTimelineObject>();
-    private Timeline timelineScript;
-    private BeatmapSetup beatmapSetup;
+    private ScriptManager scriptManager;
 
     // Properties
 
@@ -159,14 +152,7 @@ public class PlacedObject : MonoBehaviour
         canPlaceHitObjects = true;
 
         // Reference
-        songProgressBar = FindObjectOfType<SongProgressBar>();
-        editorSoundController = FindObjectOfType<EditorSoundController>();
-        metronomePro_Player = FindObjectOfType<MetronomePro_Player>();
-        metronomePro = FindObjectOfType<MetronomePro>();
-        editorUIManager = FindObjectOfType<EditorUIManager>();
-        beatsnapManager = FindObjectOfType<BeatsnapManager>();
-        timelineScript = FindObjectOfType<Timeline>();
-        beatmapSetup = FindObjectOfType<BeatmapSetup>();
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     // Update is called once per frame
@@ -186,14 +172,15 @@ public class PlacedObject : MonoBehaviour
             deactivateObjectTimer = 0;
         }
 
+        /*
         // Check for input if a song has been selected
-        if (metronomePro.songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
             // Check if live preview is enabled
-            if (editorUIManager.previewPanel.gameObject.activeSelf == false)
+            if (scriptManager.editorUIManager.previewPanel.gameObject.activeSelf == false)
             {
                 // If key input for placing hit objects is allowed
-                if (canPlaceHitObjects == true && metronomePro.songAudioSource.time > 2f)
+                if (canPlaceHitObjects == true && scriptManager.rhythmVisualizatorPro.audioSource.time > 2f)
                 {
                     // BLUE Key Pressed
                     if (Input.GetKeyDown(KeyCode.J))
@@ -234,6 +221,7 @@ public class PlacedObject : MonoBehaviour
                 }
             }
         }
+        */
     }
 
     public void PlaceBlueHitObject()
@@ -380,7 +368,7 @@ public class PlacedObject : MonoBehaviour
         nullTimelineObjectIndex = 0;
 
         // Reset the song to 0 and the metronome
-        metronomePro_Player.StopSong();
+        scriptManager.metronomePro_Player.StopSong();
 
         // Reset tick times list
         tickTimesList.Clear();
@@ -392,7 +380,7 @@ public class PlacedObject : MonoBehaviour
         instantiatedEditorHitObjectExists = false;
 
         // Reset editor song
-        metronomePro_Player.StopSong();
+        scriptManager.metronomePro_Player.StopSong();
     }
 
     // Save the changed instantiated editor objects position
@@ -543,21 +531,21 @@ public class PlacedObject : MonoBehaviour
     {
         // Calculate the slider value based off the timeline hit object spawn time
         // Update the slider value 
-        songPreviewPoint.value = CalculateTimelineHitObjectSliderValue(metronomePro.songAudioSource.time);
+        songPreviewPoint.value = CalculateTimelineHitObjectSliderValue(scriptManager.rhythmVisualizatorPro.audioSource.time);
 
         // Update the preview start time with the current song time
-        beatmapSetup.GetSongPreviewStartTime(metronomePro.songAudioSource.time);
+        //scriptManager.setupBeatmap.GetSongPreviewStartTime(scriptManager.rhythmVisualizatorPro.audioSource.time);
     }
 
     // Instantiate a timeline object at the current song time
     public void InstantiateTimelineObject(int _instantiatedTimelineObjectType, float _hitObjectSpawnTime)
     {
         // Get the handle position currently in the song to spawn the timeline object at
-        timelineBarHandlePositionX = metronomePro_Player.songPointSliderHandle.transform.position.x;
+        //timelineBarHandlePositionX = metronomePro_Player.songPointSliderHandle.transform.position.x;
         // Decrease the Y position to prevent overlap
         timelineBarHandlePositionY = 0;
         // Get the Z position
-        timelineBarHandlePositionZ = metronomePro_Player.songPointSliderHandle.transform.position.z;
+        //timelineBarHandlePositionZ = metronomePro_Player.songPointSliderHandle.transform.position.z;
         // Assign the new position
         timelineBarHandlePosition = new Vector3(timelineBarHandlePositionX, timelineBarHandlePositionY, timelineBarHandlePositionZ);
 
@@ -593,10 +581,10 @@ public class PlacedObject : MonoBehaviour
     // Calculate the timeline editor hit object sliders value based off the tick time converted to percentage of 0-1 slider value
     public float CalculateTimelineHitObjectSliderValue(float _spawnTime)
     {
-        if (metronomePro.songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
             // Get how much % the spawn time is out of the entire clip length
-            currentSongTimePercentage = (_spawnTime / metronomePro.songAudioSource.clip.length);
+            currentSongTimePercentage = (_spawnTime / scriptManager.rhythmVisualizatorPro.audioSource.clip.length);
         }
 
         // Calculate and return the percentage of 1 based on percentage of currentSongTimePercentage
@@ -607,23 +595,23 @@ public class PlacedObject : MonoBehaviour
     public float GetCurrentBeatsnapTime()
     {
         // The current tick index and time
-        currentTickIndex = metronomePro.CurrentTick;
+        currentTickIndex = scriptManager.metronomePro.CurrentTick;
 
-        if (currentTickIndex != 0 && currentTickIndex < metronomePro.songTickTimes.Count)
+        if (currentTickIndex != 0 && currentTickIndex < scriptManager.metronomePro.songTickTimes.Count)
         {
-            currentTickTime = (float)metronomePro.songTickTimes[currentTickIndex];
+            currentTickTime = (float)scriptManager.metronomePro.songTickTimes[currentTickIndex];
             tickTimesList.Add(currentTickTime);
 
             // The next tick index and time
 
-            previousTickIndex = metronomePro.CurrentTick - 1;
+            previousTickIndex = scriptManager.metronomePro.CurrentTick - 1;
 
 
-            nextTickTime = (float)metronomePro.songTickTimes[previousTickIndex];
+            nextTickTime = (float)scriptManager.metronomePro.songTickTimes[previousTickIndex];
             tickTimesList.Add(nextTickTime);
 
             // Get the time the user pressed the key down
-            userPressedTime = metronomePro_Player.songAudioSource.time;
+            //userPressedTime = metronomePro_Player.songAudioSource.time;
 
             // Check which time the users press was closest to
             closestTickTime = tickTimesList.Select(p => new { Value = p, Difference = Math.Abs(p - userPressedTime) })
@@ -705,7 +693,7 @@ public class PlacedObject : MonoBehaviour
         // Reset
         objectSpawnTimeIsTaken = false;
 
-        if (beatsnapManager.BeatsnapTimingEnabled == true)
+        if (scriptManager.beatsnapManager.BeatsnapTimingEnabled == true)
         {
             // Check if another hit object has the same spawn time based off ticks, if another hit object exists do not instantiate or add to the list
             hitObjectSpawnTime = GetCurrentBeatsnapTime();
@@ -715,7 +703,7 @@ public class PlacedObject : MonoBehaviour
         }
         else
         {
-            hitObjectSpawnTime = metronomePro.songAudioSource.time;
+            hitObjectSpawnTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
         }
 
         // If the objects spawn time does not exist/is not taken, allow instantiation of another hit object
@@ -746,10 +734,10 @@ public class PlacedObject : MonoBehaviour
             // Update the timeline objects
             UpdateTimelineObjects();
 
-            if (metronomePro.songAudioSource.isPlaying == false)
+            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == false)
             {
                 // Navigate ahead 1 tick on the timeline
-                timelineScript.TimelineNavigationForwardOneTick();
+                scriptManager.timelineScript.TimelineNavigationForwardOneTick();
             }
 
         }
@@ -809,7 +797,7 @@ public class PlacedObject : MonoBehaviour
                 // Deactivate the timeline object
 
                 timelineObjectSpawnTime = editorHitObjectList[i].hitObjectSpawnTime;
-                currentSongTime = metronomePro.songAudioSource.time;
+                currentSongTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
                 deactivateValue = 10;
                 deactivateAfterObjectTime = (timelineObjectSpawnTime + deactivateValue);
                 deactivateBeforeObjectTime = (timelineObjectSpawnTime - deactivateValue);

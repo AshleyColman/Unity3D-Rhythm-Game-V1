@@ -10,6 +10,8 @@ public class BackgroundManager : MonoBehaviour
     // Animator
     public Animator backgroundImageTransitionAnimator, videoPlayerTransitionAnimator;
 
+    public GameObject loadingIcon;
+
     // UI
     public Button videoTickBoxButton;
     public Image img, img2;
@@ -54,10 +56,19 @@ public class BackgroundManager : MonoBehaviour
 
     void Awake()
     {
+        if (scriptManager == null)
+        {
+            scriptManager = FindObjectOfType<ScriptManager>();
+        }
+
         videoTickBoxSelected = false;
-        videoTickBoxSelectedImage.gameObject.SetActive(false);
         loadSecondBackgroundImage = false;
         loadSecondVideoPlayer = false;
+
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.MenuSceneIndex)
+        {
+            videoTickBoxSelectedImage.gameObject.SetActive(false);
+        }
     }
 
     private void Start()
@@ -189,6 +200,91 @@ public class BackgroundManager : MonoBehaviour
         }
     }
 
+    // Load an online image
+    private IEnumerator LoadNextBackgroundImgURL(string _url)
+    {
+        // Enable loading icon
+        loadingIcon.gameObject.SetActive(true);
+
+        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
+        {
+            yield return uwr.SendWebRequest();
+
+            if (uwr.isNetworkError || uwr.isHttpError)
+            {
+                // Error
+            }
+            else
+            {
+                // Get downloaded asset bundle
+                var texture = DownloadHandlerTexture.GetContent(uwr);
+
+                // Check texture size
+                float textureWidth = texture.width;
+                float textureHeight = texture.height;
+                float aspectRatio = (textureWidth / textureHeight);
+
+                if (loadSecondBackgroundImage == false)
+                {
+                    // Set to true to load second background image next time
+                    loadSecondBackgroundImage = true;
+
+                    // Set active index
+                    activeBackgroundImageIndex = 1;
+
+                    // Activate the selecteSongImage as an image file has been found
+                    img.gameObject.SetActive(true);
+
+                    // Load image for background image 1
+                    img.material.mainTexture = texture;
+
+                    // Set aspect ratio
+                    SetAspectRatio(aspectRatio, img);
+
+                    // Set image to false then to true to activate new image
+                    img.gameObject.SetActive(false);
+                    img.gameObject.SetActive(true);
+
+                    // Play transition animation
+                    backgroundImageTransitionAnimator.Play("BackgroundImage2ToBackgroundImage1_Animation", 0, 0f);
+                }
+                else if (loadSecondBackgroundImage == true)
+                {
+                    // Set to false to load first background image next time
+                    loadSecondBackgroundImage = false;
+
+                    // Set active index
+                    activeBackgroundImageIndex = 2;
+
+                    // Activate the selectedSongImage as an image file has been found
+                    img2.gameObject.SetActive(true);
+
+                    // Load image for background image 1
+                    img2.material.mainTexture = texture;
+
+                    // Set aspect ratio
+                    SetAspectRatio(aspectRatio, img2);
+
+                    // Set image to false then to true to activate new image
+                    img2.gameObject.SetActive(false);
+                    img2.gameObject.SetActive(true);
+
+                    // Play transition animation
+                    backgroundImageTransitionAnimator.Play("BackgroundImage1ToBackgroundImage2_Animation", 0, 0f);
+                }
+
+                // Activate the animator gameobject
+                scriptManager.downloadPanel.songSelectInformationAnimator.gameObject.SetActive(true);
+
+                // Enable download panel song information panel animation
+                scriptManager.downloadPanel.songSelectInformationAnimator.Play("DownloadSongInformationPanel_Animation", 0, 0f);
+
+                // Disable loading icon
+                loadingIcon.gameObject.SetActive(false);
+            }
+        }
+    }
+
     private void SetAspectRatio(float _aspectRatio, Image _img)
     {
         if (_aspectRatio == 1)
@@ -206,6 +302,12 @@ public class BackgroundManager : MonoBehaviour
     {
         // Set the video player url
         videoPlayer.url = completeVideoPath;
+    }
+
+    // Load the background image using an online url address
+    public void LoadBackgroundImageURL(string _url)
+    {
+        StartCoroutine(LoadNextBackgroundImgURL(_url));
     }
 
     // Load the next video

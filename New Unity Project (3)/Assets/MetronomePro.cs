@@ -8,65 +8,72 @@ using TMPro;
 
 public class MetronomePro : MonoBehaviour
 {
-
-    [Header("Variables")]
-    public bool active = false;
-
-    public bool metronomeMuted = false;
-
-    [Space(5)]
-
+    // Audio
     public AudioSource metronomeAudioSource;
     public AudioClip highClip;
     public AudioClip lowClip;
 
-    [Space(5)]
-
+    // Image
     public Image imgBeat1;
     public Image imgBeat2;
     public Image imgBeat3;
     public Image imgBeat4;
 
-    [Space(5)]
-    public TextMeshProUGUI txtBPM;
-    public TextMeshProUGUI txtOffsetMS;
-    public TMP_InputField BPMInputField;
-    public TMP_InputField OffsetInputField;
+    // Input field
+    public TMP_InputField BPMInputField, OffsetInputField;
+    public TextMeshProUGUI BPMText, OffsetText;
+    public TMP_Dropdown divisionDropdown;
 
-    [Space(5)]
 
-    public AudioSource songAudioSource;
+    // Float
+    public float Bpm = 120f;
+    public float OffsetMS = 0f;
 
-    [Header("Metronome (this values will be overrided by Song Data)")]
-
-    public float Bpm = 170.0f;
-    public float OffsetMS = 1000;
-
+    // Int
     public int Step = 4;
     public int Base = 4;
+    public int currentMeasure = 0;
+    public int currentStep = 0;
+    public int currentTick = 0;
+    public int division = 0;
 
-    public int CurrentMeasure = 0;
-    public int CurrentStep = 0;
-    public int CurrentTick;
-
+    // Double
     public List<Double> songTickTimes;
+    private double interval;
 
-    double interval;
+    // Bool
+    private bool neverPlayed, metronomeIsMuted, active, metronomeMuted;
 
-    public bool neverPlayed = true;
-    private bool metronomeIsMuted;
+    // Scripts
+    private ScriptManager scriptManager;
 
-    private int division;
+    // Properties
+    public int CurrentMeasure
+    {
+        get { return currentMeasure; }
+        set { currentMeasure = value; }
+    }
 
-    BeatsnapManager beatsnapmanager;
-    EditorUIManager editorUIManager;
-    LivePreview livePreview;
-    PlacedObject placedObject;
+    public int CurrentStep
+    {
+        get { return currentStep; }
+        set { currentStep = value; }
+    }
 
+    public int CurrentTick
+    {
+        get { return currentTick; }
+        set { currentTick = value; }
+    }
 
     public bool MetronomeIsMuted
     {
         set { metronomeIsMuted = value; }
+    }
+
+    public bool NeverPlayed
+    {
+        get { return neverPlayed; }
     }
 
     public int Division
@@ -77,93 +84,112 @@ public class MetronomePro : MonoBehaviour
 
     void Start()
     {
-
-        beatsnapmanager = FindObjectOfType<BeatsnapManager>();
-        editorUIManager = FindObjectOfType<EditorUIManager>();
-        livePreview = FindObjectOfType<LivePreview>();
-        placedObject = FindObjectOfType<PlacedObject>();
+        metronomeIsMuted = false;
+        active = false;
+        neverPlayed = true;
 
         imgBeat1.color = Color.gray;
         imgBeat2.color = Color.gray;
         imgBeat3.color = Color.gray;
         imgBeat4.color = Color.gray;
-        metronomeIsMuted = false;
 
-        txtBPM.text = "BPM: " + Bpm.ToString("F");
-    }
+        scriptManager = FindObjectOfType<ScriptManager>();
 
-    public void GetSongData(float _bpm, float _offsetMS, int _base, int _step)
-    {
-        Bpm = _bpm;
-        OffsetMS = _offsetMS;
-        Base = _base;
-        Step = _step;
-
-        txtBPM.text = "BPM: " + Bpm.ToString("F");
-        txtOffsetMS.text = "Offset: " + OffsetMS.ToString() + " MS";
+        OffsetText.text = "OFFSET: " + OffsetMS.ToString("F2");
+        BPMText.text = "BPM: " + Bpm.ToString("F2");
     }
 
     // Set the new BPM when is playing
     public void UpdateBPM()
     {
-        try
+        float bpmValue = 0;
+
+        if (BPMInputField.text != "" && BPMInputField.text != "-")
         {
-            var newBPMFloat = float.Parse(BPMInputField.text);
-            Bpm = newBPMFloat;
+            bpmValue = float.Parse(BPMInputField.text);
 
-            txtBPM.text = "BPM: " + Bpm.ToString("F");
-
-            SetDelay();
+            if (bpmValue < 60 || bpmValue > 500)
+            {
+                bpmValue = 60;
+            }
         }
-        catch
+        else
         {
-
-            Debug.Log("Please enter the new BPM value correctly.");
+            bpmValue = 60;
         }
+
+        Bpm = bpmValue;
+        SetDelay();
+
+        BPMText.text = "BPM: " + Bpm.ToString("F2");
     }
 
     // Update the beatsnap division
-    public void UpdateBeatsnapDivision(int _division)
+    public void UpdateBeatsnapDivision()
     {
-        division = _division;
+        switch (divisionDropdown.value)
+        {
+            case 0:
+                division = 0;
+                break;
+            case 1:
+                division = 8;
+                break;
+            case 2:
+                division = 16;
+                break;
+            case 3:
+                division = 32;
+                break;
+        }
+
+        // Sort the beatsnaps with the new division
+        scriptManager.beatsnapManager.SortBeatsnapsWithDivision();
     }
 
     // Set the new Offset when is playing
     public void UpdateOffset()
     {
-        try
-        {
-            var newOffsetFloat = int.Parse(OffsetInputField.text);
-            OffsetMS = newOffsetFloat;
+        float offsetValue;
 
-            txtOffsetMS.text = "Offset: " + OffsetMS.ToString() + " MS";
-
-            SetDelay();
-        }
-        catch
+        if (OffsetInputField.text != "" && OffsetInputField.text != "-")
         {
-            Debug.Log("Please enter the new Offset value correctly.");
+            offsetValue = float.Parse(OffsetInputField.text);
+
+            if (offsetValue < 0)
+            {
+                offsetValue = 0;
+            }
         }
+        else
+        {
+            offsetValue = 0;
+        }
+
+        OffsetMS = offsetValue;
+
+        SetDelay();
+
+        OffsetText.text = "OFFSET: " + OffsetMS.ToString("F2");
     }
 
     void SetDelay()
     {
         bool isPlaying = false;
 
-        if (songAudioSource.isPlaying)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
         {
             isPlaying = true;
         }
 
-
-        songAudioSource.Pause();
+        scriptManager.rhythmVisualizatorPro.audioSource.Pause();
 
         CalculateIntervals();
         CalculateActualStep();
 
         if (isPlaying)
         {
-            songAudioSource.Play();
+            scriptManager.rhythmVisualizatorPro.audioSource.Play();
         }
     }
 
@@ -190,9 +216,9 @@ public class MetronomePro : MonoBehaviour
     {
         active = false;
 
-        CurrentMeasure = 0;
-        CurrentStep = 4;
-        CurrentTick = 0;
+        currentMeasure = 0;
+        currentStep = 4;
+        currentTick = 0;
     }
 
     // Calculate Time Intervals for the song
@@ -226,7 +252,7 @@ public class MetronomePro : MonoBehaviour
 
             songTickTimes.Clear();
 
-            while (interval * i <= songAudioSource.clip.length)
+            while (interval * i <= scriptManager.rhythmVisualizatorPro.audioSource.clip.length)
             {
                 songTickTimes.Add((interval * i) + (OffsetMS / 1000f));
                 i++;
@@ -238,8 +264,6 @@ public class MetronomePro : MonoBehaviour
         }
         catch
         {
-
-            editorUIManager.UpdateDescriptionText("You must select a song first");
             Debug.LogWarning("There isn't an Audio Clip assigned in the Player.");
         }
     }
@@ -252,21 +276,21 @@ public class MetronomePro : MonoBehaviour
         // Get the Actual Step searching the closest Song Tick Time using the Actual Song Time
         for (int i = 0; i < songTickTimes.Count; i++)
         {
-            if (songAudioSource.time < songTickTimes[i])
+            if (scriptManager.rhythmVisualizatorPro.audioSource.time < songTickTimes[i])
             {
-                CurrentMeasure = (i / Base);
-                CurrentStep = (int)((((float)i / (float)Base) - (i / Base)) * 4);
-                if (CurrentStep == 0)
+                currentMeasure = (i / Base);
+                currentStep = (int)((((float)i / (float)Base) - (i / Base)) * 4);
+                if (currentStep == 0)
                 {
-                    CurrentMeasure = 0;
-                    CurrentStep = 4;
+                    currentMeasure = 0;
+                    currentStep = 4;
                 }
                 else
                 {
-                    CurrentMeasure++;
+                    currentMeasure++;
                 }
 
-                CurrentTick = i;
+                currentTick = i;
                 break;
             }
         }
@@ -289,27 +313,27 @@ public class MetronomePro : MonoBehaviour
     // Calculate decremented metronome values
     public void CalculateDecrementMetronomeValues()
     {
-        if (CurrentTick != 0)
+        if (currentTick != 0)
         {
             // Decrement tick
-            CurrentTick--;
+            currentTick--;
         }
 
-        if (CurrentStep != 0)
+        if (currentStep != 0)
         {
             // Decrement current step
-            CurrentStep--;
+            currentStep--;
         }
 
         // Decrement current step
-        if (CurrentStep < 1)
+        if (currentStep < 1)
         {
-            CurrentStep = 4;
+            currentStep = 4;
         }
 
 
         // If the Current Step is greater than the Step, reset it and increment the Measure
-        if (CurrentStep >= Step)
+        if (currentStep >= Step)
         {
             metronomeAudioSource.clip = highClip;
         }
@@ -326,18 +350,18 @@ public class MetronomePro : MonoBehaviour
     public void CalculateIncrementMetronomeValues()
     {
         // Increment current tick
-        CurrentTick++;
+        currentTick++;
 
         // If the Current Step is greater than the Step, reset it and increment the Measure
-        if (CurrentStep >= Step)
+        if (currentStep >= Step)
         {
-            CurrentStep = 1;
-            CurrentMeasure++;
+            currentStep = 1;
+            currentMeasure++;
             metronomeAudioSource.clip = highClip;
         }
         else
         {
-            CurrentStep++;
+            currentStep++;
             metronomeAudioSource.clip = lowClip;
         }
 
@@ -352,8 +376,9 @@ public class MetronomePro : MonoBehaviour
         if (!active)
             yield return null;
 
-        if (songAudioSource != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource != null)
         {
+            /*
             // Live preview UI object hit sounds
             if (livePreview != null)
             {
@@ -363,7 +388,7 @@ public class MetronomePro : MonoBehaviour
                     {
                         if (livePreview.oldestHitObjectIndex < placedObject.editorHitObjectList.Count)
                         {
-                            if (songAudioSource.time >= placedObject.editorHitObjectList[livePreview.oldestHitObjectIndex].hitObjectSpawnTime)
+                            if (scriptManager.rhythmVisualizatorPro.audioSource.time >= placedObject.editorHitObjectList[livePreview.oldestHitObjectIndex].hitObjectSpawnTime)
                             {
                                 // Increment to check next spawned UI preview hit object
                                 livePreview.oldestHitObjectIndex++;
@@ -374,26 +399,26 @@ public class MetronomePro : MonoBehaviour
                     }
                 }
             }
+            */
 
-            if (CurrentTick < songTickTimes.Count)
+            if (currentTick < songTickTimes.Count)
             {
                 {
                     // Check if the song time is greater than the current tick Time
-                    if (songAudioSource.time >= songTickTimes[CurrentTick])
+                    if (scriptManager.rhythmVisualizatorPro.audioSource.time >= songTickTimes[currentTick])
                     {
+                        currentTick++;
 
-                        CurrentTick++;
-
-                        if (CurrentTick >= songTickTimes.Count)
+                        if (currentTick >= songTickTimes.Count)
                         {
                             active = false;
                         }
 
                         // If the Current Step is greater than the Step, reset it and increment the Measure
-                        if (CurrentStep >= Step)
+                        if (currentStep >= Step)
                         {
-                            CurrentStep = 1;
-                            CurrentMeasure++;
+                            currentStep = 1;
+                            currentMeasure++;
 
                             // Only change the sound if the metronome is muted (so preview notes don't play the wrong sound)
                             if (metronomeIsMuted == false)
@@ -403,7 +428,7 @@ public class MetronomePro : MonoBehaviour
                         }
                         else
                         {
-                            CurrentStep++;
+                            currentStep++;
 
                             // Only change the sound if the metronome is muted (so preview notes don't play the wrong sound)
                             if (metronomeIsMuted == false)
@@ -425,13 +450,12 @@ public class MetronomePro : MonoBehaviour
     // Tick Time (execute here all what you want)
     IEnumerator OnTick()
     {
-
-
-        if (songAudioSource.isPlaying)
+        /*
+        if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
         {
             beatsnapmanager.SortBeatsnaps();
         }
-
+        */
 
 
         // Play Audio Tick
@@ -448,35 +472,23 @@ public class MetronomePro : MonoBehaviour
         imgBeat4.color = Color.gray;
 
         // Change the color from the Actual Step Image in the UI
-        if (CurrentStep == 1)
+        if (currentStep == 1)
         {
             imgBeat1.color = Color.yellow;
         }
-        else if (CurrentStep == 2)
+        else if (currentStep == 2)
         {
             imgBeat2.color = Color.cyan;
         }
-        else if (CurrentStep == 3)
+        else if (currentStep == 3)
         {
             imgBeat3.color = Color.cyan;
         }
-        else if (CurrentStep == 4)
+        else if (currentStep == 4)
         {
             imgBeat4.color = Color.cyan;
         }
 
-
-        // YOUR FUNCTIONS HERE
-
-        // Example 1
-        /*
-		if (CurrentTick == 100) {
-			Debug.Log ("OMG! IS THE TICK NUMBER 100!");
-		}
-		*/
-
-        // Example 2
-        // FindObjectOfType<MyAwesomeScript> ().MyFunction ();
         yield return null;
     }
 

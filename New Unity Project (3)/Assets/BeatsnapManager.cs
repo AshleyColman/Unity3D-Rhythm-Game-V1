@@ -8,17 +8,8 @@ public class BeatsnapManager : MonoBehaviour
 {
 
     // UI
-    public Slider beatsnapPoint; // Get beatsnap point
     public Slider timelineSlider; // Get main timeline slider
     private Slider instantiatedBeatsnap; // Instantiated beatsnap slider
-    public TextMeshProUGUI beatsnapTimingOnText, beatsnapTimingOffText; // Text for toggling beatsnap timing on or off
-    private Slider objSlider;
-
-    // Gameobjects
-    public GameObject timelineCurrentTimeHandle; // Get the main timeline sliders current song position handle, used for getting the position of and spawning beatsnap objects at its current position
-
-    // Audio
-    public AudioSource songAudioSource; // The song audio source
 
     // Bools
     private bool hasCheckedTickDifference;
@@ -26,10 +17,6 @@ public class BeatsnapManager : MonoBehaviour
 
 
     // Integers
-    private float instantiationTime;// The time between intantiations
-    private float timelineValueDifferencePerTick;
-    private float instantiatedSliderValue;
-    private float tickDifference;
     private float tickTimePercentage;
     private float currentSongTimePercentage; // Current percentage value of the song progresss
     private float sliderValue; // Slider value for the instantiated beatsnap slider based off the current song percentage
@@ -37,22 +24,15 @@ public class BeatsnapManager : MonoBehaviour
     public List<float> beatsnapSliderValueList = new List<float>(); // Slider values of all instantiated beatsnap point sliders
     public List<float> beatsnapTickTimesList = new List<float>();
     public List<Slider> beatsnapGameObjectList = new List<Slider>();
-    public float nextPoolTickTime; // The next time to change the current pool hit object to once its gone past its tick time
-    public float currentTickTime; // Get the closest tick time based on the current song time
+    private float nextPoolTickTime; // The next time to change the current pool hit object to once its gone past its tick time
+    private float currentTickTime; // Get the closest tick time based on the current song time
     private int totalBeatsnapPrefabsCount; // Total number of beatsnap prefabs instantiated
-    public int previousFrameTick;
-    public int nextPoolTickIndex;
-    int tick;
-
-    // Vectors
-    private Vector3 timelineCurrentTimeHandlePosition; // The position of the currentTimeHandle
-
-    // Transforms
-    public Transform timeline; // Timeline transform
+    private int previousFrameTick;
+    private int nextPoolTickIndex;
+    private int tick;
 
     // Scripts
-    private MetronomePro metronomePro; // Reference to metronomePro for tick times
-    private PlacedObject placedObject;
+    private ScriptManager scriptManager;
 
     // Properties
     public bool BeatsnapTimingEnabled
@@ -75,17 +55,10 @@ public class BeatsnapManager : MonoBehaviour
     private void Start()
     {
         // Initialize
-        instantiationTime = 0.1f;
         beatsnapTimingEnabled = true;
 
-        beatsnapTimingOffText.gameObject.SetActive(false);
-        beatsnapTimingOnText.gameObject.SetActive(true);
-
         // Reference
-        metronomePro = FindObjectOfType<MetronomePro>();
-        songAudioSource = metronomePro.songAudioSource;
-        placedObject = FindObjectOfType<PlacedObject>();
-
+        scriptManager = FindObjectOfType<ScriptManager>();
 
         poolDictionary = new Dictionary<int, Queue<Slider>>();
 
@@ -96,9 +69,9 @@ public class BeatsnapManager : MonoBehaviour
             for (int i = 0; i < pool.size; i++)
             {
                 Slider obj = Instantiate(pool.prefab);
-                obj.transform.SetParent(timeline);
+                obj.transform.SetParent(scriptManager.timelineScript.timelineSlider.transform);
 
-                obj.transform.localPosition = new Vector3(0, 0, 0);
+                obj.transform.localPosition = new Vector3(7500, 0, 0);
                 obj.transform.localScale = new Vector3(1, 1, 1);
                 obj.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
@@ -116,74 +89,75 @@ public class BeatsnapManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B) && metronomePro.songAudioSource.clip != null)
+        /*
+        if (Input.GetKeyDown(KeyCode.B) && scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
             // Select the next beatsnap division
             SelectNextBeatsnapDivision();
         }
+        */
     }
 
     // Select the next beatsnap division
     private void SelectNextBeatsnapDivision()
     {
-        if (metronomePro.Division == 0)
+        /*
+        if (scriptManager.metronomePro.Division == 0)
         {
             // Load 8 beatsnap division
-            metronomePro.UpdateBeatsnapDivision(8);
+            scriptManager.metronomePro.UpdateBeatsnapDivision(8);
         }
-        else if (metronomePro.Division == 8)
+        else if (scriptManager.metronomePro.Division == 8)
         {
             // Load 16 beatsnap division
-            metronomePro.UpdateBeatsnapDivision(16);
+            scriptManager.metronomePro.UpdateBeatsnapDivision(16);
         }
-        else if (metronomePro.Division == 16)
+        else if (scriptManager.metronomePro.Division == 16)
         {
             // Load 0 beatsnap division
-            metronomePro.UpdateBeatsnapDivision(0);
+            scriptManager.metronomePro.UpdateBeatsnapDivision(0);
         }
 
 
 
         // Sort the beatsnaps with the new division
         SortBeatsnapsWithDivision();
+        */
     }
 
     // Convert all song tick times to slider values
     public void CalculateBeatsnapSliderListValues()
     {
-        for (int i = 0; i < metronomePro.songTickTimes.Count; i++)
+        for (int i = 0; i < scriptManager.metronomePro.songTickTimes.Count; i++)
         {
-            sliderValue = placedObject.CalculateTimelineHitObjectSliderValue((float)metronomePro.songTickTimes[i]);
+            sliderValue = scriptManager.placedObject.CalculateTimelineHitObjectSliderValue((float)scriptManager.metronomePro.songTickTimes[i]);
             beatsnapSliderValueList.Add(sliderValue);
         }
     }
 
+    /*
     // Toggle beatsnap timing on or off
     public void ToggleBeatsnapTiming()
     {
         if (beatsnapTimingEnabled == true)
         {
-            beatsnapTimingOffText.gameObject.SetActive(true);
-            beatsnapTimingOnText.gameObject.SetActive(false);
             beatsnapTimingEnabled = false;
         }
         else if (beatsnapTimingEnabled == false)
         {
-            beatsnapTimingOffText.gameObject.SetActive(false);
-            beatsnapTimingOnText.gameObject.SetActive(true);
             beatsnapTimingEnabled = true;
         }
-
     }
+    */
 
     // Generate beatsnap
     public void SetupBeatsnaps()
     {
         // Run if a song has been selected
-        if (metronomePro.songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
             // Calculate the intervals
-            metronomePro.CalculateIntervals();
+            scriptManager.metronomePro.CalculateIntervals();
 
             // Get total number of beatsnap prefabs in the lists
             totalBeatsnapPrefabsCount = poolDictionary[0].Count;
@@ -191,7 +165,7 @@ public class BeatsnapManager : MonoBehaviour
             for (int i = 0; i < poolDictionary[0].Count; i++)
             {
                 // Get the closest tick time based on the current song time
-                currentTickTime = (float)metronomePro.songTickTimes[i];
+                currentTickTime = (float)scriptManager.metronomePro.songTickTimes[i];
 
                 // Spawn - activate the beatsnap object to appear at the end
                 SpawnFromPool(currentTickTime);
@@ -204,30 +178,30 @@ public class BeatsnapManager : MonoBehaviour
     public void SortBeatsnaps()
     {
         // Run if a song has been selected
-        if (metronomePro.songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
             // Get total number of beatsnap prefabs in the lists
             totalBeatsnapPrefabsCount = poolDictionary[0].Count;
 
             // Get the closest tick time based on the current song time
-            currentTickTime = placedObject.GetCurrentBeatsnapTime();
+            currentTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime();
 
 
 
             for (int i = 0; i < poolDictionary[0].Count; i++)
             {
                 // Get the next tick to place the beatsnap bar at
-                tick = (metronomePro.CurrentTick + i);
+                tick = (scriptManager.metronomePro.CurrentTick + i);
 
                 // Check if it's over the amount of ticks for the song
-                if (tick < metronomePro.songTickTimes.Count)
+                if (tick < scriptManager.metronomePro.songTickTimes.Count)
                 {
-                    currentTickTime = (float)metronomePro.songTickTimes[tick];
+                    currentTickTime = (float)scriptManager.metronomePro.songTickTimes[tick];
                 }
                 else
                 {
                     // Set it to the first tick in the beatmap
-                    currentTickTime = (float)metronomePro.songTickTimes[0];
+                    currentTickTime = (float)scriptManager.metronomePro.songTickTimes[0];
                 }
 
                 // Spawn - activate the beatsnap object to appear at the end
@@ -240,35 +214,35 @@ public class BeatsnapManager : MonoBehaviour
     public void SortBeatsnapsWithDivision()
     {
         // Run if a song has been selected
-        if (metronomePro.songAudioSource.clip != null)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
             // Calculate the intervals
-            metronomePro.CalculateIntervals();
+            scriptManager.metronomePro.CalculateIntervals();
             // Calculate step
-            metronomePro.CalculateActualStep();
+            scriptManager.metronomePro.CalculateActualStep();
 
             // Get total number of beatsnap prefabs in the lists
             totalBeatsnapPrefabsCount = poolDictionary[0].Count;
 
             // Get the closest tick time based on the current song time
-            currentTickTime = placedObject.GetCurrentBeatsnapTime();
+            currentTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime();
 
 
 
             for (int i = 0; i < poolDictionary[0].Count; i++)
             {
                 // Get the next tick to place the beatsnap bar at
-                tick = (metronomePro.CurrentTick + i);
+                tick = (scriptManager.metronomePro.CurrentTick + i);
 
                 // Check if it's over the amount of ticks for the song
-                if (tick < metronomePro.songTickTimes.Count)
+                if (tick < scriptManager.metronomePro.songTickTimes.Count)
                 {
-                    currentTickTime = (float)metronomePro.songTickTimes[tick];
+                    currentTickTime = (float)scriptManager.metronomePro.songTickTimes[tick];
                 }
                 else
                 {
                     // Set it to the first tick in the beatmap
-                    currentTickTime = (float)metronomePro.songTickTimes[0];
+                    currentTickTime = (float)scriptManager.metronomePro.songTickTimes[0];
                 }
 
                 // Spawn - activate the beatsnap object to appear at the end
@@ -319,7 +293,7 @@ public class BeatsnapManager : MonoBehaviour
         Slider objectToSpawn = poolDictionary[0].Dequeue();
 
         // Get how much % the spawn time is out of the entire clip length
-        currentSongTimePercentage = (_tickTime / metronomePro.songAudioSource.clip.length);
+        currentSongTimePercentage = (_tickTime / scriptManager.rhythmVisualizatorPro.audioSource.clip.length);
 
         // Calculate percentage of 1 based on percentage of currentSongTimePercentage
         sliderValue = (currentSongTimePercentage / 1);
@@ -342,10 +316,6 @@ public class BeatsnapManager : MonoBehaviour
     private void ResetBeatsnapManager()
     {
         timelineSlider.value = 0f;
-        instantiationTime = 0;
-        timelineValueDifferencePerTick = 0;
-        instantiatedSliderValue = 0;
-        tickDifference = 0;
         tickTimePercentage = 0;
         currentSongTimePercentage = 0;
         sliderValue = 0;

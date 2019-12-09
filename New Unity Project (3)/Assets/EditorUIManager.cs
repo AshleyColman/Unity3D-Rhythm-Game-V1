@@ -44,6 +44,7 @@ public class EditorUIManager : MonoBehaviour
         // Set index to the setup panel
         currentPanelIndex = 2;
 
+        /*
         if (metronomePro.songAudioSource.clip == null)
         {
             beatmapToolsButton.interactable = false;
@@ -51,14 +52,15 @@ public class EditorUIManager : MonoBehaviour
             previewButton.interactable = false;
             playTestButton.interactable = false;
         }
-
+        */
+    
         // Activate the setup panel
         ActivateBeatmapSetupPanel();
     }
 
     private void Update()
     {
-
+        /*
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (metronomePro.songAudioSource.clip != null)
@@ -71,6 +73,7 @@ public class EditorUIManager : MonoBehaviour
                 }
             }
         }
+        */
     }
 
     // Change the color of the select a song text when a song has been chosen
