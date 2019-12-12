@@ -621,7 +621,7 @@ public class SongSelectPanel : MonoBehaviour
             // Load the database and beatmap information for the beatmap directory selected
             Database.database.Load(scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex], "easy");
             // Load difficulty level text
-            beatmapButtonList[_beatmapButtonIndex].easyDifficultyLevelText.text = Database.database.LoadedBeatmapEasyDifficultyLevel;
+            beatmapButtonList[_beatmapButtonIndex].easyDifficultyLevelText.text = Database.database.LoadedBeatmapDifficultyLevel;
             // Load beatmap button text information
             beatmapButtonList[_beatmapButtonIndex].songNameText.text = Database.database.LoadedSongName;
             beatmapButtonList[_beatmapButtonIndex].artistText.text = Database.database.LoadedSongArtist;
@@ -652,7 +652,7 @@ public class SongSelectPanel : MonoBehaviour
             // Load the database and beatmap information for the beatmap directory selected
             Database.database.Load(scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex], "advanced");
             // Load difficulty level text
-            beatmapButtonList[_beatmapButtonIndex].advancedDifficultyLevelText.text = Database.database.LoadedBeatmapAdvancedDifficultyLevel;
+            beatmapButtonList[_beatmapButtonIndex].advancedDifficultyLevelText.text = Database.database.LoadedBeatmapDifficultyLevel;
             // Load beatmap button text information
             beatmapButtonList[_beatmapButtonIndex].songNameText.text = Database.database.LoadedSongName;
             beatmapButtonList[_beatmapButtonIndex].artistText.text = Database.database.LoadedSongArtist;
@@ -682,7 +682,7 @@ public class SongSelectPanel : MonoBehaviour
             // Load the database and beatmap information for the beatmap directory selected
             Database.database.Load(scriptManager.songSelectManager.beatmapDirectories[_beatmapButtonIndex], "extra");
             // Load difficulty level text
-            beatmapButtonList[_beatmapButtonIndex].extraDifficultyLevelText.text = Database.database.LoadedBeatmapExtraDifficultyLevel;
+            beatmapButtonList[_beatmapButtonIndex].extraDifficultyLevelText.text = Database.database.LoadedBeatmapDifficultyLevel;
             // Load beatmap button text information
             beatmapButtonList[_beatmapButtonIndex].songNameText.text = Database.database.LoadedSongName;
             beatmapButtonList[_beatmapButtonIndex].artistText.text = Database.database.LoadedSongArtist;

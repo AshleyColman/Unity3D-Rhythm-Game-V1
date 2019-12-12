@@ -9,10 +9,7 @@ public class Database : MonoBehaviour
     // Scripts
     public static Beatmap beatmap;
     public static Database database;
-    private BeatmapSetup beatmapSetup;
-    private LeaderboardCreate leaderboardCreate;
-    private PlacedObject placedObject;
-    private MetronomePro metronomePro;
+    private ScriptManager scriptManager;
 
     // Strings
     private string FILE_EXTENSION = ".dia";
@@ -32,33 +29,22 @@ public class Database : MonoBehaviour
     public List<float> loadedPositionY = new List<float>(); // Loaded Y position of the hit object
     public List<float> loadedPositionZ = new List<float>(); // Loaded Z position of the hit object
     public List<float> loadedHitObjectSpawnTime = new List<float>(); // Loaded list of spawn times               
-    private float loadedSongPreviewStartTime; // Loaded song preview time
     public List<int> loadedObjectType = new List<int>(); // Loaded of object types
-    private int loadedSongClipChosenIndex; // Loaded song index
+    private float loadedSongPreviewStartTime; // Loaded song preview time
     private float loadedBPM, loadedOffsetMS; // Loaded bpm and offset
 
     // Loaded strings
-    public string loadedLeaderboardTableName; // Loaded leaderboard table name
+    private string loadedLeaderboardTableName; // Loaded leaderboard table name
     private string loadedSongName; // Loaded beatmap song name
     private string loadedSongArtist; // Loaded beatmap song artist
     private string loadedBeatmapCreator; // Loaded beatmap creator
-    public string loadedBeatmapDifficulty; // Loaded beatmap difficulty
+    private string loadedBeatmapDifficulty; // Loaded beatmap difficulty
     private string loadedBeatmapFolderDirectory; // Loaded beatmap directory location
-    private string loadedBeatmapEasyDifficultyLevel; // Loaded easy level
-    private string loadedBeatmapAdvancedDifficultyLevel; // Loaded advanced level
-    private string loadedBeatmapExtraDifficultyLevel; // Loaded extra level
+    private string loadedBeatmapDifficultyLevel;
     private string loadedBeatmapCreatedDate; // Loaded date of beatmap creation
     private int loadedKeyMode; // Key mode number
 
-    // Bools
-    private bool pressedKeyS, pressedKeyD, pressedKeyF, pressedKeyJ, pressedKeyK, pressedKeyL; // Keys pressed for beatmap
-
-    // Loaded bools
-    private bool loadedPressedKeyS, loadedPressedKeyD, loadedPressedKeyF, loadedPressedKeyJ, loadedPressedKeyK, loadedPressedKeyL; // Loaded keys pressed for beatmap
-
-
     // Properties
-
     public int KeyMode
     {
         get { return KeyMode; }
@@ -69,19 +55,9 @@ public class Database : MonoBehaviour
         get { return loadedBeatmapCreatedDate; }
     }
 
-    public string LoadedBeatmapEasyDifficultyLevel
+    public string LoadedBeatmapDifficultyLevel
     {
-        get { return loadedBeatmapEasyDifficultyLevel; }
-    }
-
-    public string LoadedBeatmapAdvancedDifficultyLevel
-    {
-        get { return loadedBeatmapAdvancedDifficultyLevel; }
-    }
-
-    public string LoadedBeatmapExtraDifficultyLevel
-    {
-        get { return loadedBeatmapExtraDifficultyLevel; }
+        get { return loadedBeatmapDifficultyLevel; }
     }
 
     public string LoadedLeaderboardTableName
@@ -129,46 +105,10 @@ public class Database : MonoBehaviour
         get { return loadedOffsetMS; }
     }
 
-    public int LoadedSongClipChosenIndex
-    {
-        get { return loadedSongClipChosenIndex; }
-    }
-
     public float LoadedSongPreviewStartTime
     {
         get { return loadedSongPreviewStartTime; }
     }
-
-    public bool LoadedPressedKeyS
-    {
-        get { return loadedPressedKeyS; }
-    }
-
-    public bool LoadedPressedKeyD
-    {
-        get { return loadedPressedKeyD; }
-    }
-
-    public bool LoadedPressedKeyF
-    {
-        get { return loadedPressedKeyF; }
-    }
-
-    public bool LoadedPressedKeyJ
-    {
-        get { return loadedPressedKeyJ; }
-    }
-
-    public bool LoadedPressedKeyK
-    {
-        get { return loadedPressedKeyK; }
-    }
-
-    public bool LoadedPressedKeyL
-    {
-        get { return loadedPressedKeyL; }
-    }
-
 
     private void Awake()
     {
@@ -179,75 +119,56 @@ public class Database : MonoBehaviour
     private void Start()
     {
         // Reference
-        beatmapSetup = FindObjectOfType<BeatmapSetup>();
-        placedObject = FindObjectOfType<PlacedObject>();
-        metronomePro = FindObjectOfType<MetronomePro>();
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     public void Save()
     {
-        // Get reference if null
         // Reference
-        if (beatmapSetup == null)
+        if (scriptManager == null)
         {
-            beatmapSetup = FindObjectOfType<BeatmapSetup>();
-        }
-
-        if (placedObject == null)
-        {
-            placedObject = FindObjectOfType<PlacedObject>();
-        }
-
-        if (metronomePro == null)
-        {
-            metronomePro = FindObjectOfType<MetronomePro>();
+            scriptManager = FindObjectOfType<ScriptManager>();
         }
 
         // Get the difficulty name that the user has inputted
         // Get the beatmap directory for saving to the right beatmap folder
 
         // Create new beatmap folder with the name provided
-        Stream stream = File.Open(beatmapSetup.FolderDirectory + beatmapSetup.BeatmapDifficulty + FILE_EXTENSION, FileMode.OpenOrCreate);
+        Stream stream = File.Open(scriptManager.setupBeatmap.FolderDirectory +
+            scriptManager.setupBeatmap.BeatmapDifficulty + FILE_EXTENSION, FileMode.OpenOrCreate);
         BinaryFormatter bf = new BinaryFormatter();
 
+        /*
         // Save the list of beatmap information for all hit objects
         for (int i = 0; i < positionX.Count; i++)
         {
-            beatmap.PositionX.Add(positionX[i]);
-            beatmap.PositionY.Add(positionY[i]);
-            beatmap.PositionZ.Add(positionZ[i]);
-            beatmap.HitObjectSpawnTime.Add(hitObjectSpawnTime[i]);
-            beatmap.ObjectType.Add(objectType[i]);
+            beatmap.positionX.Add(positionX[i]);
+            beatmap.positionY.Add(positionY[i]);
+            beatmap.positionZ.Add(positionZ[i]);
+            beatmap.hitObjectSpawnTime.Add(hitObjectSpawnTime[i]);
+            beatmap.objectType.Add(objectType[i]);
         }
+        */
 
         // Save beatmap information
-        beatmap.songName = beatmapSetup.SongName;
-        beatmap.songArtist = beatmapSetup.SongArtist;
-        beatmap.beatmapCreator = beatmapSetup.BeatmapCreator;
-        beatmap.beatmapDifficulty = beatmapDifficulty;
-        beatmap.beatmapFolderDirectory = beatmapFolderDirectory;
-        beatmap.beatmapEasyDifficultyLevel = beatmapSetup.BeatmapEasyDifficultyLevel;
-        beatmap.beatmapAdvancedDifficultyLevel = beatmapSetup.BeatmapAdvancedDifficultyLevel;
-        beatmap.beatmapExtraDifficultyLevel = beatmapSetup.BeatmapExtraDifficultyLevel;
-        //beatmap.songClipChosenIndex = beatmapSetup.SongClipChosenIndex;
-        //beatmap.songPreviewStartTime = beatmapSetup.SongPreviewStartTime;
-        beatmap.beatmapCreatedDate = beatmapSetup.BeatmapCreatedDate;
+        beatmap.SongName = scriptManager.setupBeatmap.SongName;
+        beatmap.SongArtist = scriptManager.setupBeatmap.ArtistName;
+        beatmap.BeatmapCreator = scriptManager.setupBeatmap.CreatorName;
+        beatmap.BeatmapDifficulty = beatmapDifficulty;
+        beatmap.BeatmapFolderDirectory = beatmapFolderDirectory;
+        beatmap.BeatmapDifficulty = scriptManager.setupBeatmap.BeatmapDifficulty;
+        beatmap.SongPreviewStartTime = scriptManager.setupBeatmap.SongPreviewStartTime;
+        beatmap.BeatmapCreatedDate = scriptManager.setupBeatmap.BeatmapCreatedDate;
 
         // Timing information for the beatmap from the metronome
-        beatmap.BPM = metronomePro.Bpm;
-        beatmap.offsetMS = metronomePro.OffsetMS;
+        beatmap.Bpm = scriptManager.metronomePro.Bpm;
+        beatmap.OffsetMS = scriptManager.metronomePro.OffsetMS;
 
         // Save leaderboard table name
-        beatmap.leaderboardTableName = leaderboardTableName;
+        beatmap.LeaderboardTableName = leaderboardTableName;
 
-        // Save the keys used for the map
-        beatmap.pressedKeyS = placedObject.PressedKeyS;
-        beatmap.pressedKeyD = placedObject.PressedKeyD;
-        beatmap.pressedKeyF = placedObject.PressedKeyF;
-        beatmap.pressedKeyJ = placedObject.PressedKeyJ;
-        beatmap.pressedKeyK = placedObject.PressedKeyK;
-        beatmap.pressedKeyL = placedObject.PressedKeyL;
-        beatmap.keyMode = placedObject.KeyMode;
+        // Save keymode
+        beatmap.KeyMode = scriptManager.placedObject.KeyMode;
 
         bf.Serialize(stream, beatmap);
         stream.Close();
@@ -256,18 +177,14 @@ public class Database : MonoBehaviour
     // Load the beatmap difficulty level only
     public void LoadBeatmapDifficultyLevel(string _beatmapFolderDirectory, string _beatmapDifficulty)
     {
-
         FileStream stream = File.Open(_beatmapFolderDirectory + @"\" + _beatmapDifficulty + FILE_EXTENSION, FileMode.Open);
         BinaryFormatter bf = new BinaryFormatter();
 
         beatmap = (Beatmap)bf.Deserialize(stream);
         stream.Close();
 
-
         // Load the beatmap difficulty level
-        loadedBeatmapEasyDifficultyLevel = beatmap.beatmapEasyDifficultyLevel;
-        loadedBeatmapAdvancedDifficultyLevel = beatmap.beatmapAdvancedDifficultyLevel;
-        loadedBeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
+        loadedBeatmapDifficultyLevel = beatmap.BeatmapDifficultyLevel;
     }
 
     public void Load(string _beatmapFolderDirectory, string _beatmapDifficulty)
@@ -284,42 +201,35 @@ public class Database : MonoBehaviour
         beatmap = (Beatmap)bf.Deserialize(stream);
         stream.Close();
 
+        /*
         // Load the list of positions for all objects to the file?
-        for (int i = 0; i < beatmap.PositionX.Count; i++)
+        for (int i = 0; i < beatmap.positionX.Count; i++)
         {
-            loadedPositionX.Add(beatmap.PositionX[i]);
-            loadedPositionY.Add(beatmap.PositionY[i]);
-            loadedPositionZ.Add(beatmap.PositionZ[i]);
-            loadedHitObjectSpawnTime.Add(beatmap.HitObjectSpawnTime[i]);
-            loadedObjectType.Add(beatmap.ObjectType[i]);
+            loadedPositionX.Add(beatmap.positionX[i]);
+            loadedPositionY.Add(beatmap.positionY[i]);
+            loadedPositionZ.Add(beatmap.positionZ[i]);
+            loadedHitObjectSpawnTime.Add(beatmap.hitObjectSpawnTime[i]);
+            loadedObjectType.Add(beatmap.objectType[i]);
         }
+        */
 
         // Load beatmap information
-        loadedSongName = beatmap.songName;
-        loadedSongArtist = beatmap.songArtist;
-        loadedBeatmapCreator = beatmap.beatmapCreator;
-        loadedBeatmapEasyDifficultyLevel = beatmap.beatmapEasyDifficultyLevel;
-        loadedBeatmapAdvancedDifficultyLevel = beatmap.beatmapAdvancedDifficultyLevel;
-        loadedBeatmapExtraDifficultyLevel = beatmap.beatmapExtraDifficultyLevel;
-        loadedSongClipChosenIndex = beatmap.songClipChosenIndex;
-        loadedSongPreviewStartTime = beatmap.songPreviewStartTime;
-        loadedBeatmapCreatedDate = beatmap.beatmapCreatedDate;
+        loadedSongName = beatmap.SongName;
+        loadedSongArtist = beatmap.SongArtist;
+        loadedBeatmapCreator = beatmap.BeatmapCreator;
+        loadedBeatmapDifficultyLevel = beatmap.BeatmapDifficultyLevel;
+        loadedSongPreviewStartTime = beatmap.SongPreviewStartTime;
+        loadedBeatmapCreatedDate = beatmap.BeatmapCreatedDate;
 
         // Timing information for the beatmap from the metronome
-        loadedBPM = beatmap.BPM;
-        loadedOffsetMS = beatmap.offsetMS;
+        loadedBPM = beatmap.Bpm;
+        loadedOffsetMS = beatmap.OffsetMS;
 
-        // Load keys pressed
-        loadedPressedKeyS = beatmap.pressedKeyS;
-        loadedPressedKeyD = beatmap.pressedKeyD;
-        loadedPressedKeyF = beatmap.pressedKeyF;
-        loadedPressedKeyJ = beatmap.pressedKeyJ;
-        loadedPressedKeyK = beatmap.pressedKeyK;
-        loadedPressedKeyL = beatmap.pressedKeyL;
-        loadedKeyMode = beatmap.keyMode;
+        // Load key mode
+        loadedKeyMode = beatmap.KeyMode;
 
         // Load beatmap table name for leaderboards
-        loadedLeaderboardTableName = beatmap.leaderboardTableName;
+        loadedLeaderboardTableName = beatmap.LeaderboardTableName;
     }
 
     // Clear all loaded items, used in the song select screen to remove all loaded when selecting a new difficulty
@@ -334,20 +244,11 @@ public class Database : MonoBehaviour
         loadedSongName = "";
         loadedSongArtist = "";
         loadedBeatmapCreator = "";
-        loadedBeatmapEasyDifficultyLevel = "";
-        loadedBeatmapAdvancedDifficultyLevel = "";
-        loadedBeatmapExtraDifficultyLevel = "";
+        loadedBeatmapDifficultyLevel = "";
         loadedBeatmapCreatedDate = "";
         loadedSongPreviewStartTime = 0;
         loadedBPM = 0;
         loadedOffsetMS = 0;
-        loadedSongClipChosenIndex = 0;
-        loadedPressedKeyS = false;
-        loadedPressedKeyD = false;
-        loadedPressedKeyF = false;
-        loadedPressedKeyJ = false;
-        loadedPressedKeyK = false;
-        loadedPressedKeyL = false;
         loadedKeyMode = 0;
     }
 
@@ -359,12 +260,5 @@ public class Database : MonoBehaviour
         positionZ.Clear();
         hitObjectSpawnTime.Clear();
         objectType.Clear();
-
-        pressedKeyS = false;
-        pressedKeyD = false;
-        pressedKeyF = false;
-        pressedKeyJ = false;
-        pressedKeyK = false;
-        pressedKeyL = false;
     }
 }

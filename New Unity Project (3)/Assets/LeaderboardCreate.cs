@@ -11,13 +11,11 @@ public class LeaderboardCreate : MonoBehaviour
     private string beatmapCreator;
     // Scripts
     private BeatmapSetup beatmapSetup;
-    private EditSelectToEditorManager editSelectToEditorManager;
 
     void Start()
     {
         // Reference
         beatmapSetup = FindObjectOfType<BeatmapSetup>();
-        editSelectToEditorManager = FindObjectOfType<EditSelectToEditorManager>();
     }
 
     // Create a leaderboard for the beatmap

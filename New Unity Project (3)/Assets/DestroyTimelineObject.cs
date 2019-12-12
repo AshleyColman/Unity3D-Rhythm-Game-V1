@@ -7,53 +7,42 @@ using System.Collections.Generic;
 
 public class DestroyTimelineObject : MonoBehaviour
 {
-
     // UI
     public TextMeshProUGUI numberText;
     public Slider timelineSlider;
-    public GameObject instantiatedEditableHitObject;
     public Image selectedDiamondImage, diamondImage;
 
     // Integers
-    public int timelineObjectListIndex;
+    private int timelineObjectListIndex;
     private float timelineHitObjectSpawnTime;
     private float hitObjectSliderValue;
-    public float lastSavedSliderValue; // Last saved slider value before being moved on the timeline
+    private float lastSavedSliderValue; // Last saved slider value before being moved on the timeline
     private float nearest;
 
     // Bools
     private bool previousFrameMouseHeldDown;
     private bool previousFrameBeatsnapValueTaken;
 
-    // Audio
-    private AudioSource menuSFXAudioSource;
-
     // Scripts
-    private PlacedObject placedObject;
-    private MetronomePro_Player metronome_Player;
-    private BeatsnapManager beatsnapManager;
-    private EditableHitObject editableHitObject;
-    private EditorUIManager editorUIManager;
-
+    private ScriptManager scriptManager;
 
     // Properties
-
     public float TimelineHitObjectSpawnTime
     {
         set { timelineHitObjectSpawnTime = value; }
         get { return timelineHitObjectSpawnTime; }
     }
 
+    public int TimelineObjectListIndex
+    {
+        get { return timelineObjectListIndex; }
+        set { timelineObjectListIndex = value; }
+    }
+
     private void Start()
     {
-        // Initialize
         // Reference
-        beatsnapManager = FindObjectOfType<BeatsnapManager>();
-        placedObject = FindObjectOfType<PlacedObject>();
-        metronome_Player = FindObjectOfType<MetronomePro_Player>();
-        editorUIManager = FindObjectOfType<EditorUIManager>();
-
-        menuSFXAudioSource = GameObject.FindGameObjectWithTag("MenuSFXAudioSource").GetComponentInChildren<AudioSource>();
+        scriptManager = FindObjectOfType<ScriptManager>();
 
         timelineSlider = this.gameObject.GetComponent<Slider>(); // Get the reference to the timelines own slider
     }
@@ -99,145 +88,74 @@ public class DestroyTimelineObject : MonoBehaviour
     // Enable and update the editable hit object
     public void SpawnEditableHitObject(string _trigger)
     {
-        // Get reference if null
-        GetReferenceToEditorUIManager();
-
-        // If the preview panel is not active
-        if (editorUIManager.previewPanel.gameObject.activeSelf == false)
+        // If left click
+        if (Input.GetMouseButton(0) || _trigger == "TIMELINE_NAVIGATION")
         {
-            // If left click
-            if (Input.GetMouseButton(0) || _trigger == "TIMELINE_NAVIGATION")
+            // If exists
+            if (scriptManager.editableHitObject)
             {
-                // Check if the editable hit object has been found
-                if (instantiatedEditableHitObject == null)
-                {
+                // Activate the editable hit object
+                scriptManager.editableHitObject.gameObject.SetActive(true);
 
-                    // Get the reference
-                    instantiatedEditableHitObject = editorUIManager.instantiatedEditableHitObject;
-                }
+                // Update the object index with the timeline object index
+                scriptManager.editableHitObject.ObjectIndex = timelineObjectListIndex;
 
-                // If exists
-                if (instantiatedEditableHitObject != null)
-                {
-                    // Activate
-                    instantiatedEditableHitObject.gameObject.SetActive(true);
+                // Setup the position and color of the hit object
+                scriptManager.editableHitObject.SetupEditorObject();
 
-                    // Check if the script has been referenced
-                    if (editableHitObject == null)
-                    {
-                        // Get the reference
-                        editableHitObject = FindObjectOfType<EditableHitObject>();
-                    }
+                // Change the current selected timeline object button diamond color to be selected
+                scriptManager.editableHitObject.ChangeTimelineObjectSelectedColor(selectedDiamondImage);
 
-                    // If script exists
-                    if (editableHitObject != null)
-                    {
-                        // Update the object index with the timeline object index
-                        editableHitObject.ObjectIndex = timelineObjectListIndex;
-
-                        // Setup the position and color of the hit object
-                        editableHitObject.SetupEditorObject();
-
-                        // Change the current selected timeline object button diamond color to be selected
-                        editableHitObject.ChangeTimelineObjectSelectedColor(selectedDiamondImage);
-
-                        // Update the current timeline object image to change when changing object colors
-                        editableHitObject.UpdateTimelineObjectDiamondImage(diamondImage);
-                    }
-                }
-
-                // Assign the timeline object reference for the editable hit object
-                editableHitObject.timelineObject = this.gameObject;
-
-                // Activate the properties panel
-                editorUIManager.ActivateObjectPropertiesPanel();
+                // Update the current timeline object image to change when changing object colors
+                scriptManager.editableHitObject.UpdateTimelineObjectDiamondImage(diamondImage);
             }
+
+            // Assign the timeline object reference for the editable hit object
+            //scriptManager.editableHitObject.timelineObject = this.gameObject;
         }
     }
 
     // Update the number text on the timeline hit object
     public void UpdateNumberText(int _value)
     {
+        if (scriptManager == null)
+        {
+            scriptManager = FindObjectOfType<ScriptManager>();
+        }
+
         // If the value is different than what the text is already set to 
         if (numberText.text != _value.ToString())
         {
             // Update the text
             numberText.text = _value.ToString();
 
-            // Check if exists
-            if (editableHitObject != null)
+            // If the instantiated editable hit object is active for this timeline object
+            if (scriptManager.editableHitObject.ObjectIndex == timelineObjectListIndex)
             {
-                // If the instantiated editable hit object is active for this timeline object
-                if (editableHitObject.ObjectIndex == timelineObjectListIndex)
-                {
-                    // Update the text for the editable hit object
-                    editableHitObject.UpdateEditableObjectIndex(_value);
-                }
+                // Update the text for the editable hit object
+                scriptManager.editableHitObject.UpdateEditableObjectIndex(_value);
             }
         }
     }
 
-
     // Deactivate the instantiated editable hit object
     public void DeactivateEditableHitObject()
     {
-        instantiatedEditableHitObject.gameObject.SetActive(false);
-
-        // Deactive the editable object properties panel
-        editorUIManager.DisplayCurrentIndexPanel();
-    }
-
-    // Get the reference to the editor ui manager
-    public void GetReferenceToEditorUIManager()
-    {
-        if (editorUIManager == null)
-        {
-            editorUIManager = FindObjectOfType<EditorUIManager>();
-        }
-    }
-
-    // Play deleted sound
-    public void PlayDeletedSound()
-    {
-        GetReferenceToEditorUIManager()
-            ;
-        menuSFXAudioSource.PlayOneShot(editorUIManager.timelineObjectDeletedClip);
-    }
-
-    // Play the selected sound
-    public void PlaySelectedSound()
-    {
-        GetReferenceToEditorUIManager()
-    ;
-        menuSFXAudioSource.PlayOneShot(editorUIManager.timelineObjectSelectedClip);
-    }
-
-    // Play clicked sound
-    public void PlayClickedSound()
-    {
-        GetReferenceToEditorUIManager()
-    ;
-        menuSFXAudioSource.PlayOneShot(editorUIManager.timelineObjectClickedClip);
+        scriptManager.editableHitObject.gameObject.SetActive(false);
     }
 
     public void DestroyEditorTimelineObject()
     {
         if (Input.GetMouseButtonDown(1))
         {
-            if (instantiatedEditableHitObject != null)
-            {
-                // Deactivate editable hit object
-                DeactivateEditableHitObject();
-            }
-
-            // Play deleted sound effect
-            PlayDeletedSound();
+            // Deactivate editable hit object
+            DeactivateEditableHitObject();
             // Check null timeline objects and update the list order/remove null objects from all lists
-            placedObject.RemoveTimelineObject(timelineObjectListIndex);
+            scriptManager.placedObject.RemoveTimelineObject(timelineObjectListIndex);
             // Update the list orders
-            placedObject.SortListOrders();
+            scriptManager.placedObject.SortListOrders();
             // Update all timeline objects
-            placedObject.UpdateTimelineObjects();
+            scriptManager.placedObject.UpdateTimelineObjects();
             // Destroy the game object
             Destroy(this.gameObject);
         }
@@ -246,12 +164,9 @@ public class DestroyTimelineObject : MonoBehaviour
     // Update the timelines spawn time
     public void UpdateTimelineHitObjectSpawnTime()
     {
-        if (metronome_Player != null)
-        {
-            timelineHitObjectSpawnTime = metronome_Player.UpdateTimelineHitObjectSpawnTimes(timelineSlider);
-            // Send the new spawn time and the editorHitObject index to update
-            placedObject.UpdateEditorHitObjectSpawnTime(timelineHitObjectSpawnTime, timelineObjectListIndex);
-        }
+        timelineHitObjectSpawnTime = scriptManager.metronomePro_Player.UpdateTimelineHitObjectSpawnTimes(timelineSlider);
+        // Send the new spawn time and the editorHitObject index to update
+        scriptManager.placedObject.UpdateEditorHitObjectSpawnTime(timelineHitObjectSpawnTime, timelineObjectListIndex);
     }
 
     // Update the last saved slider value before the slider was moved on the timeline
@@ -277,16 +192,16 @@ public class DestroyTimelineObject : MonoBehaviour
             hitObjectSliderValue = timelineSlider.value;
 
             // Detect which beatsnap slider value the hit object slider value is closest to
-            nearest = beatsnapManager.beatsnapSliderValueList.Select(p => new { Value = p, Difference = Math.Abs(p - hitObjectSliderValue) })
+            nearest = scriptManager.beatsnapManager.beatsnapSliderValueList.Select(p => new { Value = p, Difference = Math.Abs(p - hitObjectSliderValue) })
                       .OrderBy(p => p.Difference)
                       .First().Value;
 
             bool nearestBeatTaken = false;
 
             // Check if another hit object has that value
-            for (int i = 0; i < placedObject.instantiatedTimelineObjectList.Count; i++)
+            for (int i = 0; i < scriptManager.placedObject.instantiatedTimelineObjectList.Count; i++)
             {
-                Slider timelineObjectSlider = placedObject.instantiatedTimelineObjectList[i].GetComponent<Slider>();
+                Slider timelineObjectSlider = scriptManager.placedObject.instantiatedTimelineObjectList[i].GetComponent<Slider>();
 
                 if (timelineObjectSlider != this.timelineSlider)
                 {
@@ -302,7 +217,6 @@ public class DestroyTimelineObject : MonoBehaviour
                     }
                 }
             }
-
 
             // Change the slider value to the nearest beatsnap slider value
             timelineSlider.value = nearest;

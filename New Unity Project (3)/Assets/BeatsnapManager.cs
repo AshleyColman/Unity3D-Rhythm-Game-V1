@@ -69,11 +69,21 @@ public class BeatsnapManager : MonoBehaviour
             for (int i = 0; i < pool.size; i++)
             {
                 Slider obj = Instantiate(pool.prefab);
+
+                /*
+
                 obj.transform.SetParent(scriptManager.timelineScript.timelineSlider.transform);
 
                 obj.transform.localPosition = new Vector3(7500, 0, 0);
                 obj.transform.localScale = new Vector3(1, 1, 1);
                 obj.transform.localRotation = Quaternion.Euler(0, 0, 0);
+
+                */
+
+
+                obj.transform.position = Vector3.zero;
+                obj.transform.rotation = Quaternion.identity;
+                obj.transform.SetParent(scriptManager.timelineScript.timelineSlider.transform, false);
 
                 obj.gameObject.SetActive(false);
 

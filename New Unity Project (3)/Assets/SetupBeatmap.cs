@@ -42,7 +42,7 @@ public class SetupBeatmap : MonoBehaviour
     private bool folderCreated, audioFileFound, backgroundImageFound, filesUpdated;
 
     // Float
-    private float timer;
+    private float timer, songPreviewStartTime;
     private const float FILECHECKTIME = 2f;
 
     // Scripts
@@ -54,12 +54,48 @@ public class SetupBeatmap : MonoBehaviour
         get { return beatmapFileAudioClip; }
     }
 
+    public string FolderDirectory
+    {
+        get { return folderDirectory; }
+    }
+
+    public string BeatmapDifficulty
+    {
+        get { return beatmapDifficulty; }
+    }
+
+    public string SongName
+    {
+        get { return songName; }
+    }
+
+    public string ArtistName
+    {
+        get { return artistName; }
+    }
+
+    public string CreatorName
+    {
+        get { return creatorName; }
+    }
+
+    public float SongPreviewStartTime
+    {
+        get { return songPreviewStartTime; }
+    }
+
+    public string BeatmapCreatedDate
+    {
+        get { return beatmapCreatedDate; }
+    }
+
     private void Start()
     {
         folderCreated = false;
         audioFileFound = false;
         backgroundImageFound = false;
         filesUpdated = false;
+        songPreviewStartTime = 0;
 
         // Get the user logged in and set the creator to that user
         if (MySQLDBManager.loggedIn)
@@ -169,6 +205,15 @@ public class SetupBeatmap : MonoBehaviour
     public void OpenDiscord()
     {
         Application.OpenURL("https://discord.gg/zDneB5c");
+    }
+
+    // Save the song preview start time
+    public void GetSongPreviewStartTime(float _time)
+    {
+        songPreviewStartTime = _time;
+
+        // Update the song preview start time text
+        // text = UtilityMethods.FromSecondsToMinutesAndSeconds(songPreviewStartTime);
     }
 
     // Continue from the file setup panel

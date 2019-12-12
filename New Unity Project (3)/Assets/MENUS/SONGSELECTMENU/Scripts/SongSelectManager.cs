@@ -44,7 +44,6 @@ public class SongSelectManager : MonoBehaviour
     private int selectedBeatmapDirectoryIndex, previousBeatmapDirectoryIndex; // Beatmap directory indexs
     private float songPreviewStartTime;
     private float beatmapSongOffset, beatmapSongBpm;
-    private int songClipChosenIndex;
     private int frameInterval;
     private int beatmapDirectoryCount;
 
@@ -96,7 +95,6 @@ public class SongSelectManager : MonoBehaviour
     {
         // Initialize
         hasPlayedSongPreviewOnce = false;
-        songClipChosenIndex = 0;
         easyBeatmapFileName = "easy.dia";
         advancedBeatmapFileName = "advanced.dia";
         extraBeatmapFileName = "extra.dia";
@@ -273,7 +271,6 @@ public class SongSelectManager : MonoBehaviour
             songPreviewStartTime = Database.database.LoadedSongPreviewStartTime;
             beatmapSongBpm = Database.database.LoadedBPM;
             beatmapSongOffset = Database.database.LoadedOffsetMS;
-            songClipChosenIndex = Database.database.LoadedSongClipChosenIndex;
 
             // Load beatmap creator profile image
             scriptManager.uploadPlayerImage.CallBeatmapCreatorUploadImage(beatmapCreator, scriptManager.uploadPlayerImage.beatmapCreatorProfileImage);
@@ -315,10 +312,10 @@ public class SongSelectManager : MonoBehaviour
             songArtistText.text = beatmapSongArtist;
 
             // Update the other beatmap information text
-            string totalObjects = Database.database.loadedPositionX.Count.ToString();
+            //string totalObjects = Database.database.loadedPositionX.Count.ToString();
 
-            beatmapInformationText.text = beatmapCreatedDate + " | " + totalObjects + " OBJECTS | " + 
-                UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.clip.length);
+            //beatmapInformationText.text = beatmapCreatedDate + " | " + totalObjects + " OBJECTS | " + 
+                //UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.clip.length);
 
             beatmapCreatorText.text = "DESIGNED BY " + beatmapCreator.ToUpper();
             beatmapCreatorMessageText.text = "CREATOR MESSAGE";
@@ -387,7 +384,7 @@ public class SongSelectManager : MonoBehaviour
             // Load the easy beatmap difficulty level 
             Database.database.LoadBeatmapDifficultyLevel(beatmapDirectories[_selectedDirectoryIndex], easyDifficultyName);
             // Assign the easy beatmap difficulty value
-            easyDifficultyLevel = Database.database.LoadedBeatmapEasyDifficultyLevel;
+            easyDifficultyLevel = Database.database.LoadedBeatmapDifficultyLevel;
             // Update the easy beatmap difficulty level text
             difficultyButtonEasyText.text = easyDifficultyLevel;
         }
@@ -398,7 +395,7 @@ public class SongSelectManager : MonoBehaviour
             // Load the advanced beatmap difficulty level
             Database.database.LoadBeatmapDifficultyLevel(beatmapDirectories[_selectedDirectoryIndex], advancedDifficultyName);
             // Assign the advanced beatmap difficulty value
-            advancedDifficultyLevel = Database.database.LoadedBeatmapAdvancedDifficultyLevel;
+            advancedDifficultyLevel = Database.database.LoadedBeatmapDifficultyLevel;
             // Update the advanced beatmap difficulty level text
             difficultyButtonAdvancedText.text = advancedDifficultyLevel;
         }
@@ -409,7 +406,7 @@ public class SongSelectManager : MonoBehaviour
             // Load the extra beatmap difficulty level
             Database.database.LoadBeatmapDifficultyLevel(beatmapDirectories[_selectedDirectoryIndex], extraDifficultyName);
             // Assign the extra beatmap difficulty level
-            extraDifficultyLevel = Database.database.LoadedBeatmapExtraDifficultyLevel;
+            extraDifficultyLevel = Database.database.LoadedBeatmapDifficultyLevel;
             // Update the extra beatmap difficulty level text
             difficultyButtonExtraText.text = extraDifficultyLevel;
         }

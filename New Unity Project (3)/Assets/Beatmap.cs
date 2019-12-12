@@ -1,46 +1,152 @@
 ﻿using System;
 using System.Collections.Generic;
+
+// BEATMAP FILE
 [Serializable]
 public class Beatmap
 {
-    public List<float> HitObjectSpawnTime = new List<float>();
+    // HIT OBJECT
+    private List<float> hitObjectSpawnTime = new List<float>();
+    private List<float> positionX = new List<float>();
+    private List<float> positionY = new List<float>();
+    private List<float> positionZ = new List<float>();
+    private List<int> objectType = new List<int>();
 
-    public List<float> PositionX = new List<float>();
-    public List<float> PositionY = new List<float>();
-    public List<float> PositionZ = new List<float>();
+    // SONG INFORMATION
+    private string songName;
+    private string songArtist;
+    private string beatmapCreator;
+    private string beatmapFolderDirectory;
+    private string beatmapCreatedDate;
+    private string beatmapCreatorMessage;
+    private string beatmapDifficulty;
+    private string beatmapDifficultyLevel;
+    private float songPreviewStartTime;
 
-    public List<int> ObjectType = new List<int>();
+    // BEATMAP
+    private string leaderboardTableName;
+    private int keyMode;
 
-    public string songName;
-    public string songArtist;
-    public string beatmapCreator;
-    public string beatmapDifficulty;
-    public string beatmapFolderDirectory;
-    public string beatmapCreatedDate;
-    public string beatmapCreatorMessage;
-    public string beatmapEasyDifficultyLevel;
-    public string beatmapAdvancedDifficultyLevel;
-    public string beatmapExtraDifficultyLevel;
-    public int songClipChosenIndex;
+    // ONLINE
+    private bool beatmapRanked;
 
-    public string leaderboardTableName;
+    // TIMING
+    private float bpm;
+    private float offsetMS;
 
-    public bool pressedKeyS;
-    public bool pressedKeyD;
-    public bool pressedKeyF;
-    public bool pressedKeyJ;
-    public bool pressedKeyK;
-    public bool pressedKeyL;
+    // Properties
 
-    public int keyMode;
+    public List<float> HitObjectSpawnTime
+    {
+        get { return hitObjectSpawnTime; }
+        set { hitObjectSpawnTime = value; }
+    }
 
-    public bool beatmapRanked;
+    public List<float> PositionX
+    {
+        get { return positionX; }
+        set { positionX = value; }
+    }
 
-    public float songPreviewStartTime;
+    public List<float> PositionY
+    {
+        get { return positionY; }
+        set { positionY = value; }
+    }
 
+    public List<float> PositionZ
+    {
+        get { return positionZ; }
+        set { positionZ = value; }
+    }
 
+    public List<int> ObjectType
+    {
+        get { return objectType; }
+        set { objectType = value; }
+    }
 
-    // Timing information for the beatmap from the metronome
-    public float BPM;
-    public float offsetMS;
+    public string SongName
+    {
+        get { return songName; }
+        set { songName = value; }
+    }
+
+    public string SongArtist
+    {
+        get { return songArtist; }
+        set { songArtist = value; }
+    }
+
+    public string BeatmapCreator
+    {
+        get { return beatmapCreator; }
+        set { beatmapCreator = value; }
+    }
+
+    public string BeatmapFolderDirectory
+    {
+        get { return beatmapFolderDirectory; }
+        set { beatmapFolderDirectory = value; }
+    }
+
+    public string BeatmapCreatedDate
+    {
+        get { return beatmapCreatedDate; }
+        set { beatmapCreatedDate = value; }
+    }
+
+    public string BeatmapCreatorMessage
+    {
+        get { return beatmapCreatorMessage; }
+        set { beatmapCreatorMessage = value; }
+    }
+
+    public string BeatmapDifficulty
+    {
+        get { return beatmapDifficulty; }
+        set { beatmapDifficulty = value; }
+    }
+
+    public string BeatmapDifficultyLevel
+    {
+        get { return beatmapDifficultyLevel; }
+        set { beatmapDifficultyLevel = value; }
+    }
+
+    public float SongPreviewStartTime
+    {
+        get { return songPreviewStartTime; }
+        set { songPreviewStartTime = value; }
+    }
+
+    public string LeaderboardTableName
+    {
+        get { return leaderboardTableName; }
+        set { leaderboardTableName = value; }
+    }
+
+    public int KeyMode
+    {
+        get { return keyMode; }
+        set { keyMode = value; }
+    }
+
+    public bool BeatmapRanked
+    {
+        get { return beatmapRanked; }
+        set { beatmapRanked = value; }
+    }
+
+    public float Bpm
+    {
+        get { return bpm; }
+        set { bpm = value; }
+    }
+
+    public float OffsetMS
+    {
+        get { return offsetMS; }
+        set { offsetMS = value; }
+    }
 }

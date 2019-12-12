@@ -39,4 +39,5 @@ public class ScriptManager : MonoBehaviour
     public GridsnapManager gridsnapManager;
     public MouseFollow mouseFollow;
     public CursorHitObject cursorHitObject;
+    public EditableHitObject editableHitObject;
 }
