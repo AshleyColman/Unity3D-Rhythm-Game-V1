@@ -450,13 +450,14 @@ public class MetronomePro : MonoBehaviour
     // Tick Time (execute here all what you want)
     IEnumerator OnTick()
     {
-        /*
         if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
         {
-            beatsnapmanager.SortBeatsnaps();
-        }
-        */
+            // Sort beatsnaps 
+            scriptManager.beatsnapManager.SortBeatsnaps();
 
+            // Disable the timeline objects 
+            scriptManager.placedObject.DisableTimelineObjects();
+        }
 
         // Play Audio Tick
         if (metronomeIsMuted == false)

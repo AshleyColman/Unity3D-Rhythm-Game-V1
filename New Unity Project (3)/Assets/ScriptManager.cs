@@ -40,4 +40,5 @@ public class ScriptManager : MonoBehaviour
     public MouseFollow mouseFollow;
     public CursorHitObject cursorHitObject;
     public EditableHitObject editableHitObject;
+    public ColorManager colorManager;
 }

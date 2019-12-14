@@ -12,13 +12,14 @@ GameObject:
   - component: {fileID: 4029260278000903772}
   - component: {fileID: 5011985503245695589}
   - component: {fileID: 6170008487575272937}
+  - component: {fileID: 709935636}
   m_Layer: 5
   m_Name: TimelineHitObjectR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &155330329061750368
 RectTransform:
   m_ObjectHideFlags: 0
@@ -26,7 +27,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 223285972334073761}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -52,9 +53,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberText: {fileID: 3074451078872903647}
-  timelineSlider: {fileID: 0}
-  selectedDiamondImage: {fileID: 0}
-  diamondImage: {fileID: 0}
+  timelineSlider: {fileID: 5011985503245695589}
+  selectedImage: {fileID: 5933473278787337566}
+  colorImage: {fileID: 2544053381801718174}
 --- !u!114 &5011985503245695589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,10 +118,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16ef9908654b0444499b534ae1195fdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberText: {fileID: 0}
-  timelineSlider: {fileID: 0}
-  selectedDiamondImage: {fileID: 0}
-  diamondImage: {fileID: 0}
+  numberText: {fileID: 3074451078872903647}
+  timelineSlider: {fileID: 5011985503245695589}
+  selectedImage: {fileID: 0}
+  colorImage: {fileID: 0}
+--- !u!114 &709935636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223285972334073761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4029260278000903772}
+          m_MethodName: SpawnEditableHitObject
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: TIMELINEOBJECT
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &320154119567301544
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,11 +508,11 @@ RectTransform:
   m_Father: {fileID: 155330329061750368}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 15000, y: 75}
-  m_Pivot: {x: 0.5, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5036580678576117439
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,7 +704,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.000030517578}
   m_SizeDelta: {x: 50, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -913,7 +942,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9021320925301144248}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 058cba836c1846c3aa1c5fd2e28aea77, type: 3}
   m_Name: 

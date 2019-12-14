@@ -26,7 +26,7 @@ public class PlacedObject : MonoBehaviour
     private int instantiatedTimelineObjectType;
 
     private int keyMode; // Keymode
-    private int timelineObjectDeactivateValue; // Value that determines when to deactive timeline objects
+    private const int timelineObjectDeactivateValue = 15; // Value that determines when to deactive timeline objects
     private int raycastTimelineObjectListIndex; // The index of the timeline bar clicked in the editor, used to delete and update existing notes spawn times, position etc by getting the index on click
     private int timelineObjectIndex; // The index for all editor objects, increases by 1 everytime one is instantiated
     private int nullTimelineObjectIndex; // Index for checking null gameobjects
@@ -100,7 +100,6 @@ public class PlacedObject : MonoBehaviour
         canPlaceHitObjects = true;
         timelineObjectPosition = new Vector3(0, 0, 0);
 
-
         // Initialize pool
         poolDictionary = new Dictionary<int, Queue<GameObject>>();
 
@@ -127,31 +126,17 @@ public class PlacedObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        // Timer increment
-        deactivateObjectTimer += Time.deltaTime;
-
-        // Check timeline objects every 1 seconds
-        if (deactivateObjectTimer > 1)
-        {
-            // Disable the timeline objects 
-            DisableTimelineObjects();
-
-            // Reset timer
-            deactivateObjectTimer = 0;
-        }
-        */
-
         // If key input for placing hit objects is allowed
         if (canPlaceHitObjects == true && scriptManager.rhythmVisualizatorPro.audioSource.time > 2f)
         {
-            // BLUE Key Pressed
             if (Input.GetKeyDown(KeyCode.D))
             {
+                // Spawn square hit object
                 PlaceHitObject(hitObjectTypeLeftValue);
             }
             else if (Input.GetKeyDown(KeyCode.F))
             {
+                // Spawn diamond hit object
                 PlaceHitObject(hitObjectTypeRightValue);
             }
             // Song preview start time key pressed
@@ -421,6 +406,19 @@ public class PlacedObject : MonoBehaviour
 
         timelineObject.transform.SetParent(timeline, false);
 
+        // Update the scale of the timeline to the current timeline size settings
+        var rectTransform = timelineObject.transform as RectTransform;
+        rectTransform.sizeDelta = new Vector2(scriptManager.timelineScript.CurrentTimelineWidth, rectTransform.sizeDelta.y);
+
+        // Stretch to fit the parent timeline object
+        rectTransform.anchorMin = new Vector2(0, 0);
+        rectTransform.anchorMax = new Vector2(1, 1);
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+
+        // Reset position left, right, up, down
+        rectTransform.offsetMin = new Vector2(0, 0);
+        rectTransform.offsetMax = new Vector2(0, 0);
+
         // Get the timeline slider from the timeline object instantiated
         timelineSlider = timelineObject.GetComponent<Slider>();
 
@@ -539,11 +537,21 @@ public class PlacedObject : MonoBehaviour
         // If the objects spawn time does not exist/is not taken, allow instantiation of another hit object
         if (objectSpawnTimeIsTaken == false)
         {
+            // Change cursor rotation
+            switch (_objectType)
+            {
+                case hitObjectTypeLeftValue:
+                    scriptManager.cursorHitObject.SetToSquareRotation();
+                    break;
+                case hitObjectTypeRightValue:
+                    scriptManager.cursorHitObject.SetToDiamondRotation();
+                    break;
+            }
+
             // Set the instantiate position to the editor hit object position but with a Y of 0
             //InstantiateEditorPlacedHitObject(_objectType);
             // Spawn hit object from the pool at the cursors position
             SpawnFromPool(_objectType);
-
 
             // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
             InstantiateTimelineObject(_objectType, hitObjectSpawnTime);
@@ -570,6 +578,9 @@ public class PlacedObject : MonoBehaviour
             {
                 // Navigate ahead 1 tick on the timeline
                 scriptManager.timelineScript.TimelineNavigationForwardOneTick();
+
+                // Update timeline object activation
+                DisableTimelineObjects();
             }
         }
     }
@@ -616,6 +627,8 @@ public class PlacedObject : MonoBehaviour
     {
         if (hitObjectList.Count != 0)
         {
+            currentSongTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
+
             for (int i = 0; i < hitObjectList.Count; i++)
             {
                 // Get spawn time for timeline object
@@ -624,8 +637,6 @@ public class PlacedObject : MonoBehaviour
                 // Deactivate the timeline object
 
                 timelineObjectSpawnTime = hitObjectList[i].hitObjectSpawnTime;
-                currentSongTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
-                timelineObjectDeactivateValue = 10;
                 deactivateAfterObjectTime = (timelineObjectSpawnTime + timelineObjectDeactivateValue);
                 deactivateBeforeObjectTime = (timelineObjectSpawnTime - timelineObjectDeactivateValue);
 

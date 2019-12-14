@@ -119,7 +119,7 @@ public class MetronomePro_Player : MonoBehaviour
     // Play or Pause the Song and Metronome
     public void PlayOrPauseSong()
     {
-        if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == true)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
         {
             scriptManager.rhythmVisualizatorPro.audioSource.Pause();
             scriptManager.metronomePro.Pause();
@@ -171,10 +171,6 @@ public class MetronomePro_Player : MonoBehaviour
             if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
             {
                 UpdateSongProgressUI();
-            }
-            else
-            {
-                StopSong();
             }
         }
         // Play song when user press Space button

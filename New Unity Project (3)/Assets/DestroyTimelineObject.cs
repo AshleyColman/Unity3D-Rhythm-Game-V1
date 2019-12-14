@@ -10,7 +10,7 @@ public class DestroyTimelineObject : MonoBehaviour
     // UI
     public TextMeshProUGUI numberText;
     public Slider timelineSlider;
-    public Image selectedDiamondImage, diamondImage;
+    public Image selectedImage, colorImage;
 
     // Integers
     private int timelineObjectListIndex;
@@ -43,8 +43,6 @@ public class DestroyTimelineObject : MonoBehaviour
     {
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
-
-        timelineSlider = this.gameObject.GetComponent<Slider>(); // Get the reference to the timelines own slider
     }
 
     private void Update()
@@ -89,7 +87,7 @@ public class DestroyTimelineObject : MonoBehaviour
     public void SpawnEditableHitObject(string _trigger)
     {
         // If left click
-        if (Input.GetMouseButton(0) || _trigger == "TIMELINE_NAVIGATION")
+        if (Input.GetMouseButton(0) || _trigger == "TIMELINEOBJECT")
         {
             // If exists
             if (scriptManager.editableHitObject)
@@ -103,15 +101,9 @@ public class DestroyTimelineObject : MonoBehaviour
                 // Setup the position and color of the hit object
                 scriptManager.editableHitObject.SetupEditorObject();
 
-                // Change the current selected timeline object button diamond color to be selected
-                scriptManager.editableHitObject.ChangeTimelineObjectSelectedColor(selectedDiamondImage);
-
-                // Update the current timeline object image to change when changing object colors
-                scriptManager.editableHitObject.UpdateTimelineObjectDiamondImage(diamondImage);
+                // Select this timeline object
+                selectedImage.color = scriptManager.colorManager.selectedColor;
             }
-
-            // Assign the timeline object reference for the editable hit object
-            //scriptManager.editableHitObject.timelineObject = this.gameObject;
         }
     }
 

@@ -85,6 +85,19 @@ public class BeatsnapManager : MonoBehaviour
                 obj.transform.rotation = Quaternion.identity;
                 obj.transform.SetParent(scriptManager.timelineScript.timelineSlider.transform, false);
 
+                // Get rect transform
+                var rectTransform = obj.transform as RectTransform;
+
+                // Stretch to fit the parent timeline object
+                rectTransform.anchorMin = new Vector2(0, 0);
+                rectTransform.anchorMax = new Vector2(1, 1);
+                rectTransform.pivot = new Vector2(0.5f, 0.5f);
+
+                // Reset position left, right, up, down
+                rectTransform.offsetMin = new Vector2(0, 0);
+                rectTransform.offsetMax = new Vector2(0, 0);
+
+
                 obj.gameObject.SetActive(false);
 
                 // Add to the list
@@ -187,36 +200,27 @@ public class BeatsnapManager : MonoBehaviour
     // Sort the beatsnaps based on the current song position
     public void SortBeatsnaps()
     {
-        // Run if a song has been selected
-        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
+        // Get the closest tick time based on the current song time
+        currentTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime();
+
+        for (int i = 0; i < poolDictionary[0].Count; i++)
         {
-            // Get total number of beatsnap prefabs in the lists
-            totalBeatsnapPrefabsCount = poolDictionary[0].Count;
+            // Get the next tick to place the beatsnap bar at
+            tick = (scriptManager.metronomePro.CurrentTick + i);
 
-            // Get the closest tick time based on the current song time
-            currentTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime();
-
-
-
-            for (int i = 0; i < poolDictionary[0].Count; i++)
+            // Check if it's over the amount of ticks for the song
+            if (tick < scriptManager.metronomePro.songTickTimes.Count)
             {
-                // Get the next tick to place the beatsnap bar at
-                tick = (scriptManager.metronomePro.CurrentTick + i);
-
-                // Check if it's over the amount of ticks for the song
-                if (tick < scriptManager.metronomePro.songTickTimes.Count)
-                {
-                    currentTickTime = (float)scriptManager.metronomePro.songTickTimes[tick];
-                }
-                else
-                {
-                    // Set it to the first tick in the beatmap
-                    currentTickTime = (float)scriptManager.metronomePro.songTickTimes[0];
-                }
-
-                // Spawn - activate the beatsnap object to appear at the end
-                SpawnFromPool(currentTickTime);
+                currentTickTime = (float)scriptManager.metronomePro.songTickTimes[tick];
             }
+            else
+            {
+                // Set it to the first tick in the beatmap
+                currentTickTime = (float)scriptManager.metronomePro.songTickTimes[0];
+            }
+
+            // Spawn - activate the beatsnap object to appear at the end
+            SpawnFromPool(currentTickTime);
         }
     }
 
@@ -261,40 +265,34 @@ public class BeatsnapManager : MonoBehaviour
         }
     }
 
-
     /*
     // Generate beatsnap
     public void UpdateBeatsnaps()
     {
-
-
         totalBeatsnapPrefabsCount = poolDictionary[0].Count;
 
         // Get the closest tick time based on the current song time
-        //currentTickTime = placedObject.GetCurrentBeatsnapTime();
+        // currentTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime();
 
-        int currentTick = metronomePro.CurrentTick;
-        currentTickTime = (float)metronomePro.songTickTimes[currentTick];
-        Debug.Log("currenttick " + currentTick);
-        Debug.Log("currenticktime " + currentTickTime);
+        currentTickTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick];
 
         // Get the next pool tick index based off the current tick + the total number of prefabs
-        nextPoolTickIndex = metronomePro.CurrentTick + totalBeatsnapPrefabsCount;
+        nextPoolTickIndex = scriptManager.metronomePro.CurrentTick + totalBeatsnapPrefabsCount;
         // Get what tick time is from x objects away in the tick time array
-        nextPoolTickTime = (float)metronomePro.songTickTimes[nextPoolTickIndex];
+        nextPoolTickTime = (float)scriptManager.metronomePro.songTickTimes[nextPoolTickIndex];
 
 
-        if (previousFrameTick != metronomePro.CurrentTick || previousFrameTick == 0)
+        if (previousFrameTick != scriptManager.metronomePro.CurrentTick || previousFrameTick == 0)
         {
             // Check if the current song time has gone past the current beatsnaps tick time
-            if (metronomePro.songAudioSource.time >= currentTickTime)
+            if (scriptManager.rhythmVisualizatorPro.audioSource.time >= currentTickTime)
             {
                 // Spawn - activate the beatsnap object to appear at the end
                 SpawnFromPool(nextPoolTickTime);
             }
         }
 
-        previousFrameTick = metronomePro.CurrentTick;
+        previousFrameTick = scriptManager.metronomePro.CurrentTick;
     }
     */
 

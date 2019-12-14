@@ -4,20 +4,16 @@ using TMPro;
 
 public class EditableHitObject : MonoBehaviour
 {
-    //public Color blueColor, greenColor, yellowColor, orangeColor, redColor, purpleColor, blackColor, selectedColor, unselectedColor;
-    //public Image outerGlow, inner, outer;
+    public Image selectedImage, colorImage, diamondReflectionImage, squareReflectionImage;
 
     public TextMeshProUGUI numberText;
 
-    //public Image previousTimelineObjectDiamondImage;
+    private DestroyTimelineObject timelineHitObjectScript;
 
-    //public GameObject timelineObject, timelineObjectDiamond; // Timeline object tied to the instantiated editor hit object
-    //public Image timelineObjectDiamondImage;
+    private int objectIndex; // Timeline object index
 
     private bool followCursorPosition;
 
-    private int objectIndex; // Timeline object index
-    private int colorIndex; // Color index
 
     // Scripts
     private ScriptManager scriptManager;
@@ -36,36 +32,85 @@ public class EditableHitObject : MonoBehaviour
             scriptManager = FindObjectOfType<ScriptManager>();
         }
 
+        followCursorPosition = false;
+
         // Get and set the position
-        //SetupEditorObject();
+        SetupEditorObject();
     }
 
     private void OnDisable()
     {
         // Reset index
         objectIndex = 0;
-        // Turn off cursor follow
-        followCursorPosition = false;
     }
 
+    // Use this for initialization
+    void Start()
+    {
+        scriptManager = FindObjectOfType<ScriptManager>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Check for position change/save 
+        CheckInputForPositionChange();
+
+        // Check for type change
+        CheckInputForObjectTypeChange();
+
+        if (followCursorPosition == true)
+        {
+            // Follow the cursors position
+            this.gameObject.transform.position = scriptManager.cursorHitObject.transform.position;
+        }
+    }
+
+    // Setup the editor hit object 
     public void SetupEditorObject()
     {
-        // Turn off mouse follow
-        followCursorPosition = false;
-
         if (scriptManager.placedObject.hitObjectList.Count != 0)
         {
+            // Set the position
             this.gameObject.transform.position = scriptManager.placedObject.hitObjectList[objectIndex].hitObjectPosition;
 
-            // Get the color index 
-            colorIndex = scriptManager.placedObject.hitObjectList[objectIndex].hitObjectType;
-
-            // Update the color of this game object
-            OnEnableChangeColor();
+            // Set the rotation based on the hit object type
+            // Set the color based on the hit object type
+            switch (scriptManager.placedObject.hitObjectList[objectIndex].hitObjectType)
+            {
+                case 0:
+                    DisplayLeftHitObject();
+                    break;
+                case 1:
+                    DisplayRightHitObject();
+                    break;
+            }
 
             // Update the text
             UpdateNumberText();
         }
+    }
+
+    // Display the editable hit object as left hit object
+    private void DisplayLeftHitObject()
+    {
+        // Left hit object square
+        colorImage.color = scriptManager.colorManager.pinkColor;
+        this.transform.rotation = scriptManager.cursorHitObject.SquareRotation;
+        numberText.transform.rotation = Quaternion.Euler(0, 0, 0);
+        squareReflectionImage.gameObject.SetActive(true);
+        diamondReflectionImage.gameObject.SetActive(false);
+    }
+
+    // Display the editable hit object as right hit object
+    private void DisplayRightHitObject()
+    {
+        // Right hit object diamond
+        colorImage.color = scriptManager.colorManager.purpleColor;
+        this.transform.rotation = scriptManager.cursorHitObject.DiamondRotation;
+        numberText.transform.rotation = Quaternion.Euler(0, 0, 0);
+        squareReflectionImage.gameObject.SetActive(false);
+        diamondReflectionImage.gameObject.SetActive(true);
     }
 
     // Update the object index and text value
@@ -84,152 +129,53 @@ public class EditableHitObject : MonoBehaviour
         numberText.text = objectIndex.ToString();
     }
 
-    // Use this for initialization
-    void Start()
+
+    // Check input for changing the hit object type
+    private void CheckInputForObjectTypeChange()
     {
-        scriptManager = FindObjectOfType<ScriptManager>();
-        followCursorPosition = false;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        /*
-        if (outerGlow != null && inner != null)
+        if (Input.GetKeyDown(KeyCode.S))
         {
-            // Check for input on changing hit object color
-            CheckInputForColorChange();
-        }
-        */
-
-        if (scriptManager.cursorHitObject != null)
-        {
-            // Check for position change/save 
-            CheckInputForPositionChange();
-        }
-
-        if (followCursorPosition == true)
-        {
-            // Follow the cursors position
-            this.gameObject.transform.position = scriptManager.cursorHitObject.transform.position;
+            // Switch to the other hit object on key press
+            switch (scriptManager.placedObject.hitObjectList[objectIndex].hitObjectType)
+            {
+                case 0:
+                    // Was square, change to diamond
+                    // Update the type for this hit object
+                    scriptManager.placedObject.hitObjectList[objectIndex].hitObjectType = 1;
+                    DisplayRightHitObject();
+                    break;
+                case 1:
+                    // Was diamond, change to square
+                    // Update the type for this hit object
+                    scriptManager.placedObject.hitObjectList[objectIndex].hitObjectType = 0;
+                    DisplayLeftHitObject();
+                    break;
+            }
         }
     }
 
-    // Update the timeline object image to change when changing the color
-    public void UpdateTimelineObjectDiamondImage(Image _timelineObjectDiamondImage)
-    {
-        //timelineObjectDiamondImage = _timelineObjectDiamondImage;
-    }
-
-    // Change the timeline object color
-    private void ChangeTimelineObjectColor(Color _color)
-    {
-        // Change color of the diamond iamge
-        //timelineObjectDiamondImage.color = _color;
-    }
-
-    // Change the timeline object SELECTED color
-    public void ChangeTimelineObjectSelectedColor(Image _timelineObjectDiamondImage)
-    {
-        /*
-        // Reset the color of the previous selected hit object
-        if (previousTimelineObjectDiamondImage != null)
-        {
-            previousTimelineObjectDiamondImage.color = unselectedColor;
-        }
-
-        // Change color of the selected image
-        _timelineObjectDiamondImage.color = selectedColor;
-
-        // Save the previous object diamond
-        previousTimelineObjectDiamondImage = _timelineObjectDiamondImage;
-        */
-    }
-
-    // Change the hit object color on enable
-    private void OnEnableChangeColor()
-    {
-        /*
-        switch (colorIndex)
-        {
-            case 0:
-                inner.color = blueColor;
-                outerGlow.color = blueColor;
-                break;
-            case 1:
-                inner.color = purpleColor;
-                outerGlow.color = purpleColor;
-                break;
-            case 2:
-                inner.color = redColor;
-                outerGlow.color = redColor;
-                break;
-            case 3:
-                inner.color = greenColor;
-                outerGlow.color = greenColor;
-                break;
-            case 4:
-                inner.color = yellowColor;
-                outerGlow.color = yellowColor;
-                break;
-            case 5:
-                inner.color = orangeColor;
-                outerGlow.color = orangeColor;
-                break;
-        }
-        */
-    }
-
-    public void ChangeEditableHitObjectColorGreen()
-    {
-        /*
-        // Play sound
-        menuSFXAudioSource.PlayOneShot(selectedSoundClip);
-        // Change color
-        outerGlow.color = greenColor;
-        inner.color = greenColor;
-        // Change color of timeline object
-        ChangeTimelineObjectColor(greenColor);
-        // Update hit object color type in the list
-        placedObject.editorHitObjectList[objectIndex].hitObjectType = 3;
-        */
-    }
-
-    private void CheckInputForColorChange()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            ChangeEditableHitObjectColorGreen();
-        }
-    }
-
+    // Check for position change on key press
     private void CheckInputForPositionChange()
     {
-        /*
         if (Input.GetKeyDown(KeyCode.M))
         {
             if (followCursorPosition == false)
             {
-                // Play selected sound
-                menuSFXAudioSource.PlayOneShot(selectedSoundClip);
                 // Enable cursor position follow
                 followCursorPosition = true;
                 // Enable outer selected color
-                outer.color = selectedColor;
+                selectedImage.color = scriptManager.colorManager.selectedColor;
             }
             else if (followCursorPosition == true)
             {
-                // Play placed sound
-                menuSFXAudioSource.PlayOneShot(placedSoundClip);
                 // Disable cursor position follow
                 followCursorPosition = false;
                 // Update the save position for the hit object index selected
-                placedObject.editorHitObjectList[objectIndex].hitObjectPosition = this.gameObject.transform.position;
+                scriptManager.placedObject.hitObjectList[objectIndex].hitObjectPosition = this.gameObject.transform.position;
                 // Reset selected color
-                outer.color = blackColor;
+                selectedImage.color = scriptManager.colorManager.blackColor;
             }
         }
-        */
     }
 }
 
