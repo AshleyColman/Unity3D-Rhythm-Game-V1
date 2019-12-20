@@ -23,7 +23,6 @@ public class BeatsnapManager : MonoBehaviour
     private float beatsnapTime; // Beatsnap time value
     public List<float> beatsnapSliderValueList = new List<float>(); // Slider values of all instantiated beatsnap point sliders
     public List<float> beatsnapTickTimesList = new List<float>();
-    public List<Slider> beatsnapGameObjectList = new List<Slider>();
     private float nextPoolTickTime; // The next time to change the current pool hit object to once its gone past its tick time
     private float currentTickTime; // Get the closest tick time based on the current song time
     private int totalBeatsnapPrefabsCount; // Total number of beatsnap prefabs instantiated
@@ -31,8 +30,11 @@ public class BeatsnapManager : MonoBehaviour
     private int nextPoolTickIndex;
     private int tick;
 
+    private const float LINE_HEIGHT_35 = 35, LINE_HEIGHT_25 = 25, LINE_HEIGHT_15 = 15, LINE_HEIGHT_10 = 10, LINE_HEIGHT_5 = 5;
+
     // Scripts
     private ScriptManager scriptManager;
+    private BeatsnapObject beatsnapObjectScript; // Beatline script for changing beatsnap bar properties
 
     // Properties
     public bool BeatsnapTimingEnabled
@@ -40,17 +42,10 @@ public class BeatsnapManager : MonoBehaviour
         get { return beatsnapTimingEnabled; }
     }
 
-
-    [System.Serializable]
-    public class Pool
-    {
-        public int tag;
-        public Slider prefab;
-        public int size;
-    }
-
-    public List<Pool> pools;
-    public Dictionary<int, Queue<Slider>> poolDictionary;
+    public List<Slider> beatsnapSliderList = new List<Slider>();
+    public Slider beatsnapPrefab;
+    private const int BEATSNAP_LIST_SIZE = 130;
+    private int currentSliderListIndex;
 
     private void Start()
     {
@@ -60,53 +55,34 @@ public class BeatsnapManager : MonoBehaviour
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
 
-        poolDictionary = new Dictionary<int, Queue<Slider>>();
+        currentSliderListIndex = 0;
 
-        foreach (Pool pool in pools)
+        // Instantiate list of beatsnaps
+        for (int i = 0; i < BEATSNAP_LIST_SIZE; i++)
         {
-            Queue<Slider> objectPool = new Queue<Slider>();
+            Slider obj = Instantiate(beatsnapPrefab);
 
-            for (int i = 0; i < pool.size; i++)
-            {
-                Slider obj = Instantiate(pool.prefab);
+            obj.transform.position = Vector3.zero;
+            obj.transform.rotation = Quaternion.identity;
+            obj.transform.SetParent(scriptManager.timelineScript.timelineSlider.transform, false);
 
-                /*
+            // Get rect transform
+            var rectTransform = obj.transform as RectTransform;
 
-                obj.transform.SetParent(scriptManager.timelineScript.timelineSlider.transform);
+            // Stretch to fit the parent timeline object
+            rectTransform.anchorMin = new Vector2(0, 0);
+            rectTransform.anchorMax = new Vector2(1, 1);
+            rectTransform.pivot = new Vector2(0.5f, 0.5f);
 
-                obj.transform.localPosition = new Vector3(7500, 0, 0);
-                obj.transform.localScale = new Vector3(1, 1, 1);
-                obj.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            // Reset position left, right, up, down
+            rectTransform.offsetMin = new Vector2(0, 0);
+            rectTransform.offsetMax = new Vector2(0, 0);
+    
+            // Deactivate
+            obj.gameObject.SetActive(false);
 
-                */
-
-
-                obj.transform.position = Vector3.zero;
-                obj.transform.rotation = Quaternion.identity;
-                obj.transform.SetParent(scriptManager.timelineScript.timelineSlider.transform, false);
-
-                // Get rect transform
-                var rectTransform = obj.transform as RectTransform;
-
-                // Stretch to fit the parent timeline object
-                rectTransform.anchorMin = new Vector2(0, 0);
-                rectTransform.anchorMax = new Vector2(1, 1);
-                rectTransform.pivot = new Vector2(0.5f, 0.5f);
-
-                // Reset position left, right, up, down
-                rectTransform.offsetMin = new Vector2(0, 0);
-                rectTransform.offsetMax = new Vector2(0, 0);
-
-
-                obj.gameObject.SetActive(false);
-
-                // Add to the list
-                beatsnapGameObjectList.Add(obj);
-
-                objectPool.Enqueue(obj);
-            }
-
-            poolDictionary.Add(pool.tag, objectPool);
+            // Add to the list
+            beatsnapSliderList.Add(obj);
         }
     }
 
@@ -176,6 +152,7 @@ public class BeatsnapManager : MonoBehaviour
     // Generate beatsnap
     public void SetupBeatsnaps()
     {
+        /*
         // Run if a song has been selected
         if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
         {
@@ -194,12 +171,85 @@ public class BeatsnapManager : MonoBehaviour
                 SpawnFromPool(currentTickTime);
             }
         }
+        */
     }
 
+    public void SortLatestBeatsnap()
+    {
+        // Check if the current tick + total pool numbers is greater than the song list size
+        int currentStep = scriptManager.metronomePro.currentStep;
+
+        // Get tick time for the beatsnap object
+        int tickTimeIndex = scriptManager.metronomePro.CurrentTick + beatsnapSliderList.Count;
+
+        // Beatsnap time to pass 
+        float beatsnapTime;
+
+        if (tickTimeIndex < scriptManager.metronomePro.songTickTimes.Count)
+        {
+            // Set beatsnap time to the current tick + total beatsnap bars (pushed to the end) - 1 (avoids beat 0)
+            beatsnapTime = (float)scriptManager.metronomePro.songTickTimes[tickTimeIndex] - 1;
+
+            // Spawn next beatsnap object
+            SpawnBeatsnapFromPool(beatsnapTime, currentStep);
+        }
+        else
+        {
+            // Deactivate the next beatsnap
+            DeactivateBeatsnapFromPool();
+        }
+    }
+
+    public void SortBeatsnapsWithNewDivision()
+    {
+        scriptManager.metronomePro.CalculateIntervals();
+        scriptManager.metronomePro.CalculateActualStep();
+        SortBeatsnaps();
+    }
 
     // Sort the beatsnaps based on the current song position
     public void SortBeatsnaps()
     {
+        // Based on the currentStep
+        // Update all visuals for the beatsnaps
+
+        // Get the closest tick time based on the current song time
+        currentTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime();
+
+        // Get the current step
+        int currentStep = scriptManager.metronomePro.currentStep;
+
+        int tickTimeIndex;
+
+        // Loop through all beatsnap objects
+        for (int i = 0; i < beatsnapSliderList.Count; i++)
+        {
+            // Get the tick index
+            tickTimeIndex = scriptManager.metronomePro.CurrentTick + i;
+
+            // If the index is within the song tick time list length
+            if (tickTimeIndex < scriptManager.metronomePro.songTickTimes.Count)
+            {
+                // Set the beatsnap tick time to the tick index time
+                currentTickTime = (float)scriptManager.metronomePro.songTickTimes[tickTimeIndex];
+            }
+            else
+            {
+                // Deactivate the next beatsnap
+                //DeactivateBeatsnapFromPool();
+            }
+
+            if (currentStep > 4)
+            {
+                currentStep = 1;
+            }
+
+            SpawnBeatsnapFromPool(currentTickTime, currentStep);
+
+            currentStep++;
+        }
+
+        /*
         // Get the closest tick time based on the current song time
         currentTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime();
 
@@ -222,47 +272,7 @@ public class BeatsnapManager : MonoBehaviour
             // Spawn - activate the beatsnap object to appear at the end
             SpawnFromPool(currentTickTime);
         }
-    }
-
-    // Sort the beatsnaps based on the current song position
-    public void SortBeatsnapsWithDivision()
-    {
-        // Run if a song has been selected
-        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
-        {
-            // Calculate the intervals
-            scriptManager.metronomePro.CalculateIntervals();
-            // Calculate step
-            scriptManager.metronomePro.CalculateActualStep();
-
-            // Get total number of beatsnap prefabs in the lists
-            totalBeatsnapPrefabsCount = poolDictionary[0].Count;
-
-            // Get the closest tick time based on the current song time
-            currentTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime();
-
-
-
-            for (int i = 0; i < poolDictionary[0].Count; i++)
-            {
-                // Get the next tick to place the beatsnap bar at
-                tick = (scriptManager.metronomePro.CurrentTick + i);
-
-                // Check if it's over the amount of ticks for the song
-                if (tick < scriptManager.metronomePro.songTickTimes.Count)
-                {
-                    currentTickTime = (float)scriptManager.metronomePro.songTickTimes[tick];
-                }
-                else
-                {
-                    // Set it to the first tick in the beatmap
-                    currentTickTime = (float)scriptManager.metronomePro.songTickTimes[0];
-                }
-
-                // Spawn - activate the beatsnap object to appear at the end
-                SpawnFromPool(currentTickTime);
-            }
-        }
+        */
     }
 
     /*
@@ -296,6 +306,7 @@ public class BeatsnapManager : MonoBehaviour
     }
     */
 
+    /*
     private void SpawnFromPool(float _tickTime)
     {
         Slider objectToSpawn = poolDictionary[0].Dequeue();
@@ -318,7 +329,79 @@ public class BeatsnapManager : MonoBehaviour
 
         poolDictionary[0].Enqueue(objectToSpawn);
     }
+    */
 
+    // Deactivate beatsnap from pool
+    private void DeactivateBeatsnapFromPool()
+    {
+        // Error check list size
+        if (currentSliderListIndex == beatsnapSliderList.Count)
+        {
+            currentSliderListIndex = 0;
+        }
+
+        Slider objectToSpawn = beatsnapSliderList[currentSliderListIndex];
+
+        if (objectToSpawn.gameObject.activeSelf == true)
+        {
+            objectToSpawn.gameObject.SetActive(false);
+        }
+
+        // Increment current index
+        currentSliderListIndex++;
+    }
+
+    private void SpawnBeatsnapFromPool(float _tickTime, int _step)
+    {
+        // Check the current slider list index to make sure its within the list
+        if (currentSliderListIndex == beatsnapSliderList.Count)
+        {
+            // Set to 0 start of the list
+            currentSliderListIndex = 0;
+        }
+
+        Slider objectToSpawn = beatsnapSliderList[currentSliderListIndex];
+
+        // Get how much % the spawn time is out of the entire clip length
+        currentSongTimePercentage = (_tickTime / scriptManager.rhythmVisualizatorPro.audioSource.clip.length);
+
+        // Calculate percentage of 1 based on percentage of currentSongTimePercentage
+        sliderValue = (currentSongTimePercentage / 1);
+
+        // Set the timeline slider value to the tick time converted value 
+        objectToSpawn.value = sliderValue;
+
+        // Get rect transform for the image
+        var rectTransform = objectToSpawn.GetComponent<BeatsnapObject>().beatsnapImage.transform as RectTransform;
+        // Reference script for the object
+        beatsnapObjectScript = objectToSpawn.GetComponent<BeatsnapObject>();
+
+
+        switch (_step)
+        {
+            case 4:
+                // Update image color
+                beatsnapObjectScript.beatsnapImage.color = scriptManager.colorManager.selectedColor;
+                // Update size
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, LINE_HEIGHT_15);
+                break;
+            default:
+                // Update image color
+                beatsnapObjectScript.beatsnapImage.color = scriptManager.colorManager.whiteColor;
+                // Update size
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, LINE_HEIGHT_10);
+                break;
+        }
+
+        // Activate the object
+        if (objectToSpawn.gameObject.activeSelf == false)
+        {
+            objectToSpawn.gameObject.SetActive(true);
+        }
+
+        // Increment current slider list index
+        currentSliderListIndex++;
+    }
 
     // Reset beatsnapManager
     private void ResetBeatsnapManager()
@@ -328,6 +411,7 @@ public class BeatsnapManager : MonoBehaviour
         currentSongTimePercentage = 0;
         sliderValue = 0;
         beatsnapTime = 0;
+        currentSliderListIndex = 0;
         hasCheckedTickDifference = false;
 
         beatsnapSliderValueList.Clear();

@@ -60,22 +60,30 @@ public class MetronomePro_Player : MonoBehaviour
         switch (velocityScale.value)
         {
             case 0:
-                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 0.50f;
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 2f;
                 break;
             case 1:
-                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 0.75f;
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 1.75f;
                 break;
             case 2:
-                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 1;
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 1.5f;
+                break;
+            case 3:
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 1.25f;
+                break;
+            case 4:
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 1f;
+                break;
+            case 5:
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 0.75f;
+                break;
+            case 6:
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 0.5f;
+                break;
+            case 7:
+                scriptManager.rhythmVisualizatorPro.audioSource.pitch = 0.25f;
                 break;
         }
-    }
-
-    // Sets a New Song and Metronome Velocity using Velocity Scale Dropdown Value
-    public void SetNewVelocity()
-    {
-        // Change the song play back speed
-        ChangeSongPlaybackSpeed();
     }
 
     // Sets a New Song Position if the user clicked on Song Player Slider
@@ -123,13 +131,28 @@ public class MetronomePro_Player : MonoBehaviour
         {
             scriptManager.rhythmVisualizatorPro.audioSource.Pause();
             scriptManager.metronomePro.Pause();
-
         }
         else
         {
+            if (scriptManager.rhythmVisualizatorPro.audioSource.time == 0 ||
+                scriptManager.rhythmVisualizatorPro.audioSource.time == scriptManager.rhythmVisualizatorPro.audioSource.clip.length)
+            {
+                // Reset
+                StopSong();
+                // Sort beatsnaps
+                scriptManager.beatsnapManager.SortBeatsnaps();
+            }
+
+            // Play
             scriptManager.rhythmVisualizatorPro.audioSource.Play();
             scriptManager.metronomePro.Play();
         }
+    }
+
+    public void PauseSong()
+    {
+        scriptManager.rhythmVisualizatorPro.audioSource.Pause();
+        scriptManager.metronomePro.Pause();
     }
 
     // Stop Song and Metronome, Resets all too.
@@ -204,7 +227,9 @@ public class MetronomePro_Player : MonoBehaviour
             PlayOrPauseSong();
         }
     }
+
 }
+
 
 public static class UtilityMethods
 {

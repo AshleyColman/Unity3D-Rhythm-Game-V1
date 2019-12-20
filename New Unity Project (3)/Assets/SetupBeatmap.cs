@@ -12,9 +12,6 @@ public class SetupBeatmap : MonoBehaviour
     // Audio
     private AudioClip beatmapFileAudioClip;
 
-    // Color
-    public Color greenColor, whiteColor;
-
     // Gameobject
     public GameObject setupPanel, fileSetupPanel, timingSetupPanel;
 
@@ -187,16 +184,13 @@ public class SetupBeatmap : MonoBehaviour
                 scriptManager.rhythmVisualizatorPro.audioSource.clip = beatmapFileAudioClip;
                 scriptManager.rhythmVisualizatorPro.audioSource.Play();
 
-                // Update metronome timing information for rhythm animations
-                scriptManager.metronomeForEffects.CalculateIntervals();
-                scriptManager.metronomeForEffects.CalculateActualStep();
-                scriptManager.metronomeForEffects.CalculateCurrentTick();
+                // Update metronome timing
+                scriptManager.metronomePro.Stop();
+                scriptManager.metronomePro.CalculateIntervals();
+                scriptManager.metronomePro.CalculateActualStep();
 
-                // Update metronome pro also?
-
-
-
-
+                // Sort the beatsnaps
+                scriptManager.beatsnapManager.SortBeatsnaps();
             }
         }
     }
@@ -228,11 +222,11 @@ public class SetupBeatmap : MonoBehaviour
         // Move the timeline to the middle of the screen for timing setup
         scriptManager.timelineScript.SetTimingSetupTimlinePosition();
 
-        // Update the metronome
-        scriptManager.metronomePro.CalculateActualStep();
+
 
         // Setup the beatsnaps
-        scriptManager.beatsnapManager.SetupBeatsnaps();
+        //scriptManager.beatsnapManager.SetupBeatsnaps();
+
     }
 
     // Continue from the timing setup panel
@@ -318,14 +312,14 @@ public class SetupBeatmap : MonoBehaviour
     {
         if (File.Exists(folderDirectory + AUDIONAME + AUDIOTYPE))
         {
-            audioFileLoadingIconImage.color = greenColor;
+            audioFileLoadingIconImage.color = scriptManager.colorManager.selectedColor;
             defaultAudioFileText.gameObject.SetActive(false);
             existsAudioFileText.gameObject.SetActive(true);
             audioFileFound = true;
         }
         else
         {
-            audioFileLoadingIconImage.color = whiteColor;
+            audioFileLoadingIconImage.color = scriptManager.colorManager.whiteColor;
             defaultAudioFileText.gameObject.SetActive(true);
             existsAudioFileText.gameObject.SetActive(false);
             audioFileFound = false;
@@ -337,14 +331,14 @@ public class SetupBeatmap : MonoBehaviour
     {
         if (File.Exists(folderDirectory + IMAGENAME + IMAGETYPE))
         {
-            backgroundImageLoadingIconImage.color = greenColor;
+            backgroundImageLoadingIconImage.color = scriptManager.colorManager.selectedColor;
             defaultBackgroundImageText.gameObject.SetActive(false);
             existsBackgroundImageText.gameObject.SetActive(true);
             backgroundImageFound = true;
         }
         else
         {
-            backgroundImageLoadingIconImage.color = whiteColor;
+            backgroundImageLoadingIconImage.color = scriptManager.colorManager.whiteColor;
             defaultBackgroundImageText.gameObject.SetActive(true);
             existsBackgroundImageText.gameObject.SetActive(false);
             backgroundImageFound = false;

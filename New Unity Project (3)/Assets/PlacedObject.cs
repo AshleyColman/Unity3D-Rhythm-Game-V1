@@ -159,7 +159,7 @@ public class PlacedObject : MonoBehaviour
             // Could be improved
             objectToSpawn.GetComponent<Animator>().Play("EditorHitObject_FadeOut_Animation", 0, 0f);
 
-            objectToSpawn.transform.position = scriptManager.cursorHitObject.transform.position;
+            objectToSpawn.transform.position = scriptManager.cursorHitObject.positionObject.transform.position;
             objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
             objectToSpawn.transform.SetAsLastSibling();
 
@@ -537,7 +537,7 @@ public class PlacedObject : MonoBehaviour
         // If the objects spawn time does not exist/is not taken, allow instantiation of another hit object
         if (objectSpawnTimeIsTaken == false)
         {
-            // Change cursor rotation
+            // Change cursor mask rotation
             switch (_objectType)
             {
                 case hitObjectTypeLeftValue:
@@ -560,7 +560,7 @@ public class PlacedObject : MonoBehaviour
             EditorHitObject newEditorHitObject = new EditorHitObject();
 
             // Update properties of the hit object
-            newEditorHitObject.hitObjectPosition = scriptManager.cursorHitObject.transform.position;
+            newEditorHitObject.hitObjectPosition = scriptManager.cursorHitObject.positionObject.transform.position;
             newEditorHitObject.hitObjectType = _objectType;
             newEditorHitObject.hitObjectSpawnTime = hitObjectSpawnTime;
 
@@ -582,6 +582,9 @@ public class PlacedObject : MonoBehaviour
                 // Update timeline object activation
                 DisableTimelineObjects();
             }
+
+            // Update cursor position
+            scriptManager.cursorHitObject.UpdateDistanceSnapPosition();
         }
     }
 

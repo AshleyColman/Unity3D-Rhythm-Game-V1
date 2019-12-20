@@ -6,16 +6,16 @@ using UnityEngine.SceneManagement;
 public class LevelChanger : MonoBehaviour
 {
     private int currentSceneIndex;
-    private const int menuSceneIndex = 0, gameplaySceneIndex = 1;
+    private const int menuSceneIndex = 0, editorSceneIndex = 1;
 
     public int MenuSceneIndex
     {
         get { return menuSceneIndex; }
     }
 
-    public int GameplaySceneIndex
+    public int EditorSceneIndex
     {
-        get { return gameplaySceneIndex; }
+        get { return editorSceneIndex; }
     }
 
     public int CurrentSceneIndex

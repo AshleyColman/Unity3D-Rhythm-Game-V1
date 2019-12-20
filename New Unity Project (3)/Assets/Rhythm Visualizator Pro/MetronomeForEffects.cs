@@ -187,6 +187,15 @@ public class MetronomeForEffects : MonoBehaviour
         }
     }
 
+    void EditorSceneOnMeasure()
+    {
+        flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
+
+        lightPanelBeatAnimator.Play("LightPanelBeat_Animation", 0, 0f);
+
+        PlayBackgroundBeatAnimation();
+    }
+
     // Start menu tick functions
     void StartMenuSceneOnTick()
     {
@@ -344,5 +353,6 @@ public class MetronomeForEffects : MonoBehaviour
         timer = 0f;
         // Reset the current tick time to check for animation
         currentTick = 0;
-    } 
+    }
+    
 }

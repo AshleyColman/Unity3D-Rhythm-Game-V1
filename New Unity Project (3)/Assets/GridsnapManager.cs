@@ -4,124 +4,109 @@ using UnityEngine.UI;
 
 public class GridsnapManager : MonoBehaviour
 {
-    private bool snappingEnabled;
-
     // Input field
-    public TMP_InputField gridSizeXInputField, gridSizeYInputField, gridSpacingXInputField, gridSpacingYInputField;
+    public TextMeshProUGUI gridSizeText;
 
     // Grid layout group
     public GridLayoutGroup gridLayoutGroup;
 
+    // Dropdown
+    public TMP_Dropdown snappingDropdown;
+
+    // Gameobject 
+    public GameObject gridSizeButton, distanceSnapSizeButton;
+
     // Ints
-    private int gridSizeX, gridSizeY, spacingSizeX, spacingSizeY;
+    private int gridSizeX, gridSizeY;
+    private const int maxGridSize = 200, minGridSize = 50, gridValue = 10;
 
     // Scripts
     private ScriptManager scriptManager;
 
-    // Properties
-    public bool SnappingEnabled
-    {
-        get { return snappingEnabled; }
-    }
+
 
     private void Start()
     {
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
 
-        snappingEnabled = true;
-
         // Set default layout values
-        gridSizeX = 100;
-        gridSizeY = 100;
-        spacingSizeX = 0;
-        spacingSizeY = 0;
+        gridSizeX = 50;
+        gridSizeY = 50;
 
         // Update the grid layout group
         gridLayoutGroup.cellSize = new Vector2(gridSizeX, gridSizeY);
-        gridLayoutGroup.spacing = new Vector2(spacingSizeX, spacingSizeY);
+    }
+
+    public void UpdateSnappingMethod()
+    {
+
+        // 0 - NO SNAP
+        // 1 - GRID SNAP
+        // 2 - DISTANCE SNAP
+
+        switch (snappingDropdown.value)
+        {
+            case 0:
+                DeactivateDistanceSnapSizeButton();
+                DeactivateGridSizeButton();
+                break;
+            case 1:
+                DeactivateDistanceSnapSizeButton();
+                break;
+            case 2:
+                DeactivateGridSizeButton();
+                break;
+        }
+    }
+
+    private void DeactivateDistanceSnapSizeButton()
+    {
+        if (distanceSnapSizeButton.gameObject.activeSelf == true)
+        {
+            distanceSnapSizeButton.gameObject.SetActive(false);
+        }
+    }
+
+    private void DeactivateGridSizeButton()
+    {
+        if (gridSizeButton.gameObject.activeSelf == true)
+        {
+            gridSizeButton.gameObject.SetActive(false);
+        }
     }
 
     // Update the grid layout with the text field values
-    public void UpdateGridLayout(string _type)
+    public void IncrementGridLayout()
     {
-        switch (_type)
+        if ((gridSizeX + gridValue) <= maxGridSize)
         {
-            case "SIZEX":
-                if (gridSizeXInputField.text != "" && gridSizeXInputField.text != "-")
-                {
-                    gridSizeX = int.Parse(gridSizeXInputField.text);
+            // Increment 
+            gridSizeX += gridValue;
 
-                    if (gridSizeX < 0)
-                    {
-                        gridSizeX = 0;
-                    }
-                }
-                else
-                {
-                    gridSizeX = 0;
-                }
-                break;
-            case "SIZEY":
-                if (gridSizeYInputField.text != "" && gridSizeYInputField.text != "-")
-                {
-                    gridSizeY = int.Parse(gridSizeYInputField.text);
-
-                    if (gridSizeY < 0)
-                    {
-                        gridSizeY = 0;
-                    }
-                }
-                else
-                {
-                    gridSizeY = 0;
-                }
-                break;
-            case "SPACINGX":
-                if (gridSpacingXInputField.text != "" && gridSpacingXInputField.text != "-")
-                {
-                    spacingSizeX = int.Parse(gridSpacingXInputField.text);
-
-                    if (spacingSizeX < 0)
-                    {
-                        spacingSizeX = 0;
-                    }
-                }
-                else
-                {
-                    spacingSizeX = 0;
-                }
-                break;
-            case "SPACINGY":
-                if (gridSpacingYInputField.text != "" && gridSpacingYInputField.text != "-")
-                {
-                    spacingSizeY = int.Parse(gridSpacingYInputField.text);
-
-                    if (spacingSizeY < 0)
-                    {
-                        spacingSizeY = 0;
-                    }
-                }
-                else
-                {
-                    spacingSizeY = 0;
-                }
-                break;
+            // Apply to grid size y
+            gridSizeY = gridSizeX;
         }
 
+        gridSizeText.text = "GRID SIZE " + gridSizeX.ToString();
+
         gridLayoutGroup.cellSize = new Vector2(gridSizeX, gridSizeY);
-        gridLayoutGroup.spacing = new Vector2(spacingSizeX, spacingSizeY);
     }
 
-    public void DisableGridsnap()
+    // Update the grid layout with the text field values
+    public void DecrementGridLayout()
     {
-        snappingEnabled = false;
-        scriptManager.cursorHitObject.enabled = false;
-    }
+        if ((gridSizeX - gridValue) >= minGridSize)
+        {
+            // Decrement 
+            gridSizeX -= gridValue;
 
-    public void EnableGridsnap()
-    {
-        snappingEnabled = true;
-        scriptManager.cursorHitObject.enabled = true;
+            // Apply to grid size y
+            gridSizeY = gridSizeX;
+        }
+
+        gridSizeText.text = "GRID SIZE " + gridSizeX.ToString();
+
+        gridLayoutGroup.cellSize = new Vector2(gridSizeX, gridSizeY);
     }
 }

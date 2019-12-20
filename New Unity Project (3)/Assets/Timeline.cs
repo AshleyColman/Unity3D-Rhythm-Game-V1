@@ -109,11 +109,16 @@ public class Timeline : MonoBehaviour
                 // Calculate new metronome values
                 scriptManager.metronomePro.CalculateDecrementMetronomeValues();
 
+                // Sort beatsnaps
+                //scriptManager.beatsnapManager.SortBeatsnaps();
+
+                StartCoroutine(DelayUpdateSortBeatsnaps(0f));
+
                 // Update text and update timeline position
                 scriptManager.metronomePro_Player.UpdateSongProgressUI();
 
-                // Sort beatsnaps
-                scriptManager.beatsnapManager.SortBeatsnaps();
+
+
 
                 /*
                 // If live preview is off
@@ -144,13 +149,18 @@ public class Timeline : MonoBehaviour
                 scriptManager.rhythmVisualizatorPro.audioSource.time = 
                     (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick + 1];
 
-                // Update text and update timeline position
-                scriptManager.metronomePro_Player.UpdateSongProgressUI();
-
+                // Calculate increment metronome values
                 scriptManager.metronomePro.CalculateIncrementMetronomeValues();
 
                 // Sort beatsnaps
-                scriptManager.beatsnapManager.SortBeatsnaps();
+                //scriptManager.beatsnapManager.SortBeatsnaps();
+
+                StartCoroutine(DelayUpdateLatestBeatsnap(0f));
+
+                // Update text and update timeline position
+                scriptManager.metronomePro_Player.UpdateSongProgressUI();
+
+
 
                 /*
                 // If live preview is off
@@ -169,6 +179,24 @@ public class Timeline : MonoBehaviour
         }
     }
 
+
+    // Delay and update the beatsnaps, prevents beatsnap frame display bug issue when scrolling timeline
+    private IEnumerator DelayUpdateLatestBeatsnap(float _time)
+    {
+        yield return new WaitForSeconds(_time);
+
+        // Sort beatsnaps
+        scriptManager.beatsnapManager.SortLatestBeatsnap();
+    }
+
+    // Sort all beatsnaps with delay for timeline when moving backwards via mouse scroll
+    private IEnumerator DelayUpdateSortBeatsnaps(float _time)
+    {
+        yield return new WaitForSeconds(_time);
+
+        // Sort beatsnaps
+        scriptManager.beatsnapManager.SortBeatsnaps();
+    }
 
     // Displays the hit object for the beat currently selected
     public void DisplaySelectedBeatTimelineObject()

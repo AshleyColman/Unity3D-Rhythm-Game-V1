@@ -26,7 +26,6 @@ public class RhythmVisualizatorPro : MonoBehaviour {
 
     [Header("SOUND BARS [Requires Restart]")]
 
-
 	[Range (32, 256)]
     public int soundBarsQuantity = 100;
 
@@ -34,7 +33,7 @@ public class RhythmVisualizatorPro : MonoBehaviour {
 
     int usedSoundBars = 100;
 
-	public enum ScaleFrom
+    public enum ScaleFrom
 	{
 		Center,
 		Downside};
@@ -995,7 +994,6 @@ public class RhythmVisualizatorPro : MonoBehaviour {
 				soundBars [i].transform.localScale = rightScale;
 			
 			}
-			
 
 		}
 
