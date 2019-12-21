@@ -11,6 +11,8 @@ public class Beatmap
     private List<float> positionY = new List<float>();
     private List<float> positionZ = new List<float>();
     private List<int> objectType = new List<int>();
+    private List<int> soundType = new List<int>();
+    private List<int> animationType = new List<int>();
 
     // SONG INFORMATION
     private string songName;
@@ -35,6 +37,18 @@ public class Beatmap
     private float offsetMS;
 
     // Properties
+
+    public List<int> SoundType
+    {
+        get { return soundType; }
+        set { soundType = value; }
+    }
+
+    public List<int> AnimationType
+    {
+        get { return animationType; }
+        set { animationType = value; }
+    }
 
     public List<float> HitObjectSpawnTime
     {

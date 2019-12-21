@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 155330329061750368}
   - component: {fileID: 4029260278000903772}
   - component: {fileID: 5011985503245695589}
-  - component: {fileID: 6170008487575272937}
-  - component: {fileID: 709935636}
+  - component: {fileID: 6454806869822452741}
   m_Layer: 5
   m_Name: TimelineHitObjectR
   m_TagString: Untagged
@@ -54,8 +53,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberText: {fileID: 3074451078872903647}
   timelineSlider: {fileID: 5011985503245695589}
-  selectedImage: {fileID: 5933473278787337566}
-  colorImage: {fileID: 2544053381801718174}
 --- !u!114 &5011985503245695589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,16 +66,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 0.003921569}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 0.5019608}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 0.69803923}
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 0}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 0.2509804}
+    m_PressedColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -106,23 +103,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6170008487575272937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 223285972334073761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16ef9908654b0444499b534ae1195fdc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberText: {fileID: 3074451078872903647}
-  timelineSlider: {fileID: 5011985503245695589}
-  selectedImage: {fileID: 0}
-  colorImage: {fileID: 0}
---- !u!114 &709935636
+--- !u!114 &6454806869822452741
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -141,7 +122,22 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 4029260278000903772}
           m_MethodName: SpawnEditableHitObject
-          m_Mode: 5
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: TIMELINEOBJECT
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4029260278000903772}
+          m_MethodName: DestroyEditorTimelineObject
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -876,7 +872,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []

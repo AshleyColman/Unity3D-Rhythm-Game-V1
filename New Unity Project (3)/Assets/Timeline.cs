@@ -112,7 +112,7 @@ public class Timeline : MonoBehaviour
                 // Sort beatsnaps
                 //scriptManager.beatsnapManager.SortBeatsnaps();
 
-                StartCoroutine(DelayUpdateSortBeatsnaps(0f));
+                StartCoroutine(DelayUpdateLatestBeatsnap(0f, "BACKWARD"));
 
                 // Update text and update timeline position
                 scriptManager.metronomePro_Player.UpdateSongProgressUI();
@@ -155,7 +155,7 @@ public class Timeline : MonoBehaviour
                 // Sort beatsnaps
                 //scriptManager.beatsnapManager.SortBeatsnaps();
 
-                StartCoroutine(DelayUpdateLatestBeatsnap(0f));
+                StartCoroutine(DelayUpdateLatestBeatsnap(0f, "FORWARD"));
 
                 // Update text and update timeline position
                 scriptManager.metronomePro_Player.UpdateSongProgressUI();
@@ -181,12 +181,12 @@ public class Timeline : MonoBehaviour
 
 
     // Delay and update the beatsnaps, prevents beatsnap frame display bug issue when scrolling timeline
-    private IEnumerator DelayUpdateLatestBeatsnap(float _time)
+    private IEnumerator DelayUpdateLatestBeatsnap(float _time, string _navigation)
     {
         yield return new WaitForSeconds(_time);
 
         // Sort beatsnaps
-        scriptManager.beatsnapManager.SortLatestBeatsnap();
+        scriptManager.beatsnapManager.SortLatestBeatsnap(_navigation);
     }
 
     // Sort all beatsnaps with delay for timeline when moving backwards via mouse scroll
@@ -209,7 +209,7 @@ public class Timeline : MonoBehaviour
                 && scriptManager.rhythmVisualizatorPro.audioSource.time <= 
                 (scriptManager.placedObject.destroyTimelineObjectList[i].TimelineHitObjectSpawnTime + 0.0001))
             {
-                scriptManager.placedObject.destroyTimelineObjectList[i].SpawnEditableHitObject("TIMELINE_NAVIGATION");
+                scriptManager.placedObject.destroyTimelineObjectList[i].SpawnEditableHitObject();
                 break;
             }
         }

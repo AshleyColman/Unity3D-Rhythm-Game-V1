@@ -9,7 +9,7 @@ public class BeatsnapManager : MonoBehaviour
 
     // UI
     public Slider timelineSlider; // Get main timeline slider
-    private Slider instantiatedBeatsnap; // Instantiated beatsnap slider
+    private Slider objectToSpawn; // Beatsnap slider to spawn
 
     // Bools
     private bool hasCheckedTickDifference;
@@ -29,6 +29,8 @@ public class BeatsnapManager : MonoBehaviour
     private int previousFrameTick;
     private int nextPoolTickIndex;
     private int tick;
+    private int tickTimeIndex;
+    private int currentStep;
 
     private const float LINE_HEIGHT_35 = 35, LINE_HEIGHT_25 = 25, LINE_HEIGHT_15 = 15, LINE_HEIGHT_10 = 10, LINE_HEIGHT_5 = 5;
 
@@ -86,17 +88,6 @@ public class BeatsnapManager : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        /*
-        if (Input.GetKeyDown(KeyCode.B) && scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
-        {
-            // Select the next beatsnap division
-            SelectNextBeatsnapDivision();
-        }
-        */
-    }
-
     // Select the next beatsnap division
     private void SelectNextBeatsnapDivision()
     {
@@ -134,48 +125,38 @@ public class BeatsnapManager : MonoBehaviour
         }
     }
 
-    /*
-    // Toggle beatsnap timing on or off
-    public void ToggleBeatsnapTiming()
+    public void SortLatestBeatsnap(string _navigation)
     {
-        if (beatsnapTimingEnabled == true)
-        {
-            beatsnapTimingEnabled = false;
-        }
-        else if (beatsnapTimingEnabled == false)
-        {
-            beatsnapTimingEnabled = true;
-        }
-    }
-    */
+        // Check if the current tick + total pool numbers is greater than the song list size
+        currentStep = scriptManager.metronomePro.currentStep + 1;
 
-    // Generate beatsnap
-    public void SetupBeatsnaps()
-    {
+        if (_navigation == "FORWARD")
+        {
+            // Get tick time for the beatsnap object based on the current tick + total tick count (130) (-1) to prevent timeline gap
+            tickTimeIndex = scriptManager.metronomePro.CurrentTick + beatsnapSliderList.Count - 1;
+        }
+        else if (_navigation == "BACKWARD")
+        {
+            tickTimeIndex = scriptManager.metronomePro.CurrentTick + 1;
+        }
+
+
+        if (tickTimeIndex < scriptManager.metronomePro.songTickTimes.Count)
+        {
+            // Get the beatsnap time
+            beatsnapTime = (float)scriptManager.metronomePro.songTickTimes[tickTimeIndex]; 
+
+            // Spawn next beatsnap object
+            SpawnBeatsnapFromPool(beatsnapTime, currentStep, _navigation);
+        }
+        else
+        {
+            // Deactivate the next beatsnap
+            DeactivateBeatsnapFromPool();
+        }
+
+
         /*
-        // Run if a song has been selected
-        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
-        {
-            // Calculate the intervals
-            scriptManager.metronomePro.CalculateIntervals();
-
-            // Get total number of beatsnap prefabs in the lists
-            totalBeatsnapPrefabsCount = poolDictionary[0].Count;
-
-            for (int i = 0; i < poolDictionary[0].Count; i++)
-            {
-                // Get the closest tick time based on the current song time
-                currentTickTime = (float)scriptManager.metronomePro.songTickTimes[i];
-
-                // Spawn - activate the beatsnap object to appear at the end
-                SpawnFromPool(currentTickTime);
-            }
-        }
-        */
-    }
-
-    public void SortLatestBeatsnap()
-    {
         // Check if the current tick + total pool numbers is greater than the song list size
         int currentStep = scriptManager.metronomePro.currentStep;
 
@@ -198,6 +179,7 @@ public class BeatsnapManager : MonoBehaviour
             // Deactivate the next beatsnap
             DeactivateBeatsnapFromPool();
         }
+        */
     }
 
     public void SortBeatsnapsWithNewDivision()
@@ -244,7 +226,7 @@ public class BeatsnapManager : MonoBehaviour
                 currentStep = 1;
             }
 
-            SpawnBeatsnapFromPool(currentTickTime, currentStep);
+            SpawnBeatsnapFromPool(currentTickTime, currentStep, "FORWARD");
 
             currentStep++;
         }
@@ -340,7 +322,12 @@ public class BeatsnapManager : MonoBehaviour
             currentSliderListIndex = 0;
         }
 
-        Slider objectToSpawn = beatsnapSliderList[currentSliderListIndex];
+        if (currentSliderListIndex < 0)
+        {
+            currentSliderListIndex = beatsnapSliderList.Count;
+        }
+
+        objectToSpawn = beatsnapSliderList[currentSliderListIndex];
 
         if (objectToSpawn.gameObject.activeSelf == true)
         {
@@ -351,16 +338,9 @@ public class BeatsnapManager : MonoBehaviour
         currentSliderListIndex++;
     }
 
-    private void SpawnBeatsnapFromPool(float _tickTime, int _step)
+    private void SpawnBeatsnapFromPool(float _tickTime, int _step, string _navigation)
     {
-        // Check the current slider list index to make sure its within the list
-        if (currentSliderListIndex == beatsnapSliderList.Count)
-        {
-            // Set to 0 start of the list
-            currentSliderListIndex = 0;
-        }
-
-        Slider objectToSpawn = beatsnapSliderList[currentSliderListIndex];
+        objectToSpawn = beatsnapSliderList[currentSliderListIndex];
 
         // Get how much % the spawn time is out of the entire clip length
         currentSongTimePercentage = (_tickTime / scriptManager.rhythmVisualizatorPro.audioSource.clip.length);
@@ -375,7 +355,6 @@ public class BeatsnapManager : MonoBehaviour
         var rectTransform = objectToSpawn.GetComponent<BeatsnapObject>().beatsnapImage.transform as RectTransform;
         // Reference script for the object
         beatsnapObjectScript = objectToSpawn.GetComponent<BeatsnapObject>();
-
 
         switch (_step)
         {
@@ -399,8 +378,29 @@ public class BeatsnapManager : MonoBehaviour
             objectToSpawn.gameObject.SetActive(true);
         }
 
-        // Increment current slider list index
-        currentSliderListIndex++;
+        
+        // Increment or decrement the current slider list index
+        if (_navigation == "FORWARD")
+        {
+            currentSliderListIndex++;
+        }
+        else if (_navigation == "BACKWARD")
+        {
+            currentSliderListIndex--;
+        }
+
+
+        // Check the current slider list index to make sure its within the list
+        if (currentSliderListIndex == beatsnapSliderList.Count)
+        {
+            // Set to 0 start of the list
+            currentSliderListIndex = 0;
+        }
+        else if (currentSliderListIndex < 0)
+        {
+            // Set index to the end of the list - 1 so in range
+            currentSliderListIndex = beatsnapSliderList.Count - 1;
+        }
     }
 
     // Reset beatsnapManager

@@ -10,14 +10,25 @@ public class DestroyTimelineObject : MonoBehaviour
     // UI
     public TextMeshProUGUI numberText;
     public Slider timelineSlider;
-    public Image selectedImage, colorImage;
 
     // Integers
-    private int timelineObjectListIndex;
+    private int timelineObjectListIndex, timelineHitObjectType, timelineHitObjectAnimationType, timelineHitObjectSoundType;
     private float timelineHitObjectSpawnTime;
     private float hitObjectSliderValue;
     private float lastSavedSliderValue; // Last saved slider value before being moved on the timeline
     private float nearest;
+
+    // Bool
+    private bool toggleOn;
+
+    // Vector3
+    private Vector3 timelineHitObjectPosition;
+
+    // Color block
+    private ColorBlock colorBlock;
+
+    // Color 
+    private Color color;
 
     // Bools
     private bool previousFrameMouseHeldDown;
@@ -27,6 +38,12 @@ public class DestroyTimelineObject : MonoBehaviour
     private ScriptManager scriptManager;
 
     // Properties
+    public Vector3 TimelineHitObjectPosition
+    {
+        get { return timelineHitObjectPosition; }
+        set { timelineHitObjectPosition = value; }
+    }
+
     public float TimelineHitObjectSpawnTime
     {
         set { timelineHitObjectSpawnTime = value; }
@@ -39,10 +56,31 @@ public class DestroyTimelineObject : MonoBehaviour
         set { timelineObjectListIndex = value; }
     }
 
+    public int TimelineHitObjectType
+    {
+        get { return timelineHitObjectType; }
+        set { timelineHitObjectType = value; }
+    }
+
+    public int TimelineHitObjectAnimationType
+    {
+        get { return timelineHitObjectAnimationType; }
+        set { timelineHitObjectAnimationType = value; }
+    }
+
+    public int TimelineHitObjectSoundType
+    {
+        get { return timelineHitObjectSoundType; }
+        set { timelineHitObjectSoundType = value; }
+    }
+
     private void Start()
     {
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
+
+        color = scriptManager.colorManager.whiteColor;
+        colorBlock.colorMultiplier = 1f;
     }
 
     private void Update()
@@ -61,6 +99,53 @@ public class DestroyTimelineObject : MonoBehaviour
             UpdateTimelineHitObjectSpawnTime();
             // Update the last saved slider values
             lastSavedSliderValue = timelineSlider.value;
+        }
+    }
+
+    public void SetToggleOff()
+    {
+        toggleOn = false;
+    }
+
+    public void SetToggleOn()
+    {
+        toggleOn = true;
+    }
+
+    // Check toggle and make object selected/unselected
+    public void CheckToggle()
+    {
+        if (toggleOn == true)
+        {
+            color.a = 0.25f;
+            colorBlock.normalColor = color;
+
+            color.a = 0.5f;
+            colorBlock.highlightedColor = color;
+            colorBlock.selectedColor = color;
+
+            color.a = 0.75f;
+            colorBlock.pressedColor = color;
+
+            colorBlock.disabledColor = color;
+
+            timelineSlider.colors = colorBlock;
+        }
+        else
+        {
+            color.a = 0f;
+            colorBlock.normalColor = color;
+
+            color.a = 0.25f;
+            colorBlock.highlightedColor = color;
+            colorBlock.selectedColor = color;
+
+            color.a = 0.5f;
+            colorBlock.pressedColor = color;
+
+            colorBlock.disabledColor = color;
+
+            timelineSlider.colors = colorBlock;
         }
     }
 
@@ -84,27 +169,26 @@ public class DestroyTimelineObject : MonoBehaviour
     }
 
     // Enable and update the editable hit object
-    public void SpawnEditableHitObject(string _trigger)
+    public void SpawnEditableHitObject()
     {
-        // If left click
-        if (Input.GetMouseButton(0) || _trigger == "TIMELINEOBJECT")
-        {
-            // If exists
-            if (scriptManager.editableHitObject)
-            {
-                // Activate the editable hit object
-                scriptManager.editableHitObject.gameObject.SetActive(true);
+        // Activate the editable hit object
+        scriptManager.editableHitObject.gameObject.SetActive(true);
 
-                // Update the object index with the timeline object index
-                scriptManager.editableHitObject.ObjectIndex = timelineObjectListIndex;
+        // Reset the previous timeline object if there was one or if it still exists
+        scriptManager.editableHitObject.ResetTimelineObject();
 
-                // Setup the position and color of the hit object
-                scriptManager.editableHitObject.SetupEditorObject();
+        // Pass reference to the timeline object tying it together with this script
+        scriptManager.editableHitObject.UpdateReferenceToTimelineObject(this.gameObject);
 
-                // Select this timeline object
-                selectedImage.color = scriptManager.colorManager.selectedColor;
-            }
-        }
+        // Update the object index with the timeline object index
+        scriptManager.editableHitObject.ObjectIndex = timelineObjectListIndex;
+
+        // Setup the position and color of the hit object
+        scriptManager.editableHitObject.SetupEditorObject();
+
+        // Update ui editable hit object menu text
+        scriptManager.editorBottomMenu.UpdateBottomMenu(timelineObjectListIndex, timelineHitObjectSpawnTime, 
+            timelineHitObjectAnimationType, timelineHitObjectType, timelineHitObjectSoundType);
     }
 
     // Update the number text on the timeline hit object
@@ -136,9 +220,10 @@ public class DestroyTimelineObject : MonoBehaviour
         scriptManager.editableHitObject.gameObject.SetActive(false);
     }
 
+    // Destroy this timeline object and remove all information from the lists
     public void DestroyEditorTimelineObject()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButton(1))
         {
             // Deactivate editable hit object
             DeactivateEditableHitObject();
@@ -148,6 +233,8 @@ public class DestroyTimelineObject : MonoBehaviour
             scriptManager.placedObject.SortListOrders();
             // Update all timeline objects
             scriptManager.placedObject.UpdateTimelineObjects();
+            // Default the editor bottom menu
+            scriptManager.editorBottomMenu.ResetBottomMenu();
             // Destroy the game object
             Destroy(this.gameObject);
         }

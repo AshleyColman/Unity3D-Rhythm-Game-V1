@@ -8,7 +8,7 @@ public class EditableHitObject : MonoBehaviour
 
     public TextMeshProUGUI numberText;
 
-    private DestroyTimelineObject timelineHitObjectScript;
+    private DestroyTimelineObject referencedTimelineHitObjectScript, previousReferencedTimelineHitObjectScript; // Timeline object script that the editable hit object is tied to - timeline object
 
     private int objectIndex; // Timeline object index
 
@@ -66,17 +66,42 @@ public class EditableHitObject : MonoBehaviour
         }
     }
 
+    // Update the reference to the current timeline object script
+    public void UpdateReferenceToTimelineObject(GameObject _gameObject)
+    {
+        referencedTimelineHitObjectScript = _gameObject.GetComponent<DestroyTimelineObject>();
+
+        // Set toggle on
+        referencedTimelineHitObjectScript.SetToggleOn();
+        referencedTimelineHitObjectScript.CheckToggle();
+    }
+
+    // Set the toggle off than update the color block 
+    public void ResetTimelineObject()
+    {
+        if (referencedTimelineHitObjectScript != null)
+        {
+            if (referencedTimelineHitObjectScript != previousReferencedTimelineHitObjectScript)
+            {
+                referencedTimelineHitObjectScript.SetToggleOff();
+                referencedTimelineHitObjectScript.CheckToggle();
+
+                previousReferencedTimelineHitObjectScript = referencedTimelineHitObjectScript;
+            }
+        }
+    }
+
     // Setup the editor hit object 
     public void SetupEditorObject()
     {
         if (scriptManager.placedObject.hitObjectList.Count != 0)
         {
             // Set the position
-            this.gameObject.transform.position = scriptManager.placedObject.hitObjectList[objectIndex].hitObjectPosition;
+            this.gameObject.transform.position = scriptManager.placedObject.hitObjectList[objectIndex].HitObjectPosition;
 
             // Set the rotation based on the hit object type
             // Set the color based on the hit object type
-            switch (scriptManager.placedObject.hitObjectList[objectIndex].hitObjectType)
+            switch (scriptManager.placedObject.hitObjectList[objectIndex].HitObjectType)
             {
                 case 0:
                     DisplayLeftHitObject();
@@ -133,21 +158,21 @@ public class EditableHitObject : MonoBehaviour
     // Check input for changing the hit object type
     private void CheckInputForObjectTypeChange()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             // Switch to the other hit object on key press
-            switch (scriptManager.placedObject.hitObjectList[objectIndex].hitObjectType)
+            switch (scriptManager.placedObject.hitObjectList[objectIndex].HitObjectType)
             {
                 case 0:
                     // Was square, change to diamond
                     // Update the type for this hit object
-                    scriptManager.placedObject.hitObjectList[objectIndex].hitObjectType = 1;
+                    scriptManager.placedObject.hitObjectList[objectIndex].HitObjectType = 1;
                     DisplayRightHitObject();
                     break;
                 case 1:
                     // Was diamond, change to square
                     // Update the type for this hit object
-                    scriptManager.placedObject.hitObjectList[objectIndex].hitObjectType = 0;
+                    scriptManager.placedObject.hitObjectList[objectIndex].HitObjectType = 0;
                     DisplayLeftHitObject();
                     break;
             }
@@ -171,7 +196,7 @@ public class EditableHitObject : MonoBehaviour
                 // Disable cursor position follow
                 followCursorPosition = false;
                 // Update the save position for the hit object index selected
-                scriptManager.placedObject.hitObjectList[objectIndex].hitObjectPosition = this.gameObject.transform.position;
+                scriptManager.placedObject.hitObjectList[objectIndex].HitObjectPosition = this.gameObject.transform.position;
                 // Reset selected color
                 selectedImage.color = scriptManager.colorManager.blackColor;
             }

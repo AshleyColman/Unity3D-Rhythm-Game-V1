@@ -26,6 +26,8 @@ public class PlacedObject : MonoBehaviour
     private int instantiatedTimelineObjectType;
 
     private int keyMode; // Keymode
+    private const int ANIMATION_TYPE_NONE = 0, ANIMATION_TYPE_CAMERASHAKE = 1, ANIMATION_TYPE_BACKGROUNDPULSE = 2;
+    private const int SOUND_TYPE_CLAP = 0, SOUND_TYPE_FINISH = 1, SOUND_TYPE_WHISTLE = 2;
     private const int timelineObjectDeactivateValue = 15; // Value that determines when to deactive timeline objects
     private int raycastTimelineObjectListIndex; // The index of the timeline bar clicked in the editor, used to delete and update existing notes spawn times, position etc by getting the index on click
     private int timelineObjectIndex; // The index for all editor objects, increases by 1 everytime one is instantiated
@@ -111,6 +113,7 @@ public class PlacedObject : MonoBehaviour
             {
                 GameObject obj = Instantiate(pool.prefab);
                 obj.transform.SetParent(canvas.transform);
+                obj.transform.localScale = new Vector3(1, 1, 1);
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
             }
@@ -159,6 +162,7 @@ public class PlacedObject : MonoBehaviour
             // Could be improved
             objectToSpawn.GetComponent<Animator>().Play("EditorHitObject_FadeOut_Animation", 0, 0f);
 
+            
             objectToSpawn.transform.position = scriptManager.cursorHitObject.positionObject.transform.position;
             objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
             objectToSpawn.transform.SetAsLastSibling();
@@ -249,7 +253,7 @@ public class PlacedObject : MonoBehaviour
     public void SaveNewInstantiatedHitObjectsPosition()
     {
         // Set the saved editor position to the new position of the current object/replace the old value
-        hitObjectList[raycastTimelineObjectListIndex].hitObjectPosition = instantiatedHitObject.transform.position;
+        hitObjectList[raycastTimelineObjectListIndex].HitObjectPosition = instantiatedHitObject.transform.position;
     }
 
     // Removes the timeline object from the list
@@ -331,14 +335,14 @@ public class PlacedObject : MonoBehaviour
     public void UpdateEditorHitObjectSpawnTime(float _spawnTime, int _hitObjectIndex)
     {
         // Slider change updates the spawn time for this hit object
-        hitObjectList[_hitObjectIndex].hitObjectSpawnTime = _spawnTime;
+        hitObjectList[_hitObjectIndex].HitObjectSpawnTime = _spawnTime;
     }
 
     // Get the information for the editor hit object which is instantiated when the timeline bar has been clicked
     public Vector3 GetHitObjectPositionInformation()
     {
         // Get the position for the hit object saved
-        Vector3 hitObjectSavedPosition = hitObjectList[raycastTimelineObjectListIndex].hitObjectPosition;
+        Vector3 hitObjectSavedPosition = hitObjectList[raycastTimelineObjectListIndex].HitObjectPosition;
         // Return the position back to the instantiation function for the hit object
         return hitObjectSavedPosition;
     }
@@ -348,7 +352,7 @@ public class PlacedObject : MonoBehaviour
     {
         // Get the object type for the hit object saved
         // Return the type back to the instantiation function for the hit object
-        return hitObjectList[raycastTimelineObjectListIndex].hitObjectType;
+        return hitObjectList[raycastTimelineObjectListIndex].HitObjectType;
     }
 
     // Instantiate the editor hit object in the editor scene for the timeline object selected with its correct positioning, disable the fade script
@@ -397,7 +401,7 @@ public class PlacedObject : MonoBehaviour
     }
 
     // Instantiate a timeline object at the current song time
-    public void InstantiateTimelineObject(int _instantiatedTimelineObjectType, float _hitObjectSpawnTime)
+    public void InstantiateTimelineObject(int _instantiatedTimelineObjectType, float _hitObjectSpawnTime, int _objectType)
     {
         // Instantiate the type of object
 
@@ -429,6 +433,12 @@ public class PlacedObject : MonoBehaviour
         destroyTimelineObject = timelineObject.GetComponent<DestroyTimelineObject>();
         // Set the spawn time inside the object to the spawn time calculated from ticks previously
         destroyTimelineObject.TimelineHitObjectSpawnTime = _hitObjectSpawnTime;
+        // Set default
+        destroyTimelineObject.TimelineHitObjectAnimationType = ANIMATION_TYPE_NONE;
+        destroyTimelineObject.TimelineHitObjectSoundType = SOUND_TYPE_CLAP;
+        destroyTimelineObject.TimelineHitObjectType = _objectType;
+        // Set position to current mouse position for cursor object
+        destroyTimelineObject.TimelineHitObjectPosition = scriptManager.cursorHitObject.positionObject.transform.position;
 
         // Add to list
         destroyTimelineObjectList.Add(destroyTimelineObject);
@@ -507,7 +517,7 @@ public class PlacedObject : MonoBehaviour
         // Check through all the editor hit objects in the list, check if the spawn time exists already
         for (int i = 0; i < hitObjectList.Count; i++)
         {
-            if (hitObjectSpawnTime == hitObjectList[i].hitObjectSpawnTime)
+            if (hitObjectSpawnTime == hitObjectList[i].HitObjectSpawnTime)
             {
                 objectSpawnTimeIsTaken = true;
                 break;
@@ -554,15 +564,17 @@ public class PlacedObject : MonoBehaviour
             SpawnFromPool(_objectType);
 
             // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
-            InstantiateTimelineObject(_objectType, hitObjectSpawnTime);
+            InstantiateTimelineObject(_objectType, hitObjectSpawnTime, _objectType);
 
             // Create a new editor hit object (class object) and assign all the variables such as position, spawn time and type
             EditorHitObject newEditorHitObject = new EditorHitObject();
 
             // Update properties of the hit object
-            newEditorHitObject.hitObjectPosition = scriptManager.cursorHitObject.positionObject.transform.position;
-            newEditorHitObject.hitObjectType = _objectType;
-            newEditorHitObject.hitObjectSpawnTime = hitObjectSpawnTime;
+            newEditorHitObject.HitObjectPosition = scriptManager.cursorHitObject.positionObject.transform.position;
+            newEditorHitObject.HitObjectType = _objectType;
+            newEditorHitObject.HitObjectSpawnTime = hitObjectSpawnTime;
+            newEditorHitObject.HitObjectAnimationType = ANIMATION_TYPE_NONE;
+            newEditorHitObject.HitObjectSoundType = SOUND_TYPE_CLAP;
 
             // Add the hit object to the editorHitObjectList
             hitObjectList.Add(newEditorHitObject);
@@ -588,6 +600,7 @@ public class PlacedObject : MonoBehaviour
         }
     }
 
+    /*
     // Load the editor hit object and timeline object based from the file if editing an existing file
     public void LoadEditorHitObjectFromFile(int _objectType, float _spawnTime, Vector3 _position)
     {
@@ -595,14 +608,14 @@ public class PlacedObject : MonoBehaviour
         InstantiateEditorPlacedHitObject(_objectType);
 
         // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
-        InstantiateTimelineObject(_objectType, _spawnTime);
+        InstantiateTimelineObject(_objectType, _spawnTime,);
 
         // Create a new editor hit object (class object) and assign all the variables such as position, spawn time and type
         EditorHitObject newEditorHitObject = new EditorHitObject();
 
-        newEditorHitObject.hitObjectPosition = _position;
-        newEditorHitObject.hitObjectType = _objectType;
-        newEditorHitObject.hitObjectSpawnTime = _spawnTime;
+        newEditorHitObject.HitObjectPosition = _position;
+        newEditorHitObject.HitObjectType = _objectType;
+        newEditorHitObject.HitObjectSpawnTime = _spawnTime;
 
         // Add the hit object to the editorHitObjectList
         hitObjectList.Add(newEditorHitObject);
@@ -614,12 +627,12 @@ public class PlacedObject : MonoBehaviour
         // Update the timeline objects
         UpdateTimelineObjects();
     }
-
+    */
 
     // Sort all lists based on spawn time so they're in order
     public void SortListOrders()
     {
-        hitObjectList = hitObjectList.OrderBy(w => w.hitObjectSpawnTime).ToList();
+        hitObjectList = hitObjectList.OrderBy(w => w.HitObjectSpawnTime).ToList();
 
         // Sort the timeline script list by spawn time
         destroyTimelineObjectList = destroyTimelineObjectList.OrderBy(w => w.TimelineHitObjectSpawnTime).ToList();
@@ -639,7 +652,7 @@ public class PlacedObject : MonoBehaviour
                 // If current time is greater by 10 seconds of the hit object spawn time
                 // Deactivate the timeline object
 
-                timelineObjectSpawnTime = hitObjectList[i].hitObjectSpawnTime;
+                timelineObjectSpawnTime = hitObjectList[i].HitObjectSpawnTime;
                 deactivateAfterObjectTime = (timelineObjectSpawnTime + timelineObjectDeactivateValue);
                 deactivateBeforeObjectTime = (timelineObjectSpawnTime - timelineObjectDeactivateValue);
 
@@ -675,13 +688,13 @@ public class PlacedObject : MonoBehaviour
         for (int i = 0; i < hitObjectList.Count; i++)
         {
             // Add the positions to the database
-            Database.database.positionX.Add(hitObjectList[i].hitObjectPosition.x);
-            Database.database.positionY.Add(hitObjectList[i].hitObjectPosition.y);
-            Database.database.positionZ.Add(hitObjectList[i].hitObjectPosition.z);
+            Database.database.positionX.Add(hitObjectList[i].HitObjectPosition.x);
+            Database.database.positionY.Add(hitObjectList[i].HitObjectPosition.y);
+            Database.database.positionZ.Add(hitObjectList[i].HitObjectPosition.z);
             // Add the spawn times to the database
-            Database.database.hitObjectSpawnTime.Add(hitObjectList[i].hitObjectSpawnTime);
+            Database.database.hitObjectSpawnTime.Add(hitObjectList[i].HitObjectSpawnTime);
             // Add the object type to the database
-            Database.database.objectType.Add(hitObjectList[i].hitObjectType);
+            Database.database.objectType.Add(hitObjectList[i].HitObjectType);
         }
 
         // Save

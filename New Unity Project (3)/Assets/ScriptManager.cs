@@ -41,4 +41,5 @@ public class ScriptManager : MonoBehaviour
     public CursorHitObject cursorHitObject;
     public EditableHitObject editableHitObject;
     public ColorManager colorManager;
+    public EditorBottomMenu editorBottomMenu;
 }

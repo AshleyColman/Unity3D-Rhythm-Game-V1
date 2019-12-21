@@ -159,7 +159,7 @@ public class LivePreview : MonoBehaviour
             for (int i = 0; i < scriptManager.placedObject.hitObjectList.Count; i++)
             {
                 // Get the index of the next hit object
-                if (scriptManager.rhythmVisualizatorPro.audioSource.time > (scriptManager.placedObject.hitObjectList[i].hitObjectSpawnTime - 1))
+                if (scriptManager.rhythmVisualizatorPro.audioSource.time > (scriptManager.placedObject.hitObjectList[i].HitObjectSpawnTime - 1))
                 {
                     // Update the spawn hit object index to the index of the hit object where the current song time is not greater than = next note to spawn
                     currentHitObjectIndex = (i + 1);
@@ -322,13 +322,13 @@ public class LivePreview : MonoBehaviour
                 if (currentHitObjectIndex < scriptManager.placedObject.hitObjectList.Count)
                 {
                     // Check spawn time for hit object at the current index (-1 to consider spawn in time)
-                    if (scriptManager.rhythmVisualizatorPro.audioSource.time >= (scriptManager.placedObject.hitObjectList[currentHitObjectIndex].hitObjectSpawnTime - 1))
+                    if (scriptManager.rhythmVisualizatorPro.audioSource.time >= (scriptManager.placedObject.hitObjectList[currentHitObjectIndex].HitObjectSpawnTime - 1))
                     {
                         // Get the object type for the preview object
-                        objectType = scriptManager.placedObject.hitObjectList[currentHitObjectIndex].hitObjectType;
+                        objectType = scriptManager.placedObject.hitObjectList[currentHitObjectIndex].HitObjectType;
 
                         // Get the object position for the preview object
-                        objectPosition = scriptManager.placedObject.hitObjectList[currentHitObjectIndex].hitObjectPosition;
+                        objectPosition = scriptManager.placedObject.hitObjectList[currentHitObjectIndex].HitObjectPosition;
 
                         // Instantiate a preview hit object and add to the list
                         SpawnPreviewHitObject(spawnHitObjectIndex, objectType, objectPosition);
@@ -394,8 +394,8 @@ public class LivePreview : MonoBehaviour
                 // Check for the firt hit object index that is within the range of the current song time - 1;
                 //if ((placedObject.editorHitObjectList[i].hitObjectSpawnTime - 1) >= (metronomePro.songAudioSource.time - 1)
                 //&& metronomePro.songAudioSource.time <= placedObject.editorHitObjectList[i].hitObjectSpawnTime)
-                if ((scriptManager.rhythmVisualizatorPro.audioSource.time) >= (scriptManager.placedObject.hitObjectList[i].hitObjectSpawnTime - 1) &&
-                    scriptManager.rhythmVisualizatorPro.audioSource.time <= scriptManager.placedObject.hitObjectList[i].hitObjectSpawnTime)
+                if ((scriptManager.rhythmVisualizatorPro.audioSource.time) >= (scriptManager.placedObject.hitObjectList[i].HitObjectSpawnTime - 1) &&
+                    scriptManager.rhythmVisualizatorPro.audioSource.time <= scriptManager.placedObject.hitObjectList[i].HitObjectSpawnTime)
                 {
                     //Debug.Log("added");
 
@@ -428,10 +428,10 @@ public class LivePreview : MonoBehaviour
             GameObject obj = Instantiate(previewHitObject, Vector3.zero, Quaternion.identity);
 
             // Get the object type for the preview object
-            objectType = scriptManager.placedObject.hitObjectList[objectIndex].hitObjectType;
+            objectType = scriptManager.placedObject.hitObjectList[objectIndex].HitObjectType;
 
             // Get the object position for the preview object
-            objectPosition = scriptManager.placedObject.hitObjectList[objectIndex].hitObjectPosition;
+            objectPosition = scriptManager.placedObject.hitObjectList[objectIndex].HitObjectPosition;
 
             // Update the parent spawn to be in the canvas
             obj.transform.SetParent(canvas, false);
@@ -466,7 +466,7 @@ public class LivePreview : MonoBehaviour
     private void SetPreviewObjectAnimationStartTime(int _objectIndex, int _animatorIndex)
     {
         currentSongTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
-        previewObjectAnimationStartTime = (scriptManager.placedObject.hitObjectList[_objectIndex].hitObjectSpawnTime - 1);
+        previewObjectAnimationStartTime = (scriptManager.placedObject.hitObjectList[_objectIndex].HitObjectSpawnTime - 1);
         previewObjectAnimationEndTime = (previewObjectAnimationStartTime + 1.20f);
 
         float spawnDuration = 1f;
@@ -498,7 +498,7 @@ public class LivePreview : MonoBehaviour
 
 
         currentSongTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
-        hitObjectSpawnTime = (scriptManager.placedObject.hitObjectList[_index].hitObjectSpawnTime - 1);
+        hitObjectSpawnTime = (scriptManager.placedObject.hitObjectList[_index].HitObjectSpawnTime - 1);
         hitObjectEndTime = (hitObjectSpawnTime + 1.10f);
 
         if (currentSongTime > hitObjectSpawnTime)

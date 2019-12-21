@@ -23,6 +23,8 @@ public class Database : MonoBehaviour
     public List<float> positionZ = new List<float>(); // Z position of the hit object                      
     public List<float> hitObjectSpawnTime = new List<float>();// List of spawn times of the objects
     public List<int> objectType = new List<int>(); // List of object types
+    public List<int> animationType = new List<int>(); // Animation type list
+    public List<int> soundType = new List<int>(); // Sound type list
 
     // Loaded integers
     public List<float> loadedPositionX = new List<float>(); // Loaded X position of the hit object
@@ -30,6 +32,8 @@ public class Database : MonoBehaviour
     public List<float> loadedPositionZ = new List<float>(); // Loaded Z position of the hit object
     public List<float> loadedHitObjectSpawnTime = new List<float>(); // Loaded list of spawn times               
     public List<int> loadedObjectType = new List<int>(); // Loaded of object types
+    public List<int> loadedAnimationType = new List<int>(); // Animation type list
+    public List<int> loadedSoundType = new List<int>(); // Sound type list
     private float loadedSongPreviewStartTime; // Loaded song preview time
     private float loadedBPM, loadedOffsetMS; // Loaded bpm and offset
 
@@ -142,11 +146,13 @@ public class Database : MonoBehaviour
         // Save the list of beatmap information for all hit objects
         for (int i = 0; i < positionX.Count; i++)
         {
-            beatmap.positionX.Add(positionX[i]);
-            beatmap.positionY.Add(positionY[i]);
-            beatmap.positionZ.Add(positionZ[i]);
-            beatmap.hitObjectSpawnTime.Add(hitObjectSpawnTime[i]);
-            beatmap.objectType.Add(objectType[i]);
+            beatmap.PositionX.Add(positionX[i]);
+            beatmap.PositionY.Add(positionY[i]);
+            beatmap.PositionZ.Add(positionZ[i]);
+            beatmap.HitObjectSpawnTime.Add(hitObjectSpawnTime[i]);
+            beatmap.ObjectType.Add(objectType[i]);
+            beatmap.AnimationType.Add(animationType[i]);
+            beatmap.SoundType.Add(soundType[i]);
         }
         */
 
@@ -210,6 +216,8 @@ public class Database : MonoBehaviour
             loadedPositionZ.Add(beatmap.positionZ[i]);
             loadedHitObjectSpawnTime.Add(beatmap.hitObjectSpawnTime[i]);
             loadedObjectType.Add(beatmap.objectType[i]);
+            loadedAnimationType.Add(beatmap.animationType[i]);
+            loadedSoundType.Add(beatmap.soundType[i]);
         }
         */
 
@@ -240,6 +248,8 @@ public class Database : MonoBehaviour
         loadedPositionZ.Clear();
         loadedHitObjectSpawnTime.Clear();
         loadedObjectType.Clear();
+        loadedSoundType.Clear();
+        loadedAnimationType.Clear();
         loadedLeaderboardTableName = "";
         loadedSongName = "";
         loadedSongArtist = "";
@@ -260,5 +270,7 @@ public class Database : MonoBehaviour
         positionZ.Clear();
         hitObjectSpawnTime.Clear();
         objectType.Clear();
+        soundType.Clear();
+        animationType.Clear();
     }
 }

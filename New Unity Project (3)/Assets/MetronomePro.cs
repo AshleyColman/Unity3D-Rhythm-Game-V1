@@ -457,7 +457,7 @@ public class MetronomePro : MonoBehaviour
         if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
         {
             // Sort latest beatsnap and push it to the back
-            scriptManager.beatsnapManager.SortLatestBeatsnap();
+            scriptManager.beatsnapManager.SortLatestBeatsnap("FORWARD");
 
             // Disable the timeline objects 
             scriptManager.placedObject.DisableTimelineObjects();
