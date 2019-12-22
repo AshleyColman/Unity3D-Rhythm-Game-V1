@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
+using System.Linq;
 public class Timeline : MonoBehaviour
 {
     // Gameobject
@@ -100,39 +101,39 @@ public class Timeline : MonoBehaviour
     {
         if (scriptManager.metronomePro.songTickTimes.Count != 0)
         {
-            if (scriptManager.metronomePro.CurrentTick != 0)
+            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == false)
             {
-                // Move the song and timeline back 1 tick
-                scriptManager.rhythmVisualizatorPro.audioSource.time = 
-                    (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick - 1];
-
-                // Calculate new metronome values
-                scriptManager.metronomePro.CalculateDecrementMetronomeValues();
-
-                // Sort beatsnaps
-                //scriptManager.beatsnapManager.SortBeatsnaps();
-
-                StartCoroutine(DelayUpdateLatestBeatsnap(0f, "BACKWARD"));
-
-                // Update text and update timeline position
-                scriptManager.metronomePro_Player.UpdateSongProgressUI();
-
-
-
-
-                /*
-                // If live preview is off
-                if (scriptManager.editorUIManager.previewPanel.gameObject.activeSelf == false)
+                if (scriptManager.metronomePro.CurrentTick != 0)
                 {
-                    // Displays the hit object for the beat currently selected
-                    DisplaySelectedBeatTimelineObject();
+                    // Move the song and timeline back 1 tick
+                    scriptManager.rhythmVisualizatorPro.audioSource.time =
+                        (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick - 1];
+
+                    // Calculate new metronome values
+                    scriptManager.metronomePro.CalculateDecrementMetronomeValues();
+
+                    // Sort beatsnaps
+                    //scriptManager.beatsnapManager.SortBeatsnaps();
+
+                    StartCoroutine(DelayUpdateLatestBeatsnap(0f, "BACKWARD"));
+
+                    // Update text and update timeline position
+                    scriptManager.metronomePro_Player.UpdateSongProgressUI();
+
+                    /*
+                    // If live preview is off
+                    if (scriptManager.editorUIManager.previewPanel.gameObject.activeSelf == false)
+                    {
+                        // Displays the hit object for the beat currently selected
+                        DisplaySelectedBeatTimelineObject();
+                    }
+                    else
+                    {
+                        // Update the preview hit objects on scroll wheel 
+                        scriptManager.livePreview.UpdatePreviewHitObjects();
+                    }
+                    */
                 }
-                else
-                {
-                    // Update the preview hit objects on scroll wheel 
-                    scriptManager.livePreview.UpdatePreviewHitObjects();
-                }
-                */
             }
         }
     }
@@ -142,43 +143,83 @@ public class Timeline : MonoBehaviour
     {
         if (scriptManager.metronomePro.songTickTimes.Count != 0)
         {
-            if (scriptManager.rhythmVisualizatorPro.audioSource.time < 
-                scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.songTickTimes.Count - 1])
+            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == false)
             {
-                // Move the song and timeline forward 1 tick
-                scriptManager.rhythmVisualizatorPro.audioSource.time = 
-                    (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick + 1];
-
-                // Calculate increment metronome values
-                scriptManager.metronomePro.CalculateIncrementMetronomeValues();
-
-                // Sort beatsnaps
-                //scriptManager.beatsnapManager.SortBeatsnaps();
-
-                StartCoroutine(DelayUpdateLatestBeatsnap(0f, "FORWARD"));
-
-                // Update text and update timeline position
-                scriptManager.metronomePro_Player.UpdateSongProgressUI();
-
-
-
-                /*
-                // If live preview is off
-                if (scriptManager.editorUIManager.previewPanel.gameObject.activeSelf == false)
+                if (scriptManager.rhythmVisualizatorPro.audioSource.time <
+                    scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.songTickTimes.Count - 1])
                 {
-                    // Displays the hit object for the beat currently selected
-                    DisplaySelectedBeatTimelineObject();
+                    // Move the song and timeline forward 1 tick
+                    scriptManager.rhythmVisualizatorPro.audioSource.time =
+                        (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick + 1];
+
+                    // Calculate increment metronome values
+                    scriptManager.metronomePro.CalculateIncrementMetronomeValues();
+
+                    // Sort beatsnaps
+                    //scriptManager.beatsnapManager.SortBeatsnaps();
+
+                    StartCoroutine(DelayUpdateLatestBeatsnap(0f, "FORWARD"));
+
+                    // Update text and update timeline position
+                    scriptManager.metronomePro_Player.UpdateSongProgressUI();
+
+                    /*
+                    // If live preview is off
+                    if (scriptManager.editorUIManager.previewPanel.gameObject.activeSelf == false)
+                    {
+                        // Displays the hit object for the beat currently selected
+                        DisplaySelectedBeatTimelineObject();
+                    }
+                    else
+                    {
+                        // Update the preview hit objects on scroll wheel 
+                        scriptManager.livePreview.UpdatePreviewHitObjects();
+                    }
+                    */
                 }
-                else
-                {
-                    // Update the preview hit objects on scroll wheel 
-                    scriptManager.livePreview.UpdatePreviewHitObjects();
-                }
-                */
             }
         }
     }
 
+
+    // Navigate to the current tick on the timeline when the song is paused
+    public void SnapToClosestTickOnTimeline()
+    {
+        if (scriptManager.metronomePro.songTickTimes.Count != 0)
+        {
+            if (scriptManager.rhythmVisualizatorPro.audioSource.time <
+                scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.songTickTimes.Count - 1])
+            {
+                // Get the closest tick time, comparing previous and current tick time
+                float closestTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime(scriptManager.rhythmVisualizatorPro.audioSource.time);
+
+                // Update audio source time to the closest tick
+                scriptManager.rhythmVisualizatorPro.audioSource.time = closestTickTime;
+
+                // If the closest tick if the current tick
+                if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick])
+                {
+                    
+                }
+                else if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick - 1])
+                {
+                    StartCoroutine(DelayUpdateLatestBeatsnap(0f, "BACKWARD"));
+                }
+
+
+                // Calculate increment metronome values
+                scriptManager.metronomePro.CalculateActualStep();
+
+                /*
+                // Update all beatsnaps
+                StartCoroutine(DelayUpdateSortBeatsnaps(0f));
+                */
+
+                // Update text and update timeline position
+                scriptManager.metronomePro_Player.UpdateSongProgressUI();
+            }
+        }
+    }
 
     // Delay and update the beatsnaps, prevents beatsnap frame display bug issue when scrolling timeline
     private IEnumerator DelayUpdateLatestBeatsnap(float _time, string _navigation)

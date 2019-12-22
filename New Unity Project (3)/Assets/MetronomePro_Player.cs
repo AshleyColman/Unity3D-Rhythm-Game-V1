@@ -129,8 +129,7 @@ public class MetronomePro_Player : MonoBehaviour
     {
         if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
         {
-            scriptManager.rhythmVisualizatorPro.audioSource.Pause();
-            scriptManager.metronomePro.Pause();
+            PauseSong();
         }
         else
         {
@@ -153,6 +152,7 @@ public class MetronomePro_Player : MonoBehaviour
     {
         scriptManager.rhythmVisualizatorPro.audioSource.Pause();
         scriptManager.metronomePro.Pause();
+        scriptManager.timelineScript.SnapToClosestTickOnTimeline();
     }
 
     // Stop Song and Metronome, Resets all too.
@@ -170,6 +170,8 @@ public class MetronomePro_Player : MonoBehaviour
         songSlider.value = 0f;
         songSlider.value = 0f;
         reversedTimelineSlider.value = 0f;
+
+        scriptManager.beatsnapManager.SortBeatsnaps();
     }
 
     // Update the song progress bar ui 

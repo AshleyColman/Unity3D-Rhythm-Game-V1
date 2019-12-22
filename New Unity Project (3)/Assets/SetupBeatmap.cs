@@ -13,7 +13,7 @@ public class SetupBeatmap : MonoBehaviour
     private AudioClip beatmapFileAudioClip;
 
     // Gameobject
-    public GameObject setupPanel, fileSetupPanel, timingSetupPanel;
+    public GameObject setupBeatmapPanel, folderSetupPanel, fileSetupPanel, timingSetupPanel;
 
     // Image
     public Image audioFileLoadingIconImage, backgroundImageLoadingIconImage;
@@ -214,6 +214,7 @@ public class SetupBeatmap : MonoBehaviour
     public void FileSetupPanelContinue()
     {
         fileSetupPanel.gameObject.SetActive(false);
+        setupBeatmapPanel.gameObject.SetActive(false);
         timingSetupPanel.gameObject.SetActive(true);
 
         // Play metronome
@@ -222,11 +223,8 @@ public class SetupBeatmap : MonoBehaviour
         // Move the timeline to the middle of the screen for timing setup
         scriptManager.timelineScript.SetTimingSetupTimlinePosition();
 
-
-
-        // Setup the beatsnaps
-        //scriptManager.beatsnapManager.SetupBeatsnaps();
-
+        // Calculate beatsnap slider values
+        scriptManager.beatsnapManager.CalculateBeatsnapSliderListValues();
     }
 
     // Continue from the timing setup panel
@@ -240,7 +238,7 @@ public class SetupBeatmap : MonoBehaviour
     {
         if (folderCreated == false)
         {
-            if (songNameInputField.text.Length > 0 && artistNameInputField.text.Length > 0)
+            if (songNameInputField.text.Length > 0 && artistNameInputField.text.Length > 0 && difficultyDropdown.value != 0)
             {
                 createFolderButton.interactable = true;
             }
@@ -275,7 +273,7 @@ public class SetupBeatmap : MonoBehaviour
 
 
         // Change active panel
-        setupPanel.gameObject.SetActive(false);
+        folderSetupPanel.gameObject.SetActive(false);
         fileSetupPanel.gameObject.SetActive(true);
     }
 

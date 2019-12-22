@@ -38,7 +38,6 @@ public class PlacedObject : MonoBehaviour
     private float nextTickTime; // Next tick time
     private float userPressedTime; // Time the user pressed the key down
     private float closestTickTime; // Closest tick time based on the user pressing the key down
-    private float calculatedTickSpawnTime; // Calculated time for the hit object spawn
     private float hitObjectSpawnTime; // Hit object spawn time
     private float timelineObjectSpawnTime; // Object spawn time for activating/deactivating objects
     private float currentSongTime; // Current song time
@@ -468,7 +467,7 @@ public class PlacedObject : MonoBehaviour
     }
 
     // Get current beatsnap tick time
-    public float GetCurrentBeatsnapTime()
+    public float GetCurrentBeatsnapTime(float _time)
     {
         if (scriptManager.metronomePro.CurrentTick != 0 && scriptManager.metronomePro.CurrentTick < scriptManager.metronomePro.songTickTimes.Count)
         {
@@ -480,7 +479,7 @@ public class PlacedObject : MonoBehaviour
             tickTimesList.Add(nextTickTime);
 
             // Check which time the users press was closest to
-            closestTickTime = tickTimesList.Select(p => new { Value = p, Difference = Math.Abs(p - userPressedTime) })
+            closestTickTime = tickTimesList.Select(p => new { Value = p, Difference = Math.Abs(p - _time) })
             .OrderBy(p => p.Difference)
             .First().Value;
         }
@@ -489,13 +488,10 @@ public class PlacedObject : MonoBehaviour
             closestTickTime = 0;
         }
 
-        // Snap the hit object to this time
-        calculatedTickSpawnTime = closestTickTime;
-
         // Reset list
         tickTimesList.Clear();
 
-        return calculatedTickSpawnTime;
+        return closestTickTime;
     }
 
     // Instantiate placed hit object at the position on the mouse
@@ -533,8 +529,18 @@ public class PlacedObject : MonoBehaviour
 
         if (scriptManager.beatsnapManager.BeatsnapTimingEnabled == true)
         {
-            // Check if another hit object has the same spawn time based off ticks, if another hit object exists do not instantiate or add to the list
-            hitObjectSpawnTime = GetCurrentBeatsnapTime();
+            // If the audio source is playing
+            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == true)
+            {
+                // Get the closest beatsnap time based on the current song time
+                hitObjectSpawnTime = GetCurrentBeatsnapTime(userPressedTime);
+            }
+            else
+            {
+                // Audio source is not playing
+                // Set the spawn time to the current tick
+                hitObjectSpawnTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick];
+            }
 
             // Check if the spawn time for the hit object is taken or available
             CheckIfSpawnTimeIsTaken();

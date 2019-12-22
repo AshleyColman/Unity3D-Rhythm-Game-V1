@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Linq;
 using System;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 
 public class DestroyTimelineObject : MonoBehaviour
@@ -85,6 +86,7 @@ public class DestroyTimelineObject : MonoBehaviour
 
     private void Update()
     {
+        /*
         // If the previous frame had the left mouse button pressed down, and there is no longer mouse button down on this frame
         if (previousFrameMouseHeldDown == true && (!Input.GetMouseButton(0)) && previousFrameBeatsnapValueTaken == true)
         {
@@ -100,6 +102,7 @@ public class DestroyTimelineObject : MonoBehaviour
             // Update the last saved slider values
             lastSavedSliderValue = timelineSlider.value;
         }
+        */
     }
 
     public void SetToggleOff()
@@ -303,16 +306,38 @@ public class DestroyTimelineObject : MonoBehaviour
             // If the nearest beat has been taken
             if (nearestBeatTaken == true)
             {
-                //Debug.Log("taken");
-
                 previousFrameBeatsnapValueTaken = true;
             }
             else
             {
-                //Debug.Log("not");
-
                 previousFrameBeatsnapValueTaken = false;
             }
         }
     }
+
+    // Check if new slider value has been taken, save changes and update objects if new slider value has not been taken
+    public void UpdateTimelineObjectOrder()
+    {
+        switch (previousFrameBeatsnapValueTaken)
+        {
+            case true:
+                // Reset the current slider value to the last saved beat slider value
+                ResetSliderValueToLastSavedBeat();
+                break;
+            case false:
+                // Update timeline hit object spawn time
+                UpdateTimelineHitObjectSpawnTime();
+                // Update the last saved slider values
+                lastSavedSliderValue = timelineSlider.value;
+                // Update the list orders
+                scriptManager.placedObject.SortListOrders();
+                // Update all timeline objects
+                scriptManager.placedObject.UpdateTimelineObjects();
+                // Update the bottom UI
+                scriptManager.editorBottomMenu.UpdateSpawnTimeText(timelineHitObjectSpawnTime);
+                scriptManager.editorBottomMenu.UpdateIDText(timelineObjectListIndex);
+                break;
+        }
+    }
+
 }

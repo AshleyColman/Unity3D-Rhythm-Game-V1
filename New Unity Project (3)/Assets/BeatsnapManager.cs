@@ -118,6 +118,10 @@ public class BeatsnapManager : MonoBehaviour
     // Convert all song tick times to slider values
     public void CalculateBeatsnapSliderListValues()
     {
+        // Reset
+        beatsnapSliderValueList.Clear();
+
+        // Update
         for (int i = 0; i < scriptManager.metronomePro.songTickTimes.Count; i++)
         {
             sliderValue = scriptManager.placedObject.CalculateTimelineHitObjectSliderValue((float)scriptManager.metronomePro.songTickTimes[i]);
@@ -186,6 +190,7 @@ public class BeatsnapManager : MonoBehaviour
     {
         scriptManager.metronomePro.CalculateIntervals();
         scriptManager.metronomePro.CalculateActualStep();
+        CalculateBeatsnapSliderListValues();
         SortBeatsnaps();
     }
 
@@ -196,12 +201,10 @@ public class BeatsnapManager : MonoBehaviour
         // Update all visuals for the beatsnaps
 
         // Get the closest tick time based on the current song time
-        currentTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime();
+        currentTickTime = scriptManager.placedObject.GetCurrentBeatsnapTime(scriptManager.rhythmVisualizatorPro.audioSource.time);
 
         // Get the current step
-        int currentStep = scriptManager.metronomePro.currentStep;
-
-        int tickTimeIndex;
+        currentStep = scriptManager.metronomePro.currentStep;
 
         // Loop through all beatsnap objects
         for (int i = 0; i < beatsnapSliderList.Count; i++)
