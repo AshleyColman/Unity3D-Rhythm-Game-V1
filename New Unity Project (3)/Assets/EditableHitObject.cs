@@ -62,7 +62,7 @@ public class EditableHitObject : MonoBehaviour
         if (followCursorPosition == true)
         {
             // Follow the cursors position
-            this.gameObject.transform.position = scriptManager.cursorHitObject.transform.position;
+            this.gameObject.transform.position = scriptManager.cursorHitObject.positionObject.transform.position;
         }
     }
 
@@ -186,6 +186,19 @@ public class EditableHitObject : MonoBehaviour
         {
             if (followCursorPosition == false)
             {
+                // Set rotation for the cursor hit object to match the editable hit object rotation/type
+                switch (scriptManager.placedObject.hitObjectList[objectIndex].HitObjectType)
+                {
+                    case 0:
+                        // SQUARE
+                        scriptManager.cursorHitObject.SetToSquareRotation();
+                        break;
+                    case 1:
+                        // DIAMOND
+                        scriptManager.cursorHitObject.SetToDiamondRotation();
+                        break;
+                }
+                
                 // Enable cursor position follow
                 followCursorPosition = true;
                 // Enable outer selected color
@@ -197,6 +210,8 @@ public class EditableHitObject : MonoBehaviour
                 followCursorPosition = false;
                 // Update the save position for the hit object index selected
                 scriptManager.placedObject.hitObjectList[objectIndex].HitObjectPosition = this.gameObject.transform.position;
+                // Update the hit objects position
+                scriptManager.editorBottomMenu.UpdatePositionText();
                 // Reset selected color
                 selectedImage.color = scriptManager.colorManager.blackColor;
             }

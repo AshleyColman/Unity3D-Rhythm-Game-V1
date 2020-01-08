@@ -232,6 +232,7 @@ public class SetupBeatmap : MonoBehaviour
     {
         timingSetupPanel.gameObject.SetActive(false);
         scriptManager.timelineScript.SetDefaultTimelinePosition();
+        scriptManager.cursorHitObject.gameObject.SetActive(true);
     }
 
     public void CheckSetupPanelInputFieldLength()
@@ -248,6 +249,8 @@ public class SetupBeatmap : MonoBehaviour
             }
         }
     }
+
+
 
     public void CreateFolder()
     {
@@ -288,14 +291,17 @@ public class SetupBeatmap : MonoBehaviour
     {
         switch (difficultyDropdown.value)
         {
-            case 0:
+            case 1:
                 beatmapDifficulty = EASYDIFFICULTY;
                 break;
-            case 1:
+            case 2:
                 beatmapDifficulty = ADVANCEDDIFFICULTY;
                 break;
-            case 2:
+            case 3:
                 beatmapDifficulty = EXTRADIFFICULTY;
+                break;
+            default:
+                beatmapDifficulty = EASYDIFFICULTY;
                 break;
         }
     }

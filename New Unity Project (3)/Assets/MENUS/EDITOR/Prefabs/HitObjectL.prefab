@@ -5119,7 +5119,7 @@ GameObject:
   - component: {fileID: 8495883505250843445}
   m_Layer: 5
   m_Name: HitObjectL
-  m_TagString: Untagged
+  m_TagString: Left
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

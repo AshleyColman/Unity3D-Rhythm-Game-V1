@@ -694,13 +694,15 @@ public class PlacedObject : MonoBehaviour
         for (int i = 0; i < hitObjectList.Count; i++)
         {
             // Add the positions to the database
-            Database.database.positionX.Add(hitObjectList[i].HitObjectPosition.x);
-            Database.database.positionY.Add(hitObjectList[i].HitObjectPosition.y);
-            Database.database.positionZ.Add(hitObjectList[i].HitObjectPosition.z);
+            Database.database.PositionX.Add(hitObjectList[i].HitObjectPosition.x);
+            Database.database.PositionY.Add(hitObjectList[i].HitObjectPosition.y);
+            Database.database.PositionZ.Add(hitObjectList[i].HitObjectPosition.z);
             // Add the spawn times to the database
-            Database.database.hitObjectSpawnTime.Add(hitObjectList[i].HitObjectSpawnTime);
+            Database.database.HitObjectSpawnTime.Add(hitObjectList[i].HitObjectSpawnTime);
             // Add the object type to the database
-            Database.database.objectType.Add(hitObjectList[i].HitObjectType);
+            Database.database.ObjectType.Add(hitObjectList[i].HitObjectType);
+            Database.database.AnimationType.Add(hitObjectList[i].HitObjectAnimationType);
+            Database.database.SoundType.Add(hitObjectList[i].HitObjectSoundType);
         }
 
         // Save

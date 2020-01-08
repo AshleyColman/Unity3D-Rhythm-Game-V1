@@ -56,24 +56,21 @@ public class BackgroundManager : MonoBehaviour
 
     void Awake()
     {
-        if (scriptManager == null)
-        {
-            scriptManager = FindObjectOfType<ScriptManager>();
-        }
-
         videoTickBoxSelected = false;
         loadSecondBackgroundImage = false;
         loadSecondVideoPlayer = false;
-
-        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.MenuSceneIndex)
-        {
-            videoTickBoxSelectedImage.gameObject.SetActive(false);
-        }
     }
 
     private void Start()
     {
         scriptManager = FindObjectOfType<ScriptManager>();
+
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.GameplaySceneIndex)
+        {
+            completeImagePath = Database.database.LoadedBeatmapFolderDirectory + imageName + imageType;
+            Debug.Log(completeImagePath);
+            LoadNextBackgroundImg();
+        }
     }
 
     // Toggle video tick box on or off 

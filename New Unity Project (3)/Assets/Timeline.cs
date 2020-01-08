@@ -1,12 +1,14 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.Linq;
+using TMPro;
+
 public class Timeline : MonoBehaviour
 {
     // Gameobject
     public GameObject reversedTimelineHandle, timeline, timelineSlider;
+
+    // Text
+    public TextMeshProUGUI timelineSizeText;
 
     // Vector
     private Vector3 timelineCurrentPosition, reversedTimelineHandlePosition, reversedTimelineHandleStartingPosition;
@@ -15,6 +17,9 @@ public class Timeline : MonoBehaviour
     // Float
     private float x, currentTimelineWidth;
     private const float SIZE_VALUE = 2000, MIN_TIMELINE_SIZE = 15000, MAX_TIMELINE_SIZE = 70000;
+
+    // Int
+    private int currentTimelineSizeCount;
 
     // String
     private const string ADD_OPERATOR = "+", SUBTRACT_OPERATOR = "-";
@@ -33,6 +38,8 @@ public class Timeline : MonoBehaviour
         scriptManager = FindObjectOfType<ScriptManager>();
 
         defaultTimelinePosition = timeline.transform.localPosition;
+
+        currentTimelineSizeCount = 1;
 
         // Setup timeline position is -450 on y axis so is positioned in the middle of screen
         timingSetupTimelinePosition = new Vector3(0, 0, 0);
@@ -280,6 +287,7 @@ public class Timeline : MonoBehaviour
                 else
                 {
                     currentTimelineWidth += SIZE_VALUE;
+                    currentTimelineSizeCount++;
                 }
 
                 break;
@@ -295,6 +303,7 @@ public class Timeline : MonoBehaviour
                 else
                 {
                     currentTimelineWidth -= SIZE_VALUE;
+                    currentTimelineSizeCount--;
                 }
 
                 break;
@@ -304,6 +313,8 @@ public class Timeline : MonoBehaviour
 
         var reversedRectTransform = scriptManager.metronomePro_Player.reversedTimelineSlider.transform as RectTransform;
         reversedRectTransform.sizeDelta = new Vector2(currentTimelineWidth, reversedRectTransform.sizeDelta.y);
+
+        timelineSizeText.text = "TIMELINE SIZE " + currentTimelineSizeCount.ToString();
 
         /*
 

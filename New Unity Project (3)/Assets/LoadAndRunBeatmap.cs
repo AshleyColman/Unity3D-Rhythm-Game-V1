@@ -3,33 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Networking;
 
 public class LoadAndRunBeatmap : MonoBehaviour
 {
 
     // UI
-    public TextMeshProUGUI pressPlayText; // Pressplay prompt text
-    public TextMeshProUGUI gameplayTitleText; // Song title and artist
-    public Image songProgressBarImage; // Song progress bar
-
-    // Audio
-    public AudioSource menuSFXAudioSource; // The audio source for playing the start sound effect
-    public AudioClip pressPlaySoundClip; // The sound that plays when you press play at the start of the game
-
-    // Animation
-    public Animator pressPlayAnimator; // Animates the Press Play Text at the start of the song
-
-    public Animator hitObjectAnimator;
-
-
-    // Colors
-    public Color easyDifficultyColor, advancedDifficultyColor, extraDifficultyColor; // Song progress bar colors based on beatmap difficulty
+    public TextMeshProUGUI gameplayTitleText, beatmapCreatorText, difficultyText;
 
     // Gameobjects
     public List<GameObject> spawnedList = new List<GameObject>(); // List of all spawned hit objects in the scene
 
     // Transform
-    public Canvas canvas;
+    public Transform canvas;
 
     // Strings
     private string hitObjectTag; // The tag on the hit object - Blue, Green, Purple, Red, Orange, Yellow
@@ -45,7 +31,6 @@ public class LoadAndRunBeatmap : MonoBehaviour
     private float songTimer; // The current time in the song
     private float trackStartTime; // The time that the song started from
     private float[] hitObjectSpawnTimes;  // Hit object spawn times
-    private float levelChangerAnimationTimer;
 
     // Vectors
     private Vector3[] hitObjectPositions; // Hit object positions containing all 3 xyz values from the other lists
@@ -61,26 +46,15 @@ public class LoadAndRunBeatmap : MonoBehaviour
     private KeyCode startGameKey; // Game to start the gameplay
 
     // Scripts
-    private SongProgressBar songProgressBar; // Required for song time for spawning
-    private PlayerSkillsManager playerSkillsManager; // Reference required for getting the fade speed and adjusting the spawn times based on the speed chosen
-    private FailAndRetryManager failAndRetryManager; // Used for tracking whether the user has failed and restarting the game scene
-    GameplayToResultsManager gameplayToResultsManager;
+    private ScriptManager scriptManager;
 
     // Properties
-
-    public float LevelChangerAnimationTimer
-    {
-        get { return levelChangerAnimationTimer; }
-    }
-
 
     // Get all hit object have been hit
     public bool AllHitObjectsHaveBeenHit
     {
         get { return allHitObjectsHaveBeenHit; }
     }
-
-
 
 
     [System.Serializable]
@@ -93,8 +67,6 @@ public class LoadAndRunBeatmap : MonoBehaviour
 
     public List<Pool> pools;
     public Dictionary<int, Queue<GameObject>> poolDictionary;
-
-
 
     // Use this for initialization
     void Start()
@@ -111,22 +83,16 @@ public class LoadAndRunBeatmap : MonoBehaviour
         hasSpawnedAllHitObjects = false; // Set to false as all object haven't been spawned yet
         startGameKey = KeyCode.Space; // Assign starting the game key to the spacebar
 
-
         // Reference
-        songProgressBar = FindObjectOfType<SongProgressBar>();
-        failAndRetryManager = FindObjectOfType<FailAndRetryManager>();
-        playerSkillsManager = FindObjectOfType<PlayerSkillsManager>();
-        gameplayToResultsManager = FindObjectOfType<GameplayToResultsManager>();
+        scriptManager = FindObjectOfType<ScriptManager>();
 
         // Functions
-        totalHitObjects = Database.database.loadedPositionX.Count; // Assign the total number of hit objects based on how many x positions there are
+        totalHitObjects = Database.database.LoadedPositionX.Count; // Assign the total number of hit objects based on how many x positions there are
         totalHitObjectListSize = totalHitObjects; // Get total number of objects to spawn
-        //CalculateNewHitObjectYPositions(); // Calculate all the y positions for the hit objects, preventing overlap during gameplay
         LoadHitObjectPositions(); // Load the hit object xyz positions from the beatmap file
         LoadHitObjectSpawnTimes(); // Load and update the hit object spawn times with the fade speed selected value
         UpdateGameplayUI(); // When gameplay scene has loaded update the UI text
-        SetDifficultyUI(); // Check the difficulty selected, change the song progress bar color to the difficulty color
-
+        StartCoroutine(GetAudioFile()); // Get the audio file and load it into an audio clip
 
         poolDictionary = new Dictionary<int, Queue<GameObject>>();
 
@@ -138,6 +104,9 @@ public class LoadAndRunBeatmap : MonoBehaviour
             {
                 GameObject obj = Instantiate(pool.prefab);
                 obj.transform.SetParent(canvas.transform);
+                obj.transform.localScale = new Vector3(1, 1, 1);
+                obj.transform.localPosition = Vector3.zero;
+                obj.transform.rotation = Quaternion.identity;
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
             }
@@ -150,12 +119,10 @@ public class LoadAndRunBeatmap : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        levelChangerAnimationTimer += Time.deltaTime;
-
-        if (levelChangerAnimationTimer >= 2f)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            // Check keyboard input to start gameplay
-            CheckToStartGameplay();
+            gameplayHasStarted = true;
+            StartMusic();
         }
 
         // Update the song timer with the current song time if gameplay has started
@@ -179,35 +146,10 @@ public class LoadAndRunBeatmap : MonoBehaviour
         if (poolDictionary.ContainsKey(_tag) == true)
         {
             GameObject objectToSpawn = poolDictionary[_tag].Dequeue();
-            hitObjectAnimator = objectToSpawn.GetComponent<Animator>();
             objectToSpawn.gameObject.SetActive(true);
 
-
-            //float positionX = _position.x;
-            //float positionY = _position.y;
-            //float positionZ = 100;
-            //_position = new Vector3(positionX, positionY, positionZ);
-
             objectToSpawn.transform.position = _position;
-            //objectToSpawn.transform.rotation = Quaternion.Euler(0, 45, 0);
-            //objectToSpawn.transform.rotation = Quaternion.Euler(-90, 0, 45);
-            objectToSpawn.transform.rotation = Quaternion.Euler(90, 0, 45);
-
-            /*
-            // Play the animation based on the animation speed
-            switch (playerSkillsManager.FadeSpeedSelected)
-            {
-                case "SLOW":
-                    hitObjectAnimator.Play("SlowHitObject", 0, 0f);
-                    break;
-                case "NORMAL":
-                    hitObjectAnimator.Play("HitObject", 0, 0f);
-                    break;
-                case "FAST":
-                    hitObjectAnimator.Play("FastHitObject", 0, 0f);
-                    break;
-            }
-            */
+            objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
 
             objectToSpawn.transform.SetAsFirstSibling();
 
@@ -227,8 +169,6 @@ public class LoadAndRunBeatmap : MonoBehaviour
         }
     }
 
-
-
     // Load the hit object xyz positions from the beatmap file and insert into the vector3 position array
     private void LoadHitObjectPositions()
     {
@@ -239,7 +179,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
         for (int i = 0; i < totalHitObjects; i++)
         {
             // Create the new position for inserting to the array
-            hitObjectPosition = new Vector3(Database.database.loadedPositionX[i], Database.database.loadedPositionY[i], Database.database.loadedPositionZ[i]);
+            hitObjectPosition = new Vector3(Database.database.LoadedPositionX[i], Database.database.LoadedPositionY[i], Database.database.LoadedPositionZ[i]);
             // Add the position of all the values into the array of positions used for spawning
             hitObjectPositions[i] = hitObjectPosition;
         }
@@ -267,7 +207,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
             startingYPosition -= startYPositionDecrementValue;
 
             // Assign the changed y position to the hit object y position list used for spawning the hit objects
-            Database.database.loadedPositionY[i] = startingYPosition;
+            Database.database.LoadedPositionY[i] = startingYPosition;
         }
     }
 
@@ -279,10 +219,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
         {
             // Set to true as gameplay has now started
             gameplayHasStarted = true;
-            // Animate the press play text at the start of the song
-            StartCoroutine(AnimatePressPlayText());
-            // Play the press play sound effect
-            PlayPressPlaySound();
+
             // Start the music
             StartMusic();
         }
@@ -295,7 +232,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
         if (gameplayHasStarted == true)
         {
             // Update the song timer with the current song time
-            songTimer = songProgressBar.SongTimePosition;
+            songTimer = scriptManager.rhythmVisualizatorPro.audioSource.time;
         }
     }
 
@@ -317,10 +254,10 @@ public class LoadAndRunBeatmap : MonoBehaviour
         if (hasSpawnedAllHitObjects == false)
         {
             // Check if it's time to spawn the next hit boject
-            if (songTimer >= Database.database.loadedHitObjectSpawnTime[hitObjectID])
+            if (songTimer >= Database.database.LoadedHitObjectSpawnTime[hitObjectID])
             {
 
-                SpawnFromPool(Database.database.loadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
+                SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
 
                 // Spawn the next hit object
                 //SpawnHitObject(hitObjectPositions[hitObjectID], Database.database.LoadedObjectType[hitObjectID], hitObjectID);
@@ -365,7 +302,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
                 else
                 {
                     // If the user has failed set can be hit to false
-                    if (failAndRetryManager.HasFailed == true)
+                    if (scriptManager.failAndRetryManager.HasFailed == true)
                     {
                         // Make hit objects unhittable
                         spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().CanBeHit = false;
@@ -384,50 +321,24 @@ public class LoadAndRunBeatmap : MonoBehaviour
     void StartMusic()
     {
         trackStartTime = (float)AudioSettings.dspTime;
-        songProgressBar.songAudioSource.PlayScheduled(trackStartTime);
-    }
-
-    // Check the difficulty selected, change the song progress bar color to the difficulty color and enable the difficulty text panel
-    private void SetDifficultyUI()
-    {
-        switch (Database.database.LoadedBeatmapDifficulty)
-        {
-            case "easy":
-                songProgressBarImage.color = easyDifficultyColor;
-                break;
-            case "advanced":
-                songProgressBarImage.color = advancedDifficultyColor;
-                break;
-            case "extra":
-                songProgressBarImage.color = extraDifficultyColor;
-                break;
-        }
-    }
-
-    // Play the animation for the PressPlayText
-    private IEnumerator AnimatePressPlayText()
-    {
-        pressPlayAnimator.Play("PressPlayTextAnimation");
-        yield return new WaitForSeconds(0.10f);
-        pressPlayText.enabled = false;
-    }
-
-    // Play the PressPlay sound effect
-    private void PlayPressPlaySound()
-    {
-        menuSFXAudioSource.PlayOneShot(pressPlaySoundClip, 1f);
+        scriptManager.rhythmVisualizatorPro.audioSource.PlayScheduled(trackStartTime);
+        scriptManager.rhythmVisualizatorPro.audioSource.volume = 0.5f;
     }
 
     // Update the song name, artist and difficulty with the values entered
     public void UpdateGameplayUI()
     {
-        // Create the playedByUsername value off the current player logged in
-        string playedByUsername = "playing as " + MySQLDBManager.username;
         // Create the gameplay title from song name + artist
         string gameplayTitle = Database.database.LoadedSongName + " [ " + Database.database.LoadedSongArtist + " ]";
-        // + " ] " + "      " + playedByUsername;
+
         // Set gameplay text to gameplay title, make all upper case
         gameplayTitleText.text = gameplayTitle.ToUpper();
+
+        beatmapCreatorText.text = "DESIGNED BY " + Database.database.LoadedBeatmapCreator.ToUpper();
+
+        difficultyText.text = Database.database.LoadedBeatmapDifficulty.ToUpper() + " " + Database.database.LoadedBeatmapDifficultyLevel;
+
+        // Set difficulty text color 
     }
 
     // Check if all hit objects have been hit (for scene transition)
@@ -443,10 +354,10 @@ public class LoadAndRunBeatmap : MonoBehaviour
                 allHitObjectsHaveBeenHit = true;
 
                 // If the user hasn't failed
-                if (failAndRetryManager.HasFailed == false)
+                if (scriptManager.failAndRetryManager.HasFailed == false)
                 {
                     // Transition to the next scene
-                    gameplayToResultsManager.TransitionScene();
+                    //gameplayToResultsManager.TransitionScene();
                 }
             }
             else
@@ -459,6 +370,26 @@ public class LoadAndRunBeatmap : MonoBehaviour
         {
             // Set to false
             allHitObjectsHaveBeenHit = false;
+        }
+    }
+
+    private IEnumerator GetAudioFile()
+    {
+        string audioFilePath = Database.database.LoadedBeatmapFolderDirectory + "audio.ogg";
+
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + audioFilePath, AudioType.OGGVORBIS))
+        {
+            ((DownloadHandlerAudioClip)www.downloadHandler).streamAudio = true;
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError)
+            {
+                
+            }
+            else
+            {
+                scriptManager.rhythmVisualizatorPro.audioSource.clip = DownloadHandlerAudioClip.GetContent(www);
+            }
         }
     }
 }

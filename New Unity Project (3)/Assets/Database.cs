@@ -18,22 +18,22 @@ public class Database : MonoBehaviour
     private string beatmapFolderDirectory; // Beatmap folder directory location
 
     // Integers
-    public List<float> positionX = new List<float>(); // X position of the hit object
-    public List<float> positionY = new List<float>(); // Y position of the hit object
-    public List<float> positionZ = new List<float>(); // Z position of the hit object                      
-    public List<float> hitObjectSpawnTime = new List<float>();// List of spawn times of the objects
-    public List<int> objectType = new List<int>(); // List of object types
-    public List<int> animationType = new List<int>(); // Animation type list
-    public List<int> soundType = new List<int>(); // Sound type list
+    private List<float> positionX = new List<float>(); // X position of the hit object
+    private List<float> positionY = new List<float>(); // Y position of the hit object
+    private List<float> positionZ = new List<float>(); // Z position of the hit object                      
+    private List<float> hitObjectSpawnTime = new List<float>();// List of spawn times of the objects
+    private List<int> objectType = new List<int>(); // List of object types
+    private List<int> animationType = new List<int>(); // Animation type list
+    private List<int> soundType = new List<int>(); // Sound type list
 
     // Loaded integers
-    public List<float> loadedPositionX = new List<float>(); // Loaded X position of the hit object
-    public List<float> loadedPositionY = new List<float>(); // Loaded Y position of the hit object
-    public List<float> loadedPositionZ = new List<float>(); // Loaded Z position of the hit object
-    public List<float> loadedHitObjectSpawnTime = new List<float>(); // Loaded list of spawn times               
-    public List<int> loadedObjectType = new List<int>(); // Loaded of object types
-    public List<int> loadedAnimationType = new List<int>(); // Animation type list
-    public List<int> loadedSoundType = new List<int>(); // Sound type list
+    private List<float> loadedPositionX = new List<float>(); // Loaded X position of the hit object
+    private List<float> loadedPositionY = new List<float>(); // Loaded Y position of the hit object
+    private List<float> loadedPositionZ = new List<float>(); // Loaded Z position of the hit object
+    private List<float> loadedHitObjectSpawnTime = new List<float>(); // Loaded list of spawn times               
+    private List<int> loadedObjectType = new List<int>(); // Loaded of object types
+    private List<int> loadedAnimationType = new List<int>(); // Animation type list
+    private List<int> loadedSoundType = new List<int>(); // Sound type list
     private float loadedSongPreviewStartTime; // Loaded song preview time
     private float loadedBPM, loadedOffsetMS; // Loaded bpm and offset
 
@@ -49,6 +49,91 @@ public class Database : MonoBehaviour
     private int loadedKeyMode; // Key mode number
 
     // Properties
+
+    public List<float> PositionX
+    {
+        get { return positionX; }
+        set { positionX = value; }
+    }
+
+    public List<float> PositionY
+    {
+        get { return positionY; }
+        set { positionY = value; }
+    }
+
+    public List<float> PositionZ
+    {
+        get { return positionZ; }
+        set { positionZ = value; }
+    }
+
+    public List<float> HitObjectSpawnTime
+    {
+        get { return hitObjectSpawnTime; }
+        set { hitObjectSpawnTime = value; }
+    }
+
+    public List<int> ObjectType
+    {
+        get { return objectType; }
+        set { objectType = value; }
+    }
+
+    public List<int> AnimationType
+    {
+        get { return animationType; }
+        set { animationType = value; }
+    }
+
+    public List<int> SoundType
+    {
+        get { return soundType; }
+        set { soundType = value; }
+    }
+
+    public List<float> LoadedPositionX
+    {
+        get { return loadedPositionX; }
+        set { loadedPositionX = value; }
+    }
+
+    public List<float> LoadedPositionY
+    {
+        get { return loadedPositionY; }
+        set { loadedPositionY = value; }
+    }
+
+    public List<float> LoadedPositionZ
+    {
+        get { return loadedPositionZ; }
+        set { loadedPositionZ = value; }
+    }
+
+    public List<float> LoadedHitObjectSpawnTime
+    {
+        get { return loadedHitObjectSpawnTime; }
+        set { loadedHitObjectSpawnTime = value; }
+    }
+
+    public List<int> LoadedObjectType
+    {
+        get { return loadedObjectType; }
+        set { loadedObjectType = value; }
+    }
+
+    public List<int> LoadedAnimationType
+    {
+        get { return loadedAnimationType; }
+        set { loadedAnimationType = value; }
+    }
+
+    public List<int> LoadedSoundType
+    {
+        get { return loadedSoundType; }
+        set { loadedSoundType = value; }
+    }
+
     public int KeyMode
     {
         get { return KeyMode; }
@@ -118,6 +203,8 @@ public class Database : MonoBehaviour
     {
         database = this;
         beatmap = new Beatmap();
+
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Start()
@@ -142,7 +229,6 @@ public class Database : MonoBehaviour
             scriptManager.setupBeatmap.BeatmapDifficulty + FILE_EXTENSION, FileMode.OpenOrCreate);
         BinaryFormatter bf = new BinaryFormatter();
 
-        /*
         // Save the list of beatmap information for all hit objects
         for (int i = 0; i < positionX.Count; i++)
         {
@@ -154,7 +240,6 @@ public class Database : MonoBehaviour
             beatmap.AnimationType.Add(animationType[i]);
             beatmap.SoundType.Add(soundType[i]);
         }
-        */
 
         // Save beatmap information
         beatmap.SongName = scriptManager.setupBeatmap.SongName;
@@ -207,19 +292,17 @@ public class Database : MonoBehaviour
         beatmap = (Beatmap)bf.Deserialize(stream);
         stream.Close();
 
-        /*
         // Load the list of positions for all objects to the file?
-        for (int i = 0; i < beatmap.positionX.Count; i++)
+        for (int i = 0; i < beatmap.PositionX.Count; i++)
         {
-            loadedPositionX.Add(beatmap.positionX[i]);
-            loadedPositionY.Add(beatmap.positionY[i]);
-            loadedPositionZ.Add(beatmap.positionZ[i]);
-            loadedHitObjectSpawnTime.Add(beatmap.hitObjectSpawnTime[i]);
-            loadedObjectType.Add(beatmap.objectType[i]);
-            loadedAnimationType.Add(beatmap.animationType[i]);
-            loadedSoundType.Add(beatmap.soundType[i]);
+            loadedPositionX.Add(beatmap.PositionX[i]);
+            loadedPositionY.Add(beatmap.PositionY[i]);
+            loadedPositionZ.Add(beatmap.PositionZ[i]);
+            loadedHitObjectSpawnTime.Add(beatmap.HitObjectSpawnTime[i]);
+            loadedObjectType.Add(beatmap.ObjectType[i]);
+            loadedAnimationType.Add(beatmap.AnimationType[i]);
+            loadedSoundType.Add(beatmap.SoundType[i]);
         }
-        */
 
         // Load beatmap information
         loadedSongName = beatmap.SongName;
@@ -238,6 +321,9 @@ public class Database : MonoBehaviour
 
         // Load beatmap table name for leaderboards
         loadedLeaderboardTableName = beatmap.LeaderboardTableName;
+
+        Debug.Log(loadedSongName);
+        Debug.Log(loadedPositionX.Count);
     }
 
     // Clear all loaded items, used in the song select screen to remove all loaded when selecting a new difficulty

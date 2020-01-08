@@ -12,7 +12,6 @@ public class ScriptManager : MonoBehaviour
     public SongSelectMenuFlash songSelectMenuFlash;
     public MessagePanel messagePanel;
     public TipsNewsScroll tipsNewsScroll;
-    public HitSoundDatabase hitSoundDatabase;
     public LoadAndRunBeatmap loadAndRunBeatmap;
     public MenuManager menuManager;
     public MetronomeForEffects metronomeForEffects;
@@ -42,4 +41,9 @@ public class ScriptManager : MonoBehaviour
     public EditableHitObject editableHitObject;
     public ColorManager colorManager;
     public EditorBottomMenu editorBottomMenu;
+    public FailAndRetryManager failAndRetryManager;
+    public ScoreManager scoreManager;
+    public ExplosionManager explosionManager;
+    public HitSoundManager hitSoundManager;
+    public FeverTimeManager feverTimeManager;
 }

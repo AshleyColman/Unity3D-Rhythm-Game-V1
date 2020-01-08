@@ -97,4 +97,10 @@ public class EditorBottomMenu : MonoBehaviour
     {
         objectIDText.text = _objectID.ToString();
     }
+
+    public void UpdatePositionText()
+    {
+        objectPositionText.text = "x: " + scriptManager.editableHitObject.transform.localPosition.x.ToString("F2") + 
+            " y: " + scriptManager.editableHitObject.transform.localPosition.y.ToString("F2");
+    }
 }

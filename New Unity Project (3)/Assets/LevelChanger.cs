@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class LevelChanger : MonoBehaviour
 {
     private int currentSceneIndex;
-    private const int menuSceneIndex = 0, editorSceneIndex = 1;
+    private const int menuSceneIndex = 0, editorSceneIndex = 1, gameplaySceneIndex = 2;
 
     public int MenuSceneIndex
     {
@@ -23,6 +23,11 @@ public class LevelChanger : MonoBehaviour
         get { return currentSceneIndex; }
     }
 
+    public int GameplaySceneIndex
+    {
+        get { return gameplaySceneIndex; }
+    }
+
     private void Awake()
     {
         currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
@@ -31,5 +36,10 @@ public class LevelChanger : MonoBehaviour
     private void Update()
     {
         currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+    }
+
+    public void LoadScene(int _index)
+    {
+        SceneManager.LoadScene(_index);
     }
 }

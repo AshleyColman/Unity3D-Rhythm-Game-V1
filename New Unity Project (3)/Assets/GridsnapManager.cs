@@ -14,7 +14,7 @@ public class GridsnapManager : MonoBehaviour
     public TMP_Dropdown snappingDropdown;
 
     // Gameobject 
-    public GameObject gridSizeButton, distanceSnapSizeButton;
+    public GameObject gridSizeButton, distanceSnapSizeButton, gridLayout;
 
     // Ints
     private int gridSizeX, gridSizeY;
@@ -40,7 +40,6 @@ public class GridsnapManager : MonoBehaviour
 
     public void UpdateSnappingMethod()
     {
-
         // 0 - NO SNAP
         // 1 - GRID SNAP
         // 2 - DISTANCE SNAP
@@ -50,12 +49,31 @@ public class GridsnapManager : MonoBehaviour
             case 0:
                 DeactivateDistanceSnapSizeButton();
                 DeactivateGridSizeButton();
+                scriptManager.cursorHitObject.ResetDistanceSnapValue();
+                scriptManager.cursorHitObject.CursorHitObjectButtonInteractable(false);
+                scriptManager.cursorHitObject.DisableCursorHitObjectRaycast();
+                scriptManager.cursorHitObject.FollowMouse = true;
+                scriptManager.cursorHitObject.DisableCursotHitObjectTextElements();
+                gridLayout.gameObject.SetActive(false);
                 break;
             case 1:
                 DeactivateDistanceSnapSizeButton();
+                ActivateGridSizeButton();
+                scriptManager.cursorHitObject.ResetDistanceSnapValue();
+                scriptManager.cursorHitObject.CursorHitObjectButtonInteractable(false);
+                scriptManager.cursorHitObject.DisableCursorHitObjectRaycast();
+                scriptManager.cursorHitObject.FollowMouse = false;
+                scriptManager.cursorHitObject.DisableCursotHitObjectTextElements();
+                gridLayout.gameObject.SetActive(true);
                 break;
             case 2:
                 DeactivateGridSizeButton();
+                ActivateDistanceSnapSizeButton();
+                scriptManager.cursorHitObject.CursorHitObjectButtonInteractable(true);
+                scriptManager.cursorHitObject.EnableCursorHitObjectRaycast();
+                scriptManager.cursorHitObject.EnableStartingDistanceSnapPosition();
+                scriptManager.cursorHitObject.EnableCursotHitObjectTextElements();
+                gridLayout.gameObject.SetActive(false);
                 break;
         }
     }
@@ -68,11 +86,28 @@ public class GridsnapManager : MonoBehaviour
         }
     }
 
+    private void ActivateDistanceSnapSizeButton()
+    {
+        if (distanceSnapSizeButton.gameObject.activeSelf == false)
+        {
+            distanceSnapSizeButton.gameObject.SetActive(true);
+        }
+    }
+
+
     private void DeactivateGridSizeButton()
     {
         if (gridSizeButton.gameObject.activeSelf == true)
         {
             gridSizeButton.gameObject.SetActive(false);
+        }
+    }
+
+    private void ActivateGridSizeButton()
+    {
+        if (gridSizeButton.gameObject.activeSelf == false)
+        {
+            gridSizeButton.gameObject.SetActive(true);
         }
     }
 
