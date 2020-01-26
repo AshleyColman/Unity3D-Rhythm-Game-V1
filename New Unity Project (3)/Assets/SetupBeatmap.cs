@@ -233,6 +233,9 @@ public class SetupBeatmap : MonoBehaviour
         timingSetupPanel.gameObject.SetActive(false);
         scriptManager.timelineScript.SetDefaultTimelinePosition();
         scriptManager.cursorHitObject.gameObject.SetActive(true);
+
+
+        scriptManager.gridsnapManager.CalculateRotations();
     }
 
     public void CheckSetupPanelInputFieldLength()

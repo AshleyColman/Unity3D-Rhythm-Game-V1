@@ -461,6 +461,21 @@ public class MetronomePro : MonoBehaviour
 
             // Disable the timeline objects 
             scriptManager.placedObject.DisableTimelineObjects();
+
+
+
+            // Reset the rotating grid line lerp variables
+            scriptManager.gridsnapManager.ResetLerpVariables();
+
+            
+            /*
+            // Snap grid line to the current tick rotation
+            if (scriptManager.gridsnapManager.BeatsnapRotationList.Count != 0 && currentTick < songTickTimes.Count)
+            {
+                // Update rotation of rotate grid line
+                scriptManager.gridsnapManager.RotateGridToCurrentTickRotation();
+            }
+            */
         }
 
         // Play Audio Tick
