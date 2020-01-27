@@ -91,7 +91,7 @@ public class MetronomePro : MonoBehaviour
         // Change all colors in the UI to white
         ResetImgBeatColors();
 
-        scriptManager = FindObjectOfType<ScriptManager>();
+        ReferenceScriptManager();
 
         OffsetText.text = "OFFSET: " + OffsetMS.ToString("F2");
         BPMText.text = "BPM: " + Bpm.ToString("F2");
@@ -223,8 +223,19 @@ public class MetronomePro : MonoBehaviour
             var tmpInterval = 60f / Bpm;
             interval = tmpInterval / multiplier;
 
+            int division = 0;
+
+            if (divisionDropdown == null)
+            {
+                division = 0;
+            }
+            else
+            {
+                division = divisionDropdown.value;
+            }
+
             // Check the division, based on this calculate the intervals
-            switch (divisionDropdown.value)
+            switch (division)
             {
                 case 0:
                     // 1/1
@@ -248,12 +259,13 @@ public class MetronomePro : MonoBehaviour
 
             songTickTimes.Clear();
 
+            ReferenceScriptManager();
+
             while (interval * i <= scriptManager.rhythmVisualizatorPro.audioSource.clip.length)
             {
                 songTickTimes.Add((interval * i) + (OffsetMS / 1000f));
                 i++;
             }
-
             active = true;
         }
         catch
@@ -262,6 +274,15 @@ public class MetronomePro : MonoBehaviour
         }
     }
   
+    // Get reference to the scriptManager
+    private void ReferenceScriptManager()
+    {
+        if (scriptManager == null)
+        {
+            scriptManager = FindObjectOfType<ScriptManager>();
+        }
+    }
+
     // Calculate Actual Step when the user changes song position in the UI
     public void CalculateActualStep()
     {
@@ -423,20 +444,26 @@ public class MetronomePro : MonoBehaviour
                             currentStep = 1;
                             currentMeasure++;
 
-                            // Only change the sound if the metronome is muted (so preview notes don't play the wrong sound)
-                            if (metronomeIsMuted == false)
+                            if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
                             {
-                                metronomeAudioSource.clip = highClip;
+                                // Only change the sound if the metronome is muted (so preview notes don't play the wrong sound)
+                                if (metronomeIsMuted == false)
+                                {
+                                    metronomeAudioSource.clip = highClip;
+                                }
                             }
                         }
                         else
                         {
                             currentStep++;
 
-                            // Only change the sound if the metronome is muted (so preview notes don't play the wrong sound)
-                            if (metronomeIsMuted == false)
+                            if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
                             {
-                                metronomeAudioSource.clip = lowClip;
+                                // Only change the sound if the metronome is muted (so preview notes don't play the wrong sound)
+                                if (metronomeIsMuted == false)
+                                {
+                                    metronomeAudioSource.clip = lowClip;
+                                }
                             }
                         }
 
@@ -456,26 +483,17 @@ public class MetronomePro : MonoBehaviour
 
         if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
         {
-            // Sort latest beatsnap and push it to the back
-            scriptManager.beatsnapManager.SortLatestBeatsnap("FORWARD");
-
-            // Disable the timeline objects 
-            scriptManager.placedObject.DisableTimelineObjects();
-
-
-
-            // Reset the rotating grid line lerp variables
-            scriptManager.gridsnapManager.ResetLerpVariables();
-
-            
-            /*
-            // Snap grid line to the current tick rotation
-            if (scriptManager.gridsnapManager.BeatsnapRotationList.Count != 0 && currentTick < songTickTimes.Count)
+            if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
             {
-                // Update rotation of rotate grid line
-                scriptManager.gridsnapManager.RotateGridToCurrentTickRotation();
+                // Sort latest beatsnap and push it to the back
+                scriptManager.beatsnapManager.SortLatestBeatsnap("FORWARD");
+
+                // Disable the timeline objects 
+                scriptManager.placedObject.DisableTimelineObjects();
             }
-            */
+
+            // Reset the rotating line lerp variables
+            scriptManager.rotatorManager.ResetLerpVariables();
         }
 
         // Play Audio Tick

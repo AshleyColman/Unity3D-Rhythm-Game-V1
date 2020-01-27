@@ -41,6 +41,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
     private bool hasSpawnedAllHitObjects; // Has the game spawned all hit objects?
     private bool gameplayHasStarted; // Tracks starting and stopping gameplay
     private bool allHitObjectsHaveBeenHit; // Have all the hit objects been hit? Used for going to the results screen if they have
+    private bool hasLoadedTiming;
 
     // Keycodes
     private KeyCode startGameKey; // Game to start the gameplay
@@ -81,6 +82,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
         startCheck = false;
         gameplayHasStarted = false;
         hasSpawnedAllHitObjects = false; // Set to false as all object haven't been spawned yet
+        hasLoadedTiming = false;
         startGameKey = KeyCode.Space; // Assign starting the game key to the spacebar
 
         // Reference
@@ -113,32 +115,56 @@ public class LoadAndRunBeatmap : MonoBehaviour
 
             poolDictionary.Add(pool.tag, objectPool);
         }
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (hasLoadedTiming == false)
         {
-            gameplayHasStarted = true;
-            StartMusic();
+            if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
+            {
+                LoadTiming(); // Load metronome timing information
+                hasLoadedTiming = true;
+            }
         }
 
-        // Update the song timer with the current song time if gameplay has started
-        UpdateSongTimer();
+        if (gameplayHasStarted == false)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                gameplayHasStarted = true;
+                StartMusic();
+                scriptManager.rotatorManager.CalculateRotations();
+                scriptManager.rotatorManager.UpdateTimeToReachTarget();
+                scriptManager.rotatorManager.ToggleLerpOn();
+            }
+        }
+        else
+        {
+            // Update the song timer with the current song time if gameplay has started
+            UpdateSongTimer();
 
-        // Check if all the hit objects have spawned
-        CheckIfAllHitObjectsHaveSpawned();
+            // Check if all the hit objects have spawned
+            CheckIfAllHitObjectsHaveSpawned();
 
-        // Check if it's time to spawn the next hit object
-        CheckIfTimeToSpawnHitObject();
+            // Check if it's time to spawn the next hit object
+            CheckIfTimeToSpawnHitObject();
 
-        // Control which hit object can be hit - earliest spawned
-        EnableHitObjectsToBeHit();
+            // Control which hit object can be hit - earliest spawned
+            EnableHitObjectsToBeHit();
 
-        // Check if all hit objects have been hit
-        CheckIfAllHitObjectsHaveBeenHit();
+            // Check if all hit objects have been hit
+            CheckIfAllHitObjectsHaveBeenHit();
+        }
+    }
+
+    private void LoadTiming()
+    {
+        scriptManager.metronomePro.Bpm = Database.database.LoadedBPM;
+        scriptManager.metronomePro.OffsetMS = Database.database.LoadedOffsetMS;
+        scriptManager.metronomePro.CalculateIntervals();
+        scriptManager.metronomePro.CalculateActualStep();
     }
 
     private void SpawnFromPool(int _tag, Vector3 _position)
@@ -228,12 +254,8 @@ public class LoadAndRunBeatmap : MonoBehaviour
     // Update the song timer with the current time of the song if gameplay has started
     private void UpdateSongTimer()
     {
-        // Check if gameplay has started
-        if (gameplayHasStarted == true)
-        {
-            // Update the song timer with the current song time
-            songTimer = scriptManager.rhythmVisualizatorPro.audioSource.time;
-        }
+        // Update the song timer with the current song time
+        songTimer = scriptManager.rhythmVisualizatorPro.audioSource.time;
     }
 
     // Check if all the hit objects have spawned

@@ -321,9 +321,6 @@ public class Database : MonoBehaviour
 
         // Load beatmap table name for leaderboards
         loadedLeaderboardTableName = beatmap.LeaderboardTableName;
-
-        Debug.Log(loadedSongName);
-        Debug.Log(loadedPositionX.Count);
     }
 
     // Clear all loaded items, used in the song select screen to remove all loaded when selecting a new difficulty

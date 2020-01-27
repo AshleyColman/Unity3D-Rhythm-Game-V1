@@ -56,6 +56,6 @@ public class FeverTimeManager : MonoBehaviour
 
     public void UpdateFeverText()
     {
-        feverTimeValueText.text = (feverTimeSlider.value * 100).ToString() + "%" + '\n' + "FEVER";
+        feverTimeValueText.text = (feverTimeSlider.value * 100).ToString("F2") + "%" + '\n' + "FEVER";
     }
 }

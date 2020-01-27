@@ -57,7 +57,8 @@ public class CursorHitObject : MonoBehaviour
         angleDeg = 0;
         previousPositionObjectPositionX = 0;
         previousPositionObjectPositionY = 0;
-        followMouse = true;
+        //followMouse = true;
+        followMouse = false;
         placedStartingDistanceSnapPosition = false;
     }
 

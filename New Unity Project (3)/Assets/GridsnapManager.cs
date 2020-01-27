@@ -15,34 +15,16 @@ public class GridsnapManager : MonoBehaviour
     public TMP_Dropdown snappingDropdown;
 
     // Gameobject 
-    public GameObject gridSizeButton, distanceSnapSizeButton, gridLayout, rotateGrid;
+    public GameObject gridSizeButton, distanceSnapSizeButton, gridLayout;
+    public List<GameObject> gridPointObjectList = new List<GameObject>(); // List of all grid point gameobjects
 
     // Ints
     private int gridSizeX, gridSizeY;
     private const int maxGridSize = 200, minGridSize = 50, gridValue = 10;
-
-    private List<float> beatsnapRotationList = new List<float>();
-    private const float STARTROTATIONVALUE = 0f;
-    private const float PERTICKROTATIONVALUE = 100f;
-    private float rotationValueToAdd = 0f;
-    private float currentRotationValue = 0f;
-    public float startRotationZ, endRotationZ;
-
-    public float lerpSpeed;
-    public float timer;
-
-    public bool shouldLerp;
-
-    public Quaternion startRotation, endRotation;
-
+    private int gridSnapPointIndex;
+   
     // Scripts
     private ScriptManager scriptManager;
-
-    // Properties
-    public List<float> BeatsnapRotationList
-    {
-        get { return beatsnapRotationList; }
-    }
 
     private void Start()
     {
@@ -59,118 +41,48 @@ public class GridsnapManager : MonoBehaviour
         // Update snapping
         UpdateSnappingMethod();
 
-        lerpSpeed = 1f;
+        gridSnapPointIndex = 0;
 
-        timer = 0f;
+        // Snap cursor hit object to 1st gridpoint
+        scriptManager.cursorHitObject.transform.SetParent(gridPointObjectList[0].transform);
+        scriptManager.cursorHitObject.transform.position = gridPointObjectList[0].transform.position;
     }
 
     private void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.U))
+        // Using arrow keys change position to the next gridpoint
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            // Get the difference between ticks, set it to the lerp time for rotations
-            //lerpSpeed = (float)(scriptManager.metronomePro.songTickTimes[1] - scriptManager.metronomePro.songTickTimes[0]);
+            // Decrement gridsnap point index
+            gridSnapPointIndex--;
 
-            if (shouldLerp == false)
+            // Error check
+            if (gridSnapPointIndex < 0)
             {
-                shouldLerp = true;
+                gridSnapPointIndex = 0;
             }
-            else
+
+            // Change to next gridsnap
+            scriptManager.cursorHitObject.transform.SetParent(gridPointObjectList[gridSnapPointIndex].transform);
+            scriptManager.cursorHitObject.transform.position = gridPointObjectList[gridSnapPointIndex].transform.position;
+        }
+
+        // Using arrow keys change position to the next gridpoint
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            // Increment gridsnap point index
+            gridSnapPointIndex++;
+
+            // Error check
+            if (gridSnapPointIndex > gridPointObjectList.Count - 1)
             {
-                shouldLerp = false;
+                gridSnapPointIndex = gridPointObjectList.Count - 1;
             }
-            
+
+            // Change to next gridsnap
+            scriptManager.cursorHitObject.transform.SetParent(gridPointObjectList[gridSnapPointIndex].transform);
+            scriptManager.cursorHitObject.transform.position = gridPointObjectList[gridSnapPointIndex].transform.position;
         }
-
-        if (shouldLerp == true)
-        {
-            if (beatsnapRotationList.Count != 0 && scriptManager.metronomePro.CurrentTick < scriptManager.metronomePro.songTickTimes.Count)
-            {
-                timer += Time.deltaTime;
-
-                LerpToNextRotation();
-            }
-        }
-
-    }
-
-    public void ResetLerpVariables()
-    {
-        if (scriptManager.metronomePro.CurrentTick + 1 < scriptManager.metronomePro.songTickTimes.Count)
-        {
-            // Get starting rotation (current tick rotation)
-            startRotationZ = beatsnapRotationList[scriptManager.metronomePro.CurrentTick];
-
-            // Get ending rotation (next tick rotation)
-            endRotationZ = beatsnapRotationList[scriptManager.metronomePro.CurrentTick + 1];
-
-            // Create vector for starting rotation
-            startRotation = Quaternion.Euler(0, 0, startRotationZ);
-
-            // Create vector for ending rotation
-            endRotation = Quaternion.Euler(0, 0, endRotationZ);
-
-            // Reset timer
-            timer = 0f;
-        }
-    }
-
-    private void LerpToNextRotation()
-    {
-        // Lerp from start to end rotation over x seconds
-        rotateGrid.transform.rotation = Quaternion.Lerp(startRotation, endRotation, timer * lerpSpeed);
-        
-        //rotateGrid.transform.rotation = Quaternion.Lerp(Quaternion.Euler(0,0,0), Quaternion.Euler(0, 0, 300), Time.time * lerpSpeed);
-
-
-
-        /*
-        // Get starting rotation (current tick rotation)
-        float startRotationZ = beatsnapRotationList[scriptManager.metronomePro.CurrentTick];
-        // Get ending rotation (next tick rotation)
-        float endRotationZ = beatsnapRotationList[scriptManager.metronomePro.CurrentTick + 1];
-
-
-        // Create vector for starting rotation
-        Quaternion startRotation = Quaternion.Euler(0, 0, startRotationZ);
-
-        // Create vector for ending rotation
-        Quaternion endRotation = Quaternion.Euler(0, 0, endRotationZ);
-
-        // Lerp from start to end rotation over x seconds
-        rotateGrid.transform.rotation = Quaternion.Slerp(startRotation, endRotation, Time.time * lerpSpeed);
-                        */
-
-
-    }
-
-    // ROTATIONS SETUP
-    public void CalculateRotations()
-    {
-        for (int i = 0; i < scriptManager.metronomePro.songTickTimes.Count; i++)
-        {
-            // Add per tick rotation value onto the current rotation value
-            rotationValueToAdd = currentRotationValue += PERTICKROTATIONVALUE;
-
-            // Add to list of rotations
-            beatsnapRotationList.Add(currentRotationValue);
-        }
-    }
-
-    // Rotation the grid to the value passed
-    public void UpdateRotateGridRotation(float _rotationZ)
-    {
-        rotateGrid.transform.rotation = new Quaternion(0, 0, _rotationZ, 0);
-    }
-
-    // Rotate the grid to the current tick rotation
-    public void RotateGridToCurrentTickRotation()
-    {
-        // Get current tick rotation value
-        float rotationValueZ = beatsnapRotationList[scriptManager.metronomePro.CurrentTick];
-        // Update the rotation to the new value
-        rotateGrid.transform.rotation = Quaternion.Euler(0, 0, rotationValueZ);
     }
 
     public void UpdateSnappingMethod()
