@@ -88,7 +88,7 @@ public class TimingAndScore : MonoBehaviour
         earlyJudgement = "EARLY";
         missJudgement = "MISS";
         objectTag = gameObject.tag;
-        objectMissedTag = objectTag + "Miss";
+        objectMissedTag = "MISS";
         objectKey = KeyCode.None;
         alternateObjectKey = KeyCode.None;
         feverTimeActivateKey = KeyCode.Space;

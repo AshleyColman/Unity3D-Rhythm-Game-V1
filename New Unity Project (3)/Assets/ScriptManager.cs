@@ -47,4 +47,5 @@ public class ScriptManager : MonoBehaviour
     public HitSoundManager hitSoundManager;
     public FeverTimeManager feverTimeManager;
     public RotatorManager rotatorManager;
+    public MenuSFXManager menuSFXManager;
 }

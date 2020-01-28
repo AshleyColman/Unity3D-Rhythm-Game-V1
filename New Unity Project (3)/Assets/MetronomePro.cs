@@ -43,6 +43,8 @@ public class MetronomePro : MonoBehaviour
     public int currentMeasure = 0;
     public int currentStep = 0;
     public int currentTick = 0;
+    public int division = 0;
+
 
     // Double
     public List<Double> songTickTimes;
@@ -88,31 +90,16 @@ public class MetronomePro : MonoBehaviour
         active = false;
         neverPlayed = true;
 
-        // Change all colors in the UI to white
-        ResetImgBeatColors();
-
         ReferenceScriptManager();
 
-        OffsetText.text = "OFFSET: " + OffsetMS.ToString("F2");
-        BPMText.text = "BPM: " + Bpm.ToString("F2");
-    }
-
-    /*
-    private void Update()
-    {
-        if (scriptManager.rhythmVisualizatorPro.audioSource != null)
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
         {
-            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == false)
-            {
-                if (scriptManager.rhythmVisualizatorPro.audioSource.time == 0 ||
-                    scriptManager.rhythmVisualizatorPro.audioSource.time == scriptManager.rhythmVisualizatorPro.audioSource.clip.length)
-                {
-                    Stop();
-                }
-            }
+            // Change all colors in the UI to white
+            ResetImgBeatColors();
+            OffsetText.text = "OFFSET: " + OffsetMS.ToString("F2");
+            BPMText.text = "BPM: " + Bpm.ToString("F2");
         }
     }
-    */
 
     // Set the new BPM when is playing
     public void UpdateBPM()
@@ -222,8 +209,6 @@ public class MetronomePro : MonoBehaviour
             var multiplier = Base / Step;
             var tmpInterval = 60f / Bpm;
             interval = tmpInterval / multiplier;
-
-            int division = 0;
 
             if (divisionDropdown == null)
             {
@@ -480,10 +465,9 @@ public class MetronomePro : MonoBehaviour
     // Tick Time (execute here all what you want)
     IEnumerator OnTick()
     {
-
-        if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
         {
-            if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
+            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
             {
                 // Sort latest beatsnap and push it to the back
                 scriptManager.beatsnapManager.SortLatestBeatsnap("FORWARD");
@@ -492,25 +476,31 @@ public class MetronomePro : MonoBehaviour
                 scriptManager.placedObject.DisableTimelineObjects();
             }
 
-            // Reset the rotating line lerp variables
-            scriptManager.rotatorManager.ResetLerpVariables();
-        }
+            // Play Audio Tick
+            if (metronomeIsMuted == false)
+            {
+                metronomeAudioSource.Play();
+            }
+            UpdateMetronomeUIColors();
 
-        // Play Audio Tick
-        if (metronomeIsMuted == false)
-        {
-            metronomeAudioSource.Play();
-        }
-
-        UpdateMetronomeUIColors();
-
-
-        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
-        {
             if (currentStep == 1)
             {
                 EditorSceneOnMeasure();
             }
+
+            EditorSceneOnMeasure();
+        }
+
+
+        if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
+        {
+            // Reset the rotating line lerp variables
+            scriptManager.rotatorManager.ResetLerpVariables();
+        }
+
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.GameplaySceneIndex)
+        {
+            GameplaySceneOnMeasure();
         }
 
         yield return null;
@@ -567,6 +557,14 @@ public class MetronomePro : MonoBehaviour
         flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
 
         PlayColorPanelGlowAnimation();
+
+        PlayBackgroundBeatAnimation();
+    }
+
+    // Gameplay scene on measure animations
+    void GameplaySceneOnMeasure()
+    {
+        flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
 
         PlayBackgroundBeatAnimation();
     }

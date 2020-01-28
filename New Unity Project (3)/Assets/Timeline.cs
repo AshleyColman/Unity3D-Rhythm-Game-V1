@@ -203,7 +203,7 @@ public class Timeline : MonoBehaviour
                 // Update audio source time to the closest tick
                 scriptManager.rhythmVisualizatorPro.audioSource.time = closestTickTime;
 
-                // If the closest tick if the current tick
+                // If the closest tick is the current tick
                 if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick])
                 {
                     

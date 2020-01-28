@@ -17,6 +17,7 @@ public class GridsnapManager : MonoBehaviour
     // Gameobject 
     public GameObject gridSizeButton, distanceSnapSizeButton, gridLayout;
     public List<GameObject> gridPointObjectList = new List<GameObject>(); // List of all grid point gameobjects
+    public List<GameObject> positionGridPointObjectList = new List<GameObject>(); // List of invisible grid point gameobjects
 
     // Ints
     private int gridSizeX, gridSizeY;

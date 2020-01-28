@@ -168,6 +168,7 @@ public class BeatsnapManager : MonoBehaviour
         CalculateBeatsnapSliderListValues();
         SortBeatsnaps();
         scriptManager.rotatorManager.CalculateRotations();
+        scriptManager.rotatorManager.UpdateTimeToReachTarget();
     }
 
     // Sort the beatsnaps based on the current song position

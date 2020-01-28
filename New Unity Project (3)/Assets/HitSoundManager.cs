@@ -28,8 +28,8 @@ public class HitSoundManager : MonoBehaviour
     void Start()
     {
         // Initialize
-        hitSoundVolume = 0.5f;
-        missSoundVolume = 0.5f;
+        hitSoundVolume = 1f;
+        missSoundVolume = 1f;
 
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
@@ -91,7 +91,11 @@ public class HitSoundManager : MonoBehaviour
             currentAudioSourceIndex = 0;
         }
 
-        hitSoundAudioSourceArray[currentAudioSourceIndex].PlayOneShot(defaultHitSound, hitSoundVolume);
+        Debug.Log(hitSoundAudioSourceArray[currentAudioSourceIndex].isPlaying);
+        if (hitSoundAudioSourceArray[currentAudioSourceIndex].isPlaying == false)
+        {
+            hitSoundAudioSourceArray[currentAudioSourceIndex].PlayOneShot(defaultHitSound);
+        }
 
         // Increment index
         currentAudioSourceIndex++;
@@ -105,7 +109,7 @@ public class HitSoundManager : MonoBehaviour
             currentAudioSourceIndex = 0;
         }
 
-        hitSoundAudioSourceArray[currentAudioSourceIndex].PlayOneShot(defaultMissSound, missSoundVolume);
+        hitSoundAudioSourceArray[currentAudioSourceIndex].PlayOneShot(defaultMissSound);
 
         // Increment index
         currentAudioSourceIndex++;

@@ -8,6 +8,9 @@ using UnityEngine.Networking;
 public class LoadAndRunBeatmap : MonoBehaviour
 {
 
+    // Animation
+    public Animator pressPlayAnimator;
+
     // UI
     public TextMeshProUGUI gameplayTitleText, beatmapCreatorText, difficultyText;
 
@@ -31,7 +34,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
     private float songTimer; // The current time in the song
     private float trackStartTime; // The time that the song started from
     private float[] hitObjectSpawnTimes;  // Hit object spawn times
-
+    private const int NORMAL_FADE_SPEED_TIME = 1; // Time to remove from hit object spawn times if normal fade speed selected
     // Vectors
     private Vector3[] hitObjectPositions; // Hit object positions containing all 3 xyz values from the other lists
     private Vector3 hitObjectPosition; // The hit object position to spawn at
@@ -133,11 +136,13 @@ public class LoadAndRunBeatmap : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                gameplayHasStarted = true;
+                pressPlayAnimator.Play("PressPlay_Animation", 0, 0f);
+                scriptManager.menuSFXManager.PlaySoundEffect(0);
                 StartMusic();
                 scriptManager.rotatorManager.CalculateRotations();
                 scriptManager.rotatorManager.UpdateTimeToReachTarget();
                 scriptManager.rotatorManager.ToggleLerpOn();
+                gameplayHasStarted = true;
             }
         }
         else
@@ -218,6 +223,9 @@ public class LoadAndRunBeatmap : MonoBehaviour
         // Update the spawn time position by taking away the time to fade in based on the fade speed selected
         for (int i = 0; i < totalHitObjects; i++)
         {
+            Database.database.LoadedHitObjectSpawnTime[i] = (Database.database.LoadedHitObjectSpawnTime[i] - NORMAL_FADE_SPEED_TIME);
+
+
             // Set the hit object spawn time to equal the hit object spawn time - the fade speed selected (2, 1, 0.5)
             //Database.database.loadedHitObjectSpawnTime[i] = (Database.database.loadedHitObjectSpawnTime[i] - playerSkillsManager.GetFadeSpeedSelected());
         }

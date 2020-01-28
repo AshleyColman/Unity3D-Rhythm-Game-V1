@@ -160,9 +160,8 @@ public class PlacedObject : MonoBehaviour
 
             // Could be improved
             objectToSpawn.GetComponent<Animator>().Play("EditorHitObject_FadeOut_Animation", 0, 0f);
-
-            
-            objectToSpawn.transform.position = scriptManager.cursorHitObject.positionObject.transform.position;
+            objectToSpawn.transform.position = scriptManager.gridsnapManager.positionGridPointObjectList[0].transform.position;
+            //objectToSpawn.transform.position = scriptManager.cursorHitObject.positionObject.transform.position;
             objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
             objectToSpawn.transform.SetAsLastSibling();
 
@@ -490,7 +489,6 @@ public class PlacedObject : MonoBehaviour
 
         // Reset list
         tickTimesList.Clear();
-
         return closestTickTime;
     }
 
@@ -553,6 +551,7 @@ public class PlacedObject : MonoBehaviour
         // If the objects spawn time does not exist/is not taken, allow instantiation of another hit object
         if (objectSpawnTimeIsTaken == false)
         {
+            /*
             // Change cursor mask rotation
             switch (_objectType)
             {
@@ -563,6 +562,30 @@ public class PlacedObject : MonoBehaviour
                     scriptManager.cursorHitObject.SetToDiamondRotation();
                     break;
             }
+            */
+
+
+            // Create a new editor hit object (class object) and assign all the variables such as position, spawn time and type
+            EditorHitObject newEditorHitObject = new EditorHitObject();
+
+            // Set position rotate line to closest tick rotation
+            // Save position of current grid point for hit object position
+
+            //int closestTickIndex = scriptManager.metronomePro.songTickTimes.IndexOf(hitObjectSpawnTime);
+            //Quaternion rotation = Quaternion.Euler(0, 0, scriptManager.rotatorManager.beatsnapRotationList[closestTickIndex]);
+            Quaternion rotation = Quaternion.Euler(0, 0, scriptManager.rotatorManager.beatsnapRotationList[scriptManager.metronomePro.CurrentTick]);
+            scriptManager.rotatorManager.positionRotateLine.transform.rotation = rotation;
+            newEditorHitObject.HitObjectPosition = scriptManager.gridsnapManager.positionGridPointObjectList[0].transform.position;
+
+            // Update properties of the hit object
+            //newEditorHitObject.HitObjectPosition = scriptManager.cursorHitObject.positionObject.transform.position;
+            newEditorHitObject.HitObjectType = _objectType;
+            newEditorHitObject.HitObjectSpawnTime = hitObjectSpawnTime;
+            newEditorHitObject.HitObjectAnimationType = ANIMATION_TYPE_NONE;
+            newEditorHitObject.HitObjectSoundType = SOUND_TYPE_CLAP;
+
+            // Add the hit object to the editorHitObjectList
+            hitObjectList.Add(newEditorHitObject);
 
             // Set the instantiate position to the editor hit object position but with a Y of 0
             //InstantiateEditorPlacedHitObject(_objectType);
@@ -571,19 +594,6 @@ public class PlacedObject : MonoBehaviour
 
             // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
             InstantiateTimelineObject(_objectType, hitObjectSpawnTime, _objectType);
-
-            // Create a new editor hit object (class object) and assign all the variables such as position, spawn time and type
-            EditorHitObject newEditorHitObject = new EditorHitObject();
-
-            // Update properties of the hit object
-            newEditorHitObject.HitObjectPosition = scriptManager.cursorHitObject.positionObject.transform.position;
-            newEditorHitObject.HitObjectType = _objectType;
-            newEditorHitObject.HitObjectSpawnTime = hitObjectSpawnTime;
-            newEditorHitObject.HitObjectAnimationType = ANIMATION_TYPE_NONE;
-            newEditorHitObject.HitObjectSoundType = SOUND_TYPE_CLAP;
-
-            // Add the hit object to the editorHitObjectList
-            hitObjectList.Add(newEditorHitObject);
 
             // Reorder the editorHitObject list
             SortListOrders();

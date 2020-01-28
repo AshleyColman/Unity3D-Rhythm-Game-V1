@@ -5,20 +5,20 @@ using UnityEngine;
 public class RotatorManager : MonoBehaviour
 {
     // Gameobjects
-    public GameObject rotateLine;
+    public GameObject rotateLine, positionRotateLine;
 
     // Bools
     private bool shouldLerp;
 
     // Integers
-    private List<float> beatsnapRotationList = new List<float>();
+    public List<float> beatsnapRotationList = new List<float>();
     private const float STARTROTATIONVALUE = 0f;
-    private const float PERTICKROTATIONVALUE = 100f;
+    private float perTickRotationValue = 25f;
     private float rotationValueToAdd;
     private float currentRotationValue;
     public float startRotationZ, endRotationZ;
     private float timer;
-    private float timeToReachTarget;
+    public float timeToReachTarget;
 
     // Quaternion
     public Quaternion startRotation, endRotation;
@@ -59,7 +59,6 @@ public class RotatorManager : MonoBehaviour
             if (beatsnapRotationList.Count != 0 && scriptManager.metronomePro.CurrentTick < scriptManager.metronomePro.songTickTimes.Count)
             {
                 LerpToNextRotation();
-                Debug.Log("on");
             }
         }
     }
@@ -134,11 +133,47 @@ public class RotatorManager : MonoBehaviour
     {
         // Reset
         beatsnapRotationList.Clear();
+        rotationValueToAdd = 0;
+        currentRotationValue = 0;
+
+        float divisionPerTickRotationValue = 0f;
+
+        // Calculate the per tick rotation value based on the beat division being used
+        switch (scriptManager.metronomePro.division)
+        {
+            case 0:
+                // 1/1
+                // Keep the same as the per tick rotation value
+                divisionPerTickRotationValue = perTickRotationValue;
+                break;
+            case 1:
+                // 1/2
+                // Half the per tick rotation value
+                divisionPerTickRotationValue = perTickRotationValue / 2;
+                break;
+            case 2:
+                // 1/3
+                divisionPerTickRotationValue = perTickRotationValue / 3;
+                break;
+            case 3:
+                // 1/4
+                divisionPerTickRotationValue = perTickRotationValue / 4;
+                break;
+        }
+
 
         for (int i = 0; i < scriptManager.metronomePro.songTickTimes.Count; i++)
         {
-            // Add per tick rotation value onto the current rotation value
-            rotationValueToAdd = currentRotationValue += PERTICKROTATIONVALUE;
+            if (i == 0)
+            {
+                // Add 0 at start of list
+                beatsnapRotationList.Add(currentRotationValue);
+            }
+            else
+            {
+                // Add per tick rotation value onto the current rotation value
+                rotationValueToAdd = currentRotationValue += divisionPerTickRotationValue;
+            }
 
             // Add to list of rotations
             beatsnapRotationList.Add(currentRotationValue);

@@ -127,9 +127,12 @@ public class MetronomePro_Player : MonoBehaviour
     // Play or Pause the Song and Metronome
     public void PlayOrPauseSong()
     {
+
         if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
         {
             PauseSong();
+            // Sort beatsnaps
+            scriptManager.beatsnapManager.SortBeatsnaps();
         }
         else
         {
@@ -153,6 +156,7 @@ public class MetronomePro_Player : MonoBehaviour
         scriptManager.rhythmVisualizatorPro.audioSource.Pause();
         scriptManager.metronomePro.Pause();
         scriptManager.timelineScript.SnapToClosestTickOnTimeline();
+        scriptManager.rotatorManager.ResetLerpVariables();
     }
 
     // Stop Song and Metronome, Resets all too.
