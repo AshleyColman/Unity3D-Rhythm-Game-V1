@@ -22,12 +22,12 @@ public class PlacedObject : MonoBehaviour
     public List<EditorHitObject> hitObjectList = new List<EditorHitObject>(); // List of editorHitObjects (includes spawn time, object type and positions)
 
     // Integers   
-    private const int hitObjectTypeLeftValue = 0, hitObjectTypeRightValue = 1; // Number values for the hit object types - array
-    private int instantiatedTimelineObjectType;
-
-    private int keyMode; // Keymode
+    private const int HIT_OBJECT_TYPE_KEY_1 = 0, HIT_OBJECT_TYPE_KEY_2 = 1, HIT_OBJECT_TYPE_KEY_3 = 2, HIT_OBJECT_TYPE_KEY_4 = 3,
+        HIT_OBJECT_TYPE_KEY_5 = 4;
     private const int ANIMATION_TYPE_NONE = 0, ANIMATION_TYPE_CAMERASHAKE = 1, ANIMATION_TYPE_BACKGROUNDPULSE = 2;
     private const int SOUND_TYPE_CLAP = 0, SOUND_TYPE_FINISH = 1, SOUND_TYPE_WHISTLE = 2;
+    private int instantiatedTimelineObjectType;
+    private int keyMode; 
     private const int timelineObjectDeactivateValue = 15; // Value that determines when to deactive timeline objects
     private int raycastTimelineObjectListIndex; // The index of the timeline bar clicked in the editor, used to delete and update existing notes spawn times, position etc by getting the index on click
     private int timelineObjectIndex; // The index for all editor objects, increases by 1 everytime one is instantiated
@@ -60,6 +60,10 @@ public class PlacedObject : MonoBehaviour
 
     // Transform
     public Transform canvas, timeline;
+
+    // Keycode
+    private const KeyCode HIT_OBJECT_TYPE_KEY_CODE_1 = KeyCode.D, HIT_OBJECT_TYPE_KEY_CODE_2 = KeyCode.F, HIT_OBJECT_TYPE_KEY_CODE_3 = KeyCode.Space,
+        HIT_OBJECT_TYPE_KEY_CODE_4 = KeyCode.J, HIT_OBJECT_TYPE_KEY_CODE_5 = KeyCode.K;
 
     // Scripts
     private DestroyTimelineObject destroyTimelineObject; // Destroy timeline object script attached to instantiated timeline objects
@@ -131,16 +135,29 @@ public class PlacedObject : MonoBehaviour
         // If key input for placing hit objects is allowed
         if (canPlaceHitObjects == true && scriptManager.rhythmVisualizatorPro.audioSource.time > 2f)
         {
-            if (Input.GetKeyDown(KeyCode.D))
+            // Spawn key hit object type
+            if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_1))
             {
-                // Spawn square hit object
-                PlaceHitObject(hitObjectTypeLeftValue);
+                PlaceHitObject(HIT_OBJECT_TYPE_KEY_1);
             }
-            else if (Input.GetKeyDown(KeyCode.F))
+            else if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_2))
             {
-                // Spawn diamond hit object
-                PlaceHitObject(hitObjectTypeRightValue);
+                PlaceHitObject(HIT_OBJECT_TYPE_KEY_2);
             }
+            else if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_3))
+            {
+                PlaceHitObject(HIT_OBJECT_TYPE_KEY_3);
+            }
+            else if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_4))
+            {
+                PlaceHitObject(HIT_OBJECT_TYPE_KEY_4);
+            }
+            else if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_5))
+            {
+                PlaceHitObject(HIT_OBJECT_TYPE_KEY_5);
+            }
+
+
             // Song preview start time key pressed
             else if (Input.GetKeyDown(KeyCode.T))
             {
@@ -160,7 +177,7 @@ public class PlacedObject : MonoBehaviour
 
             // Could be improved
             objectToSpawn.GetComponent<Animator>().Play("EditorHitObject_FadeOut_Animation", 0, 0f);
-            objectToSpawn.transform.position = scriptManager.gridsnapManager.positionGridPointObjectList[0].transform.position;
+            objectToSpawn.transform.position = scriptManager.gridsnapManager.positionGridPointObjectList[_type].transform.position;
             //objectToSpawn.transform.position = scriptManager.cursorHitObject.positionObject.transform.position;
             objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
             objectToSpawn.transform.SetAsLastSibling();
@@ -172,15 +189,7 @@ public class PlacedObject : MonoBehaviour
     // Place new hit object based on the type
     public void PlaceHitObject(int _type)
     {
-        switch (_type)
-        {
-            case hitObjectTypeLeftValue:
-                AddEditorHitObjectToList(hitObjectTypeLeftValue);
-                break;
-            case hitObjectTypeRightValue:
-                AddEditorHitObjectToList(hitObjectTypeRightValue);
-                break;
-        }
+        AddEditorHitObjectToList(_type);
     }
 
     // Destroy all previewHitObjects that appear on screen
@@ -570,15 +579,13 @@ public class PlacedObject : MonoBehaviour
 
             // Set position rotate line to closest tick rotation
             // Save position of current grid point for hit object position
-
-            //int closestTickIndex = scriptManager.metronomePro.songTickTimes.IndexOf(hitObjectSpawnTime);
-            //Quaternion rotation = Quaternion.Euler(0, 0, scriptManager.rotatorManager.beatsnapRotationList[closestTickIndex]);
             Quaternion rotation = Quaternion.Euler(0, 0, scriptManager.rotatorManager.beatsnapRotationList[scriptManager.metronomePro.CurrentTick]);
             scriptManager.rotatorManager.positionRotateLine.transform.rotation = rotation;
-            newEditorHitObject.HitObjectPosition = scriptManager.gridsnapManager.positionGridPointObjectList[0].transform.position;
+
+            // Set position to the type position on the grid point line
+            newEditorHitObject.HitObjectPosition = scriptManager.gridsnapManager.positionGridPointObjectList[_objectType].transform.position;
 
             // Update properties of the hit object
-            //newEditorHitObject.HitObjectPosition = scriptManager.cursorHitObject.positionObject.transform.position;
             newEditorHitObject.HitObjectType = _objectType;
             newEditorHitObject.HitObjectSpawnTime = hitObjectSpawnTime;
             newEditorHitObject.HitObjectAnimationType = ANIMATION_TYPE_NONE;
@@ -588,12 +595,19 @@ public class PlacedObject : MonoBehaviour
             hitObjectList.Add(newEditorHitObject);
 
             // Set the instantiate position to the editor hit object position but with a Y of 0
-            //InstantiateEditorPlacedHitObject(_objectType);
             // Spawn hit object from the pool at the cursors position
             SpawnFromPool(_objectType);
 
+
             // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
-            InstantiateTimelineObject(_objectType, hitObjectSpawnTime, _objectType);
+            //InstantiateTimelineObject(_objectType, hitObjectSpawnTime, _objectType);
+            InstantiateTimelineObject(0, hitObjectSpawnTime, 0);
+
+
+
+
+
+
 
             // Reorder the editorHitObject list
             SortListOrders();

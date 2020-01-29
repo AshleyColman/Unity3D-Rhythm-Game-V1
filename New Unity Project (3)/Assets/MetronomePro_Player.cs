@@ -202,8 +202,8 @@ public class MetronomePro_Player : MonoBehaviour
                 UpdateSongProgressUI();
             }
         }
-        // Play song when user press Space button
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Play song when user press left shift button
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             // Check if the live preview panel is open
             // If live preview is active play live preview

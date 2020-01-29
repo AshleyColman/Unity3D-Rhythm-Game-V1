@@ -175,15 +175,16 @@ public class TimingAndScore : MonoBehaviour
 
     private void SpawnExplosion()
     {
+        /*
         switch (objectTag)
         {
             case "Left":
                 scriptManager.explosionManager.SpawnExplosion(this.transform.position, "0");
                 break;
-            case "Right":
-                scriptManager.explosionManager.SpawnExplosion(this.transform.position, "1");
-                break;
         }
+        */
+
+        scriptManager.explosionManager.SpawnExplosion(this.transform.position, "0");
     }
 
     // Check if the player hit early judgement
@@ -263,15 +264,24 @@ public class TimingAndScore : MonoBehaviour
     {
         switch (objectTag)
         {
-            case "Left":
-                objectKey = KeyCode.F;
-                alternateObjectKey = KeyCode.D;
+            case "Key1":
+                objectKey = KeyCode.D;
                 break;
-            case "Right":
+            case "Key2":
+                objectKey = KeyCode.F;
+                break;
+            case "Key3":
+                objectKey = KeyCode.Space;
+                break;
+            case "Key4":
                 objectKey = KeyCode.J;
-                alternateObjectKey = KeyCode.K;
+                break;
+            case "Key5":
+                objectKey = KeyCode.K;
                 break;
         }
+
+        alternateObjectKey = KeyCode.F1;
     }
 
     // Check the fade speed selected from the song select menu, set the judgements based on the fade speed

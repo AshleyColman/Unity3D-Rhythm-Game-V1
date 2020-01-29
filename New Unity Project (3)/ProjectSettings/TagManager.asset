@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Left
   - Right
+  - Key1
+  - Key2
+  - Key3
+  - Key4
+  - Key5
   layers:
   - Default
   - TransparentFX
