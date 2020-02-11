@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PathCreator))]
-[RequireComponent(typeof(MeshFilter))]
-[RequireComponent(typeof(MeshRenderer))]
 public class RoadCreator : MonoBehaviour {
 
     [Range(.05f, 1.5f)]
@@ -13,14 +10,27 @@ public class RoadCreator : MonoBehaviour {
     public bool autoUpdate;
     public float tiling = 1;
 
+    private ScriptManager scriptManager;
+
+    private void Start()
+    {
+        scriptManager = FindObjectOfType<ScriptManager>();
+    }
+
     public void UpdateRoad()
     {
-        CreatedPath path = GetComponent<PathCreator>().createdPath;
-        Vector2[] points = path.CalculateEvenlySpacedPoints(spacing);
-        GetComponent<MeshFilter>().mesh = CreateRoadMesh(points, path.IsClosed);
+        if (scriptManager == null)
+        {
+            scriptManager = FindObjectOfType<ScriptManager>();
+        }
+        if (scriptManager.createdPath.points.Count != 0)
+        {
+            Vector2[] points = scriptManager.createdPath.CalculateEvenlySpacedPoints(spacing);
+            GetComponent<MeshFilter>().mesh = CreateRoadMesh(points, scriptManager.createdPath.IsClosed);
 
-        int textureRepeat = Mathf.RoundToInt(tiling * points.Length * spacing * .05f);
-        GetComponent<MeshRenderer>().sharedMaterial.mainTextureScale = new Vector2(1, textureRepeat);
+            int textureRepeat = Mathf.RoundToInt(tiling * points.Length * spacing * .05f);
+            GetComponent<MeshRenderer>().sharedMaterial.mainTextureScale = new Vector2(1, textureRepeat);
+        }
     }
 
     Mesh CreateRoadMesh(Vector2[] points, bool isClosed)

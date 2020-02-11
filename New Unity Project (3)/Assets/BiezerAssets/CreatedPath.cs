@@ -3,25 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class CreatedPath
+public class CreatedPath : MonoBehaviour
 {
+    public List<Vector2> points;
+    private bool isClosed;
+    private bool autoSetControlPoints;
 
-    [SerializeField, HideInInspector]
-    List<Vector2> points;
-    [SerializeField, HideInInspector]
-    bool isClosed;
-    [SerializeField, HideInInspector]
-    bool autoSetControlPoints;
+    private ScriptManager scriptManager;
 
-    public CreatedPath(Vector2 centre)
+    private void Start()
     {
+        scriptManager = FindObjectOfType<ScriptManager>();
+
+        CreateNewPath();
+    }
+
+    public void CreateNewPath()
+    {
+        Vector2 centre = this.transform.position;
+
+
         points = new List<Vector2>
         {
-            centre+Vector2.left,
-            centre+(Vector2.left+Vector2.up)*.5f,
-            centre + (Vector2.right+Vector2.down)*.5f,
-            centre + Vector2.right
+            centre+Vector2.left*100,
+            centre+(Vector2.left+Vector2.up)*100,
+            centre + (Vector2.right+Vector2.down)*100,
+            centre + Vector2.right*100
         };
+
+
+        /*
+        points = new List<Vector2>();
+
+        int x = 0;
+        int y = 0;
+        int incrementValue = 100;
+
+        for (int i = 0; i < 4; i++)
+        {
+            points.Add(new Vector2(x += incrementValue, y += incrementValue));
+        }
+        */
     }
 
     public Vector2 this[int i]
@@ -101,11 +123,24 @@ public class CreatedPath
         }
     }
 
+    // Add a new segment (control points and anchor point)
     public void AddSegment(Vector2 anchorPos)
     {
-        points.Add(points[points.Count - 1] * 2 - points[points.Count - 2]);
-        points.Add((points[points.Count - 1] + anchorPos) * .5f);
+        // Calculate position for control points
+        Vector3 controlPointPos1 = points[points.Count - 1] * 2 - points[points.Count - 2];
+        Vector3 controlPointPos2 = ((points[points.Count - 1] + anchorPos) * .5f);
+
+        // Control point 1
+        points.Add(controlPointPos1);
+        scriptManager.pathEditor.InstantiateNewPoint("CONTROL", controlPointPos1, scriptManager.createdPath.points.Count - 1);
+
+        // Control point 2
+        points.Add(controlPointPos2);
+        scriptManager.pathEditor.InstantiateNewPoint("CONTROL", controlPointPos2, scriptManager.createdPath.points.Count - 1);
+
+        // Anchor point
         points.Add(anchorPos);
+        scriptManager.pathEditor.InstantiateNewPoint("ANCHOR", anchorPos, scriptManager.createdPath.points.Count - 1);
 
         if (autoSetControlPoints)
         {
@@ -137,14 +172,23 @@ public class CreatedPath
                     points[points.Count - 1] = points[2];
                 }
                 points.RemoveRange(0, 3);
+
+                //scriptManager.pathEditor.anchorPointScriptList.RemoveRange(0, 3);
             }
             else if (anchorIndex == points.Count - 1 && !isClosed)
             {
                 points.RemoveRange(anchorIndex - 2, 3);
+
+                //scriptManager.pathEditor.anchorPointScriptList.RemoveRange(anchorIndex - 2, 3);
             }
             else
             {
                 points.RemoveRange(anchorIndex - 1, 3);
+
+                //Destroy(this.gameObject);
+
+                Debug.Log(scriptManager.pathEditor.pointScriptList.Count);
+                scriptManager.pathEditor.pointScriptList.RemoveRange(anchorIndex - 1, 3);
             }
         }
     }
@@ -168,7 +212,6 @@ public class CreatedPath
             }
             else
             {
-
                 if (i % 3 == 0)
                 {
                     if (i + 1 < points.Count || isClosed)

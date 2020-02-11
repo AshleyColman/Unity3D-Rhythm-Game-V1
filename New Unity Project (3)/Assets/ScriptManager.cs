@@ -49,6 +49,8 @@ public class ScriptManager : MonoBehaviour
     public RotatorManager rotatorManager;
     public MenuSFXManager menuSFXManager;
     public Follower follower;
-    public PathCreator pathCreator;
     public PathPlacer pathPlacer;
+    public RoadCreator roadCreator;
+    public PathEditor pathEditor;
+    public CreatedPath createdPath;
 }

@@ -17,6 +17,7 @@ public class PathPlacer : MonoBehaviour {
     public GameObject beatPointGameObject;
     public Transform beatPointSpawnCanvas;
 
+
     private ScriptManager scriptManager;
 
     void Start () {
@@ -24,16 +25,21 @@ public class PathPlacer : MonoBehaviour {
         scriptManager = FindObjectOfType<ScriptManager>();
 
         // Reference all evenly calculated points
-        points = scriptManager.pathCreator.createdPath.CalculateEvenlySpacedPoints(spacing, resolution);
+        points = scriptManager.createdPath.CalculateEvenlySpacedPoints(spacing, resolution);
 
         // Set start position of follower object
         scriptManager.follower.SetToStartPosition();
+
+
+        /*
 
         // Spawn tick points along the slider
         SpawnTickPoints();
 
         // Spawn beat points along the slider
         SpawnBeatPoints();
+
+        */
     }
 	
     // Spawn tick points along the slider
