@@ -136,11 +136,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                pressPlayAnimator.Play("PressPlay_Animation", 0, 0f);
-                scriptManager.menuSFXManager.PlaySoundEffect(0);
-                StartMusic();
-                scriptManager.follower.ToggleLerpOn();
-                gameplayHasStarted = true;
+                StartGameplay();
             }
         }
         else
@@ -160,6 +156,15 @@ public class LoadAndRunBeatmap : MonoBehaviour
             // Check if all hit objects have been hit
             CheckIfAllHitObjectsHaveBeenHit();
         }
+    }
+
+    public void StartGameplay()
+    {
+        pressPlayAnimator.Play("PressPlay_Animation", 0, 0f);
+        scriptManager.menuSFXManager.PlaySoundEffect(0);
+        StartMusic();
+        scriptManager.follower.ToggleLerpOn();
+        gameplayHasStarted = true;
     }
 
     private void LoadTiming()

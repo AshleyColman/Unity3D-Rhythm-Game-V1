@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Timeline : MonoBehaviour
 {
     // Gameobject
     public GameObject reversedTimelineHandle, timeline, timelineSlider;
+
+    // UI
+    public Slider pathLengthSlider;
 
     // Text
     public TextMeshProUGUI timelineSizeText;
@@ -55,6 +59,9 @@ public class Timeline : MonoBehaviour
         reversedTimelineHandlePosition = reversedTimelineHandle.transform.position;
         // Set the main timeline to the position of the reversed timeline handle
         scriptManager.metronomePro_Player.timelineSlider.transform.position = reversedTimelineHandlePosition;
+        // Set the path length slider to the reversed timeline handle position
+        pathLengthSlider.transform.position = reversedTimelineHandlePosition;
+
 
         // Timeline tick navigation through keyboard input
         TimelineTickNavigation();
@@ -62,6 +69,27 @@ public class Timeline : MonoBehaviour
         // Change timeline object sizes based on key input
         //ChangeTimelineSize();
     }
+
+    // Update the path length slider value
+    public void UpdatePathLengthSlider()
+    {
+        int totalSliderBeats = scriptManager.pathPlacer.points.Length;
+
+        // Get per tick time
+        float perTickTime = (float)(scriptManager.metronomePro.songTickTimes[1] - scriptManager.metronomePro.songTickTimes[0]);
+
+        // Multiply perTickTime by total beats/points on the path created
+        float totalPathLengthTime = perTickTime * totalSliderBeats;
+
+        // Convert to percentage for slider value
+        float percentage = (totalPathLengthTime / scriptManager.rhythmVisualizatorPro.audioSource.clip.length);
+
+        float sliderValue = (percentage / 1);
+
+        // Assign slider value to the path length slider
+        pathLengthSlider.value = sliderValue;
+    }
+
 
     // Reset the timeline to the default position
     public void SetDefaultTimelinePosition()
@@ -203,16 +231,23 @@ public class Timeline : MonoBehaviour
                 // Update audio source time to the closest tick
                 scriptManager.rhythmVisualizatorPro.audioSource.time = closestTickTime;
 
-                // If the closest tick is the current tick
-                if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick])
+                // If the current tick is the first tick, don't check the previous tick time
+                if (scriptManager.metronomePro.CurrentTick == 0)
                 {
-                    
-                }
-                else if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick - 1])
-                {
-                    StartCoroutine(DelayUpdateLatestBeatsnap(0f, "BACKWARD"));
-                }
 
+                }
+                else
+                {
+                    // If the closest tick is the current tick
+                    if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick])
+                    {
+
+                    }
+                    else if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick + 1])
+                    {
+                        StartCoroutine(DelayUpdateLatestBeatsnap(0f, "BACKWARD"));
+                    }
+                }
 
                 // Calculate increment metronome values
                 scriptManager.metronomePro.CalculateActualStep();

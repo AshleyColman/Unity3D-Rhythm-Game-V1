@@ -62,7 +62,7 @@ public class PlacedObject : MonoBehaviour
     public Transform canvas, timeline;
 
     // Keycode
-    private const KeyCode HIT_OBJECT_TYPE_KEY_CODE_1 = KeyCode.D, HIT_OBJECT_TYPE_KEY_CODE_2 = KeyCode.F, HIT_OBJECT_TYPE_KEY_CODE_3 = KeyCode.Space,
+    private const KeyCode HIT_OBJECT_TYPE_KEY_CODE_1 = KeyCode.D, HIT_OBJECT_TYPE_KEY_CODE_2 = KeyCode.F, HIT_OBJECT_TYPE_KEY_CODE_3 = KeyCode.G,
         HIT_OBJECT_TYPE_KEY_CODE_4 = KeyCode.J, HIT_OBJECT_TYPE_KEY_CODE_5 = KeyCode.K;
 
     // Scripts
@@ -140,6 +140,7 @@ public class PlacedObject : MonoBehaviour
             {
                 PlaceHitObject(HIT_OBJECT_TYPE_KEY_1);
             }
+            /*
             else if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_2))
             {
                 PlaceHitObject(HIT_OBJECT_TYPE_KEY_2);
@@ -156,7 +157,7 @@ public class PlacedObject : MonoBehaviour
             {
                 PlaceHitObject(HIT_OBJECT_TYPE_KEY_5);
             }
-
+            */
 
             // Song preview start time key pressed
             else if (Input.GetKeyDown(KeyCode.T))
@@ -177,8 +178,7 @@ public class PlacedObject : MonoBehaviour
 
             // Could be improved
             objectToSpawn.GetComponent<Animator>().Play("EditorHitObject_FadeOut_Animation", 0, 0f);
-            objectToSpawn.transform.position = scriptManager.gridsnapManager.positionGridPointObjectList[_type].transform.position;
-            //objectToSpawn.transform.position = scriptManager.cursorHitObject.positionObject.transform.position;
+            objectToSpawn.transform.localPosition = scriptManager.pathPlacer.points[scriptManager.metronomePro.CurrentTick - 1];
             objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
             objectToSpawn.transform.SetAsLastSibling();
 
@@ -483,8 +483,13 @@ public class PlacedObject : MonoBehaviour
             tickTimesList.Add(currentTickTime);
 
             // Previous tick
-            nextTickTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick - 1];
+            nextTickTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick + 1];
             tickTimesList.Add(nextTickTime);
+
+            // Previous tick
+            float previousTickTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick - 1];
+            tickTimesList.Add(previousTickTime);
+
 
             // Check which time the users press was closest to
             closestTickTime = tickTimesList.Select(p => new { Value = p, Difference = Math.Abs(p - _time) })
@@ -560,30 +565,14 @@ public class PlacedObject : MonoBehaviour
         // If the objects spawn time does not exist/is not taken, allow instantiation of another hit object
         if (objectSpawnTimeIsTaken == false)
         {
-            /*
-            // Change cursor mask rotation
-            switch (_objectType)
-            {
-                case hitObjectTypeLeftValue:
-                    scriptManager.cursorHitObject.SetToSquareRotation();
-                    break;
-                case hitObjectTypeRightValue:
-                    scriptManager.cursorHitObject.SetToDiamondRotation();
-                    break;
-            }
-            */
-
-
             // Create a new editor hit object (class object) and assign all the variables such as position, spawn time and type
             EditorHitObject newEditorHitObject = new EditorHitObject();
 
             // Set position rotate line to closest tick rotation
             // Save position of current grid point for hit object position
-            Quaternion rotation = Quaternion.Euler(0, 0, scriptManager.rotatorManager.beatsnapRotationList[scriptManager.metronomePro.CurrentTick]);
-            scriptManager.rotatorManager.positionRotateLine.transform.rotation = rotation;
 
             // Set position to the type position on the grid point line
-            newEditorHitObject.HitObjectPosition = scriptManager.gridsnapManager.positionGridPointObjectList[_objectType].transform.position;
+            newEditorHitObject.HitObjectPosition = scriptManager.pathPlacer.points[scriptManager.metronomePro.CurrentTick - 1];
 
             // Update properties of the hit object
             newEditorHitObject.HitObjectType = _objectType;
@@ -598,16 +587,9 @@ public class PlacedObject : MonoBehaviour
             // Spawn hit object from the pool at the cursors position
             SpawnFromPool(_objectType);
 
-
             // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
             //InstantiateTimelineObject(_objectType, hitObjectSpawnTime, _objectType);
             InstantiateTimelineObject(0, hitObjectSpawnTime, 0);
-
-
-
-
-
-
 
             // Reorder the editorHitObject list
             SortListOrders();

@@ -11,39 +11,14 @@ public class CreatedPath : MonoBehaviour
 
     private ScriptManager scriptManager;
 
+    private void Awake()
+    {
+        InitializePoints();
+    }
+
     private void Start()
     {
         scriptManager = FindObjectOfType<ScriptManager>();
-
-        CreateNewPath();
-    }
-
-    public void CreateNewPath()
-    {
-        Vector2 centre = this.transform.position;
-
-
-        points = new List<Vector2>
-        {
-            centre+Vector2.left*100,
-            centre+(Vector2.left+Vector2.up)*100,
-            centre + (Vector2.right+Vector2.down)*100,
-            centre + Vector2.right*100
-        };
-
-
-        /*
-        points = new List<Vector2>();
-
-        int x = 0;
-        int y = 0;
-        int incrementValue = 100;
-
-        for (int i = 0; i < 4; i++)
-        {
-            points.Add(new Vector2(x += incrementValue, y += incrementValue));
-        }
-        */
     }
 
     public Vector2 this[int i]
@@ -86,6 +61,19 @@ public class CreatedPath : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void InitializePoints()
+    {
+        Vector2 centre = this.transform.position;
+
+        points = new List<Vector2>
+        {
+            centre+Vector2.left*100,
+            centre+(Vector2.left+Vector2.up)*100,
+            centre + (Vector2.right+Vector2.down)*100,
+            centre + Vector2.right*100
+        };
     }
 
     public bool AutoSetControlPoints
@@ -146,6 +134,12 @@ public class CreatedPath : MonoBehaviour
         {
             AutoSetAllAffectedControlPoints(points.Count - 1);
         }
+
+        // Update evenly spaced points
+        scriptManager.pathPlacer.UpdatePathPoints();
+
+        // Update path length slider
+        scriptManager.timelineScript.UpdatePathLengthSlider();
     }
 
     public void SplitSegment(Vector2 anchorPos, int segmentIndex)
@@ -173,24 +167,40 @@ public class CreatedPath : MonoBehaviour
                 }
                 points.RemoveRange(0, 3);
 
-                //scriptManager.pathEditor.anchorPointScriptList.RemoveRange(0, 3);
+                // Delete points within range
+                scriptManager.pathEditor.DeletePoint(anchorIndex);
+                scriptManager.pathEditor.DeletePoint(anchorIndex + 1);
+                scriptManager.pathEditor.DeletePoint(anchorIndex + 2);
             }
             else if (anchorIndex == points.Count - 1 && !isClosed)
             {
                 points.RemoveRange(anchorIndex - 2, 3);
 
-                //scriptManager.pathEditor.anchorPointScriptList.RemoveRange(anchorIndex - 2, 3);
+                // Delete points within range
+                scriptManager.pathEditor.DeletePoint(anchorIndex);
+                scriptManager.pathEditor.DeletePoint(anchorIndex - 1);
+                scriptManager.pathEditor.DeletePoint(anchorIndex - 2);
             }
             else
             {
                 points.RemoveRange(anchorIndex - 1, 3);
-
-                //Destroy(this.gameObject);
-
-                Debug.Log(scriptManager.pathEditor.pointScriptList.Count);
-                scriptManager.pathEditor.pointScriptList.RemoveRange(anchorIndex - 1, 3);
+                // Delete points within range (IN OPPOSITE ORDER SO INDEX WHEN REMOVED DOESN'T LEAD TO ERRORS)
+                scriptManager.pathEditor.DeletePoint(anchorIndex + 1);
+                scriptManager.pathEditor.DeletePoint(anchorIndex);
+                scriptManager.pathEditor.DeletePoint(anchorIndex - 1);
             }
+
+            // Update the point list index after object list size have changed after deletion
+            scriptManager.pathEditor.UpdatePointListIndex();
+            scriptManager.roadCreator.UpdateRoad();
         }
+
+        // Update evenly spaced points
+        scriptManager.pathPlacer.DestroyBeatPoints();
+        scriptManager.pathPlacer.UpdatePathPoints();
+
+        // Update path length slider
+        scriptManager.timelineScript.UpdatePathLengthSlider();
     }
 
     public Vector2[] GetPointsInSegment(int i)
@@ -243,6 +253,12 @@ public class CreatedPath : MonoBehaviour
     public Vector2[] CalculateEvenlySpacedPoints(float spacing, float resolution = 1)
     {
         List<Vector2> evenlySpacedPoints = new List<Vector2>();
+
+        if (points.Count == 0)
+        {
+            InitializePoints();
+        }
+
         evenlySpacedPoints.Add(points[0]);
         Vector2 previousPoint = points[0];
         float dstSinceLastEvenPoint = 0;

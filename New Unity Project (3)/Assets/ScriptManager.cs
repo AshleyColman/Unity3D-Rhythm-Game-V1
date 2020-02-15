@@ -46,7 +46,6 @@ public class ScriptManager : MonoBehaviour
     public ExplosionManager explosionManager;
     public HitSoundManager hitSoundManager;
     public FeverTimeManager feverTimeManager;
-    public RotatorManager rotatorManager;
     public MenuSFXManager menuSFXManager;
     public Follower follower;
     public PathPlacer pathPlacer;

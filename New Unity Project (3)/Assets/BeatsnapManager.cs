@@ -167,8 +167,8 @@ public class BeatsnapManager : MonoBehaviour
         scriptManager.metronomePro.CalculateActualStep();
         CalculateBeatsnapSliderListValues();
         SortBeatsnaps();
-        scriptManager.rotatorManager.CalculateRotations();
-        scriptManager.rotatorManager.UpdateTimeToReachTarget();
+        //scriptManager.rotatorManager.CalculateRotations();
+        //scriptManager.rotatorManager.UpdateTimeToReachTarget();
     }
 
     // Sort the beatsnaps based on the current song position

@@ -25,6 +25,51 @@ public class MetronomePro_Player : MonoBehaviour
         scriptManager = FindObjectOfType<ScriptManager>();
     }
 
+    // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
+    void Update()
+    {
+        // Check input to change the song play back speed
+        //CheckSongPlaybackSpeedInput();
+
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
+        {
+            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
+            {
+                UpdateSongProgressUI();
+            }
+        }
+        // Play song 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // Check if the live preview panel is open
+            // If live preview is active play live preview
+            // Else play the song normally
+
+            /*
+            if (levelChanger.CurrentLevelIndex == levelChanger.EditorSceneIndex)
+            {
+                if (editorUIManager.previewPanel.activeSelf == true)
+                {
+                    livePreview.StartOrPauseLivePreview();
+                }
+                else
+                {
+                    // Unmute metronome
+                    metronomePro.UnmuteMetronome();
+
+                    PlayOrPauseSong();
+                }
+            }
+            else
+            {
+                PlayOrPauseSong();
+            }
+            */
+
+            PlayOrPauseSong();
+        }
+    }
+
     // Check input to change the song play back speed
     private void CheckSongPlaybackSpeedInput()
     {
@@ -127,7 +172,6 @@ public class MetronomePro_Player : MonoBehaviour
     // Play or Pause the Song and Metronome
     public void PlayOrPauseSong()
     {
-
         if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
         {
             PauseSong();
@@ -148,6 +192,9 @@ public class MetronomePro_Player : MonoBehaviour
             // Play
             scriptManager.rhythmVisualizatorPro.audioSource.Play();
             scriptManager.metronomePro.Play();
+
+            // Turn on lerp for follower
+            scriptManager.follower.ToggleLerpOn();
         }
     }
 
@@ -156,7 +203,11 @@ public class MetronomePro_Player : MonoBehaviour
         scriptManager.rhythmVisualizatorPro.audioSource.Pause();
         scriptManager.metronomePro.Pause();
         scriptManager.timelineScript.SnapToClosestTickOnTimeline();
-        scriptManager.rotatorManager.ResetLerpVariables();
+
+        // Turn off lerp for follower
+        scriptManager.follower.ToggleLerpOff();
+        // Snap follower to current point position based on tick - 1
+        scriptManager.follower.SnapToCurrentPointPosition();
     }
 
     // Stop Song and Metronome, Resets all too.
@@ -187,51 +238,6 @@ public class MetronomePro_Player : MonoBehaviour
         songSlider.value = amount;
 
         actualPositionText.text = UtilityMethods.FromSecondsToMinutesAndSeconds(scriptManager.rhythmVisualizatorPro.audioSource.time);
-    }
-
-    // Update function is used to Update the Song Player Bar and Actual Position Text every frame and Player quick key buttons
-    void Update()
-    {
-        // Check input to change the song play back speed
-        //CheckSongPlaybackSpeedInput();
-
-        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
-        {
-            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
-            {
-                UpdateSongProgressUI();
-            }
-        }
-        // Play song when user press left shift button
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            // Check if the live preview panel is open
-            // If live preview is active play live preview
-            // Else play the song normally
-
-            /*
-            if (levelChanger.CurrentLevelIndex == levelChanger.EditorSceneIndex)
-            {
-                if (editorUIManager.previewPanel.activeSelf == true)
-                {
-                    livePreview.StartOrPauseLivePreview();
-                }
-                else
-                {
-                    // Unmute metronome
-                    metronomePro.UnmuteMetronome();
-
-                    PlayOrPauseSong();
-                }
-            }
-            else
-            {
-                PlayOrPauseSong();
-            }
-            */
-
-            PlayOrPauseSong();
-        }
     }
 
 }

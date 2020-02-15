@@ -6,9 +6,6 @@ using TMPro;
 
 public class CursorHitObject : MonoBehaviour
 {
-    private Quaternion diamondRotation = Quaternion.Euler(0, 0, 45);
-    private Quaternion squareRotation = Quaternion.Euler(0, 0, 0);
-
     private float angleRad, angleDeg;
     private float previousPositionObjectPositionX, previousPositionObjectPositionY;
     private const int DISTANCE_VALUE = 10, MAX_DISTANCE_VALUE = 250, MIN_DISTANCE_VALUE = 0;
@@ -34,15 +31,6 @@ public class CursorHitObject : MonoBehaviour
     private ScriptManager scriptManager;
 
     // Properties
-    public Quaternion DiamondRotation
-    {
-        get { return diamondRotation; }
-    }
-
-    public Quaternion SquareRotation
-    {
-        get { return squareRotation; }
-    }
 
     public bool FollowMouse
     {
@@ -81,9 +69,6 @@ public class CursorHitObject : MonoBehaviour
                 {
                     ChangeDistanceSnapping("-");
                 }
-
-                // Update cursor rotation based on mouse position
-                UpdateCursorRotation();
             }
         }
 
@@ -252,35 +237,4 @@ public class CursorHitObject : MonoBehaviour
         // Update the main cursor objects position to be the distance snapped position
         transform.position = positionObject.transform.position;
     }
-
-    private void UpdateCursorRotation()
-    {
-        // Rotate the main cursor object
-        angleRad = Mathf.Atan2(Input.mousePosition.y - transform.position.y, Input.mousePosition.x - transform.position.x);
-        angleDeg = (180 / Mathf.PI) * angleRad;
-        this.transform.rotation = Quaternion.Euler(0, 0, angleDeg);
-
-        // Keep the rotation for the position and distance snapping object at 0
-        positionObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-        distanceSnappingGhostObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-        distanceSnappingText.transform.rotation = Quaternion.Euler(0, 0, 0);
-        borderObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-    }
-
-    public void SetToDiamondRotation()
-    {
-        // Set the masks rotation
-        positionObjectMask.transform.rotation = diamondRotation;
-        distanceSnappingGhostObjectMask.transform.rotation = diamondRotation;
-        borderImage.transform.rotation = diamondRotation;
-    }
-
-    public void SetToSquareRotation()
-    {
-        // Set the masks rotation
-        positionObjectMask.transform.rotation = squareRotation;
-        distanceSnappingGhostObjectMask.transform.rotation = squareRotation;
-        borderImage.transform.rotation = squareRotation;
-    }
-
 }

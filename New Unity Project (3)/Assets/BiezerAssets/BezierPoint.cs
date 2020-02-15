@@ -36,6 +36,11 @@ public class BezierPoint : MonoBehaviour, IPointerClickHandler
         {
             this.transform.localPosition = scriptManager.pathEditor.MousePositionToWorld();
 
+            if (index == 0)
+            {
+                scriptManager.follower.transform.localPosition = scriptManager.pathEditor.MousePositionToWorld();
+            }
+
             scriptManager.createdPath.MovePoint(index, transform.localPosition);
 
             scriptManager.pathEditor.UpdateAllPointPositions();
@@ -47,9 +52,5 @@ public class BezierPoint : MonoBehaviour, IPointerClickHandler
     private void DeleteAnchorPoint()
     {
         scriptManager.createdPath.DeleteSegment(index);
-        //scriptManager.pathEditor.pointScriptList.RemoveAt(index);
-        scriptManager.pathEditor.UpdateAnchorPointIndexs();
-        scriptManager.roadCreator.UpdateRoad();
-        Destroy(this.gameObject);
     }
 }

@@ -271,12 +271,22 @@ public class MetronomePro : MonoBehaviour
 
         for (int i = 0; i < songTickTimes.Count; i++)
         {
+            /*
             // Get the closest tick time up to the current song position
             if (scriptManager.rhythmVisualizatorPro.audioSource.time <= songTickTimes[i])
             {
                 currentMeasure = (i / 4);
 
                 currentTick = i;
+                break;
+            }
+            */
+
+            if (scriptManager.rhythmVisualizatorPro.audioSource.time <= songTickTimes[i])
+            {
+                currentMeasure = (i + 1 / 4);
+
+                currentTick = i + 1;
                 break;
             }
         }
@@ -469,6 +479,12 @@ public class MetronomePro : MonoBehaviour
 
                 // Disable the timeline objects 
                 scriptManager.placedObject.DisableTimelineObjects();
+
+                // Reset lerp to next beat point
+                scriptManager.follower.SnapToCurrentPointPosition();
+
+                // Update nearby point gameobjects
+                scriptManager.pathPlacer.UpdateNearbyPoints();
             }
 
             // Play Audio Tick
@@ -491,7 +507,6 @@ public class MetronomePro : MonoBehaviour
         {
             // Reset the rotating line lerp variables
             //scriptManager.rotatorManager.ResetLerpVariables();
-            scriptManager.follower.UpdateLerpToNextObject();
         }
 
         if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.GameplaySceneIndex)

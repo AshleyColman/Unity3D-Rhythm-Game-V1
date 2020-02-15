@@ -235,10 +235,16 @@ public class SetupBeatmap : MonoBehaviour
         scriptManager.cursorHitObject.gameObject.SetActive(true);
 
 
+        // Update follower
+        scriptManager.pathPlacer.UpdatePathPoints();
+        scriptManager.timelineScript.UpdatePathLengthSlider();
+        scriptManager.follower.SetTimeToReachTarget();
+        scriptManager.follower.ToggleLerpOn();
+
         // Update gridsnap
-        scriptManager.rotatorManager.CalculateRotations();
-        scriptManager.rotatorManager.UpdateTimeToReachTarget();
-        scriptManager.rotatorManager.ToggleLerpOn();
+        //scriptManager.rotatorManager.CalculateRotations();
+        //scriptManager.rotatorManager.UpdateTimeToReachTarget();
+        //scriptManager.rotatorManager.ToggleLerpOn();
     }
 
     public void CheckSetupPanelInputFieldLength()

@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine.UI.Extensions;
-
 public class PathEditor : MonoBehaviour
 {
     private bool displayControlPoints = true;
@@ -18,7 +17,9 @@ public class PathEditor : MonoBehaviour
 
     public List<UILineRenderer> lineRendererList = new List<UILineRenderer>();
 
-    private List<Vector2> pointlist = new List<Vector2>();
+    public List<Vector2> pointlist = new List<Vector2>();
+
+    private List<int> nullObjectList = new List<int>();
 
     private ScriptManager scriptManager;
 
@@ -40,6 +41,8 @@ public class PathEditor : MonoBehaviour
                 }
             }
         }
+
+        scriptManager.roadCreator.UpdateRoad();
     }
 
     private void Update()
@@ -79,7 +82,7 @@ public class PathEditor : MonoBehaviour
         }
     }
 
-    public void UpdateAnchorPointIndexs()
+    public void UpdatePointListIndex()
     {
         for (int i = 0; i < pointScriptList.Count; i++)
         {
@@ -105,6 +108,45 @@ public class PathEditor : MonoBehaviour
         BezierPoint bezierPointScript = pointGameObject.GetComponent<BezierPoint>();
         bezierPointScript.Index = _index;
         pointScriptList.Add(bezierPointScript);
+    }
+
+    // Delete point
+    public void DeletePoint(int _index)
+    {
+        Destroy(pointScriptList[_index].gameObject);
+        pointScriptList.RemoveAt(_index);
+        //scriptManager.createdPath.points.RemoveAt(_index);
+    }
+
+    public void RemoveNullFromPointScriptList()
+    {
+        int nullObjectIndex = 0;
+        nullObjectList.Clear();
+
+        for (int i = 0; i < pointScriptList.Count; i++)
+        {
+            if (pointScriptList[i] == null)
+            {
+                nullObjectIndex = i;
+                nullObjectList.Add(nullObjectIndex);
+            }
+        }
+
+        // Reset index
+        nullObjectIndex = 0;
+
+        // Remove all null objects
+        for (int i = nullObjectList.Count - 1; i > -1; i--)
+        {
+            // Get the null object index from the list
+            nullObjectIndex = nullObjectList[i];
+
+            // Remove the script object from the list
+            pointScriptList.RemoveAt(nullObjectIndex);
+        }
+
+        // Clear the list for next time
+        nullObjectList.Clear();
     }
 
     private void AddNewPoint()

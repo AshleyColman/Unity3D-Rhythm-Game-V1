@@ -22,7 +22,6 @@ public class GridsnapManager : MonoBehaviour
     // Ints
     private int gridSizeX, gridSizeY;
     private const int maxGridSize = 200, minGridSize = 50, gridValue = 10;
-    private int gridSnapPointIndex;
    
     // Scripts
     private ScriptManager scriptManager;
@@ -41,49 +40,6 @@ public class GridsnapManager : MonoBehaviour
 
         // Update snapping
         UpdateSnappingMethod();
-
-        gridSnapPointIndex = 0;
-
-        // Snap cursor hit object to 1st gridpoint
-        scriptManager.cursorHitObject.transform.SetParent(gridPointObjectList[0].transform);
-        scriptManager.cursorHitObject.transform.position = gridPointObjectList[0].transform.position;
-    }
-
-    private void Update()
-    {
-        // Using arrow keys change position to the next gridpoint
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            // Decrement gridsnap point index
-            gridSnapPointIndex--;
-
-            // Error check
-            if (gridSnapPointIndex < 0)
-            {
-                gridSnapPointIndex = 0;
-            }
-
-            // Change to next gridsnap
-            scriptManager.cursorHitObject.transform.SetParent(gridPointObjectList[gridSnapPointIndex].transform);
-            scriptManager.cursorHitObject.transform.position = gridPointObjectList[gridSnapPointIndex].transform.position;
-        }
-
-        // Using arrow keys change position to the next gridpoint
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            // Increment gridsnap point index
-            gridSnapPointIndex++;
-
-            // Error check
-            if (gridSnapPointIndex > gridPointObjectList.Count - 1)
-            {
-                gridSnapPointIndex = gridPointObjectList.Count - 1;
-            }
-
-            // Change to next gridsnap
-            scriptManager.cursorHitObject.transform.SetParent(gridPointObjectList[gridSnapPointIndex].transform);
-            scriptManager.cursorHitObject.transform.position = gridPointObjectList[gridSnapPointIndex].transform.position;
-        }
     }
 
     public void UpdateSnappingMethod()
@@ -141,7 +97,6 @@ public class GridsnapManager : MonoBehaviour
             distanceSnapSizeButton.gameObject.SetActive(true);
         }
     }
-
 
     private void DeactivateGridSizeButton()
     {
