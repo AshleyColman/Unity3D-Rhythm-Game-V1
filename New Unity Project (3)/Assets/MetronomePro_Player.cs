@@ -192,9 +192,6 @@ public class MetronomePro_Player : MonoBehaviour
             // Play
             scriptManager.rhythmVisualizatorPro.audioSource.Play();
             scriptManager.metronomePro.Play();
-
-            // Turn on lerp for follower
-            scriptManager.follower.ToggleLerpOn();
         }
     }
 
@@ -205,7 +202,6 @@ public class MetronomePro_Player : MonoBehaviour
         scriptManager.timelineScript.SnapToClosestTickOnTimeline();
 
         // Turn off lerp for follower
-        scriptManager.follower.ToggleLerpOff();
         // Snap follower to current point position based on tick - 1
         scriptManager.follower.SnapToCurrentPointPosition();
     }

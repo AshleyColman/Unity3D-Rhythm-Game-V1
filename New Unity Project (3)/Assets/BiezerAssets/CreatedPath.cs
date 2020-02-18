@@ -13,12 +13,12 @@ public class CreatedPath : MonoBehaviour
 
     private void Awake()
     {
-        InitializePoints();
-    }
-
-    private void Start()
-    {
         scriptManager = FindObjectOfType<ScriptManager>();
+
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
+        {
+            InitializePoints();
+        }
     }
 
     public Vector2 this[int i]
@@ -60,6 +60,18 @@ public class CreatedPath : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    // Get the variable information for gameplay
+    public void GetGameplayPathInformation()
+    {
+        isClosed = Database.database.LoadedIsClosed;
+        autoSetControlPoints = Database.database.LoadedAutoSetControlPoints;
+
+        for (int i = 0; i < Database.database.LoadedCreatedPathPointPositionX.Count; i++)
+        {
+            points.Add(new Vector2(Database.database.LoadedCreatedPathPointPositionX[i], Database.database.LoadedCreatedPathPointPositionY[i]));
         }
     }
 

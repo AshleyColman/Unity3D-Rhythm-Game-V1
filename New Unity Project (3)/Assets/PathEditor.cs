@@ -27,22 +27,24 @@ public class PathEditor : MonoBehaviour
     {
         scriptManager = FindObjectOfType<ScriptManager>();
 
-        for (int i = 0; i < scriptManager.createdPath.NumPoints; i++)
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
         {
-            if (i % 3 == 0 || displayControlPoints == true)
+            for (int i = 0; i < scriptManager.createdPath.NumPoints; i++)
             {
-                if (i % 3 == 0)
+                if (i % 3 == 0 || displayControlPoints == true)
                 {
-                    InstantiateNewPoint("ANCHOR", scriptManager.createdPath.points[i], i);
-                }
-                else
-                {
-                    InstantiateNewPoint("CONTROL", scriptManager.createdPath.points[i], i);
+                    if (i % 3 == 0)
+                    {
+                        InstantiateNewPoint("ANCHOR", scriptManager.createdPath.points[i], i);
+                    }
+                    else
+                    {
+                        InstantiateNewPoint("CONTROL", scriptManager.createdPath.points[i], i);
+                    }
                 }
             }
+            scriptManager.roadCreator.UpdateRoad();
         }
-
-        scriptManager.roadCreator.UpdateRoad();
     }
 
     private void Update()

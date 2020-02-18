@@ -52,14 +52,17 @@ public class PathPlacer : MonoBehaviour {
 
         scriptManager = FindObjectOfType<ScriptManager>();
 
-        // Reference all evenly calculated points
-        points = scriptManager.createdPath.CalculateEvenlySpacedPoints(spacing, resolution);
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
+        {
+            // Reference all evenly calculated points
+            points = scriptManager.createdPath.CalculateEvenlySpacedPoints(spacing, resolution);
 
-        // Set start position of follower object
-        scriptManager.follower.SetToStartPosition();
+            // Set start position of follower object
+            scriptManager.follower.SetToStartPosition();
 
-        // Instantiate nearby point gameobjects
-        InstantiateNearbyPoints();
+            // Instantiate nearby point gameobjects
+            InstantiateNearbyPoints();
+        }
     }
 
     // Instantiate nearby point gameobjects
@@ -70,6 +73,23 @@ public class PathPlacer : MonoBehaviour {
             GameObject gameobject = Instantiate(nearbyPointPrefab, Vector2.zero, Quaternion.identity, nearbyPointSpawnCanvas);
 
             nearbyPointsList.Add(gameobject);
+        }
+    }
+
+    // Get the gameplay path information
+    public void GetGameplayPathInformation()
+    {
+        spacing = Database.database.LoadedSpacing;
+        resolution = Database.database.LoadedResolution;
+        beatInterval = Database.database.LoadedBeatInterval;
+
+        // Initialize size
+        points = new Vector2[Database.database.LoadedPathPlacerPointPositionX.Count];
+
+        // Set points to saved points
+        for (int i = 0; i < Database.database.LoadedPathPlacerPointPositionX.Count; i++)
+        {
+            points[i] = new Vector2(Database.database.LoadedPathPlacerPointPositionX[i], Database.database.LoadedPathPlacerPointPositionY[i]);
         }
     }
 

@@ -4,16 +4,35 @@ using UnityEngine;
 
 public class Follower : MonoBehaviour
 {
+    #region Variables
+    // Animation
+    public Animator followerAnimator;
 
-    private Vector3 startPosition, endPosition;
+    // Integer
     private const float positionZ = 0f;
     private float timer;
     public float timeToReachTarget;
     private float distanceTravelled;
+
+    // Vector
+    private Vector3 startPosition, endPosition;
+
+    // Bool
     private bool shouldLerp;
 
+    // Scripts
     private ScriptManager scriptManager;
+    #endregion
 
+    #region Properties
+    // Properties
+    public bool ShouldLerp
+    {
+        get { return shouldLerp; }
+    }
+    #endregion
+
+    #region Functions
     private void Start()
     {
         GetReferenceToScriptManager();
@@ -52,10 +71,10 @@ public class Follower : MonoBehaviour
     public void SnapToCurrentPointPosition()
     {
         // Allow the position to be placed if the point on the line exists in the editor (only spawn if length is long enough)
-        if (scriptManager.metronomePro.CurrentTick <= scriptManager.pathPlacer.points.Length)
+        if (scriptManager.metronomePro.CurrentTick < scriptManager.pathPlacer.points.Length)
         {
             // Current tick - 1 as you cannot place a note on tick 0 as no tick is placed on the timeline
-            this.transform.localPosition = scriptManager.pathPlacer.points[scriptManager.metronomePro.CurrentTick - 1];
+            this.transform.localPosition = scriptManager.pathPlacer.points[scriptManager.metronomePro.CurrentTick];
         }
     }
 
@@ -69,35 +88,27 @@ public class Follower : MonoBehaviour
 
     private void LerpToNextPoint()
     {
-        /*
-        // If the
-        if ((scriptManager.metronomeForEffects.currentTick + 1) > (scriptManager.pathPlacer.points.Length - 1))
-        {
-            
-        }
-        */
-
-
         // IF CURRENT TICK > TOTAL LENGTH OF TICK COUNT BASED ON LENGTH OF THE PATH
+        if (scriptManager.metronomePro.CurrentTick < scriptManager.pathPlacer.points.Length)
+        {
+            // Get start and end position based on the current point index
+            startPosition = scriptManager.pathPlacer.points[scriptManager.metronomePro.CurrentTick - 1];
+            endPosition = scriptManager.pathPlacer.points[scriptManager.metronomePro.CurrentTick];
 
+            // Create vector3 position
+            startPosition = new Vector3(startPosition.x, startPosition.y, positionZ);
+            endPosition = new Vector3(endPosition.x, endPosition.y, positionZ);
 
+            // Increment timer
+            timer += Time.deltaTime / timeToReachTarget;
 
-
-        /*
-        // Get start and end position based on the current point index
-        startPosition = scriptManager.pathPlacer.points[scriptManager.metronomePro.currentTick - 1];
-        endPosition = scriptManager.pathPlacer.points[scriptManager.metronomePro.currentTick];
-
-        // Create vector3 position
-        startPosition = new Vector3(startPosition.x, startPosition.y, positionZ);
-        endPosition = new Vector3(endPosition.x, endPosition.y, positionZ);
-
-        // Increment timer
-        timer += Time.deltaTime / timeToReachTarget;
-
-        // Lerp rotation
-        this.transform.localPosition = Vector3.Lerp(startPosition, endPosition, timer);
-        */
+            // Lerp rotation
+            this.transform.localPosition = Vector3.Lerp(startPosition, endPosition, timer);
+        }
+        else
+        {
+            ToggleLerpOff();
+        }
     }
 
     public void SetTimeToReachTarget()
@@ -110,4 +121,10 @@ public class Follower : MonoBehaviour
         timer = 0;
     }
 
+    // Play the follower hit animation
+    public void PlayFollowerHitAnimation()
+    {
+        followerAnimator.Play("Follower_Hit_Animation", 0, 0f);
+    }
+    #endregion
 }

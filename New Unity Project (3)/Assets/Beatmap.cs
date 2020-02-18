@@ -15,8 +15,10 @@ public class Beatmap
     private List<int> animationType = new List<int>();
 
     // PATH
-    private List<float> pointPositionX = new List<float>();
-    private List<float> pointPositionY = new List<float>();
+    private List<float> pathPlacerPointPositionX = new List<float>();
+    private List<float> pathPlacerPointPositionY = new List<float>();
+    private List<float> createdPathPointPositionX = new List<float>();
+    private List<float> createdPathPointPositionY = new List<float>();
     private bool isClosed;
     private bool autoSetControlPoints;
     private float spacing;
@@ -89,16 +91,28 @@ public class Beatmap
         set { objectType = value; }
     }
 
-    public List<float> PointPositionX
+    public List<float> PathPlacerPointPositionX
     {
-        get { return pointPositionX; }
-        set { pointPositionX = value; }
+        get { return pathPlacerPointPositionX; }
+        set { pathPlacerPointPositionX = value; }
     }
 
-    public List<float> PointPositionY
+    public List<float> PathPlacerPointPositionY
     {
-        get { return pointPositionY; }
-        set { pointPositionY = value; }
+        get { return pathPlacerPointPositionY; }
+        set { pathPlacerPointPositionY = value; }
+    }
+
+    public List<float> CreatedPathPointPositionX
+    {
+        get { return createdPathPointPositionX; }
+        set { createdPathPointPositionX = value; }
+    }
+
+    public List<float> CreatedPathPointPositionY
+    {
+        get { return createdPathPointPositionY; }
+        set { createdPathPointPositionY = value; }
     }
 
     public bool IsClosed

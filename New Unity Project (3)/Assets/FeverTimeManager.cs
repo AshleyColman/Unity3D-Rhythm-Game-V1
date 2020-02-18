@@ -13,8 +13,8 @@ public class FeverTimeManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        feverTimeSlider.value = 0.5f;
-        sideFeverTimeSlider.value = 0.5f;
+        feverTimeSlider.value = 1f;
+        sideFeverTimeSlider.value = 1f;
         UpdateFeverText();
     }
 

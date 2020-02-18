@@ -115,14 +115,14 @@ public class Timeline : MonoBehaviour
                 var mouseScroll = Input.GetAxis("Mouse ScrollWheel");
 
                 // Move the song and timeline back 1 tick if left arrow key is pressed
-                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Comma) || mouseScroll < 0f)
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || mouseScroll < 0f)
                 {
                     // Navigate the timeline 1 tick back
                     TimelineNavigationBackwardOneTick();
                 }
 
                 // Move the song and timeline forward 1 tick if right arrow key is pressed
-                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Period) || mouseScroll > 0f)
+                if (Input.GetKeyDown(KeyCode.RightArrow) || mouseScroll > 0f)
                 {
                     // Navigate the timeline forward one tick
                     TimelineNavigationForwardOneTick();

@@ -28,12 +28,14 @@ public class RoadCreator : MonoBehaviour {
             Vector2[] points = scriptManager.createdPath.CalculateEvenlySpacedPoints(spacing);
             GetComponent<MeshFilter>().mesh = CreateRoadMesh(points, scriptManager.createdPath.IsClosed);
 
+            /*
             int textureRepeat = Mathf.RoundToInt(tiling * points.Length * spacing * .05f);
             GetComponent<MeshRenderer>().sharedMaterial.mainTextureScale = new Vector2(1, textureRepeat);
+            */
         }
     }
 
-    Mesh CreateRoadMesh(Vector2[] points, bool isClosed)
+    private Mesh CreateRoadMesh(Vector2[] points, bool isClosed)
     {
         Vector3[] verts = new Vector3[points.Length * 2];
         Vector2[] uvs = new Vector2[verts.Length];

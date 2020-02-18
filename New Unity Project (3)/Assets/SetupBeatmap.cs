@@ -238,8 +238,8 @@ public class SetupBeatmap : MonoBehaviour
         // Update follower
         scriptManager.pathPlacer.UpdatePathPoints();
         scriptManager.timelineScript.UpdatePathLengthSlider();
-        scriptManager.follower.SetTimeToReachTarget();
-        scriptManager.follower.ToggleLerpOn();
+        //scriptManager.follower.SetTimeToReachTarget();
+        //scriptManager.follower.ToggleLerpOn();
 
         // Update gridsnap
         //scriptManager.rotatorManager.CalculateRotations();

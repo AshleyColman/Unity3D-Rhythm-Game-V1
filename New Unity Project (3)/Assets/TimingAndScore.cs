@@ -151,7 +151,10 @@ public class TimingAndScore : MonoBehaviour
                             // Play hit sound
                             scriptManager.hitSoundManager.PlayHitSound();
 
-                            scriptManager.feverTimeManager.FillFeverSlider();
+                            //scriptManager.feverTimeManager.FillFeverSlider();
+
+                            // Play follower hit animation
+                            scriptManager.follower.PlayFollowerHitAnimation();
 
                             this.gameObject.SetActive(false);
                         }
@@ -184,7 +187,7 @@ public class TimingAndScore : MonoBehaviour
         }
         */
 
-        scriptManager.explosionManager.SpawnExplosion(this.transform.position, "0");
+       // scriptManager.explosionManager.SpawnExplosion(this.transform.position, "0");
     }
 
     // Check if the player hit early judgement
@@ -248,7 +251,7 @@ public class TimingAndScore : MonoBehaviour
     private void MissedObject()
     {
         // Pass the position and hit object type, spawn miss explosion
-        scriptManager.explosionManager.SpawnExplosion(this.transform.position, objectMissedTag);
+        //scriptManager.explosionManager.SpawnExplosion(this.transform.position, objectMissedTag);
         // Sets judgement to miss
         scriptManager.scoreManager.AddJudgement(missJudgement);
         // Reset combo as missed

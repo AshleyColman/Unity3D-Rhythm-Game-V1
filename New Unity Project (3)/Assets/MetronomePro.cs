@@ -271,8 +271,6 @@ public class MetronomePro : MonoBehaviour
 
         for (int i = 0; i < songTickTimes.Count; i++)
         {
-            /*
-            // Get the closest tick time up to the current song position
             if (scriptManager.rhythmVisualizatorPro.audioSource.time <= songTickTimes[i])
             {
                 currentMeasure = (i / 4);
@@ -280,17 +278,8 @@ public class MetronomePro : MonoBehaviour
                 currentTick = i;
                 break;
             }
-            */
-
-            if (scriptManager.rhythmVisualizatorPro.audioSource.time <= songTickTimes[i])
-            {
-                currentMeasure = (i + 1 / 4);
-
-                currentTick = i + 1;
-                break;
-            }
         }
-
+ 
         // Reset current step
         currentStep = 0;
 
@@ -470,50 +459,11 @@ public class MetronomePro : MonoBehaviour
     // Tick Time (execute here all what you want)
     IEnumerator OnTick()
     {
-        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == true)
         {
-            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
-            {
-                // Sort latest beatsnap and push it to the back
-                scriptManager.beatsnapManager.SortLatestBeatsnap("FORWARD");
-
-                // Disable the timeline objects 
-                scriptManager.placedObject.DisableTimelineObjects();
-
-                // Reset lerp to next beat point
-                scriptManager.follower.SnapToCurrentPointPosition();
-
-                // Update nearby point gameobjects
-                scriptManager.pathPlacer.UpdateNearbyPoints();
-            }
-
-            // Play Audio Tick
-            if (metronomeIsMuted == false)
-            {
-                metronomeAudioSource.Play();
-            }
-            UpdateMetronomeUIColors();
-
-            if (currentStep == 1)
-            {
-                EditorSceneOnMeasure();
-            }
-
-            EditorSceneOnMeasure();
+            EditorSceneOnTick();
+            GameplaySceneOnTick();
         }
-
-
-        if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying)
-        {
-            // Reset the rotating line lerp variables
-            //scriptManager.rotatorManager.ResetLerpVariables();
-        }
-
-        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.GameplaySceneIndex)
-        {
-            GameplaySceneOnMeasure();
-        }
-
         yield return null;
     }
 
@@ -528,25 +478,28 @@ public class MetronomePro : MonoBehaviour
 
     private void UpdateMetronomeUIColors()
     {
-        // Change all colors in the UI to white
-        ResetImgBeatColors();
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
+        {
+            // Change all colors in the UI to white
+            ResetImgBeatColors();
 
-        // Change the color from the Actual Step Image in the UI
-        if (currentStep == 1)
-        {
-            imgBeat1.color = scriptManager.colorManager.selectedColor;
-        }
-        else if (currentStep == 2)
-        {
-            imgBeat2.color = Color.cyan;
-        }
-        else if (currentStep == 3)
-        {
-            imgBeat3.color = Color.cyan;
-        }
-        else if (currentStep == 4)
-        {
-            imgBeat4.color = Color.cyan;
+            // Change the color from the Actual Step Image in the UI
+            if (currentStep == 1)
+            {
+                imgBeat1.color = scriptManager.colorManager.selectedColor;
+            }
+            else if (currentStep == 2)
+            {
+                imgBeat2.color = Color.cyan;
+            }
+            else if (currentStep == 3)
+            {
+                imgBeat3.color = Color.cyan;
+            }
+            else if (currentStep == 4)
+            {
+                imgBeat4.color = Color.cyan;
+            }
         }
     }
 
@@ -562,8 +515,41 @@ public class MetronomePro : MonoBehaviour
         metronomeIsMuted = false;
     }
 
+    // Editor scene on tick functions
+    private void EditorSceneOnTick()
+    {
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.EditorSceneIndex)
+        {
+            // Sort latest beatsnap and push it to the back
+            scriptManager.beatsnapManager.SortLatestBeatsnap("FORWARD");
+
+            // Disable the timeline objects 
+            scriptManager.placedObject.DisableTimelineObjects();
+
+            // Reset lerp to next beat point
+            scriptManager.follower.SnapToCurrentPointPosition();
+
+            // Update nearby point gameobjects
+            scriptManager.pathPlacer.UpdateNearbyPoints();
+
+            // Update metronome colors
+            UpdateMetronomeUIColors();
+
+            // Play Audio Tick
+            if (metronomeIsMuted == false)
+            {
+                metronomeAudioSource.Play();
+            }
+
+            if (currentStep == 1)
+            {
+                EditorSceneOnMeasure();
+            }
+        }
+    }
+
     // Editor scene on measure animations
-    void EditorSceneOnMeasure()
+    private void EditorSceneOnMeasure()
     {
         flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
 
@@ -572,8 +558,31 @@ public class MetronomePro : MonoBehaviour
         PlayBackgroundBeatAnimation();
     }
 
+    // Gameplay scene on tick functions
+    private void GameplaySceneOnTick()
+    {
+        if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.GameplaySceneIndex)
+        {
+            if (scriptManager.follower.ShouldLerp == false)
+            {
+                if (scriptManager.rhythmVisualizatorPro.audioSource.time >= songTickTimes[0])
+                {
+                    scriptManager.follower.ToggleLerpOn();
+                }
+            }
+
+            scriptManager.follower.UpdateLerpToNextObject();
+
+
+            if (currentStep == 1)
+            {
+                GameplaySceneOnMeasure();
+            }
+        }
+    }
+
     // Gameplay scene on measure animations
-    void GameplaySceneOnMeasure()
+    private void GameplaySceneOnMeasure()
     {
         flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
 

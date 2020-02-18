@@ -35,9 +35,12 @@ public class LoadAndRunBeatmap : MonoBehaviour
     private float trackStartTime; // The time that the song started from
     private float[] hitObjectSpawnTimes;  // Hit object spawn times
     private const int NORMAL_FADE_SPEED_TIME = 1; // Time to remove from hit object spawn times if normal fade speed selected
+
     // Vectors
     private Vector3[] hitObjectPositions; // Hit object positions containing all 3 xyz values from the other lists
     private Vector3 hitObjectPosition; // The hit object position to spawn at
+    private Vector2[] createdPathPoints; // Created path script points
+    private Vector2[] pathPlacerPathPoints; // Path placer script points
 
     // Bools
     private bool startCheck; // Controls checking for the first hit object when the first hit object has spawned
@@ -95,8 +98,9 @@ public class LoadAndRunBeatmap : MonoBehaviour
         totalHitObjects = Database.database.LoadedPositionX.Count; // Assign the total number of hit objects based on how many x positions there are
         totalHitObjectListSize = totalHitObjects; // Get total number of objects to spawn
         LoadHitObjectPositions(); // Load the hit object xyz positions from the beatmap file
+        SetupPath(); // Load path
         LoadHitObjectSpawnTimes(); // Load and update the hit object spawn times with the fade speed selected value
-        UpdateGameplayUI(); // When gameplay scene has loaded update the UI text
+        //UpdateGameplayUI(); // When gameplay scene has loaded update the UI text
         StartCoroutine(GetAudioFile()); // Get the audio file and load it into an audio clip
 
         poolDictionary = new Dictionary<int, Queue<GameObject>>();
@@ -158,12 +162,21 @@ public class LoadAndRunBeatmap : MonoBehaviour
         }
     }
 
+    private void SetupPath()
+    {
+        // Pass path information to path scripts
+        scriptManager.createdPath.GetGameplayPathInformation();
+        scriptManager.pathPlacer.GetGameplayPathInformation();
+        scriptManager.roadCreator.UpdateRoad();
+        scriptManager.follower.SetToStartPosition();
+    }
+
     public void StartGameplay()
     {
         pressPlayAnimator.Play("PressPlay_Animation", 0, 0f);
         scriptManager.menuSFXManager.PlaySoundEffect(0);
         StartMusic();
-        scriptManager.follower.ToggleLerpOn();
+        //scriptManager.follower.ToggleLerpOn();
         gameplayHasStarted = true;
     }
 
@@ -290,13 +303,8 @@ public class LoadAndRunBeatmap : MonoBehaviour
             // Check if it's time to spawn the next hit boject
             if (songTimer >= Database.database.LoadedHitObjectSpawnTime[hitObjectID])
             {
-                //SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
-
-
-                float positionZ = 0f;
-                Vector3 position = new Vector3(scriptManager.pathPlacer.points[hitObjectID].x, scriptManager.pathPlacer.points[hitObjectID].y, positionZ);
-
-                SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], position);
+                // Spawn hit object from pool
+                SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
 
                 // Increment the hit object ID to spawn the next hit object
                 hitObjectID++;
