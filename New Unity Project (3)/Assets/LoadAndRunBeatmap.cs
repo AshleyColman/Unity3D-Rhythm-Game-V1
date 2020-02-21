@@ -8,9 +8,6 @@ using UnityEngine.Networking;
 public class LoadAndRunBeatmap : MonoBehaviour
 {
 
-    // Animation
-    public Animator pressPlayAnimator;
-
     // UI
     public TextMeshProUGUI gameplayTitleText, beatmapCreatorText, difficultyText;
 
@@ -34,20 +31,16 @@ public class LoadAndRunBeatmap : MonoBehaviour
     private float songTimer; // The current time in the song
     private float trackStartTime; // The time that the song started from
     private float[] hitObjectSpawnTimes;  // Hit object spawn times
-    private const int NORMAL_FADE_SPEED_TIME = 1; // Time to remove from hit object spawn times if normal fade speed selected
 
     // Vectors
     private Vector3[] hitObjectPositions; // Hit object positions containing all 3 xyz values from the other lists
     private Vector3 hitObjectPosition; // The hit object position to spawn at
-    private Vector2[] createdPathPoints; // Created path script points
-    private Vector2[] pathPlacerPathPoints; // Path placer script points
 
     // Bools
     private bool startCheck; // Controls checking for the first hit object when the first hit object has spawned
     private bool hasSpawnedAllHitObjects; // Has the game spawned all hit objects?
     private bool gameplayHasStarted; // Tracks starting and stopping gameplay
     private bool allHitObjectsHaveBeenHit; // Have all the hit objects been hit? Used for going to the results screen if they have
-    private bool hasLoadedTiming;
 
     // Keycodes
     private KeyCode startGameKey; // Game to start the gameplay
@@ -88,7 +81,6 @@ public class LoadAndRunBeatmap : MonoBehaviour
         startCheck = false;
         gameplayHasStarted = false;
         hasSpawnedAllHitObjects = false; // Set to false as all object haven't been spawned yet
-        hasLoadedTiming = false;
         startGameKey = KeyCode.Space; // Assign starting the game key to the spacebar
 
         // Reference
@@ -98,7 +90,6 @@ public class LoadAndRunBeatmap : MonoBehaviour
         totalHitObjects = Database.database.LoadedPositionX.Count; // Assign the total number of hit objects based on how many x positions there are
         totalHitObjectListSize = totalHitObjects; // Get total number of objects to spawn
         LoadHitObjectPositions(); // Load the hit object xyz positions from the beatmap file
-        SetupPath(); // Load path
         LoadHitObjectSpawnTimes(); // Load and update the hit object spawn times with the fade speed selected value
         //UpdateGameplayUI(); // When gameplay scene has loaded update the UI text
         StartCoroutine(GetAudioFile()); // Get the audio file and load it into an audio clip
@@ -127,66 +118,26 @@ public class LoadAndRunBeatmap : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (hasLoadedTiming == false)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
-            {
-                LoadTiming(); // Load metronome timing information
-                hasLoadedTiming = true;
-            }
+            gameplayHasStarted = true; // Allow gameplay functions to run
+            StartMusic(); // Start gameplay music
         }
 
-        if (gameplayHasStarted == false)
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                StartGameplay();
-            }
-        }
-        else
-        {
-            // Update the song timer with the current song time if gameplay has started
-            UpdateSongTimer();
+        // Update the song timer with the current song time if gameplay has started
+        UpdateSongTimer();
 
-            // Check if all the hit objects have spawned
-            CheckIfAllHitObjectsHaveSpawned();
+        // Check if all the hit objects have spawned
+        CheckIfAllHitObjectsHaveSpawned();
 
-            // Check if it's time to spawn the next hit object
-            CheckIfTimeToSpawnHitObject();
+        // Check if it's time to spawn the next hit object
+        CheckIfTimeToSpawnHitObject();
 
-            // Control which hit object can be hit - earliest spawned
-            EnableHitObjectsToBeHit();
+        // Control which hit object can be hit - earliest spawned
+        EnableHitObjectsToBeHit();
 
-            // Check if all hit objects have been hit
-            CheckIfAllHitObjectsHaveBeenHit();
-        }
-    }
-
-    private void SetupPath()
-    {
-        // Pass path information to path scripts
-        scriptManager.createdPath.GetGameplayPathInformation();
-        scriptManager.pathPlacer.GetGameplayPathInformation();
-        scriptManager.roadCreator.UpdateRoad();
-        scriptManager.follower.SetToStartPosition();
-    }
-
-    public void StartGameplay()
-    {
-        pressPlayAnimator.Play("PressPlay_Animation", 0, 0f);
-        scriptManager.menuSFXManager.PlaySoundEffect(0);
-        StartMusic();
-        //scriptManager.follower.ToggleLerpOn();
-        gameplayHasStarted = true;
-    }
-
-    private void LoadTiming()
-    {
-        scriptManager.metronomePro.Bpm = Database.database.LoadedBPM;
-        scriptManager.metronomePro.OffsetMS = Database.database.LoadedOffsetMS;
-        scriptManager.metronomePro.CalculateIntervals();
-        scriptManager.metronomePro.CalculateActualStep();
-        scriptManager.follower.SetTimeToReachTarget();
+        // Check if all hit objects have been hit
+        CheckIfAllHitObjectsHaveBeenHit();
     }
 
     private void SpawnFromPool(int _tag, Vector3 _position)
@@ -196,7 +147,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
             GameObject objectToSpawn = poolDictionary[_tag].Dequeue();
             objectToSpawn.gameObject.SetActive(true);
 
-            objectToSpawn.transform.localPosition = _position;
+            objectToSpawn.transform.position = _position;
             objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
 
             objectToSpawn.transform.SetAsFirstSibling();
@@ -215,6 +166,12 @@ public class LoadAndRunBeatmap : MonoBehaviour
             // Set to true as the first hit object has been instantiated
             startCheck = true;
         }
+    }
+
+    // Setup timing information
+    private void SetupTiming()
+    {
+        scriptManager.metronomePro.SetupGameplayTiming(Database.database.LoadedBPM, Database.database.LoadedOffsetMS);
     }
 
     // Load the hit object xyz positions from the beatmap file and insert into the vector3 position array
@@ -236,15 +193,13 @@ public class LoadAndRunBeatmap : MonoBehaviour
     // Load and update the hit object spawn times with the fade speed selected value
     private void LoadHitObjectSpawnTimes()
     {
+        int fadeSpeedValue = 1;
         // Load each spawn time from the beatmap file
         // Update the spawn time position by taking away the time to fade in based on the fade speed selected
         for (int i = 0; i < totalHitObjects; i++)
         {
-            Database.database.LoadedHitObjectSpawnTime[i] = (Database.database.LoadedHitObjectSpawnTime[i] - NORMAL_FADE_SPEED_TIME);
-
-
             // Set the hit object spawn time to equal the hit object spawn time - the fade speed selected (2, 1, 0.5)
-            //Database.database.loadedHitObjectSpawnTime[i] = (Database.database.loadedHitObjectSpawnTime[i] - playerSkillsManager.GetFadeSpeedSelected());
+            Database.database.LoadedHitObjectSpawnTime[i] = (Database.database.LoadedHitObjectSpawnTime[i] - fadeSpeedValue);
         }
     }
 
@@ -279,8 +234,12 @@ public class LoadAndRunBeatmap : MonoBehaviour
     // Update the song timer with the current time of the song if gameplay has started
     private void UpdateSongTimer()
     {
-        // Update the song timer with the current song time
-        songTimer = scriptManager.rhythmVisualizatorPro.audioSource.time;
+        // Check if gameplay has started
+        if (gameplayHasStarted == true)
+        {
+            // Update the song timer with the current song time
+            songTimer = scriptManager.rhythmVisualizatorPro.audioSource.time;
+        }
     }
 
     // Check if all the hit objects have spawned
@@ -303,9 +262,11 @@ public class LoadAndRunBeatmap : MonoBehaviour
             // Check if it's time to spawn the next hit boject
             if (songTimer >= Database.database.LoadedHitObjectSpawnTime[hitObjectID])
             {
-                // Spawn hit object from pool
+
                 SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
 
+                // Spawn the next hit object
+                //SpawnHitObject(hitObjectPositions[hitObjectID], Database.database.LoadedObjectType[hitObjectID], hitObjectID);
                 // Increment the hit object ID to spawn the next hit object
                 hitObjectID++;
             }
@@ -434,6 +395,8 @@ public class LoadAndRunBeatmap : MonoBehaviour
             else
             {
                 scriptManager.rhythmVisualizatorPro.audioSource.clip = DownloadHandlerAudioClip.GetContent(www);
+
+                SetupTiming(); // Setting metronome timing information
             }
         }
     }

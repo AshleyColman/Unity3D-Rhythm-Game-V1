@@ -46,10 +46,4 @@ public class ScriptManager : MonoBehaviour
     public ExplosionManager explosionManager;
     public HitSoundManager hitSoundManager;
     public FeverTimeManager feverTimeManager;
-    public MenuSFXManager menuSFXManager;
-    public Follower follower;
-    public PathPlacer pathPlacer;
-    public RoadCreator roadCreator;
-    public PathEditor pathEditor;
-    public CreatedPath createdPath;
 }

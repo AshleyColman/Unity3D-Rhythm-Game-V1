@@ -46,18 +46,11 @@ public class SongSelectManager : MonoBehaviour
     private float beatmapSongOffset, beatmapSongBpm;
     private int frameInterval;
     private int beatmapDirectoryCount;
-    private float spacing;
-    private float resolution;
-    private int beatInterval;
 
     // Bools
     private bool easyDifficultyExist, advancedDifficultyExist, extraDifficultyExist;
     private bool hasPlayedSongPreviewOnce; // Used to play the start preview once upon entering the song select screen for the first time so the song plays at the current set time once.
     private bool hasSelectedCurrentBeatmapButton;
-    private bool isClosed;
-    private bool autoSetControlPoints;
-
-    // Audio
     public AudioSource songAudioSource;
 
     // Scripts
@@ -278,12 +271,6 @@ public class SongSelectManager : MonoBehaviour
             songPreviewStartTime = Database.database.LoadedSongPreviewStartTime;
             beatmapSongBpm = Database.database.LoadedBPM;
             beatmapSongOffset = Database.database.LoadedOffsetMS;
-
-            isClosed = Database.database.LoadedIsClosed;
-            autoSetControlPoints = Database.database.LoadedAutoSetControlPoints;
-            spacing = Database.database.LoadedSpacing;
-            resolution = Database.database.LoadedResolution;
-            beatInterval = Database.database.LoadedBeatInterval;
 
             // Load beatmap creator profile image
             scriptManager.uploadPlayerImage.CallBeatmapCreatorUploadImage(beatmapCreator, scriptManager.uploadPlayerImage.beatmapCreatorProfileImage);

@@ -13,8 +13,8 @@ public class FeverTimeManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        feverTimeSlider.value = 1f;
-        sideFeverTimeSlider.value = 1f;
+        feverTimeSlider.value = 0.5f;
+        sideFeverTimeSlider.value = 0.5f;
         UpdateFeverText();
     }
 
@@ -56,6 +56,6 @@ public class FeverTimeManager : MonoBehaviour
 
     public void UpdateFeverText()
     {
-        feverTimeValueText.text = (feverTimeSlider.value * 100).ToString("F2") + "%" + '\n' + "FEVER";
+        feverTimeValueText.text = (feverTimeSlider.value * 100).ToString() + "%" + '\n' + "FEVER";
     }
 }

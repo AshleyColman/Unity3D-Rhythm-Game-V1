@@ -68,6 +68,7 @@ public class BackgroundManager : MonoBehaviour
         if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.GameplaySceneIndex)
         {
             completeImagePath = Database.database.LoadedBeatmapFolderDirectory + imageName + imageType;
+            Debug.Log(completeImagePath);
             LoadNextBackgroundImg();
         }
     }

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class GridsnapManager : MonoBehaviour
 {
@@ -16,15 +15,15 @@ public class GridsnapManager : MonoBehaviour
 
     // Gameobject 
     public GameObject gridSizeButton, distanceSnapSizeButton, gridLayout;
-    public List<GameObject> gridPointObjectList = new List<GameObject>(); // List of all grid point gameobjects
-    public List<GameObject> positionGridPointObjectList = new List<GameObject>(); // List of invisible grid point gameobjects
 
     // Ints
     private int gridSizeX, gridSizeY;
     private const int maxGridSize = 200, minGridSize = 50, gridValue = 10;
-   
+
     // Scripts
     private ScriptManager scriptManager;
+
+
 
     private void Start()
     {
@@ -37,9 +36,6 @@ public class GridsnapManager : MonoBehaviour
 
         // Update the grid layout group
         gridLayoutGroup.cellSize = new Vector2(gridSizeX, gridSizeY);
-
-        // Update snapping
-        UpdateSnappingMethod();
     }
 
     public void UpdateSnappingMethod()
@@ -68,7 +64,7 @@ public class GridsnapManager : MonoBehaviour
                 scriptManager.cursorHitObject.DisableCursorHitObjectRaycast();
                 scriptManager.cursorHitObject.FollowMouse = false;
                 scriptManager.cursorHitObject.DisableCursotHitObjectTextElements();
-                //gridLayout.gameObject.SetActive(true);
+                gridLayout.gameObject.SetActive(true);
                 break;
             case 2:
                 DeactivateGridSizeButton();
@@ -97,6 +93,7 @@ public class GridsnapManager : MonoBehaviour
             distanceSnapSizeButton.gameObject.SetActive(true);
         }
     }
+
 
     private void DeactivateGridSizeButton()
     {

@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public class Database : MonoBehaviour
 {
-    #region Variables
+
     // Scripts
     public static Beatmap beatmap;
     public static Database database;
@@ -37,17 +37,6 @@ public class Database : MonoBehaviour
     private float loadedSongPreviewStartTime; // Loaded song preview time
     private float loadedBPM, loadedOffsetMS; // Loaded bpm and offset
 
-    private List<float> loadedPathPlacerPointPositionX = new List<float>();
-    private List<float> loadedPathPlacerPointPositionY = new List<float>();
-    private List<float> loadedCreatedPathPointPositionX = new List<float>();
-    private List<float> loadedCreatedPathPointPositionY = new List<float>();
-    private bool loadedIsClosed;
-    private bool loadedAutoSetControlPoints;
-    private float loadedSpacing;
-    private float loadedResolution;
-    private int loadedBeatInterval;
-
-
     // Loaded strings
     private string loadedLeaderboardTableName; // Loaded leaderboard table name
     private string loadedSongName; // Loaded beatmap song name
@@ -58,9 +47,9 @@ public class Database : MonoBehaviour
     private string loadedBeatmapDifficultyLevel;
     private string loadedBeatmapCreatedDate; // Loaded date of beatmap creation
     private int loadedKeyMode; // Key mode number
-    #endregion
 
-    #region Properties
+    // Properties
+
     public List<float> PositionX
     {
         get { return positionX; }
@@ -101,60 +90,6 @@ public class Database : MonoBehaviour
     {
         get { return soundType; }
         set { soundType = value; }
-    }
-
-    public List<float> LoadedPathPlacerPointPositionX
-    {
-        get { return loadedPathPlacerPointPositionX; }
-        set { loadedPathPlacerPointPositionX = value; }
-    }
-
-    public List<float> LoadedPathPlacerPointPositionY
-    {
-        get { return loadedPathPlacerPointPositionY; }
-        set { loadedPathPlacerPointPositionY = value; }
-    }
-
-    public List<float> LoadedCreatedPathPointPositionX
-    {
-        get { return loadedCreatedPathPointPositionX; }
-        set { loadedCreatedPathPointPositionX = value; }
-    }
-
-    public List<float> LoadedCreatedPathPointPositionY
-    {
-        get { return loadedCreatedPathPointPositionY; }
-        set { loadedCreatedPathPointPositionY = value; }
-    }
-
-    public bool LoadedIsClosed
-    {
-        get { return loadedIsClosed; }
-        set { loadedIsClosed = value; }
-    }
-
-    public bool LoadedAutoSetControlPoints
-    {
-        get { return loadedAutoSetControlPoints; }
-        set { loadedAutoSetControlPoints = value; }
-    }
-
-    public float LoadedSpacing
-    {
-        get { return loadedSpacing; }
-        set { loadedSpacing = value; }
-    }
-
-    public float LoadedResolution
-    {
-        get { return loadedResolution; }
-        set { loadedResolution = value; }
-    }
-
-    public int LoadedBeatInterval
-    {
-        get { return loadedBeatInterval; }
-        set { loadedBeatInterval = value; }
     }
 
     public List<float> LoadedPositionX
@@ -263,9 +198,7 @@ public class Database : MonoBehaviour
     {
         get { return loadedSongPreviewStartTime; }
     }
-    #endregion
 
-    #region Functions
     private void Awake()
     {
         database = this;
@@ -307,30 +240,6 @@ public class Database : MonoBehaviour
             beatmap.AnimationType.Add(animationType[i]);
             beatmap.SoundType.Add(soundType[i]);
         }
-
-
-        // Save path information
-        for (int i = 0; i < scriptManager.createdPath.points.Count; i++)
-        {
-            beatmap.CreatedPathPointPositionX.Add(scriptManager.createdPath.points[i].x);
-            beatmap.CreatedPathPointPositionY.Add(scriptManager.createdPath.points[i].y);
-        }
-
-        for (int i = 0; i < scriptManager.pathPlacer.points.Length; i++)
-        {
-            beatmap.PathPlacerPointPositionX.Add(scriptManager.pathPlacer.points[i].x);
-            beatmap.PathPlacerPointPositionY.Add(scriptManager.pathPlacer.points[i].y);
-        }
-
-
-        Debug.Log("saved created path: " + beatmap.CreatedPathPointPositionX.Count);
-        Debug.Log("saved pathPlacer path: " + beatmap.PathPlacerPointPositionX.Count);
-
-        beatmap.IsClosed = scriptManager.createdPath.IsClosed;
-        beatmap.AutoSetControlPoints = scriptManager.createdPath.AutoSetControlPoints;
-        beatmap.Spacing = scriptManager.pathPlacer.Spacing;
-        beatmap.Resolution = scriptManager.pathPlacer.Resolution;
-        beatmap.BeatInterval = scriptManager.pathPlacer.BeatInterval;
 
         // Save beatmap information
         beatmap.SongName = scriptManager.setupBeatmap.SongName;
@@ -403,29 +312,6 @@ public class Database : MonoBehaviour
         loadedSongPreviewStartTime = beatmap.SongPreviewStartTime;
         loadedBeatmapCreatedDate = beatmap.BeatmapCreatedDate;
 
-
-        // Load path information
-        for (int i = 0; i < beatmap.CreatedPathPointPositionX.Count; i++)
-        {
-            LoadedCreatedPathPointPositionX.Add(beatmap.CreatedPathPointPositionX[i]);
-            LoadedCreatedPathPointPositionY.Add(beatmap.CreatedPathPointPositionY[i]);
-        }
-
-        for (int i = 0; i < beatmap.PathPlacerPointPositionX.Count; i++)
-        {
-            LoadedPathPlacerPointPositionX.Add(beatmap.PathPlacerPointPositionX[i]);
-            LoadedPathPlacerPointPositionY.Add(beatmap.PathPlacerPointPositionY[i]);
-        }
-
-        Debug.Log("loaded created path: " + LoadedCreatedPathPointPositionX.Count);
-        Debug.Log("loaded pathPlacer path: " + LoadedPathPlacerPointPositionX.Count);
-
-        loadedIsClosed = beatmap.IsClosed;
-        loadedAutoSetControlPoints = beatmap.AutoSetControlPoints;
-        loadedSpacing = beatmap.Spacing;
-        loadedResolution = beatmap.Resolution;
-        loadedBeatInterval = beatmap.BeatInterval;
-
         // Timing information for the beatmap from the metronome
         loadedBPM = beatmap.Bpm;
         loadedOffsetMS = beatmap.OffsetMS;
@@ -447,15 +333,6 @@ public class Database : MonoBehaviour
         loadedObjectType.Clear();
         loadedSoundType.Clear();
         loadedAnimationType.Clear();
-        loadedCreatedPathPointPositionX.Clear();
-        loadedCreatedPathPointPositionY.Clear();
-        loadedPathPlacerPointPositionX.Clear();
-        loadedPathPlacerPointPositionY.Clear();
-        loadedIsClosed = false;
-        LoadedAutoSetControlPoints = false;
-        loadedSpacing = 0f;
-        loadedResolution = 0f;
-        loadedBeatInterval = 0;
         loadedLeaderboardTableName = "";
         loadedSongName = "";
         loadedSongArtist = "";
@@ -479,5 +356,4 @@ public class Database : MonoBehaviour
         soundType.Clear();
         animationType.Clear();
     }
-    #endregion
 }

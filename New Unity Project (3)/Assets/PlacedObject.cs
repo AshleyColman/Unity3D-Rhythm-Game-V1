@@ -22,18 +22,17 @@ public class PlacedObject : MonoBehaviour
     public List<EditorHitObject> hitObjectList = new List<EditorHitObject>(); // List of editorHitObjects (includes spawn time, object type and positions)
 
     // Integers   
-    private const int HIT_OBJECT_TYPE_KEY_1 = 0, HIT_OBJECT_TYPE_KEY_2 = 1, HIT_OBJECT_TYPE_KEY_3 = 2, HIT_OBJECT_TYPE_KEY_4 = 3,
-        HIT_OBJECT_TYPE_KEY_5 = 4;
+    private const int hitObjectTypeLeftValue = 0, hitObjectTypeRightValue = 1; // Number values for the hit object types - array
+    private int instantiatedTimelineObjectType;
+
+    private int keyMode; // Keymode
     private const int ANIMATION_TYPE_NONE = 0, ANIMATION_TYPE_CAMERASHAKE = 1, ANIMATION_TYPE_BACKGROUNDPULSE = 2;
     private const int SOUND_TYPE_CLAP = 0, SOUND_TYPE_FINISH = 1, SOUND_TYPE_WHISTLE = 2;
-    private int instantiatedTimelineObjectType;
-    private int keyMode; 
     private const int timelineObjectDeactivateValue = 15; // Value that determines when to deactive timeline objects
     private int raycastTimelineObjectListIndex; // The index of the timeline bar clicked in the editor, used to delete and update existing notes spawn times, position etc by getting the index on click
     private int timelineObjectIndex; // The index for all editor objects, increases by 1 everytime one is instantiated
     private int nullTimelineObjectIndex; // Index for checking null gameobjects
     private int hitObjectSavedType; // Saved hit object type
-    private int closestTickIndex; // Closest tick index
     private float currentSongTimePercentage; // The current time in the song turned to percentage value
     private float currentTickTime; // Current tick time
     private float nextTickTime; // Next tick time
@@ -45,7 +44,6 @@ public class PlacedObject : MonoBehaviour
     private float deactivateAfterObjectTime; // Time to deactivate the timeline object after it reaches this number
     private float deactivateBeforeObjectTime; // Time to deactivate the timeline object before it reaches this number
     private float deactivateObjectTimer; // Timer for controlling checks on deactivating timeline hit objects
-    private float previousTickTime; // Previous tick time when doing comparisons
     private List<float> tickTimesList = new List<float>(); // Tick times for comparing and calculating the closest tick time based on user key press time
     private List<int> nullObjectsList = new List<int>(); // List of all null gameobjects
 
@@ -62,10 +60,6 @@ public class PlacedObject : MonoBehaviour
 
     // Transform
     public Transform canvas, timeline;
-
-    // Keycode
-    private const KeyCode HIT_OBJECT_TYPE_KEY_CODE_1 = KeyCode.Period, HIT_OBJECT_TYPE_KEY_CODE_2 = KeyCode.F, HIT_OBJECT_TYPE_KEY_CODE_3 = KeyCode.G,
-        HIT_OBJECT_TYPE_KEY_CODE_4 = KeyCode.J, HIT_OBJECT_TYPE_KEY_CODE_5 = KeyCode.K;
 
     // Scripts
     private DestroyTimelineObject destroyTimelineObject; // Destroy timeline object script attached to instantiated timeline objects
@@ -135,32 +129,18 @@ public class PlacedObject : MonoBehaviour
     void Update()
     {
         // If key input for placing hit objects is allowed
-        if (canPlaceHitObjects == true)
+        if (canPlaceHitObjects == true && scriptManager.rhythmVisualizatorPro.audioSource.time > 2f)
         {
-            // Spawn key hit object type
-            if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_1))
+            if (Input.GetKeyDown(KeyCode.D))
             {
-                PlaceHitObject(HIT_OBJECT_TYPE_KEY_1);
+                // Spawn square hit object
+                PlaceHitObject(hitObjectTypeLeftValue);
             }
-            /*
-            else if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_2))
+            else if (Input.GetKeyDown(KeyCode.F))
             {
-                PlaceHitObject(HIT_OBJECT_TYPE_KEY_2);
+                // Spawn diamond hit object
+                PlaceHitObject(hitObjectTypeRightValue);
             }
-            else if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_3))
-            {
-                PlaceHitObject(HIT_OBJECT_TYPE_KEY_3);
-            }
-            else if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_4))
-            {
-                PlaceHitObject(HIT_OBJECT_TYPE_KEY_4);
-            }
-            else if (Input.GetKeyDown(HIT_OBJECT_TYPE_KEY_CODE_5))
-            {
-                PlaceHitObject(HIT_OBJECT_TYPE_KEY_5);
-            }
-            */
-
             // Song preview start time key pressed
             else if (Input.GetKeyDown(KeyCode.T))
             {
@@ -180,7 +160,9 @@ public class PlacedObject : MonoBehaviour
 
             // Could be improved
             objectToSpawn.GetComponent<Animator>().Play("EditorHitObject_FadeOut_Animation", 0, 0f);
-            objectToSpawn.transform.localPosition = scriptManager.pathPlacer.points[closestTickIndex];
+
+            
+            objectToSpawn.transform.position = scriptManager.cursorHitObject.positionObject.transform.position;
             objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
             objectToSpawn.transform.SetAsLastSibling();
 
@@ -191,7 +173,15 @@ public class PlacedObject : MonoBehaviour
     // Place new hit object based on the type
     public void PlaceHitObject(int _type)
     {
-        AddEditorHitObjectToList(_type);
+        switch (_type)
+        {
+            case hitObjectTypeLeftValue:
+                AddEditorHitObjectToList(hitObjectTypeLeftValue);
+                break;
+            case hitObjectTypeRightValue:
+                AddEditorHitObjectToList(hitObjectTypeRightValue);
+                break;
+        }
     }
 
     // Destroy all previewHitObjects that appear on screen
@@ -449,6 +439,9 @@ public class PlacedObject : MonoBehaviour
         // Set position to current mouse position for cursor object
         destroyTimelineObject.TimelineHitObjectPosition = scriptManager.cursorHitObject.positionObject.transform.position;
 
+        // Play fade in animation
+        destroyTimelineObject.PlayFadeInAnimation();
+
         // Add to list
         destroyTimelineObjectList.Add(destroyTimelineObject);
 
@@ -485,12 +478,8 @@ public class PlacedObject : MonoBehaviour
             tickTimesList.Add(currentTickTime);
 
             // Previous tick
-            nextTickTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick + 1];
+            nextTickTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick - 1];
             tickTimesList.Add(nextTickTime);
-
-            // Previous tick
-            previousTickTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick - 1];
-            tickTimesList.Add(previousTickTime);
 
             // Check which time the users press was closest to
             closestTickTime = tickTimesList.Select(p => new { Value = p, Difference = Math.Abs(p - _time) })
@@ -499,51 +488,13 @@ public class PlacedObject : MonoBehaviour
         }
         else
         {
-            closestTickTime = (float)scriptManager.metronomePro.songTickTimes[0];
+            closestTickTime = 0;
         }
 
         // Reset list
         tickTimesList.Clear();
+
         return closestTickTime;
-    }
-
-    // Get closest tick index based on the time passed
-    public int ReturnClosestTickIndex(float _time)
-    {
-        closestTickIndex = 0;
-
-        // Current Tick
-        currentTickTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick];
-        tickTimesList.Add(currentTickTime);
-
-        Debug.Log("CT: " + scriptManager.metronomePro.CurrentTick + "    " + currentTickTime);
-
-        // Next tick
-        nextTickTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick + 1];
-        tickTimesList.Add(nextTickTime);
-
-        Debug.Log("NT: " + (scriptManager.metronomePro.CurrentTick  + 1) + "    " + nextTickTime);
-
-        // Check which time the users press was closest to
-        closestTickTime = tickTimesList.Select(p => new { Value = p, Difference = Math.Abs(p - _time) })
-        .OrderBy(p => p.Difference)
-        .First().Value;
-
-        // Get the tick index based on the closest tick time
-        if (closestTickTime == (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick])
-        {
-            closestTickIndex = scriptManager.metronomePro.CurrentTick;
-        }
-        else if (closestTickTime == (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick + 1])
-        {
-            closestTickIndex = (scriptManager.metronomePro.CurrentTick + 1);
-        }
-
-        Debug.Log("INDEX: " + closestTickIndex);
-
-        // Reset list
-        tickTimesList.Clear();
-        return closestTickIndex;
     }
 
     // Instantiate placed hit object at the position on the mouse
@@ -584,19 +535,14 @@ public class PlacedObject : MonoBehaviour
             // If the audio source is playing
             if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == true)
             {
-                // Get the closest tick index based on the user pressed time
-                closestTickIndex = ReturnClosestTickIndex(userPressedTime);
-
                 // Get the closest beatsnap time based on the current song time
-                hitObjectSpawnTime = (float)scriptManager.metronomePro.songTickTimes[closestTickIndex];
+                hitObjectSpawnTime = GetCurrentBeatsnapTime(userPressedTime);
             }
             else
             {
                 // Audio source is not playing
                 // Set the spawn time to the current tick
                 hitObjectSpawnTime = (float)scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick];
-                // Set closest tick index to current tick
-                closestTickIndex = scriptManager.metronomePro.CurrentTick;
             }
 
             // Check if the spawn time for the hit object is taken or available
@@ -607,58 +553,58 @@ public class PlacedObject : MonoBehaviour
             hitObjectSpawnTime = scriptManager.rhythmVisualizatorPro.audioSource.time;
         }
 
-        // If the closest point index is within range of the path points (enough places on the path to place a new hit object)
-        if (closestTickIndex < scriptManager.pathPlacer.points.Length)
+        // If the objects spawn time does not exist/is not taken, allow instantiation of another hit object
+        if (objectSpawnTimeIsTaken == false)
         {
-            // If the objects spawn time does not exist/is not taken, allow instantiation of another hit object
-            if (objectSpawnTimeIsTaken == false)
+            // Change cursor mask rotation
+            switch (_objectType)
             {
-                // Create a new editor hit object (class object) and assign all the variables such as position, spawn time and type
-                EditorHitObject newEditorHitObject = new EditorHitObject();
-
-                // Set position rotate line to closest tick rotation
-                // Save position of current grid point for hit object position
-                // Set position to the type position on the grid point line
-                newEditorHitObject.HitObjectPosition = scriptManager.pathPlacer.points[closestTickIndex];
-
-                // Update properties of the hit object
-                newEditorHitObject.HitObjectType = _objectType;
-                newEditorHitObject.HitObjectSpawnTime = hitObjectSpawnTime;
-                newEditorHitObject.HitObjectAnimationType = ANIMATION_TYPE_NONE;
-                newEditorHitObject.HitObjectSoundType = SOUND_TYPE_CLAP;
-
-                // Add the hit object to the editorHitObjectList
-                hitObjectList.Add(newEditorHitObject);
-
-                // Set the instantiate position to the editor hit object position but with a Y of 0
-                // Spawn hit object from the pool at the cursors position
-                SpawnFromPool(_objectType);
-
-                // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
-                //InstantiateTimelineObject(_objectType, hitObjectSpawnTime, _objectType);
-                InstantiateTimelineObject(0, hitObjectSpawnTime, 0);
-
-                // Reorder the editorHitObject list
-                SortListOrders();
-
-                // Update the timeline objects
-                UpdateTimelineObjects();
-
-                // If audio is not playing
-                if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == false)
-                {
-                    // Navigate ahead 1 tick on the timeline
-                    scriptManager.timelineScript.TimelineNavigationForwardOneTick();
-
-                    // Update timeline object activation
-                    DisableTimelineObjects();
-                }
-
-                // Update cursor position
-                scriptManager.cursorHitObject.UpdateDistanceSnapPosition();
+                case hitObjectTypeLeftValue:
+                    scriptManager.cursorHitObject.SetToSquareRotation();
+                    break;
+                case hitObjectTypeRightValue:
+                    scriptManager.cursorHitObject.SetToDiamondRotation();
+                    break;
             }
-        }
 
+            // Spawn hit object from the pool at the cursors position
+            SpawnFromPool(_objectType);
+
+            // Call the instantiateTimelineObject function and pass the object type to instantiate a timeline object of the correct note color type
+            InstantiateTimelineObject(_objectType, hitObjectSpawnTime, _objectType);
+
+            // Create a new editor hit object (class object) and assign all the variables such as position, spawn time and type
+            EditorHitObject newEditorHitObject = new EditorHitObject();
+
+            // Update properties of the hit object
+            newEditorHitObject.HitObjectPosition = scriptManager.cursorHitObject.positionObject.transform.position;
+            newEditorHitObject.HitObjectType = _objectType;
+            newEditorHitObject.HitObjectSpawnTime = hitObjectSpawnTime;
+            newEditorHitObject.HitObjectAnimationType = ANIMATION_TYPE_NONE;
+            newEditorHitObject.HitObjectSoundType = SOUND_TYPE_CLAP;
+
+            // Add the hit object to the editorHitObjectList
+            hitObjectList.Add(newEditorHitObject);
+
+            // Reorder the editorHitObject list
+            SortListOrders();
+
+            // Update the timeline objects
+            UpdateTimelineObjects();
+
+            // If audio is not playing
+            if (scriptManager.rhythmVisualizatorPro.audioSource.isPlaying == false)
+            {
+                // Navigate ahead 1 tick on the timeline
+                scriptManager.timelineScript.TimelineNavigationForwardOneTick();
+
+                // Update timeline object activation
+                DisableTimelineObjects();
+            }
+
+            // Update cursor position
+            scriptManager.cursorHitObject.UpdateDistanceSnapPosition();
+        }
     }
 
     /*

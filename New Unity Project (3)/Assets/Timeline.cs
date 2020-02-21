@@ -1,15 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 
 public class Timeline : MonoBehaviour
 {
     // Gameobject
     public GameObject reversedTimelineHandle, timeline, timelineSlider;
-
-    // UI
-    public Slider pathLengthSlider;
 
     // Text
     public TextMeshProUGUI timelineSizeText;
@@ -59,9 +55,6 @@ public class Timeline : MonoBehaviour
         reversedTimelineHandlePosition = reversedTimelineHandle.transform.position;
         // Set the main timeline to the position of the reversed timeline handle
         scriptManager.metronomePro_Player.timelineSlider.transform.position = reversedTimelineHandlePosition;
-        // Set the path length slider to the reversed timeline handle position
-        pathLengthSlider.transform.position = reversedTimelineHandlePosition;
-
 
         // Timeline tick navigation through keyboard input
         TimelineTickNavigation();
@@ -69,27 +62,6 @@ public class Timeline : MonoBehaviour
         // Change timeline object sizes based on key input
         //ChangeTimelineSize();
     }
-
-    // Update the path length slider value
-    public void UpdatePathLengthSlider()
-    {
-        int totalSliderBeats = scriptManager.pathPlacer.points.Length;
-
-        // Get per tick time
-        float perTickTime = (float)(scriptManager.metronomePro.songTickTimes[1] - scriptManager.metronomePro.songTickTimes[0]);
-
-        // Multiply perTickTime by total beats/points on the path created
-        float totalPathLengthTime = perTickTime * totalSliderBeats;
-
-        // Convert to percentage for slider value
-        float percentage = (totalPathLengthTime / scriptManager.rhythmVisualizatorPro.audioSource.clip.length);
-
-        float sliderValue = (percentage / 1);
-
-        // Assign slider value to the path length slider
-        pathLengthSlider.value = sliderValue;
-    }
-
 
     // Reset the timeline to the default position
     public void SetDefaultTimelinePosition()
@@ -115,14 +87,14 @@ public class Timeline : MonoBehaviour
                 var mouseScroll = Input.GetAxis("Mouse ScrollWheel");
 
                 // Move the song and timeline back 1 tick if left arrow key is pressed
-                if (Input.GetKeyDown(KeyCode.LeftArrow) || mouseScroll < 0f)
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Comma) || mouseScroll < 0f)
                 {
                     // Navigate the timeline 1 tick back
                     TimelineNavigationBackwardOneTick();
                 }
 
                 // Move the song and timeline forward 1 tick if right arrow key is pressed
-                if (Input.GetKeyDown(KeyCode.RightArrow) || mouseScroll > 0f)
+                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Period) || mouseScroll > 0f)
                 {
                     // Navigate the timeline forward one tick
                     TimelineNavigationForwardOneTick();
@@ -231,23 +203,16 @@ public class Timeline : MonoBehaviour
                 // Update audio source time to the closest tick
                 scriptManager.rhythmVisualizatorPro.audioSource.time = closestTickTime;
 
-                // If the current tick is the first tick, don't check the previous tick time
-                if (scriptManager.metronomePro.CurrentTick == 0)
+                // If the closest tick if the current tick
+                if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick])
                 {
-
+                    
                 }
-                else
+                else if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick - 1])
                 {
-                    // If the closest tick is the current tick
-                    if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick])
-                    {
-
-                    }
-                    else if (closestTickTime == scriptManager.metronomePro.songTickTimes[scriptManager.metronomePro.CurrentTick + 1])
-                    {
-                        StartCoroutine(DelayUpdateLatestBeatsnap(0f, "BACKWARD"));
-                    }
+                    StartCoroutine(DelayUpdateLatestBeatsnap(0f, "BACKWARD"));
                 }
+
 
                 // Calculate increment metronome values
                 scriptManager.metronomePro.CalculateActualStep();

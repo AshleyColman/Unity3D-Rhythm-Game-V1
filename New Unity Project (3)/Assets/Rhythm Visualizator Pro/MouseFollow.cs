@@ -7,7 +7,6 @@ public class MouseFollow : MonoBehaviour {
         this.gameObject.transform.position = Input.mousePosition;
     }
 
-
     /*
     // Floats
     private float distance;

@@ -4,50 +4,41 @@ using UnityEngine;
 
 public class HitSoundManager : MonoBehaviour
 {
-    // Audiosource
-    public AudioSource[] hitSoundAudioSource, missSoundAudioSource;
-
-    // Clips
-    public AudioClip[] whistleHitSoundArray, clapHitSoundArray, finishHitSoundArray, missSoundArray;
-
+    #region Variables
+    // Audio 
+    public AudioSource[] hitSoundAudioSource;
+    public AudioSource[] missSoundAudioSource;
     public AudioClip defaultHitSound, defaultMissSound;
 
     // Integers
     private float hitSoundVolume, missSoundVolume; // Hit and miss sound volume
-    private int currentHitSoundAudioSourceIndex, currentMissSoundAudioSourceIndex;
-
+    private int hitSoundAudioSourceIndex, missSoundAudioSourceIndex; // Index for playing
 
     // Scripts
     private ScriptManager scriptManager;
+    #endregion
 
-    private void Awake()
-    {
-        //DontDestroyOnLoad(this.gameObject);
-    }
-
+    #region Functions
     void Start()
     {
         // Initialize
         hitSoundVolume = 1f;
         missSoundVolume = 1f;
+        hitSoundAudioSourceIndex = 0;
+        missSoundAudioSourceIndex = 0;
 
-        currentHitSoundAudioSourceIndex = 0;
-        currentMissSoundAudioSourceIndex = 0;
+       // Reference
+       scriptManager = FindObjectOfType<ScriptManager>();
 
-        // Reference
-        scriptManager = FindObjectOfType<ScriptManager>();
-
-        LoadPlayerPrefsHitSoundVolume(); // Load the hit sound volume
-
+        // Assign clips
         for (int i = 0; i < hitSoundAudioSource.Length; i++)
         {
             hitSoundAudioSource[i].clip = defaultHitSound;
-        }
-
-        for (int i = 0; i < missSoundAudioSource.Length; i++)
-        {
             missSoundAudioSource[i].clip = defaultMissSound;
         }
+
+        // Load the hit sound volume
+        LoadPlayerPrefsHitSoundVolume(); 
     }
 
     // Set player prefs hit sound volume
@@ -99,26 +90,27 @@ public class HitSoundManager : MonoBehaviour
     // Play the hit sound chosen
     public void PlayHitSound()
     {
-        if (currentHitSoundAudioSourceIndex >= hitSoundAudioSource.Length)
+        if (hitSoundAudioSourceIndex >= hitSoundAudioSource.Length)
         {
-            currentHitSoundAudioSourceIndex = 0;
+            hitSoundAudioSourceIndex = 0;
         }
 
-        hitSoundAudioSource[currentHitSoundAudioSourceIndex].Play();
+        hitSoundAudioSource[hitSoundAudioSourceIndex].Play();
 
-        currentHitSoundAudioSourceIndex++;
+        hitSoundAudioSourceIndex++;
     }
 
     // Play miss sound
     public void PlayMissSound()
     {
-        if (currentMissSoundAudioSourceIndex >= missSoundAudioSource.Length)
+        if (missSoundAudioSourceIndex >= missSoundAudioSource.Length)
         {
-            currentMissSoundAudioSourceIndex = 0;
+            missSoundAudioSourceIndex = 0;
         }
 
-        missSoundAudioSource[currentMissSoundAudioSourceIndex].Play();
+        missSoundAudioSource[missSoundAudioSourceIndex].Play();
 
-        currentMissSoundAudioSourceIndex++;
+        missSoundAudioSourceIndex++;
     }
+    #endregion
 }

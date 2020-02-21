@@ -21,12 +21,10 @@ public class BeatsnapManager : MonoBehaviour
     private float currentSongTimePercentage; // Current percentage value of the song progresss
     private float sliderValue; // Slider value for the instantiated beatsnap slider based off the current song percentage
     private float beatsnapTime; // Beatsnap time value
-    private float nextPoolTickTime; // The next time to change the current pool hit object to once its gone past its tick time
-    private float currentTickTime; // Get the closest tick time based on the current song time
     public List<float> beatsnapSliderValueList = new List<float>(); // Slider values of all instantiated beatsnap point sliders
     public List<float> beatsnapTickTimesList = new List<float>();
-    private const float LINE_HEIGHT_35 = 35, LINE_HEIGHT_25 = 25, LINE_HEIGHT_15 = 15, LINE_HEIGHT_10 = 10, LINE_HEIGHT_5 = 5;
-
+    private float nextPoolTickTime; // The next time to change the current pool hit object to once its gone past its tick time
+    private float currentTickTime; // Get the closest tick time based on the current song time
     private int totalBeatsnapPrefabsCount; // Total number of beatsnap prefabs instantiated
     private int previousFrameTick;
     private int nextPoolTickIndex;
@@ -34,6 +32,7 @@ public class BeatsnapManager : MonoBehaviour
     private int tickTimeIndex;
     private int currentStep;
 
+    private const float LINE_HEIGHT_35 = 35, LINE_HEIGHT_25 = 25, LINE_HEIGHT_15 = 15, LINE_HEIGHT_10 = 10, LINE_HEIGHT_5 = 5;
 
     // Scripts
     private ScriptManager scriptManager;
@@ -159,6 +158,32 @@ public class BeatsnapManager : MonoBehaviour
             // Deactivate the next beatsnap
             DeactivateBeatsnapFromPool();
         }
+
+
+        /*
+        // Check if the current tick + total pool numbers is greater than the song list size
+        int currentStep = scriptManager.metronomePro.currentStep;
+
+        // Get tick time for the beatsnap object
+        int tickTimeIndex = scriptManager.metronomePro.CurrentTick + beatsnapSliderList.Count;
+
+        // Beatsnap time to pass 
+        float beatsnapTime;
+
+        if (tickTimeIndex < scriptManager.metronomePro.songTickTimes.Count)
+        {
+            // Set beatsnap time to the current tick + total beatsnap bars (pushed to the end) - 1 (avoids beat 0)
+            beatsnapTime = (float)scriptManager.metronomePro.songTickTimes[tickTimeIndex] - 1;
+
+            // Spawn next beatsnap object
+            SpawnBeatsnapFromPool(beatsnapTime, currentStep);
+        }
+        else
+        {
+            // Deactivate the next beatsnap
+            DeactivateBeatsnapFromPool();
+        }
+        */
     }
 
     public void SortBeatsnapsWithNewDivision()
@@ -167,8 +192,6 @@ public class BeatsnapManager : MonoBehaviour
         scriptManager.metronomePro.CalculateActualStep();
         CalculateBeatsnapSliderListValues();
         SortBeatsnaps();
-        //scriptManager.rotatorManager.CalculateRotations();
-        //scriptManager.rotatorManager.UpdateTimeToReachTarget();
     }
 
     // Sort the beatsnaps based on the current song position

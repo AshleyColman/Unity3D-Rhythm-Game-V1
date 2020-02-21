@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 // HIT OBJECT TIMING SCRIPT
 public class TimingAndScore : MonoBehaviour
 {
+    // UI
+    public Image colorImage;
 
     // Strings
-    private string objectTag, objectMissedTag; // The tag of the object
-    private string perfectJudgement, goodJudgement, earlyJudgement, missJudgement; // Judgement values 
+    private const string perfectJudgement = "PERFECT", goodJudgement = "GOOD", earlyJudgement = "EARLY", missJudgement = "MISS"; // Judgement values 
+    private const string hitTag = "HIT", missTag = "MISS";
 
     // Integers
     private float timeWhenHit; // The time when the object is hit
@@ -15,7 +18,7 @@ public class TimingAndScore : MonoBehaviour
     private float hitObjectStartTime; // The time when the note spawns
     private float perfectJudgementTime, earlyJudgementTime; // Judgement time values
     private float destroyedTime; // The late time, last possible hit time before input is cancelled
-    private int perfectScoreValue, goodScoreValue, earlyScoreValue; // Score values for judgements 
+    private int perfectScoreValue, goodScoreValue, earlyScoreValue, missScoreValue; // Score values for judgements 
     private int perfectHealthValue, goodHealthValue, earlyHealthValue, missHealthValue; // Healthbar values based on judgements
 
     // Bools
@@ -50,6 +53,8 @@ public class TimingAndScore : MonoBehaviour
     // Initialize every time the object is reactivated
     void OnEnable()
     {
+        GenerateRandomColor();
+
         canBeHit = false;
         hitObjectHit = false;
         timeWhenHit = 0;
@@ -83,12 +88,6 @@ public class TimingAndScore : MonoBehaviour
         perfectHealthValue = 5;
         goodHealthValue = -5;
         missHealthValue = -5;
-        perfectJudgement = "PERFECT";
-        goodJudgement = "GOOD";
-        earlyJudgement = "EARLY";
-        missJudgement = "MISS";
-        objectTag = gameObject.tag;
-        objectMissedTag = "MISS";
         objectKey = KeyCode.None;
         alternateObjectKey = KeyCode.None;
         feverTimeActivateKey = KeyCode.Space;
@@ -118,6 +117,19 @@ public class TimingAndScore : MonoBehaviour
     {
         this.gameObject.SetActive(false);
     }
+
+    private void GenerateRandomColor()
+    {
+        // Color version
+        Color randomColor = new Color(
+            Random.Range(0f, 1f),
+            Random.Range(0f, 1f),
+            Random.Range(0f, 1f)
+        );
+
+        colorImage.color = randomColor;
+    }
+
 
 
     // Check keypresses for judgements
@@ -151,11 +163,6 @@ public class TimingAndScore : MonoBehaviour
                             // Play hit sound
                             scriptManager.hitSoundManager.PlayHitSound();
 
-                            //scriptManager.feverTimeManager.FillFeverSlider();
-
-                            // Play follower hit animation
-                            scriptManager.follower.PlayFollowerHitAnimation();
-
                             this.gameObject.SetActive(false);
                         }
                     }
@@ -176,20 +183,6 @@ public class TimingAndScore : MonoBehaviour
         }
     }
 
-    private void SpawnExplosion()
-    {
-        /*
-        switch (objectTag)
-        {
-            case "Left":
-                scriptManager.explosionManager.SpawnExplosion(this.transform.position, "0");
-                break;
-        }
-        */
-
-       // scriptManager.explosionManager.SpawnExplosion(this.transform.position, "0");
-    }
-
     // Check if the player hit early judgement
     private void CheckEarlyJudgement()
     {
@@ -198,7 +191,7 @@ public class TimingAndScore : MonoBehaviour
         {
             scriptManager.scoreManager.AddJudgement(earlyJudgement); // Display early judgement
             scriptManager.scoreManager.AddScore(earlyScoreValue); // Update the score
-            SpawnExplosion();
+            scriptManager.explosionManager.SpawnExplosion(tag, hitTag, this.transform.position, earlyScoreValue, colorImage.color); // Spawn explosion
         }
     }
 
@@ -210,10 +203,8 @@ public class TimingAndScore : MonoBehaviour
         {
             scriptManager.scoreManager.AddJudgement(goodJudgement); // Sets judgement to good
             scriptManager.scoreManager.AddScore(goodScoreValue); // Update the score
-
-            SpawnExplosion();
+            scriptManager.explosionManager.SpawnExplosion(tag, hitTag, this.transform.position, goodScoreValue, colorImage.color); // Spawn explosion
         }
-
     }
 
     // Check if the player hit perfect judgement
@@ -224,8 +215,7 @@ public class TimingAndScore : MonoBehaviour
         {
             scriptManager.scoreManager.AddJudgement(perfectJudgement); // Display perfect judgement
             scriptManager.scoreManager.AddScore(perfectScoreValue); // Pass to score manager to update text
-
-            SpawnExplosion();
+            scriptManager.explosionManager.SpawnExplosion(tag, hitTag, this.transform.position, perfectScoreValue, colorImage.color); // Spawn explosion
         }
     }
 
@@ -250,8 +240,8 @@ public class TimingAndScore : MonoBehaviour
     // Do the miss object functions
     private void MissedObject()
     {
-        // Pass the position and hit object type, spawn miss explosion
-        //scriptManager.explosionManager.SpawnExplosion(this.transform.position, objectMissedTag);
+        // Spawn explosion
+        scriptManager.explosionManager.SpawnExplosion(tag, missTag, this.transform.position, missScoreValue, colorImage.color);
         // Sets judgement to miss
         scriptManager.scoreManager.AddJudgement(missJudgement);
         // Reset combo as missed
@@ -265,26 +255,17 @@ public class TimingAndScore : MonoBehaviour
     // Assign the key to hit the hit object based on the objects tag color
     private void CheckTagType()
     {
-        switch (objectTag)
+        switch (tag)
         {
-            case "Key1":
-                objectKey = KeyCode.D;
-                break;
-            case "Key2":
+            case "LEFT":
                 objectKey = KeyCode.F;
+                alternateObjectKey = KeyCode.D;
                 break;
-            case "Key3":
-                objectKey = KeyCode.Space;
-                break;
-            case "Key4":
+            case "RIGHT":
                 objectKey = KeyCode.J;
-                break;
-            case "Key5":
-                objectKey = KeyCode.K;
+                alternateObjectKey = KeyCode.K;
                 break;
         }
-
-        alternateObjectKey = KeyCode.F1;
     }
 
     // Check the fade speed selected from the song select menu, set the judgements based on the fade speed

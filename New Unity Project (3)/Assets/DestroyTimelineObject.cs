@@ -3,14 +3,16 @@ using UnityEngine.UI;
 using System.Linq;
 using System;
 using TMPro;
-using System.Collections;
-using System.Collections.Generic;
 
 public class DestroyTimelineObject : MonoBehaviour
 {
+    #region Variables
     // UI
     public TextMeshProUGUI numberText;
     public Slider timelineSlider;
+
+    // Animation
+    public Animator timelineSliderAnimator;
 
     // Integers
     private int timelineObjectListIndex, timelineHitObjectType, timelineHitObjectAnimationType, timelineHitObjectSoundType;
@@ -37,7 +39,9 @@ public class DestroyTimelineObject : MonoBehaviour
 
     // Scripts
     private ScriptManager scriptManager;
+    #endregion
 
+    #region Properties
     // Properties
     public Vector3 TimelineHitObjectPosition
     {
@@ -74,7 +78,9 @@ public class DestroyTimelineObject : MonoBehaviour
         get { return timelineHitObjectSoundType; }
         set { timelineHitObjectSoundType = value; }
     }
+    #endregion
 
+    #region Functions
     private void Start()
     {
         // Reference
@@ -190,7 +196,7 @@ public class DestroyTimelineObject : MonoBehaviour
         scriptManager.editableHitObject.SetupEditorObject();
 
         // Update ui editable hit object menu text
-        scriptManager.editorBottomMenu.UpdateBottomMenu(timelineObjectListIndex, timelineHitObjectSpawnTime, 
+        scriptManager.editorBottomMenu.UpdateBottomMenu(timelineObjectListIndex, timelineHitObjectSpawnTime,
             timelineHitObjectAnimationType, timelineHitObjectType, timelineHitObjectSoundType);
     }
 
@@ -340,4 +346,10 @@ public class DestroyTimelineObject : MonoBehaviour
         }
     }
 
+    // Play fade in animation
+    public void PlayFadeInAnimation()
+    {
+        timelineSliderAnimator.Play("EditorHitObject_FadeIn_Animation", 0, 0f);
+    }
+    #endregion
 }

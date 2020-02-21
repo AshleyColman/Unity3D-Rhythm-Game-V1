@@ -16,9 +16,7 @@ public class ExplosionManager : MonoBehaviour
     }
 
     public List<Pool> pools;
-    public Dictionary<string, Queue<GameObject>> poolDictionary;
-
-
+    public Dictionary<string, Queue<ExplosionDeactivate>> poolDictionary;
 
     // Use this for initialization
     void Start()
@@ -26,12 +24,11 @@ public class ExplosionManager : MonoBehaviour
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
 
-
-        poolDictionary = new Dictionary<string, Queue<GameObject>>();
+        poolDictionary = new Dictionary<string, Queue<ExplosionDeactivate>>();
 
         foreach (Pool pool in pools)
         {
-            Queue<GameObject> objectPool = new Queue<GameObject>();
+            Queue<ExplosionDeactivate> objectPool = new Queue<ExplosionDeactivate>();
 
             for (int i = 0; i < pool.size; i++)
             {
@@ -41,7 +38,8 @@ public class ExplosionManager : MonoBehaviour
                 obj.transform.localPosition = Vector3.zero;
                 obj.transform.rotation = Quaternion.identity;
                 obj.SetActive(false);
-                objectPool.Enqueue(obj);
+
+                objectPool.Enqueue(obj.GetComponent<ExplosionDeactivate>());
             }
 
             poolDictionary.Add(pool.tag, objectPool);
@@ -49,24 +47,49 @@ public class ExplosionManager : MonoBehaviour
     }
 
     // Spawn explosion from the pool
-    private void SpawnFromPool(string _tag, Vector3 _position)
+    private void SpawnFromPool(string _tag, Vector3 _position, float _judgementScore, Color _colorImageColor)
     {
         if (poolDictionary.ContainsKey(_tag) == true)
         {
-            GameObject objectToSpawn = poolDictionary[_tag].Dequeue();
+            ExplosionDeactivate objectToSpawnScript = poolDictionary[_tag].Dequeue();
 
-            objectToSpawn.gameObject.SetActive(true);
+            // Assign image color
+            objectToSpawnScript.Color = _colorImageColor;
 
-            objectToSpawn.transform.position = _position;
+            // Activate gameobject
+            objectToSpawnScript.gameObject.SetActive(true);
 
-            poolDictionary[_tag].Enqueue(objectToSpawn);
+            // Assign position
+            objectToSpawnScript.transform.position = _position;
+
+            // Update text
+            switch (_tag)
+            {
+                case "LEFT_HIT":
+                    objectToSpawnScript.UpdateText(_judgementScore.ToString());
+                    break;
+                case "RIGHT_HIT":
+                    objectToSpawnScript.UpdateText(_judgementScore.ToString());
+                    break;
+                case "LEFT_MISS":
+
+                    break;
+                case "RIGHT_MISS":
+
+                    break;
+            }
+
+            poolDictionary[_tag].Enqueue(objectToSpawnScript);
         }
     }
 
     // Spawn hit explosion
-    public void SpawnExplosion(Vector3 _position, string _objectTag)
+    public void SpawnExplosion(string _type, string _action, Vector3 _position, float _judgementScore, Color _colorImageColor)
     {
+        // Create tag based on the type and action
+        string tag = _type + "_" + _action;
+
         // Activate the correct coloured explosion at the hit objects position
-        SpawnFromPool(_objectTag, _position);
+        SpawnFromPool(tag, _position, _judgementScore, _colorImageColor);
     }
 }

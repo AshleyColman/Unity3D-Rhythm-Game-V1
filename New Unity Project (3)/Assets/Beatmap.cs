@@ -14,17 +14,6 @@ public class Beatmap
     private List<int> soundType = new List<int>();
     private List<int> animationType = new List<int>();
 
-    // PATH
-    private List<float> pathPlacerPointPositionX = new List<float>();
-    private List<float> pathPlacerPointPositionY = new List<float>();
-    private List<float> createdPathPointPositionX = new List<float>();
-    private List<float> createdPathPointPositionY = new List<float>();
-    private bool isClosed;
-    private bool autoSetControlPoints;
-    private float spacing;
-    private float resolution;
-    private int beatInterval;
-
     // SONG INFORMATION
     private string songName;
     private string songArtist;
@@ -89,60 +78,6 @@ public class Beatmap
     {
         get { return objectType; }
         set { objectType = value; }
-    }
-
-    public List<float> PathPlacerPointPositionX
-    {
-        get { return pathPlacerPointPositionX; }
-        set { pathPlacerPointPositionX = value; }
-    }
-
-    public List<float> PathPlacerPointPositionY
-    {
-        get { return pathPlacerPointPositionY; }
-        set { pathPlacerPointPositionY = value; }
-    }
-
-    public List<float> CreatedPathPointPositionX
-    {
-        get { return createdPathPointPositionX; }
-        set { createdPathPointPositionX = value; }
-    }
-
-    public List<float> CreatedPathPointPositionY
-    {
-        get { return createdPathPointPositionY; }
-        set { createdPathPointPositionY = value; }
-    }
-
-    public bool IsClosed
-    {
-        get { return isClosed; }
-        set { isClosed = value; }
-    }
-
-    public bool AutoSetControlPoints
-    {
-        get { return autoSetControlPoints; }
-        set { autoSetControlPoints = value; }
-    }
-
-    public float Spacing
-    {
-        get { return spacing; }
-        set { spacing = value; }
-    }
-
-    public float Resolution
-    {
-        get { return resolution; }
-        set { resolution = value; }
-    }
-
-    public int BeatInterval
-    {
-        get { return beatInterval; }
-        set { beatInterval = value; }
     }
 
     public string SongName
