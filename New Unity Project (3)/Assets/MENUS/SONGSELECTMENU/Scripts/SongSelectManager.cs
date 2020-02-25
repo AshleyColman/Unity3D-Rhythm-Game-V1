@@ -8,7 +8,7 @@ public class SongSelectManager : MonoBehaviour
 {
 
     // UI
-    public Image topColorPanelImage, bottomColorPanelImage;
+    public Image topColorPanelImage, bottomColorPanelImage, leftSideGradientImage;
 
     public TextMeshProUGUI songTitleText, songArtistText, beatmapInformationText, beatmapCreatorText, beatmapCreatorMessageText;
     public TextMeshProUGUI difficultyButtonEasyText, difficultyButtonAdvancedText, difficultyButtonExtraText;
@@ -46,7 +46,8 @@ public class SongSelectManager : MonoBehaviour
     private float beatmapSongOffset, beatmapSongBpm;
     private int frameInterval;
     private int beatmapDirectoryCount;
-
+    private const float leftSideGradientImageAlpha = 0.1f;
+        
     // Bools
     private bool easyDifficultyExist, advancedDifficultyExist, extraDifficultyExist;
     private bool hasPlayedSongPreviewOnce; // Used to play the start preview once upon entering the song select screen for the first time so the song plays at the current set time once.
@@ -181,6 +182,8 @@ public class SongSelectManager : MonoBehaviour
                     topColorPanelImage.color = easyDifficultyButtonColor;
                     bottomColorPanelImage.color = easyDifficultyButtonColor;
                     beatmapCreatorMessageText.color = easyDifficultyButtonColor;
+                    leftSideGradientImage.color = new Color(easyDifficultyButtonColor.r, easyDifficultyButtonColor.g, easyDifficultyButtonColor.b,
+                        leftSideGradientImageAlpha);
 
                     // Update highlighted colors for UI buttons
                     scriptManager.uiColorManager.difficultyColor = easyDifficultyButtonColor;
@@ -200,6 +203,9 @@ public class SongSelectManager : MonoBehaviour
                     topColorPanelImage.color = advancedDifficultyButtonColor;
                     bottomColorPanelImage.color = advancedDifficultyButtonColor;
                     beatmapCreatorMessageText.color = advancedDifficultyButtonColor;
+                    leftSideGradientImage.color = new Color(advancedDifficultyButtonColor.r, advancedDifficultyButtonColor.g, advancedDifficultyButtonColor.b,
+                        leftSideGradientImageAlpha);
+
 
                     // Update highlighted colors for UI buttons
                     scriptManager.uiColorManager.difficultyColor = advancedDifficultyButtonColor;
@@ -220,6 +226,9 @@ public class SongSelectManager : MonoBehaviour
                     topColorPanelImage.color = extraDifficultyButtonColor;
                     bottomColorPanelImage.color = extraDifficultyButtonColor;
                     beatmapCreatorMessageText.color = extraDifficultyButtonColor;
+                    leftSideGradientImage.color = new Color(extraDifficultyButtonColor.r, extraDifficultyButtonColor.g, extraDifficultyButtonColor.b,
+                        leftSideGradientImageAlpha);
+
 
                     // Update highlighted colors for UI buttons
                     scriptManager.uiColorManager.difficultyColor = extraDifficultyButtonColor;

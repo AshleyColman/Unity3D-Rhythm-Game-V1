@@ -5,29 +5,14 @@ using UnityEngine.UI;
 using TMPro;
 public class FeverTimeManager : MonoBehaviour
 {
-    public TextMeshProUGUI feverTimeValueText;
-    public Slider feverTimeSlider, sideFeverTimeSlider;
+    public Slider feverTimeSlider;
     private const float feverTimeValue25 = 0.25f, feverTimeValue50 = 0.5f, feverTimeValue75 = 0.75f, feverTimeValue100 = 1.0f;
     private const float perNoteFillAmount = 0.01f;
 
     // Start is called before the first frame update
     void Start()
     {
-        feverTimeSlider.value = 0.5f;
-        sideFeverTimeSlider.value = 0.5f;
-        UpdateFeverText();
-    }
-
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            DecreaseFeverSlider();
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            ResetFeverSlider();
-        }
+        feverTimeSlider.value = 0f;
     }
 
     public void FillFeverSlider()
@@ -35,27 +20,16 @@ public class FeverTimeManager : MonoBehaviour
         if ((feverTimeSlider.value += perNoteFillAmount) <= 1f)
         {
             feverTimeSlider.value += perNoteFillAmount;
-            sideFeverTimeSlider.value = feverTimeSlider.value;
-            UpdateFeverText();
         }
     }
 
     public void DecreaseFeverSlider()
     {
         feverTimeSlider.value -= perNoteFillAmount;
-        sideFeverTimeSlider.value = feverTimeSlider.value;
-        UpdateFeverText();
     }
 
     public void ResetFeverSlider()
     {
         feverTimeSlider.value = 0f;
-        sideFeverTimeSlider.value = feverTimeSlider.value;
-        UpdateFeverText();
-    }
-
-    public void UpdateFeverText()
-    {
-        feverTimeValueText.text = (feverTimeSlider.value * 100).ToString() + "%" + '\n' + "FEVER";
     }
 }

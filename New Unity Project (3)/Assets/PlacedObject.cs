@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using UnityEngine.UI.Extensions;
 using System.Linq;
 using System;
 
@@ -22,7 +22,7 @@ public class PlacedObject : MonoBehaviour
     public List<EditorHitObject> hitObjectList = new List<EditorHitObject>(); // List of editorHitObjects (includes spawn time, object type and positions)
 
     // Integers   
-    private const int hitObjectTypeLeftValue = 0, hitObjectTypeRightValue = 1; // Number values for the hit object types - array
+    private const int hitObjectTypeLeftValue = 0, hitObjectTypeRightValue = 1, hitObjectTypeDoubleValue = 2; // Number values for the hit object types - array
     private int instantiatedTimelineObjectType;
 
     private int keyMode; // Keymode
@@ -141,6 +141,11 @@ public class PlacedObject : MonoBehaviour
                 // Spawn diamond hit object
                 PlaceHitObject(hitObjectTypeRightValue);
             }
+            else if(Input.GetKeyDown(KeyCode.G))
+            {
+                // Spawn double hit object
+                PlaceHitObject(hitObjectTypeDoubleValue);
+            }
             // Song preview start time key pressed
             else if (Input.GetKeyDown(KeyCode.T))
             {
@@ -156,14 +161,47 @@ public class PlacedObject : MonoBehaviour
         if (poolDictionary.ContainsKey(_type) == true)
         {
             GameObject objectToSpawn = poolDictionary[_type].Dequeue();
+
+            // Set active
             objectToSpawn.gameObject.SetActive(true);
 
-            // Could be improved
-            objectToSpawn.GetComponent<Animator>().Play("EditorHitObject_FadeOut_Animation", 0, 0f);
-
-            
+            // Set position
             objectToSpawn.transform.position = scriptManager.cursorHitObject.positionObject.transform.position;
+
+            switch (_type)
+            {
+                case hitObjectTypeDoubleValue:
+
+                    // Transforms for double objects
+                    Transform[] transformArray = new Transform[2];
+
+                    // Set positions for both objects
+                    for (int i = 0; i < 2; i++)
+                    {
+                        transformArray[i] = objectToSpawn.transform.GetChild(i);
+                    }
+
+                    // Draw line between both objects
+                    UILineRenderer line = objectToSpawn.transform.GetChild(2).GetComponent<UILineRenderer>();
+                    line.Points = new Vector2[2];
+
+                    for (int i = 0; i < transformArray.Length; i++)
+                    {
+                        line.Points[i] = transformArray[i].localPosition;
+                    }
+
+
+                    break;
+                default:
+                    // Play animation for single hit objects - IMPROVE LATER
+                    objectToSpawn.GetComponent<Animator>().Play("EditorHitObject_FadeOut_Animation", 0, 0f);
+                    break;
+            }
+
+            // Set rotations
             objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+            // Set last sibling in canvas
             objectToSpawn.transform.SetAsLastSibling();
 
             poolDictionary[_type].Enqueue(objectToSpawn);
@@ -173,15 +211,7 @@ public class PlacedObject : MonoBehaviour
     // Place new hit object based on the type
     public void PlaceHitObject(int _type)
     {
-        switch (_type)
-        {
-            case hitObjectTypeLeftValue:
-                AddEditorHitObjectToList(hitObjectTypeLeftValue);
-                break;
-            case hitObjectTypeRightValue:
-                AddEditorHitObjectToList(hitObjectTypeRightValue);
-                break;
-        }
+        AddEditorHitObjectToList(_type);
     }
 
     // Destroy all previewHitObjects that appear on screen
@@ -297,8 +327,6 @@ public class PlacedObject : MonoBehaviour
 
         // Reset for next time
         nullTimelineObjectIndex = 0;
-
-
 
         // Check if any objects are null 
         for (int i = 0; i < destroyTimelineObjectList.Count; i++)
@@ -530,6 +558,7 @@ public class PlacedObject : MonoBehaviour
         // Reset
         objectSpawnTimeIsTaken = false;
 
+        // If beat snap timing is enabled
         if (scriptManager.beatsnapManager.BeatsnapTimingEnabled == true)
         {
             // If the audio source is playing
@@ -564,6 +593,8 @@ public class PlacedObject : MonoBehaviour
                     break;
                 case hitObjectTypeRightValue:
                     scriptManager.cursorHitObject.SetToDiamondRotation();
+                    break;
+                default:
                     break;
             }
 

@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using UnityEngine.UI.Extensions;
 
-// HIT OBJECT TIMING SCRIPT
 public class TimingAndScore : MonoBehaviour
 {
+    #region Variables
     // UI
     public Image colorImage;
+    public UILineRenderer line;
+
+    // Gameobject
+    public GameObject hitObject2; // 2nd hit object for double hit object type
+
 
     // Strings
     private const string perfectJudgement = "PERFECT", goodJudgement = "GOOD", earlyJudgement = "EARLY", missJudgement = "MISS"; // Judgement values 
@@ -35,7 +40,9 @@ public class TimingAndScore : MonoBehaviour
 
     // Animation
     public Animator hitObjectAnimator; // Animator 
+    #endregion
 
+    #region Properties
     // Properties
 
     // Get or set canBeHit bool - controls allowing the hit object to be hit or not
@@ -49,7 +56,9 @@ public class TimingAndScore : MonoBehaviour
     {
         get { return hitObjectTimer; }
     }
+    #endregion
 
+    #region Functions
     // Initialize every time the object is reactivated
     void OnEnable()
     {
@@ -113,6 +122,17 @@ public class TimingAndScore : MonoBehaviour
         CheckJudgements();
     }
 
+    // Draw UI line between both hit object transform positions for DOUBLE hit object types
+    private void DrawLine()
+    {
+        // Assign length
+        line.Points = new Vector2[2];
+
+        // Assign points between both hit objects
+        line.Points[0] = hitObject2.transform.position;
+        line.Points[1] = this.transform.position;
+    }
+
     private void DeactivateGameObject()
     {
         this.gameObject.SetActive(false);
@@ -162,6 +182,8 @@ public class TimingAndScore : MonoBehaviour
                             timeWhenHit = hitObjectTimer;
                             // Play hit sound
                             scriptManager.hitSoundManager.PlayHitSound();
+
+                            scriptManager.feverTimeManager.FillFeverSlider();
 
                             this.gameObject.SetActive(false);
                         }
@@ -249,6 +271,8 @@ public class TimingAndScore : MonoBehaviour
         // Play miss sound
         scriptManager.hitSoundManager.PlayMissSound();
 
+        scriptManager.feverTimeManager.DecreaseFeverSlider();
+
         this.gameObject.SetActive(false);
     }
 
@@ -264,6 +288,12 @@ public class TimingAndScore : MonoBehaviour
             case "RIGHT":
                 objectKey = KeyCode.J;
                 alternateObjectKey = KeyCode.K;
+                break;
+            case "DOUBLE":
+                // TESTING
+                objectKey = KeyCode.G;
+                alternateObjectKey = KeyCode.H;
+                DrawLine();
                 break;
         }
     }
@@ -293,5 +323,5 @@ public class TimingAndScore : MonoBehaviour
         }
         */
     }
-
+    #endregion
 }
