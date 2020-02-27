@@ -7,29 +7,12 @@ public class MenuManager : MonoBehaviour
 
     public GameObject startMenu, mainMenu, songSelectMenu, gameplay, editor, editorSongSelectMenu, results, overallRankingMenu, downloadMenu;
 
-    public GameObject spinningLights;
-
     public GameObject currentActiveMenu;
 
     private void Start()
     {
         // TESTING - REMOVE
         currentActiveMenu = songSelectMenu;
-    }
-
-    private void Update()
-    {
-        if (startMenu.gameObject.activeSelf == true || mainMenu.gameObject.activeSelf == true)
-        {
-            spinningLights.gameObject.SetActive(true);
-        }
-        else
-        {
-            if (spinningLights.gameObject.activeSelf == true)
-            {
-                spinningLights.gameObject.SetActive(false);
-            }
-        }
     }
 
     public void StartMenuToMainMenu()

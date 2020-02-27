@@ -8,7 +8,7 @@ public class SongSelectManager : MonoBehaviour
 {
 
     // UI
-    public Image topColorPanelImage, bottomColorPanelImage, leftSideGradientImage;
+    public Image topColorPanelImage, bottomColorPanelImage, leftSideGradientImage, timelineImage;
 
     public TextMeshProUGUI songTitleText, songArtistText, beatmapInformationText, beatmapCreatorText, beatmapCreatorMessageText;
     public TextMeshProUGUI difficultyButtonEasyText, difficultyButtonAdvancedText, difficultyButtonExtraText;
@@ -46,7 +46,7 @@ public class SongSelectManager : MonoBehaviour
     private float beatmapSongOffset, beatmapSongBpm;
     private int frameInterval;
     private int beatmapDirectoryCount;
-    private const float leftSideGradientImageAlpha = 0.1f;
+    private const float leftSideGradientImageAlpha = 0.5f;
         
     // Bools
     private bool easyDifficultyExist, advancedDifficultyExist, extraDifficultyExist;
@@ -206,7 +206,6 @@ public class SongSelectManager : MonoBehaviour
                     leftSideGradientImage.color = new Color(advancedDifficultyButtonColor.r, advancedDifficultyButtonColor.g, advancedDifficultyButtonColor.b,
                         leftSideGradientImageAlpha);
 
-
                     // Update highlighted colors for UI buttons
                     scriptManager.uiColorManager.difficultyColor = advancedDifficultyButtonColor;
 
@@ -228,8 +227,7 @@ public class SongSelectManager : MonoBehaviour
                     beatmapCreatorMessageText.color = extraDifficultyButtonColor;
                     leftSideGradientImage.color = new Color(extraDifficultyButtonColor.r, extraDifficultyButtonColor.g, extraDifficultyButtonColor.b,
                         leftSideGradientImageAlpha);
-
-
+                    
                     // Update highlighted colors for UI buttons
                     scriptManager.uiColorManager.difficultyColor = extraDifficultyButtonColor;
 
@@ -248,6 +246,9 @@ public class SongSelectManager : MonoBehaviour
         }
 
 
+        // Update timeline background image coor
+        timelineImage.color = leftSideGradientImage.color;
+
         // Assign new UI colors
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.songSelectPanel.difficultySortingDropDown);
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.songSelectPanel.sortingDropDown);
@@ -259,7 +260,7 @@ public class SongSelectManager : MonoBehaviour
 
         for (int i = 0; i < scriptManager.beatmapRanking.leaderboardButtonArray.Length; i++)
         {
-            scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.beatmapRanking.leaderboardButtonArray[i].leaderboardButton);
+            //scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.beatmapRanking.leaderboardButtonArray[i].leaderboardButton);
         }
 
         scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.beatmapRanking.personalBestButton);
@@ -326,8 +327,8 @@ public class SongSelectManager : MonoBehaviour
             //beatmapInformationText.text = beatmapCreatedDate + " | " + totalObjects + " OBJECTS | " + 
                 //UtilityMethods.FromSecondsToMinutesAndSeconds(songAudioSource.clip.length);
 
-            beatmapCreatorText.text = "DESIGNED BY " + beatmapCreator.ToUpper();
-            beatmapCreatorMessageText.text = "CREATOR MESSAGE";
+            beatmapCreatorText.text = "Designed by " + beatmapCreator;
+            beatmapCreatorMessageText.text = "Creator message";
 
             // Play current selected beatmap count animation
             scriptManager.songSelectPanel.selectedBeatmapCountTextAnimator.Play("SelectedBeatmapNumberText_Animation", 0, 0f);

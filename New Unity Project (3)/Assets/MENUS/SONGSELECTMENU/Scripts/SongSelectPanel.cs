@@ -37,7 +37,7 @@ public class SongSelectPanel : MonoBehaviour
     private Transform beatmapButtonPanelChild; // Beatmap button panel child when instantiating
 
     // Color
-    public Color easyDifficultyColor, advancedDifficultyColor, extraDifficultyColor, allDifficultyColor, defaultDifficultyColor;
+    //public Color easyDifficultyColor, advancedDifficultyColor, extraDifficultyColor, allDifficultyColor, defaultDifficultyColor;
 
     // Strings
     private string imageName;
@@ -118,7 +118,7 @@ public class SongSelectPanel : MonoBehaviour
         advancedDifficultyTickBoxSelected = true;
         extraDifficultyTickBoxSelected = true;
         hasLoadedAllBeatmapDirectories = false;  // Set to false at the start, set to true when all have loaded
-        beatmapButtonPosition = new Vector3(0, 0, 500); // Set to 500 on z to fix the "moving image" problem, instantiates the images to z of 0 so the images don't move when the mouse cursor has moved
+        beatmapButtonPosition = new Vector3(0, 0, 0); // Set to 500 on z to fix the "moving image" problem, instantiates the images to z of 0 so the images don't move when the mouse cursor has moved
         shaderLocation = "UI/Unlit/Transparent";
         imageType = ".png";
         imageName = "img";
@@ -331,28 +331,33 @@ public class SongSelectPanel : MonoBehaviour
     // Set the button scroll list to the top
     public void SetButtonScrollListToTop()
     {
+        /*
         // Create the new Y position
         newButtonListContentPositionY = buttonListContentPositionY - 10000;
         newButtonListContentPosition = new Vector3(buttonListContentPositionX, newButtonListContentPositionY, buttonListContentPositionZ);
 
         // Assign new position to move the button list content panel up
         buttonListContent.transform.localPosition = newButtonListContentPosition;
+        */
     }
 
     // Set the button scroll list to the bottom
     public void SetButtonScrollListToBottom()
     {
+        /*
         // Create the new Y position
         newButtonListContentPositionY = buttonListContentPositionY + 10000;
         newButtonListContentPosition = new Vector3(buttonListContentPositionX, newButtonListContentPositionY, buttonListContentPositionZ);
 
         // Assign new position to move the button list content panel up
         buttonListContent.transform.localPosition = newButtonListContentPosition;
+        */
     }
 
     // Scroll the beatmap button content panel up
     private void ScrollListUp()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             // Get current selected beatmap button, selected index and list position
@@ -368,11 +373,13 @@ public class SongSelectPanel : MonoBehaviour
                 buttonListContent.transform.localPosition = newButtonListContentPosition;
             }
         }
+        */
     }
 
     // Scroll the beatmap button content panel up
     private void ScrollListDown()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             // Get current selected beatmap button, selected index and list position
@@ -388,6 +395,7 @@ public class SongSelectPanel : MonoBehaviour
                 buttonListContent.transform.localPosition = newButtonListContentPosition;
             }
         }
+        */
     }
 
     // Create all beatmap buttons to go in the song select panel
@@ -407,6 +415,9 @@ public class SongSelectPanel : MonoBehaviour
                 // Check beatmap difficulties
                 CheckBeatmapDifficulties(beatmapButtonIndexToGet);
 
+                // Change button size based on text
+                ChangeButtonSize(beatmapButtonIndexToGet);
+
                 // Increment the beatmapButtonIndexToGet (Increments after each coroutine only so it loads the image 1 after another)
                 beatmapButtonIndexToGet++;
             }
@@ -420,6 +431,17 @@ public class SongSelectPanel : MonoBehaviour
             // Update beatmap button navigation
             //UpdateBeatmapButtonNavigation(defaultDifficultySortingValue);
         }
+    }
+
+    // Change button size based on text size
+    public void ChangeButtonSize(int _index)
+    {
+        // x length value based on text length
+        float xValue = (beatmapButtonList[_index].songNameText.preferredWidth + beatmapButtonList[_index].artistText.preferredWidth) + 250f;
+        RectTransform rectTransform = beatmapButtonList[_index].GetComponent<RectTransform>();
+
+        // Resize button 
+        rectTransform.sizeDelta = new Vector2(xValue, rectTransform.sizeDelta.y);
     }
 
     // Get the beatmap directory paths
@@ -523,7 +545,7 @@ public class SongSelectPanel : MonoBehaviour
         instantiatedBeatmapButtonList.Add(beatmapButtonInstantiate);
 
         // Get the child image transform from the instantiated button so we can change the image
-        beatmapButtonPanelChild = beatmapButtonInstantiate.gameObject.transform.GetChild(1);
+        beatmapButtonPanelChild = beatmapButtonInstantiate.gameObject.transform.GetChild(0);
         beatmapButtonInstantiateChildImage = beatmapButtonPanelChild.gameObject.transform.GetChild(0);
 
         // Get the image component of the instantiated button
@@ -541,7 +563,6 @@ public class SongSelectPanel : MonoBehaviour
 
         instantiatedBeatmapButtonScript = beatmapButtonInstantiate.GetComponent<BeatmapButton>();
         instantiatedBeatmapButtonScript.SetBeatmapButtonIndex(_beatmapButtonIndex);
-
 
         // Add the beatmap button to the list
         beatmapButtonList.Add(instantiatedBeatmapButtonScript);
@@ -723,7 +744,7 @@ public class SongSelectPanel : MonoBehaviour
                 beatmapButtonList[i].gameObject.SetActive(true);
 
                 // Enable color
-                beatmapButtonList[i].overlayColorImage.color = easyDifficultyColor;
+               // beatmapButtonList[i].overlayColorImage.color = easyDifficultyColor;
 
                 // Add to the sorted list
                 easyDifficultySortedBeatmapButtonList.Add(beatmapButtonList[i]);
@@ -776,7 +797,7 @@ public class SongSelectPanel : MonoBehaviour
                 beatmapButtonList[i].gameObject.SetActive(true);
 
                 // Enable color
-                beatmapButtonList[i].overlayColorImage.color = advancedDifficultyColor;
+                //beatmapButtonList[i].overlayColorImage.color = advancedDifficultyColor;
 
                 // Add to the sorted list
                 advancedDifficultySortedBeatmapButtonList.Add(beatmapButtonList[i]);
@@ -829,7 +850,7 @@ public class SongSelectPanel : MonoBehaviour
                 beatmapButtonList[i].gameObject.SetActive(true);
 
                 // Enable color
-                beatmapButtonList[i].overlayColorImage.color = extraDifficultyColor;
+                //beatmapButtonList[i].overlayColorImage.color = extraDifficultyColor;
 
                 // Add to the sorted list
                 extraDifficultySortedBeatmapButtonList.Add(beatmapButtonList[i]);
@@ -878,7 +899,7 @@ public class SongSelectPanel : MonoBehaviour
                 beatmapButtonList[i].gameObject.SetActive(true);
 
                 // Enable color
-                beatmapButtonList[i].overlayColorImage.color = allDifficultyColor;
+                //beatmapButtonList[i].overlayColorImage.color = allDifficultyColor;
 
                 // Add to the sorted list
                 allDifficultySortedBeatmapButtonList.Add(beatmapButtonList[i]);
@@ -981,7 +1002,7 @@ public class SongSelectPanel : MonoBehaviour
             beatmapButtonList[i].gameObject.SetActive(true);
 
             // Enable color
-            beatmapButtonList[i].overlayColorImage.color = defaultDifficultyColor;
+            //beatmapButtonList[i].overlayColorImage.color = defaultDifficultyColor;
         }
 
         // Set current sorting difficulty to default
@@ -1280,7 +1301,7 @@ public class SongSelectPanel : MonoBehaviour
                     searchedBeatmapsList.Add(beatmapButtonList[i]);
 
                     // Set color to default purple
-                    beatmapButtonList[i].overlayColorImage.color = defaultDifficultyColor;
+                    //beatmapButtonList[i].overlayColorImage.color = defaultDifficultyColor;
                 }
                 else
                 {
