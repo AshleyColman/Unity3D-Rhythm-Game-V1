@@ -252,7 +252,8 @@ public class SongSelectManager : MonoBehaviour
         // Assign new UI colors
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.songSelectPanel.difficultySortingDropDown);
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.songSelectPanel.sortingDropDown);
-        scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.beatmapRanking.leaderboardSortDropDown);
+        scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.beatmapRanking.leaderboardSortViewDropdown);
+        scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.beatmapRanking.leaderboardSortTypeDropdown);
         scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.playerSkillsManager.songSelectCharacterButton);
         scriptManager.uiColorManager.UpdateTickBoxButtonColors(scriptManager.backgroundManager.videoTickBoxButton);
         scriptManager.uiColorManager.UpdateScrollbarColors(scriptManager.beatmapRanking.leaderboardScrollbar);
@@ -263,7 +264,7 @@ public class SongSelectManager : MonoBehaviour
             //scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.beatmapRanking.leaderboardButtonArray[i].leaderboardButton);
         }
 
-        scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.beatmapRanking.personalBestButton);
+        //scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.beatmapRanking.personalBestButton);
 
 
         // If any difficulty files exist
@@ -286,7 +287,7 @@ public class SongSelectManager : MonoBehaviour
             scriptManager.uploadPlayerImage.CallBeatmapCreatorUploadImage(beatmapCreator, scriptManager.uploadPlayerImage.beatmapCreatorProfileImage);
 
             // Play animation
-            songInformationPanelAnimator.Play("SongInformationPanel_Animation", 0, 0f);
+            //songInformationPanelAnimator.Play("SongInformationPanel_Animation", 0, 0f);
 
             // If video tick box is enabled load a video if it exists
             if (scriptManager.backgroundManager.VideoTickBoxSelected == true)

@@ -4,18 +4,17 @@ using UnityEngine.Networking;
 
 public class LeaderboardCreate : MonoBehaviour
 {
-
     // Strings
     private string leaderboardTableName;
-    private string difficultySelected;
     private string beatmapCreator;
+
     // Scripts
-    private BeatmapSetup beatmapSetup;
+    private ScriptManager scriptManager;
 
     void Start()
     {
         // Reference
-        beatmapSetup = FindObjectOfType<BeatmapSetup>();
+        scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     // Create a leaderboard for the beatmap
@@ -33,29 +32,20 @@ public class LeaderboardCreate : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("leaderboardTableName", leaderboardTableName);
 
-        UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/createbeatmapleaderboard.php", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost/rhythmgamex/create_beatmap_leaderboard.php", form);
         www.chunkedTransfer = false;
         yield return www.SendWebRequest();
 
-
-        // Success
         if (www.downloadHandler.text == "0")
         {
             // LEADERBOARD CREATED
+            Debug.Log("Leaderboard created");
         }
-        // Error
         if (www.downloadHandler.text == "1")
         {
             // ERROR
-
-            // Show a message saying leaderboard creation failed?
+            Debug.Log("Leaderboard failed");
         }
-    }
-
-    // Get the beatmap difficulty selected from the buttons easy/advanced/extra, which is used for the leaderbaord table name
-    public void GetBeatmapDifficultySelected(string _difficultySelected)
-    {
-        difficultySelected = _difficultySelected.ToUpper();
     }
 
     // Create a leaderboard table for this beatmap
@@ -72,10 +62,11 @@ public class LeaderboardCreate : MonoBehaviour
         }
 
         // Get the name of the beatmap song being charted
-        string beatmapSong = beatmapSetup.SongName.Replace(' ', '_');
+        string beatmapSong = scriptManager.setupBeatmap.SongName.Replace(' ', '_');
+        string beatmapArtist = scriptManager.setupBeatmap.ArtistName.Replace(' ', '_');
 
         // Combine all together to create a unique leaderboard table name
-        leaderboardTableName = beatmapCreator + "_" + beatmapSong + "_" + difficultySelected;
+        leaderboardTableName = beatmapCreator + "_" + beatmapSong + "_" + beatmapArtist + "_ " + scriptManager.setupBeatmap.BeatmapDifficulty;
 
         // Save in the database
         Database.database.LeaderboardTableName = leaderboardTableName;

@@ -11,11 +11,8 @@ public class BeatmapButton : MonoBehaviour
 
     private bool hasEasyDifficulty, hasAdvancedDifficulty, hasExtraDifficulty;
 
-
-    public Image overlayColorImage;
-    public GameObject easyDifficultyImage, advancedDifficultyImage, extraDifficultyImage;
     public TextMeshProUGUI easyDifficultyLevelText, advancedDifficultyLevelText, extraDifficultyLevelText;
-    public TextMeshProUGUI songNameText, artistText, beatmapCreatorText;
+    public TextMeshProUGUI songNameText, artistText, beatmapCreatorText, newText;
 
     // Scripts
     private ScriptManager scriptManager;
@@ -140,5 +137,4 @@ public class BeatmapButton : MonoBehaviour
         // Stop beatmap leaderboard ranking loads
         scriptManager.beatmapRanking.StopAllCoroutines();
     }
-
 }

@@ -29,7 +29,8 @@ public class MetronomePro_Player : MonoBehaviour
     // Check input to change the song play back speed
     private void CheckSongPlaybackSpeedInput()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        /*
+        if (Input.GetKeyDown(KeyCode.))
         {
             if (velocityScale.value == 0)
             {
@@ -52,6 +53,7 @@ public class MetronomePro_Player : MonoBehaviour
             // Change the song play back speed
             ChangeSongPlaybackSpeed();
         }
+        */
     }
 
     // Change the song play back speed
@@ -198,38 +200,41 @@ public class MetronomePro_Player : MonoBehaviour
                 UpdateSongProgressUI();
             }
         }
-        // Play song when user press Space button
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // Check if the live preview panel is open
-            // If live preview is active play live preview
-            // Else play the song normally
 
-            /*
-            if (levelChanger.CurrentLevelIndex == levelChanger.EditorSceneIndex)
+        if (scriptManager.rhythmVisualizatorPro.audioSource.clip != null)
+        {
+            // Play song when user press Space button
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (editorUIManager.previewPanel.activeSelf == true)
+                // Check if the live preview panel is open
+                // If live preview is active play live preview
+                // Else play the song normally
+
+                /*
+                if (levelChanger.CurrentLevelIndex == levelChanger.EditorSceneIndex)
                 {
-                    livePreview.StartOrPauseLivePreview();
+                    if (editorUIManager.previewPanel.activeSelf == true)
+                    {
+                        livePreview.StartOrPauseLivePreview();
+                    }
+                    else
+                    {
+                        // Unmute metronome
+                        metronomePro.UnmuteMetronome();
+
+                        PlayOrPauseSong();
+                    }
                 }
                 else
                 {
-                    // Unmute metronome
-                    metronomePro.UnmuteMetronome();
-
                     PlayOrPauseSong();
                 }
-            }
-            else
-            {
+                */
+
                 PlayOrPauseSong();
             }
-            */
-
-            PlayOrPauseSong();
         }
     }
-
 }
 
 
