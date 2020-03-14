@@ -94,8 +94,6 @@ public class DownloadPanel : MonoBehaviour
         {
             scriptManager = FindObjectOfType<ScriptManager>();
         }
-
-        bottomColorPanel.color = scriptManager.songSelectManager.topColorPanelImage.color;
     }
 
     private void OnDisable()
@@ -245,13 +243,13 @@ public class DownloadPanel : MonoBehaviour
         {
             // SUCCESS - Maps to download
             totalDownloadableBeatmaps = int.Parse(www.downloadHandler.text);
-            scriptManager.messagePanel.DisplayMessage(totalDownloadableBeatmaps + " BEATMAPS FOUND, LOADING...", "PURPLE");
+            scriptManager.messagePanel.DisplayMessage(totalDownloadableBeatmaps + " BEATMAPS FOUND, LOADING...", scriptManager.uiColorManager.purpleColor);
         }
         else
         {
             // FAILED - No maps to download
             totalDownloadableBeatmaps = 0;
-            scriptManager.messagePanel.DisplayMessage("NO BEATMAPS TO DOWNLOAD, TRY AGAIN LATER", "RED");
+            scriptManager.messagePanel.DisplayMessage("NO BEATMAPS TO DOWNLOAD, TRY AGAIN LATER", scriptManager.uiColorManager.offlineColorSolid);
         }
 
         // Set to true
@@ -529,6 +527,6 @@ public class DownloadPanel : MonoBehaviour
     {
         Application.OpenURL(downloadUrl);
 
-        scriptManager.messagePanel.DisplayMessage("DOWNLOADING BEATMAP", "BLUE");
+        scriptManager.messagePanel.DisplayMessage("DOWNLOADING BEATMAP", scriptManager.uiColorManager.easyDifficultyColor);
     }
 }

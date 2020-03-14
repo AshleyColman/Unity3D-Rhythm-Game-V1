@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class LeaderboardButton : MonoBehaviour
 {
-    public Image profileImage, flashAnimationImage;
+    public Image profileImage, flashAnimationImage, profileBorderImage;
     public TextMeshProUGUI placementText, playernameText, scoreText, statText, rankText, noRecordSetText, perfectJudgementText, goodJudgementText,
         earlyJudgementText, missJudgementText;
     public GameObject contentPanel;

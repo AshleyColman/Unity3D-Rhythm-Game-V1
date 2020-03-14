@@ -6,8 +6,7 @@ public class MetronomeForEffects : MonoBehaviour
     // Animator
     public Animator flashGlassAnimator;
     public Animator backgroundImageAnimator, backgroundImageAnimator2, videoPlayerImageAnimator, videoPlayerImageAnimator2, lightPanelBeatAnimator;
-    public Animator easyDifficultyButtonSelectedAnimator, advancedDifficultyButtonSelectedAnimator, extraDifficultyButtonSelectedAnimator,
-        topColorPanelGlowAnimator, bottomColorPanelGlowAnimator, characterMenuColorPanelGlowAnimator, overallRankingMenuColorPanelGlowAnimator,
+    public Animator topColorPanelGlowAnimator, bottomColorPanelGlowAnimator, characterMenuColorPanelGlowAnimator, overallRankingMenuColorPanelGlowAnimator,
         downloadMenuColorPanelGlowAnimator;
     public Animator overallRankingTitleAnimator;
     
@@ -220,21 +219,6 @@ public class MetronomeForEffects : MonoBehaviour
             PlayBackgroundBeatAnimation();
 
             PlayColorPanelGlowAnimation();
-
-            if (scriptManager.songSelectManager.easySelectedGameobject.activeSelf == true)
-            {
-                easyDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
-            }
-
-            if (scriptManager.songSelectManager.advancedSelectedGameobject.activeSelf == true)
-            {
-                advancedDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
-            }
-
-            if (scriptManager.songSelectManager.extraSelectedGameobject.activeSelf == true)
-            {
-                extraDifficultyButtonSelectedAnimator.Play("DifficultyButtonSelected_Animation", 0, 0f);
-            }
         }
     }
 

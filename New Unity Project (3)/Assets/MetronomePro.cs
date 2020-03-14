@@ -545,7 +545,7 @@ public class MetronomePro : MonoBehaviour
         switch (currentStep)
         {
             case 1:
-                imgBeat1.color = scriptManager.colorManager.selectedColor;
+                imgBeat1.color = scriptManager.uiColorManager.selectedColor;
                 break;
             default:
                 imgBeat2.color = Color.cyan;

@@ -1,43 +1,48 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
 public class TipsNewsScroll : MonoBehaviour
 {
+    #region Variables
+    // Text
+    public TextMeshProUGUI tipsText, characterMenuTipsText;
 
-    // SONG SELECT MENU TIPS
-    private string[] tips = new string[3];
-    public TextMeshProUGUI tipsText;
-    private int textResetTime;
-    private float timer;
-    private int randomNumber;
+    // Animation
+    private Animator tipsTextAnimator, characterMenuTipsTextAnimator;
 
-    // CHARACTER MENU TIPS
+    // String
+    private string[] tips = new string[5];
     private string[] characterMenuTips = new string[10];
-    public TextMeshProUGUI characterMenuTipsText;
-    private int characterTipIndex;
+
+    // Integer
+    private int textResetTime, songSelectTipIndex, characterTipIndex;
+    private float timer;
 
     // Scripts
     private ScriptManager scriptManager;
-    
+    #endregion
+
+    #region Functions
     private void Start()
     {
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
 
-        // SONG SELECT MENU
+        // Initialize
         timer = 0f;
         textResetTime = 5;
+        songSelectTipIndex = 0;
+        tipsTextAnimator = tipsText.GetComponent<Animator>();
+        characterMenuTipsTextAnimator = characterMenuTipsText.GetComponent<Animator>();
 
-        tips[0] = "WELCOME TO THE GAME";
-        tips[1] = "Game currently in development";
-        tips[2] = "Report bugs to Ashley on discord";
+        // Song Select menu
+        tips[0] = "Welcome to the game!";
+        tips[1] = "Updates / News / Tips will be displayed here";
+        tips[2] = "If you enounter a bug please report it in the discord";
+        tips[3] = "Please leave suggestions in the discord channel";
+        tips[4] = "You can create your own beatmap by using the editor";
 
-        tipsText.text = tips[0];
-
-
-        // CHARACTER MENU
+        // Character skill menu
         characterMenuTips[0] = "This menu allows you to equip character skills";
         characterMenuTips[1] = "Equiping skills allows you to change the score multiplier to increase or decrease your max potential score";
         characterMenuTips[2] = "Difficulty increase skills will increase your multiplier, whilst making gameplay more difficult";
@@ -46,30 +51,46 @@ public class TipsNewsScroll : MonoBehaviour
         characterMenuTips[5] = "Fun skills do not impact the multiplier, they're just for fun";
         characterMenuTips[6] = "You can combine skills from different classes as long as they're not the same type";
         characterMenuTips[7] = "If you have an idea for a new skill message Ashley#3286 on discord";
+
+
+        // Set default text
+        tipsText.text = tips[0];
+        // Play animation
+        tipsTextAnimator.Play("GameplayTipsScroll_Animation", 0, 0f);
     }
 
     private void Update()
     {
+        // Increment timer
         timer += Time.deltaTime;
-        
+
+        // If time has reached
         if (timer >= textResetTime)
         {
-            if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
+            // Song select menu
+            switch (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf)
             {
-                // If character panel is enabled
-                if (scriptManager.playerSkillsManager.characterPanel.gameObject.activeSelf == true)
-                {
+                case true:
+                    // Update song select tips text
+                    ChangeSongSelectTipText();
+                    // Reset timer
+                    timer = 0f;
+                    break;
+                case false:
+                    break;
+            }
+
+            // Character skill menu
+            switch (scriptManager.playerSkillsManager.characterPanel.gameObject.activeSelf)
+            {
+                case true:
                     // Update character panel tips text
                     ChangeCharacterSkillTipsText();
-                }
-                else
-                {
-                    // Update song select tips text
-                    ChangeText();
-                }
-
-                // Reset timer
-                timer = 0f;
+                    // Reset timer
+                    timer = 0f;
+                    break;
+                case false:
+                    break;
             }
         }
     }
@@ -83,15 +104,25 @@ public class TipsNewsScroll : MonoBehaviour
             characterTipIndex = 0;
         }
 
+        characterMenuTipsTextAnimator.Play("GameplayTipsScroll_Animation", 0, 0f);
+
         characterMenuTipsText.text = characterMenuTips[characterTipIndex];
         characterTipIndex++;
     }
 
     // Update song select tips text
-    private void ChangeText()
+    private void ChangeSongSelectTipText()
     {
-        randomNumber = Random.Range(0, tips.Length);
+        // Error check index
+        if (songSelectTipIndex >= tips.Length)
+        {
+            songSelectTipIndex = 0;
+        }
 
-        tipsText.text = tips[randomNumber];
+        tipsTextAnimator.Play("GameplayTipsScroll_Animation", 0, 0f);
+
+        tipsText.text = tips[songSelectTipIndex];
+        songSelectTipIndex++;
     }
+    #endregion
 }

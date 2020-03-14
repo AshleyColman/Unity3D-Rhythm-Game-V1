@@ -56,7 +56,7 @@ public class SongSelectPreview : MonoBehaviour
         }
         else
         {
-            scriptManager.messagePanel.DisplayMessage("BEATMAP AUDIO FILE NOT FOUND", "RED");
+            scriptManager.messagePanel.DisplayMessage("BEATMAP AUDIO FILE NOT FOUND", scriptManager.uiColorManager.offlineColorSolid);
         }
     }
 
@@ -69,7 +69,7 @@ public class SongSelectPreview : MonoBehaviour
 
             if (www.isNetworkError)
             {
-                scriptManager.messagePanel.DisplayMessage("BEATMAP AUDIO FILE NOT FOUND", "RED");
+                scriptManager.messagePanel.DisplayMessage("BEATMAP AUDIO FILE NOT FOUND", scriptManager.uiColorManager.offlineColorSolid);
             }
             else
             {

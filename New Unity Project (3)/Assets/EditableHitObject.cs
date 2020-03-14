@@ -120,7 +120,6 @@ public class EditableHitObject : MonoBehaviour
     private void DisplayLeftHitObject()
     {
         // Left hit object square
-        colorImage.color = scriptManager.colorManager.pinkColor;
         this.transform.rotation = scriptManager.cursorHitObject.SquareRotation;
         numberText.transform.rotation = Quaternion.Euler(0, 0, 0);
         squareReflectionImage.gameObject.SetActive(true);
@@ -131,7 +130,6 @@ public class EditableHitObject : MonoBehaviour
     private void DisplayRightHitObject()
     {
         // Right hit object diamond
-        colorImage.color = scriptManager.colorManager.purpleColor;
         this.transform.rotation = scriptManager.cursorHitObject.DiamondRotation;
         numberText.transform.rotation = Quaternion.Euler(0, 0, 0);
         squareReflectionImage.gameObject.SetActive(false);
@@ -202,7 +200,7 @@ public class EditableHitObject : MonoBehaviour
                 // Enable cursor position follow
                 followCursorPosition = true;
                 // Enable outer selected color
-                selectedImage.color = scriptManager.colorManager.selectedColor;
+                selectedImage.color = scriptManager.uiColorManager.selectedColor;
             }
             else if (followCursorPosition == true)
             {
@@ -213,7 +211,7 @@ public class EditableHitObject : MonoBehaviour
                 // Update the hit objects position
                 scriptManager.editorBottomMenu.UpdatePositionText();
                 // Reset selected color
-                selectedImage.color = scriptManager.colorManager.blackColor;
+                selectedImage.color = scriptManager.uiColorManager.solidBlackColor;
             }
         }
     }

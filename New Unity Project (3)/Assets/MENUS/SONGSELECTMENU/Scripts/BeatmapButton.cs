@@ -4,36 +4,43 @@ using TMPro;
 
 public class BeatmapButton : MonoBehaviour
 {
-    private int beatmapButtonIndex;
+    #region Variables
 
-    private int easyDifficultyButtonIndex, advancedDifficultyButtonIndex, extraDifficultyButtonIndex, allDifficultyButtonIndex, defaultButtonIndex,
-        searchedBeatmapButtonIndex;
+    // Button
+    public Button beatmapButton;
 
-    private bool hasEasyDifficulty, hasAdvancedDifficulty, hasExtraDifficulty;
+    // Text
+    public TextMeshProUGUI easyDifficultyLevelText, normalDifficultyLevelText, hardDifficultyLevelText, songNameText, artistText,
+        beatmapCreatorText, newText;
 
-    public TextMeshProUGUI easyDifficultyLevelText, advancedDifficultyLevelText, extraDifficultyLevelText;
-    public TextMeshProUGUI songNameText, artistText, beatmapCreatorText, newText;
+    // Integers
+    private int easyDifficultyButtonIndex, normalDifficultyButtonIndex, hardDifficultyButtonIndex, allDifficultyButtonIndex, defaultButtonIndex,
+        searchedBeatmapButtonIndex, beatmapButtonIndex;
+
+    // Bools
+    private bool hasEasyDifficulty, hasNormalDifficulty, hasHardDifficulty;
 
     // Scripts
     private ScriptManager scriptManager;
+    #endregion
 
-    // Properties
+    #region Properties
     public bool HasEasyDifficulty
     {
         get { return hasEasyDifficulty; }
         set { hasEasyDifficulty = value; }
     }
 
-    public bool HasAdvancedDifficulty
+    public bool HasNormalDifficulty
     {
-        get { return hasAdvancedDifficulty; }
-        set { hasAdvancedDifficulty = value; }
+        get { return hasNormalDifficulty; }
+        set { hasNormalDifficulty = value; }
     }
 
-    public bool HasExtraDifficulty
+    public bool HasHardDifficulty
     {
-        get { return hasExtraDifficulty; }
-        set { hasExtraDifficulty = value; }
+        get { return hasHardDifficulty; }
+        set { hasHardDifficulty = value; }
     }
 
     public int BeatmapButtonIndex
@@ -52,14 +59,14 @@ public class BeatmapButton : MonoBehaviour
         set { easyDifficultyButtonIndex = value; }
     }
 
-    public int AdvancedDifficultyButtonIndex
+    public int NormalDifficultyButtonIndex
     {
-        set { advancedDifficultyButtonIndex = value; }
+        set { normalDifficultyButtonIndex = value; }
     }
 
-    public int ExtraDifficultyButtonIndex
+    public int HardDifficultyButtonIndex
     {
-        set { extraDifficultyButtonIndex = value; }
+        set { hardDifficultyButtonIndex = value; }
     }
 
     public int AllDifficultyButtonIndex
@@ -71,17 +78,36 @@ public class BeatmapButton : MonoBehaviour
     {
         set { searchedBeatmapButtonIndex = value; }
     }
+    #endregion
 
+    #region Functions
     // Use this for initialization
     void Start()
     {
-        scriptManager = FindObjectOfType<ScriptManager>();
+        // Initialize
+        ReferenceScriptManager();
     }
 
-    // Keep button selected
-    public void KeepButtonSelected()
+    // Reference the scriptmanager
+    private void ReferenceScriptManager()
     {
-        this.gameObject.GetComponent<Button>().Select();
+        if (scriptManager == null)
+        {
+            scriptManager = FindObjectOfType<ScriptManager>();
+        }
+    }
+
+    // Keep this beatmap button selected by deactivating it
+    public void KeepBeatmapButtonSelected()
+    {
+        // Reference the scriptmanager
+        ReferenceScriptManager();
+
+        // Unselect last selected button
+        scriptManager.songSelectPanel.UnselectLastSelectedBeatmapButton();
+
+        // Update reference to the last selected beatmap button to reactivate when another button is pressed
+        scriptManager.songSelectPanel.UpdateLastSelectedBeatmapButton(beatmapButton);
     }
 
     // Load the beatmap assigned to the button when clicked
@@ -99,22 +125,28 @@ public class BeatmapButton : MonoBehaviour
         switch (scriptManager.songSelectPanel.CurrentDifficultySorting)
         {
             case "default":
-                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (defaultButtonIndex + 1).ToString();
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = "[ " + (defaultButtonIndex + 1) + " / " +
+                     scriptManager.songSelectManager.beatmapDirectories.Length + " ]";
                 break;
             case "easy":
-                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (easyDifficultyButtonIndex + 1).ToString();
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = "[ " + (easyDifficultyButtonIndex + 1) + " / " +
+                     scriptManager.songSelectPanel.easyDifficultySortedBeatmapButtonList.Count + " ]";
                 break;
-            case "advanced":
-                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (advancedDifficultyButtonIndex + 1).ToString();
+            case "normal":
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = "[ " + (normalDifficultyButtonIndex + 1) + " / " +
+                     scriptManager.songSelectPanel.normalDifficultySortedBeatmapButtonList.Count + " ]";
                 break;
-            case "extra":
-                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (extraDifficultyButtonIndex + 1).ToString();
+            case "hard":
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = "[ " + (hardDifficultyButtonIndex + 1) + " / " +
+                     scriptManager.songSelectPanel.hardDifficultySortedBeatmapButtonList.Count + " ]";
                 break;
             case "all":
-                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (allDifficultyButtonIndex + 1).ToString();
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = "[ " + (allDifficultyButtonIndex + 1) + " / " +
+                     scriptManager.songSelectPanel.allDifficultySortedBeatmapButtonList.Count + " ]";
                 break;
             case "searched":
-                scriptManager.songSelectPanel.selectedBeatmapCountText.text = (searchedBeatmapButtonIndex + 1).ToString();
+                scriptManager.songSelectPanel.selectedBeatmapCountText.text = "[ " + (searchedBeatmapButtonIndex + 1) + " / " +
+                     scriptManager.songSelectPanel.searchedBeatmapsList.Count + " ]";
                 break;
         }
     }
@@ -137,4 +169,5 @@ public class BeatmapButton : MonoBehaviour
         // Stop beatmap leaderboard ranking loads
         scriptManager.beatmapRanking.StopAllCoroutines();
     }
+    #endregion
 }

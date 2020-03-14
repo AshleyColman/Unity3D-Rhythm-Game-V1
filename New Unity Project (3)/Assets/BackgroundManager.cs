@@ -83,7 +83,7 @@ public class BackgroundManager : MonoBehaviour
             videoTickBoxSelectedImage.gameObject.SetActive(false);
 
             // Display message panel
-            scriptManager.messagePanel.DisplayVideoToggleOffMessage();
+            scriptManager.messagePanel.DisplayMessage("VIDEO TURNED OFF", scriptManager.uiColorManager.purpleColor);
 
             // Set to false
             videoTickBoxSelected = false;
@@ -94,7 +94,7 @@ public class BackgroundManager : MonoBehaviour
             videoTickBoxSelectedImage.gameObject.SetActive(true);
 
             // Display message panel
-            scriptManager.messagePanel.DisplayVideoToggleOnMessage();
+            scriptManager.messagePanel.DisplayMessage("VIDEO TURNED OFF", scriptManager.uiColorManager.purpleColor);
 
             // Set to true
             videoTickBoxSelected = true;

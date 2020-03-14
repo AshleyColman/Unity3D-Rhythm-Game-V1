@@ -6,69 +6,63 @@ using UnityEngine.Networking;
 
 public class UploadPlayerImage : MonoBehaviour
 {
-
-    // UI
+    #region Variables
+    // Text
     public TextMeshProUGUI playerNameText;
-    public TMP_InputField imageUrlInputField;
-    public Image playerImage;
-    public GameObject uploadPlayerImagePanel;
-    public Button uploadImageButton;
 
-    // BEATMAP CREATOR IMAGE
-    public Image beatmapCreatorProfileImage, downloadBeatmapCreatorProfileImage;
+    // Inputfield
+    public TMP_InputField imageUrlInputField;
+
+    // Image
+    public Image beatmapCreatorProfileImage, downloadBeatmapCreatorProfileImage, playerImage;
 
     // Gamebobjects
     public GameObject beatmapCreatorProfileImageLoadingIcon, downloadCreatorProfileImageLoadingIcon;
-    public GameObject playerImageLoadingIcon;
 
     // Strings
     private string image_url, username;
+    #endregion
 
-    // Properties
+    #region Properties
     public Image PlayerImage
     {
         get { return playerImage; }
     }
+    #endregion
 
+    #region Functions
     private void Start()
     {
-        // TESTING REMOVE THIS
+        // TEST - DELETE THIS
         MySQLDBManager.username = "Ashley";
 
 
-        if (MySQLDBManager.loggedIn == false || MySQLDBManager.username == "GUEST")
+
+        switch (MySQLDBManager.loggedIn)
         {
-            //uploadImageButton.interactable = false;
-
-            // Set player name
-            playerNameText.text = "GUEST";
-        }
-        else
-        {
-            // Set username
-            username = MySQLDBManager.username;
-
-            // Attempt to load the image on entering the game
-            StartCoroutine(RetrievePlayerImage(username, playerImage));
-
-            if (MySQLDBManager.loggedIn == true)
-            {
-                // Set player name
-                playerNameText.text = MySQLDBManager.username.ToUpper();
-            }
+            case true:
+                // Set username
+                username = MySQLDBManager.username;
+                // Set username to guest
+                playerNameText.text = "PLAYING AS " + username.ToUpper();
+                // Load player image
+                StartCoroutine(RetrievePlayerImage(username, playerImage));
+                break;
+            case false:
+                // Set username to guest
+                playerNameText.text = "PLAYING AS GUEST";
+                break;
         }
     }
 
     // Get and upload the beatmap creator image
     public void CallBeatmapCreatorUploadImage(string _beatmapCreatorUsername, Image _image)
     {
+        // Deactivate image
         _image.gameObject.SetActive(false);
 
-        if (_image == playerImage)
-        {
-
-        }
-        else if (_image == beatmapCreatorProfileImage)
+        // Activate loading icon
+        if (_image == beatmapCreatorProfileImage)
         {
             beatmapCreatorProfileImageLoadingIcon.gameObject.SetActive(true);
         }
@@ -84,17 +78,12 @@ public class UploadPlayerImage : MonoBehaviour
     // Call the upload image function
     public void CallUploadImage()
     {
-        if (MySQLDBManager.loggedIn == true && MySQLDBManager.username != "GUEST")
+        if (MySQLDBManager.loggedIn == true)
         {
             // Attempt to submit player image
-            StartCoroutine(AttemptToUploadPlayerImage());
-        }
-        else
-        {
-            // Cannot upload as guest or not logged in error message
+            StartCoroutine(UploadNewProfileImageURL());
         }
     }
-
 
     // Retrieve the player image
     private IEnumerator RetrievePlayerImage(string _username, Image _image)
@@ -102,72 +91,66 @@ public class UploadPlayerImage : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("username", _username);
 
-        UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/retrieveuserimage.php", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost/rhythmgamex/retrieve_player_image.php", form);
         www.chunkedTransfer = false;
         yield return www.SendWebRequest();
 
-
-        // Check if the login was success or fail
-        if (www.downloadHandler.text == "1")
+        switch (www.downloadHandler.text)
         {
-            // ERROR - UPLOAD FAILED
-        }
-        else
-        {
-            // SUCCESS 
-
-            if (www.downloadHandler.text != "")
-            {
-                // Load the player image with the value from the database - user image url saved
+            case "1":
+                // ERROR 
+                break;
+            default:
+                // SUCCESS - Load the player image with the value from the database - user image url saved
                 StartCoroutine(LoadPlayerImg(www.downloadHandler.text, _image));
-            }
-
+                break;
         }
     }
 
     // Load the player image
     IEnumerator LoadPlayerImg(string _url, Image _image)
     {
-        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
+        if (_url != "")
         {
-            yield return uwr.SendWebRequest();
-
-            if (uwr.isNetworkError || uwr.isHttpError)
+            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
             {
-                Debug.Log(uwr.error);
-            }
-            else
-            {
-                // Get downloaded asset bundle
-                var texture = DownloadHandlerTexture.GetContent(uwr);
+                yield return uwr.SendWebRequest();
 
-                _image.material.mainTexture = texture;
-
-                // Set image to false then to true to activate new image
-                _image.gameObject.SetActive(false);
-                _image.gameObject.SetActive(true);
-
-
-                if (_image == playerImage)
+                if (uwr.isNetworkError || uwr.isHttpError)
                 {
-                    
+                    Debug.Log("Error uploading profile image");
                 }
-                else if (_image == beatmapCreatorProfileImage)
+                else
                 {
-                    beatmapCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
-                }
-                else if (_image == downloadBeatmapCreatorProfileImage)
-                {
-                    downloadCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
+                    // Get downloaded asset bundle
+                    var texture = DownloadHandlerTexture.GetContent(uwr);
+
+                    _image.material.mainTexture = texture;
+
+                    // Set image to false then to true to activate new image
+                    _image.gameObject.SetActive(false);
+                    _image.gameObject.SetActive(true);
+
+                    // Display loading icon
+                    if (_image == beatmapCreatorProfileImage)
+                    {
+                        beatmapCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
+                    }
+                    else if (_image == downloadBeatmapCreatorProfileImage)
+                    {
+                        downloadCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
+                    }
                 }
             }
         }
     }
 
-    private IEnumerator AttemptToUploadPlayerImage()
+    // Upload a new image URL - Save to the database for player and load the image
+    private IEnumerator UploadNewProfileImageURL()
     {
+        // Get URL from input field
         image_url = imageUrlInputField.text;
-        username = MySQLDBManager.username;
+
         WWWForm form = new WWWForm();
         form.AddField("image_url", image_url);
         form.AddField("username", username);
@@ -176,32 +159,16 @@ public class UploadPlayerImage : MonoBehaviour
         www.chunkedTransfer = false;
         yield return www.SendWebRequest();
 
-
-        // Check if the login was success or fail
-        if (www.downloadHandler.text == "0")
+        switch (www.downloadHandler.text)
         {
-            // SUCCESS 
-
-            // Load the player image with the value from the image url input field
-            StartCoroutine(LoadPlayerImg(image_url, playerImage));
-        }
-        // Check if the login was success or fail
-        if (www.downloadHandler.text != "0")
-        {
-            // ERROR - UPLOAD FAILED
+            case "0":
+                // SUCCESS - Load the player image with the value from the image url input field
+                StartCoroutine(LoadPlayerImg(image_url, playerImage));
+                break;
+            default:
+                // ERROR - Upload failed
+                break;
         }
     }
-
-
-    // Activate the player image panel
-    public void ActivatePlayerImagePanel()
-    {
-        uploadPlayerImagePanel.gameObject.SetActive(true);
-    }
-
-    // Deactivate the player image panel
-    public void DeactivatePlayerImagePanel()
-    {
-        uploadPlayerImagePanel.gameObject.SetActive(false);
-    }
+    #endregion
 }

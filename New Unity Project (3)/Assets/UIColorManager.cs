@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -9,7 +7,14 @@ public class UIColorManager : MonoBehaviour
     // Color blocks
     private ColorBlock dropDownColorBlock, dropDownItemColorBlock, tickBoxButtonColorBlock, gradientButtonColorBlock, scrollbarColorBlock;
     public Color dropDownPressedColor, dropDownSelectedColor;
-    public Color solidBlackColor, blackColor08, invisibleColor, difficultyColor, whiteColor, difficultyColor08;
+    public Color solidBlackColor, blackColor08, invisibleColor, difficultyColor, solidWhiteColor, difficultyColor08;
+    public Color onlineColor08, onlineColor09, onlineColorSolid, offlineColor08, offlineColor09, offlineColorSolid;
+    public Color selectedColor, sPlusRankColor, sRankColor, aRankColor, bRankColor, cRankColor, dRankColor, eRankColor, fRankColor;
+    public Color easyDifficultyColor, normalDifficultyColor, hardDifficultyColor, purpleColor;
+
+
+    public TMP_ColorGradient sPlusColorGradient, sColorGradient, aColorGradient, bColorGradient, cColorGradient, dColorGradient, eColorGradient,
+        fColorGradient;
 
     private void Start()
     {
@@ -18,6 +23,54 @@ public class UIColorManager : MonoBehaviour
         tickBoxButtonColorBlock.colorMultiplier = 1;
         gradientButtonColorBlock.colorMultiplier = 1;
         scrollbarColorBlock.colorMultiplier = 1;
+    }
+
+    // Set the grade color gradient based on the grade passed
+    public TMP_ColorGradient SetGradeColorGradient(string _grade)
+    {
+        switch (_grade)
+        {
+            case "S+":
+                return sPlusColorGradient;
+            case "S":
+                return sColorGradient;
+            case "A":
+                return aColorGradient;
+            case "B":
+                return bColorGradient;
+            case "C":
+                return cColorGradient;
+            case "D":
+                return dColorGradient;
+            case "E":
+                return eColorGradient;
+            default:
+                return fColorGradient;
+        }
+    }
+
+    // Set the grade color based on the grade passed
+    public Color SetGradeColor(string _grade)
+    {
+        switch (_grade)
+        {
+            case "S+":
+                return sPlusRankColor;
+            case "S":
+                return sRankColor;
+            case "A":
+                return aRankColor;
+            case "B":
+                return bRankColor;
+            case "C":
+                return cRankColor;
+            case "D":
+                return dRankColor;
+            case "E":
+                return eRankColor;
+            default:
+                return fRankColor;
+        }
     }
 
     // Update drop down colors
@@ -49,7 +102,7 @@ public class UIColorManager : MonoBehaviour
     // Update scroll bar color block
     public void UpdateScrollbarColorBlock()
     {
-        scrollbarColorBlock.normalColor = whiteColor;
+        scrollbarColorBlock.normalColor = solidWhiteColor;
         scrollbarColorBlock.highlightedColor = difficultyColor;
         scrollbarColorBlock.pressedColor = difficultyColor;
         scrollbarColorBlock.selectedColor = difficultyColor;
@@ -107,5 +160,23 @@ public class UIColorManager : MonoBehaviour
         dropDownItemColorBlock.highlightedColor = difficultyColor08;
         dropDownItemColorBlock.pressedColor = difficultyColor;
         dropDownItemColorBlock.selectedColor = difficultyColor08;
+    }
+
+    // Update dropdown colors for the dropdown passed (change other functions in this script to rely on this one)
+    public void UpdateDropdownColors(TMP_Dropdown _dropdown, Color _normalColor, Color _highlightedColor, Color _pressedColor, Color _selectedColor)
+    {
+        ColorBlock colorBlock = new ColorBlock();
+        colorBlock.colorMultiplier = 1;
+
+        colorBlock.normalColor = _normalColor;
+        colorBlock.highlightedColor = _highlightedColor;
+        colorBlock.pressedColor = _pressedColor;
+        colorBlock.selectedColor = _selectedColor;
+
+        _dropdown.colors = colorBlock;
+
+        // Update template
+        colorBlock.normalColor = blackColor08;
+        _dropdown.template.GetChild(0).GetChild(0).GetChild(0).GetComponent<Toggle>().colors = colorBlock;
     }
 }

@@ -86,7 +86,7 @@ public class DestroyTimelineObject : MonoBehaviour
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
 
-        color = scriptManager.colorManager.whiteColor;
+        color = scriptManager.uiColorManager.solidWhiteColor;
         colorBlock.colorMultiplier = 1f;
     }
 

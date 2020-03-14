@@ -372,10 +372,6 @@ public class PlayerProfile : MonoBehaviour
             else
             {
                 // Disable interaction for the leaderboard button that would load a profile that does not contain information
-                //
-                //
-                //
-
             }
         }
     }

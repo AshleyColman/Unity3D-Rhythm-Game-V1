@@ -46,6 +46,7 @@ public class Database : MonoBehaviour
     private string loadedBeatmapFolderDirectory; // Loaded beatmap directory location
     private string loadedBeatmapDifficultyLevel;
     private string loadedBeatmapCreatedDate; // Loaded date of beatmap creation
+    private string loadedBeatmapCreatorMessage; // Loaded beatmap creator message
     private int loadedKeyMode; // Key mode number
 
     // Properties
@@ -179,6 +180,11 @@ public class Database : MonoBehaviour
         get { return loadedBeatmapCreator; }
     }
 
+    public string LoadedBeatmapCreatorMessage
+    {
+        get { return loadedBeatmapCreatorMessage; }
+    }
+
     public string LeaderboardTableName
     {
         set { leaderboardTableName = value; }
@@ -250,7 +256,9 @@ public class Database : MonoBehaviour
         beatmap.BeatmapDifficulty = scriptManager.setupBeatmap.BeatmapDifficulty;
         beatmap.SongPreviewStartTime = scriptManager.setupBeatmap.SongPreviewStartTime;
         beatmap.BeatmapCreatedDate = scriptManager.setupBeatmap.BeatmapCreatedDate;
-
+        beatmap.BeatmapCreatorMessage = scriptManager.setupBeatmap.CreatorMessage;
+        beatmap.BeatmapDifficultyLevel = scriptManager.setupBeatmap.DifficultyLevel;
+       
         // Timing information for the beatmap from the metronome
         beatmap.Bpm = scriptManager.metronomePro.Bpm;
         beatmap.OffsetMS = scriptManager.metronomePro.OffsetMS;
@@ -311,6 +319,7 @@ public class Database : MonoBehaviour
         loadedBeatmapDifficultyLevel = beatmap.BeatmapDifficultyLevel;
         loadedSongPreviewStartTime = beatmap.SongPreviewStartTime;
         loadedBeatmapCreatedDate = beatmap.BeatmapCreatedDate;
+        loadedBeatmapCreatorMessage = beatmap.BeatmapCreatorMessage;
 
         // Timing information for the beatmap from the metronome
         loadedBPM = beatmap.Bpm;
@@ -339,6 +348,7 @@ public class Database : MonoBehaviour
         loadedBeatmapCreator = "";
         loadedBeatmapDifficultyLevel = "";
         loadedBeatmapCreatedDate = "";
+        loadedBeatmapCreatorMessage = "";
         loadedSongPreviewStartTime = 0;
         loadedBPM = 0;
         loadedOffsetMS = 0;

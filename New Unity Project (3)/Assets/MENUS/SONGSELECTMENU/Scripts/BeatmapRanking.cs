@@ -6,74 +6,58 @@ using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using TMPro;
 
-
 public class BeatmapRanking : MonoBehaviour
 {
+    #region Variables
     // UI
     public CanvasGroup leaderboardScrollbarCanvasGroup;
-
-    public TMP_ColorGradient xColorGradient, pColorGradient, sColorGradient, aColorGradient, bColorGradient, cColorGradient, dColorGradient, eColorGradient;
-
     public TMP_Dropdown leaderboardSortViewDropdown, leaderboardSortTypeDropdown;
-
     public Scrollbar leaderboardScrollbar;
 
+    // Button
     public Button personalBestButton;
-    public GameObject[] leaderboardButtonContainer; // All leaderboard buttons empty gameobjects
     public Button[] leaderboardProfileButton;
-    public TextMeshProUGUI personalBestButtonUsernameText, personalBestButtonScoreText, personalBestButtonStatText,
-        personalBestButtonGradeText, personalBestNoRankingSetText;
-    public GameObject personalBestButtonContainer;
-    public Image[] rankedButtonRankImage;
-    public Image personalBestImage;
-    public GameObject personalBestRank;
 
+    // Gameobject
     public GameObject loadingIcon;
 
     // Bools
-    public bool notChecked;
-    public bool hasPersonalBest;
-    public bool hasCheckedPersonalBest;
-    public bool hasLoadedLeaderboard;
-    public bool hasLoadedImages;
-    public bool hasCheckedPlayerProfiles;
+    private bool notChecked, hasPersonalBest, hasCheckedPersonalBest, hasLoadedLeaderboard, completeLeaderboardReady;
     public bool[] placeExists;
     public bool[] placeChecked;
-    public bool completeLeaderboardReady;
-    public bool playLeaderboardFlashAnimation;
-    public bool playFullLeaderboardFlashAnimation;
-    public bool fullLeaderboardFlashAnimationFinished;
 
-    public LeaderboardButton[] leaderboardButtonArray;
+    // Transform
     public Transform leaderboardButtonContentTransform;
 
     // Strings
     private string username;
-    public string leaderboardTableName;
+    private string leaderboardTableName;
     private string player_id;
-    private string personalBestScore, personalBestCombo, personalBestPercentage,
-        personalBestGrade, personalBestUsername, personalBestMod;
+    private string personalBestScore, personalBestCombo, personalBestPercentage, personalBestUsername, personalBestMod, personalBestFeverScore,
+        personalBestPerfect, personalBestGood, personalBestEarly, personalBestMiss, personalBestMessage, personalBestDate;
     private const string perfectPrefix = "P: ", goodPrefix = "G: ", earlyPrefix = "E: ", missPrefix = "M: ";
     public List<string>[] placeLeaderboardData;
     public List<string> personalBestLeaderboardData;
     private string[] rankedButtonUsername, rankedButtonFeverScore, rankedButtonPerfect, rankedButtonGood, rankedButtonEarly, rankedButtonMiss,
-        rankedButtonMessage, rankedButtonCombo, rankedButtonPercentage, rankedButtonScore, rankedButtonMod, rankedButtonDate;
+        rankedButtonMessage, rankedButtonCombo, rankedButtonPercentage, rankedButtonScore, rankedButtonMod, rankedButtonDate, rankedButtonImageURL;
 
     // Integers
     public sbyte leaderboardPlaceToGet;
     public sbyte totalRankingPlacements;
-    public int totalPlacesChecked, totalLeaderboardPlacementsUpdated, totalImagesUpdated, totalURLImagesUpdated;
-
-    // Colors
-    public Color ssColor, sColor, aColor, bColor, cColor, dColor, eColor, fColor, defaultColor;
+    public int totalPlacesChecked, totalImagesUpdated, totalURLImagesUpdated, totalExistingPlaces, totalURLImagesToLoad,
+        timeToNextLeaderboardFlash, totalOnlineRecordsUploaded, personalBestPlacement;
+    private float leaderboardFlashTimer;
 
     // Material
     public Material defaultMaterial;
 
     // Scripts
+    public LeaderboardButton[] leaderboardButtonArray;
+    public LeaderboardButton personalBestButtonScript;
     private ScriptManager scriptManager;
+    #endregion
 
-    // Properties
+    #region Properties
     public string[] RankedButtonUsername
     {
         get { return rankedButtonUsername; }
@@ -88,7 +72,9 @@ public class BeatmapRanking : MonoBehaviour
     {
         get { return completeLeaderboardReady; }
     }
+    #endregion
 
+    #region Functions
     void Start()
     {
         // Initialize
@@ -99,11 +85,6 @@ public class BeatmapRanking : MonoBehaviour
         hasCheckedPersonalBest = false;
         hasLoadedLeaderboard = false;
         notChecked = true;
-        hasCheckedPlayerProfiles = false;
-        playLeaderboardFlashAnimation = true;
-        playFullLeaderboardFlashAnimation = true;
-        fullLeaderboardFlashAnimationFinished = false;
-
         placeLeaderboardData = new List<string>[10];
         personalBestLeaderboardData = new List<string>();
         rankedButtonUsername = new string[10];
@@ -118,15 +99,19 @@ public class BeatmapRanking : MonoBehaviour
         rankedButtonMiss = new string[10];
         rankedButtonMessage = new string[10];
         rankedButtonDate = new string[10];
+        rankedButtonImageURL = new string[10];
 
         leaderboardButtonArray = new LeaderboardButton[10];
+        personalBestButtonScript = personalBestButton.GetComponent<LeaderboardButton>();
 
         totalImagesUpdated = 0;
-        totalLeaderboardPlacementsUpdated = 0;
         totalPlacesChecked = 0;
         totalRankingPlacements = 10;
         leaderboardPlaceToGet = 1;
         totalURLImagesUpdated = 0;
+        totalURLImagesToLoad = 0;
+        timeToNextLeaderboardFlash = 2;
+        leaderboardFlashTimer = 0f;
 
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
@@ -151,300 +136,240 @@ public class BeatmapRanking : MonoBehaviour
 
     void Update()
     {
-        // If the leaderboard placements and personal best has not been checked yet
-        if (notChecked == true && hasCheckedPersonalBest == false)
+        switch (completeLeaderboardReady)
         {
-            // Reset 
-            totalPlacesChecked = 0;
-
-            // Retrieve all placement information for the leaderboard
-            for (sbyte placementToCheck = 0; placementToCheck < totalRankingPlacements; placementToCheck++)
-            {
-                // Retrieve top players
-                StartCoroutine(RetrieveBeatmapLeaderboard(leaderboardPlaceToGet));
-                // Increment the placement to get
-                leaderboardPlaceToGet++;
-            }
-
-            // Retrieve personal best information
-            StartCoroutine(RetrievePersonalBest());
-
-            // Set to false as the leaderbaord placements have now been checked
-            notChecked = false;
-        }
-
-        // If the leaderboard placements and personal best have been checked and retrieved, and the leaderboard has not updated yet
-        if (notChecked == false && hasCheckedPersonalBest == true && hasLoadedLeaderboard == false && totalPlacesChecked == totalRankingPlacements)
-        {
-            // Loop through all the placements
-            for (sbyte placementToCheck = 0; placementToCheck < totalRankingPlacements; placementToCheck++)
-            {
-                // If placement information was found for the position on the leaderboard
-                if (placeExists[placementToCheck] == true)
+            case false:
+                // If the leaderboard placements and personal best has not been checked yet
+                if (notChecked == true && hasCheckedPersonalBest == false)
                 {
-                    // Assign variables for easier reading
-                    rankedButtonUsername[placementToCheck] = placeLeaderboardData[placementToCheck][0];
-                    rankedButtonScore[placementToCheck] = placeLeaderboardData[placementToCheck][1];
-                    rankedButtonFeverScore[placementToCheck] = placeLeaderboardData[placementToCheck][2];
-                    rankedButtonCombo[placementToCheck] = placeLeaderboardData[placementToCheck][3];
-                    rankedButtonPercentage[placementToCheck] = placeLeaderboardData[placementToCheck][4];
-                    rankedButtonPerfect[placementToCheck] = placeLeaderboardData[placementToCheck][5];
-                    rankedButtonGood[placementToCheck] = placeLeaderboardData[placementToCheck][6];
-                    rankedButtonEarly[placementToCheck] = placeLeaderboardData[placementToCheck][7];
-                    rankedButtonMiss[placementToCheck] = placeLeaderboardData[placementToCheck][8];
-                    rankedButtonDate[placementToCheck] = placeLeaderboardData[placementToCheck][9];
-                    rankedButtonMessage[placementToCheck] = placeLeaderboardData[placementToCheck][10];
+                    // Reset 
+                    totalPlacesChecked = 0;
 
-                    // Assign variables to text on leaderboard buttons
-                    leaderboardButtonArray[placementToCheck].playernameText.text = rankedButtonUsername[placementToCheck];
-                    leaderboardButtonArray[placementToCheck].scoreText.text = rankedButtonScore[placementToCheck];
-                    //leaderboardButtonArray[placementToCheck].feverScore.text = rankedButtonFeverScore[placementToCheck];
-                    leaderboardButtonArray[placementToCheck].perfectJudgementText.text = perfectPrefix + rankedButtonPerfect[placementToCheck];
-                    leaderboardButtonArray[placementToCheck].goodJudgementText.text = goodPrefix + rankedButtonGood[placementToCheck];
-                    leaderboardButtonArray[placementToCheck].earlyJudgementText.text = earlyPrefix + rankedButtonEarly[placementToCheck];
-                    leaderboardButtonArray[placementToCheck].missJudgementText.text = missPrefix + rankedButtonMiss[placementToCheck];
-                    //leaderboardButtonArray[placementToCheck].dateText.text = rankedButtonDate[placementToCheck];
-                    //leaderboardButtonArray[placementToCheck].messageText.text = rankedButtonMessage[placementToCheck];
-                    leaderboardButtonArray[placementToCheck].statText.text = "[ " + rankedButtonPercentage[placementToCheck] + "% ] [ " +
+                    // Retrieve all placement information for the leaderboard
+                    for (sbyte placementToCheck = 0; placementToCheck < totalRankingPlacements; placementToCheck++)
+                    {
+                        // Retrieve top players
+                        StartCoroutine(RetrieveBeatmapLeaderboard(leaderboardPlaceToGet));
+                        // Increment the placement to get
+                        leaderboardPlaceToGet++;
+                    }
+
+                    // Retrieve personal best information
+                    StartCoroutine(RetrievePersonalBest());
+
+                    // Set to false as the leaderbaord placements have now been checked
+                    notChecked = false;
+                }
+
+                // If the leaderboard placements and personal best have been checked and retrieved, and the leaderboard has not updated yet
+                if (notChecked == false && hasCheckedPersonalBest == true && hasLoadedLeaderboard == false && totalPlacesChecked == totalRankingPlacements)
+                {
+                    // Calculate total existing places
+                    CalculateTotalExistingPlaces();
+
+                    // Loop through all the placements
+                    for (sbyte placementToCheck = 0; placementToCheck < totalExistingPlaces; placementToCheck++)
+                    {
+                        // Assign variables for easier reading
+                        rankedButtonUsername[placementToCheck] = placeLeaderboardData[placementToCheck][0];
+                        rankedButtonScore[placementToCheck] = placeLeaderboardData[placementToCheck][1];
+                        rankedButtonFeverScore[placementToCheck] = placeLeaderboardData[placementToCheck][2];
+                        rankedButtonCombo[placementToCheck] = placeLeaderboardData[placementToCheck][3];
+                        rankedButtonPercentage[placementToCheck] = placeLeaderboardData[placementToCheck][4];
+                        rankedButtonPerfect[placementToCheck] = placeLeaderboardData[placementToCheck][5];
+                        rankedButtonGood[placementToCheck] = placeLeaderboardData[placementToCheck][6];
+                        rankedButtonEarly[placementToCheck] = placeLeaderboardData[placementToCheck][7];
+                        rankedButtonMiss[placementToCheck] = placeLeaderboardData[placementToCheck][8];
+                        rankedButtonDate[placementToCheck] = placeLeaderboardData[placementToCheck][9];
+                        rankedButtonMessage[placementToCheck] = placeLeaderboardData[placementToCheck][10];
+                        rankedButtonImageURL[placementToCheck] = placeLeaderboardData[placementToCheck][11];
+
+                        // Assign variables to text on leaderboard buttons
+                        leaderboardButtonArray[placementToCheck].playernameText.text = rankedButtonUsername[placementToCheck];
+                        leaderboardButtonArray[placementToCheck].scoreText.text = rankedButtonScore[placementToCheck];
+                        //leaderboardButtonArray[placementToCheck].feverScore.text = rankedButtonFeverScore[placementToCheck];
+                        leaderboardButtonArray[placementToCheck].perfectJudgementText.text = perfectPrefix + rankedButtonPerfect[placementToCheck];
+                        leaderboardButtonArray[placementToCheck].goodJudgementText.text = goodPrefix + rankedButtonGood[placementToCheck];
+                        leaderboardButtonArray[placementToCheck].earlyJudgementText.text = earlyPrefix + rankedButtonEarly[placementToCheck];
+                        leaderboardButtonArray[placementToCheck].missJudgementText.text = missPrefix + rankedButtonMiss[placementToCheck];
+                        //leaderboardButtonArray[placementToCheck].dateText.text = rankedButtonDate[placementToCheck];
+                        //leaderboardButtonArray[placementToCheck].messageText.text = rankedButtonMessage[placementToCheck];
+                        leaderboardButtonArray[placementToCheck].statText.text = "[ " + rankedButtonPercentage[placementToCheck] + "% ] [ " +
                         rankedButtonCombo[placementToCheck] + "x ] [ " + rankedButtonDate[placementToCheck] + " ]";
 
-                    /*
-                    // Check if a mod was used, update the text with mod or without mod text
-                    if (string.IsNullOrEmpty(rankedButtonMod[placementToCheck]) == false)
-                    {
-                        leaderboardButtonArray[placementToCheck].statText.text = "[ " + rankedButtonPercentage[placementToCheck] + "% ] [ " +
-                        rankedButtonCombo[placementToCheck] + "x ]";
+                        /*
+                        // Check if a mod was used, update the text with mod or without mod text
+                        if (string.IsNullOrEmpty(rankedButtonMod[placementToCheck]) == false)
+                        {
+                            leaderboardButtonArray[placementToCheck].statText.text = "[ " + rankedButtonPercentage[placementToCheck] + "% ] [ " +
+                            rankedButtonCombo[placementToCheck] + "x ]";
+                        }
+                        else
+                        {
+                            leaderboardButtonArray[placementToCheck].statText.text = "[ " + rankedButtonPercentage[placementToCheck] + " ] [ " +
+                            rankedButtonCombo[placementToCheck] + "x ] [ " + rankedButtonMod[placementToCheck] + " ]";
+                        }
+                        */
+
+                        // Send parsed percentage to calculate grade
+                        string grade = CalculateGrade(float.Parse(rankedButtonPercentage[placementToCheck]));
+
+                        // Update text
+                        leaderboardButtonArray[placementToCheck].rankText.text = grade;
+
+                        // Update color gradient
+                        leaderboardButtonArray[placementToCheck].rankText.colorGradientPreset = scriptManager.uiColorManager.SetGradeColorGradient(grade);
+
+                        // Update leaderboard profile border image color to grade color
+                        leaderboardButtonArray[placementToCheck].profileBorderImage.color = scriptManager.uiColorManager.SetGradeColor(grade);
+
+                        // Load player image
+                        StartCoroutine(LoadPlayerImg(rankedButtonImageURL[placementToCheck], placementToCheck));
+
+                        // Activate leaderboard profile button
+                        leaderboardButtonArray[placementToCheck].profileImage.gameObject.SetActive(true);
                     }
-                    else
+
+                    // If logged in
+                    if (MySQLDBManager.loggedIn == true)
                     {
-                        leaderboardButtonArray[placementToCheck].statText.text = "[ " + rankedButtonPercentage[placementToCheck] + " ] [ " +
-                        rankedButtonCombo[placementToCheck] + "x ] [ " + rankedButtonMod[placementToCheck] + " ]";
+                        // If personal best has been found
+                        if (hasPersonalBest == true)
+                        {
+                            // Assign variables
+                            personalBestUsername = MySQLDBManager.username;
+                            personalBestScore = personalBestLeaderboardData[1];
+                            personalBestFeverScore = personalBestLeaderboardData[2];
+                            personalBestCombo = personalBestLeaderboardData[3];
+                            personalBestPercentage = personalBestLeaderboardData[4];
+                            personalBestPerfect = personalBestLeaderboardData[5];
+                            personalBestGood = personalBestLeaderboardData[6];
+                            personalBestEarly = personalBestLeaderboardData[7];
+                            personalBestMiss = personalBestLeaderboardData[8];
+                            personalBestDate = personalBestLeaderboardData[9];
+                            personalBestMessage = personalBestLeaderboardData[10];
+
+                            string personalBestPlacement = " / " + personalBestLeaderboardData[11]; 
+
+                            // Assign text
+                            personalBestButtonScript.playernameText.text = personalBestUsername;
+                            personalBestButtonScript.scoreText.text = personalBestScore;
+                            personalBestButtonScript.statText.text = "[ " + personalBestPercentage + "% ] [ " + personalBestCombo + "x ] [ " + personalBestDate + " ]";
+                            personalBestButtonScript.perfectJudgementText.text = perfectPrefix + personalBestPerfect;
+                            personalBestButtonScript.goodJudgementText.text = goodPrefix + personalBestGood;
+                            personalBestButtonScript.earlyJudgementText.text = earlyPrefix + personalBestEarly;
+                            personalBestButtonScript.missJudgementText.text = missPrefix + personalBestMiss;
+
+                            // Send parsed percentage to calculate grade
+                            string grade = CalculateGrade(float.Parse(personalBestPercentage));
+
+                            // Update text
+                            personalBestButtonScript.rankText.text = grade;
+
+                            // Update color gradient
+                            personalBestButtonScript.rankText.colorGradientPreset = scriptManager.uiColorManager.SetGradeColorGradient(grade);
+
+                            /*
+                            // If a personal best record exists
+                            if (hasPersonalBest == true)
+                            {
+                                // Retrieve the players image for personal best placement
+                                personalBestImage.material = scriptManager.uploadPlayerImage.PlayerImage.material;
+                                personalBestImage.gameObject.SetActive(false);
+                                personalBestImage.gameObject.SetActive(true);
+                            }
+                            */
+                        }
                     }
-                    */
 
-                    // Send parsed percentage to calculate grade
-                    string grade = CalculateGrade(float.Parse(rankedButtonPercentage[placementToCheck]));
-
-                    // Update tetx
-                    leaderboardButtonArray[placementToCheck].rankText.text = grade;
-
-                    // Update color gradient
-                    leaderboardButtonArray[placementToCheck].rankText.colorGradientPreset = SetGradeColor(grade);
+                    // Set has loaded leaderboard to true to prevent the leaderbaord from continuing to upload every frame
+                    hasLoadedLeaderboard = true;
                 }
 
-                totalLeaderboardPlacementsUpdated++;
-
-                // Set has loaded leaderboard to true to prevent the leaderbaord from continuing to upload every frame
-                hasLoadedLeaderboard = true;
-            }
-
-            if (MySQLDBManager.loggedIn == true)
-            {
-                if (hasPersonalBest == true)
+                // If leaderboard imformation has loaded
+                if (hasLoadedLeaderboard == true)
                 {
-                    /*
-                    personalBestScore = personalBestLeaderboardData[0];
-                    personalBestCombo = personalBestLeaderboardData[1];
-                    personalBestUsername = personalBestLeaderboardData[2];
-                    personalBestGrade = personalBestLeaderboardData[3];
-                    personalBestPercentage = personalBestLeaderboardData[4];
-                    personalBestMod = personalBestLeaderboardData[5];
-
-                    personalBestButtonUsernameText.text = MySQLDBManager.username;
-                    personalBestButtonScoreText.text = personalBestScore;
-                    personalBestButtonStatText.text = personalBestCombo + "x | " + personalBestPercentage;
-
-                    if (string.IsNullOrEmpty(personalBestMod) == false)
+                    // If all images have been uploaded
+                    if (totalImagesUpdated >= totalExistingPlaces && totalURLImagesUpdated >= totalURLImagesToLoad)
                     {
-                        personalBestButtonStatText.text = "[ " + personalBestPercentage + "% ] " +
-                            "[ X" + personalBestCombo + " ] " + personalBestMod + " ]";
+                        completeLeaderboardReady = true;
                     }
-                    else
+                }
+
+                // Enable all leaderboard button containers if all information has been uploaded and all profile images have been uploaded
+                if (completeLeaderboardReady == true)
+                {
+                    // If the first button is not active
+                    if (leaderboardButtonArray[0].gameObject.activeSelf == false)
                     {
-                        personalBestButtonStatText.text = "[ " + personalBestPercentage + "% ] " +
-                            "[ X" + personalBestCombo + " ] ";
+                        // Turn off loading icon
+                        loadingIcon.gameObject.SetActive(false);
+
+                        // Activate all leaderboard button containers
+                        ActivateAllLeaderboardButtons();
+
+                        // Play flash animation
+                        PlayFullLeaderboardFlashAnimation();
                     }
-
-                    // Set grade
-                    personalBestButtonGradeText.text = personalBestGrade;
-
-                    // Set grade text color
-                    personalBestButtonGradeText.colorGradientPreset = SetGradeColor(personalBestGrade);
-                    */
                 }
-            }
-        }
+                break;
+            case true:
+                // Increment timer
+                leaderboardFlashTimer += Time.deltaTime;
 
-        // if all information has been loaded for the leaderboard
-        if (notChecked == false && hasCheckedPersonalBest == true && totalLeaderboardPlacementsUpdated == totalRankingPlacements)
-        {
-            // If profiles have not been loaded yet
-            if (hasCheckedPlayerProfiles == false)
-            {
-                /*
-                // Reset all profiles information
-                scriptManager.playerProfile.ResetPlayerProfileVariables();
-
-                // Load player profile information
-                scriptManager.playerProfile.GetPlayerProfiles();
-                */
-
-                // Set to true to prevent reloading each frame
-                hasCheckedPlayerProfiles = true;
-            }
-
-
-
-            // DELETE
-            // If the first button is not active
-            if (leaderboardButtonArray[0].gameObject.activeSelf == false)
-            {
-                // Turn off loading icon
-                loadingIcon.gameObject.SetActive(false);
-
-                // Activate all leaderboard button containers
-                ActivateAllLeaderboardButtons();
-            }
-
-            // Play full leaderboard flash animation
-            if (playFullLeaderboardFlashAnimation == true)
-            {
-                playFullLeaderboardFlashAnimation = false;
-                StartCoroutine(PlayFullLeaderboardFlashAnimation());
-            }
-    }
-
-        /*
-        // If all player profile information has been collected and assigned to the arrays
-        if (scriptManager.playerProfile.informationAssigned == true && totalImagesUpdated < scriptManager.playerProfile.TotalExistingProfiles)
-        {
-            LoadLeaderboardPlayerImages();
-        }
-        */
-
-        /*
-        // If all images have been loaded
-        if (hasLoadedImages == true)
-        {
-            // If all images have been uploaded
-            if (totalImagesUpdated >= scriptManager.playerProfile.TotalExistingProfiles && totalURLImagesUpdated >=
-                scriptManager.playerProfile.TotalURLImagesToUpload)
-            {
-                completeLeaderboardReady = true;
-            }
-
-            // Enable all leaderboard button containers if all information has been uploaded and all profile images have been uploaded
-            if (completeLeaderboardReady == true)
-            {
-                // If the first button is not active
-                if (leaderboardButtonArray[0].gameObject.activeSelf == false)
+                // If time is to play animation
+                if (leaderboardFlashTimer >= timeToNextLeaderboardFlash)
                 {
-                    // Turn off loading icon
-                    loadingIcon.gameObject.SetActive(false);
-
-                    // Activate all leaderboard button containers
-                    ActivateAllLeaderboardButtons();
+                    // Play animation
+                    StartCoroutine(PlayLinearLeaderboardFlashAnimation());
                 }
-
-                // Play full leaderboard flash animation
-                if (playFullLeaderboardFlashAnimation == true)
-                {
-                    playFullLeaderboardFlashAnimation = false;
-                    StartCoroutine(PlayFullLeaderboardFlashAnimation());
-                }
-            }
-        }
-        */
-
-        // Leaderboard animation
-        if (completeLeaderboardReady == true && playLeaderboardFlashAnimation == true && fullLeaderboardFlashAnimationFinished == true)
-        {
-            playLeaderboardFlashAnimation = false;
-            StartCoroutine(PlayLeaderboardFlashAnimation());
+                break;
         }
     }
 
-    // Play the full leaderboard flash animation
-    private IEnumerator PlayFullLeaderboardFlashAnimation()
+    // Calculate total number of existing places on the leaderboard
+    private void CalculateTotalExistingPlaces()
     {
-        for (int i = 0; i < totalRankingPlacements; i++)
+        for (int i = 0; i < placeExists.Length; i++)
         {
-            leaderboardButtonArray[i].flashAnimationImage.gameObject.SetActive(false);
-            leaderboardButtonArray[i].flashAnimationImage.gameObject.SetActive(true);
+            if (placeExists[i] == true)
+            {
+                totalExistingPlaces++;
+            }
         }
-
-        yield return new WaitForSeconds(1f);
-
-        playFullLeaderboardFlashAnimation = false;
-        fullLeaderboardFlashAnimationFinished = true;
     }
 
-    private IEnumerator PlayLeaderboardFlashAnimation()
+    // Play the linear flash animation
+    private IEnumerator PlayLinearLeaderboardFlashAnimation()
     {
+        leaderboardFlashTimer = 0f;
+
         for (int i = 0; i < totalRankingPlacements; i++)
         {
             leaderboardButtonArray[i].flashAnimationImage.gameObject.SetActive(false);
             leaderboardButtonArray[i].flashAnimationImage.gameObject.SetActive(true);
             yield return new WaitForSeconds(0.1f);
         }
-
-        yield return new WaitForSeconds(2f);
-
-        playLeaderboardFlashAnimation = true;
     }
 
-    // Load all leaderboard player images
-    private void LoadLeaderboardPlayerImages()
+    // Play full animation
+    private void PlayFullLeaderboardFlashAnimation()
     {
-        // Load leaderboard images
-        if (notChecked == false && hasCheckedPersonalBest == true && totalLeaderboardPlacementsUpdated == totalRankingPlacements)
+        for (int i = 0; i < totalRankingPlacements; i++)
         {
-            // If all images have not been loaded yet
-            if (hasLoadedImages == false)
-            {
-                // Loop through all existing profiles on the leaderboard
-                for (int i = 0; i < scriptManager.playerProfile.TotalExistingProfiles; i++)
-                {
-                    // If a url exists for the leaderboard spot
-                    if (scriptManager.playerProfile.playerImageUrlArray[i] != "")
-                    {
-                        // Load the player image (passing the URL and index)
-                        StartCoroutine(LoadPlayerImg(scriptManager.playerProfile.playerImageUrlArray[i], i));
-                    }
-                    else
-                    {
-                        // Load the default image
-                        LoadDefaultMaterial(i);
-                    }
-
-                    // Activate leaderboard profile button
-                    leaderboardButtonArray[i].profileImage.gameObject.SetActive(true);
-                }
-
-                // If a personal best record exists
-                if (hasPersonalBest == true)
-                {
-                    // Retrieve the players image for personal best placement
-                    personalBestImage.material = scriptManager.uploadPlayerImage.PlayerImage.material;
-                    personalBestImage.gameObject.SetActive(false);
-                    personalBestImage.gameObject.SetActive(true);
-                }
-
-                // Set to true as all images have been loaded
-                hasLoadedImages = true;
-            }
+            leaderboardButtonArray[i].flashAnimationImage.gameObject.SetActive(false);
+            leaderboardButtonArray[i].flashAnimationImage.gameObject.SetActive(true);
         }
+
+        personalBestButtonScript.flashAnimationImage.gameObject.SetActive(false);
+        personalBestButtonScript.flashAnimationImage.gameObject.SetActive(true);
     }
 
     // Load the default image
     private void LoadDefaultMaterial(int _placement)
     {
         // Set the material to default
-        rankedButtonRankImage[_placement].material = defaultMaterial;
-
-        // Set image to false then to true to activate new material
-        rankedButtonRankImage[_placement].gameObject.SetActive(false);
-        rankedButtonRankImage[_placement].gameObject.SetActive(true);
+        leaderboardButtonArray[_placement].profileImage.material = defaultMaterial;
 
         // Increment
         totalImagesUpdated++;
@@ -457,15 +382,20 @@ public class BeatmapRanking : MonoBehaviour
         {
             if (_url != null)
             {
+                // Increment total URL images to load
+                totalURLImagesToLoad++;
+
                 using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
                 {
                     yield return uwr.SendWebRequest();
 
                     if (uwr.isNetworkError || uwr.isHttpError)
                     {
-                        Debug.Log(uwr.error);
+                        // Load the default image
+                        LoadDefaultMaterial(_placement);
 
-                        totalImagesUpdated++;
+                        // Increment total url images updated
+                        totalURLImagesUpdated++;
                     }
                     else
                     {
@@ -475,10 +405,9 @@ public class BeatmapRanking : MonoBehaviour
                         // Update the image for the placement
                         leaderboardButtonArray[_placement].profileImage.material.mainTexture = texture;
 
-                        // Set image to false then to true to activate new image
-                        leaderboardButtonArray[_placement].profileImage.gameObject.SetActive(true);
-
+                        // Increment images updated
                         totalImagesUpdated++;
+
                         // Increment total url images updated
                         totalURLImagesUpdated++;
                     }
@@ -490,14 +419,43 @@ public class BeatmapRanking : MonoBehaviour
                 LoadDefaultMaterial(_placement);
             }
         }
+        else
+        {
+            // Load the default image
+            LoadDefaultMaterial(_placement);
+        }
+    }
+
+    // Change beatmap ranking type sorting for leaderboard
+    public void ChangeBeatmapRankingTypeSorting()
+    {
+        switch (leaderboardSortTypeDropdown.value)
+        {
+            case 0:
+                scriptManager.messagePanel.DisplayMessage("BEATMAP RANKING [ SCORE ]", scriptManager.uiColorManager.purpleColor);
+                break;
+            case 1:
+                scriptManager.messagePanel.DisplayMessage("BEATMAP RANKING [ FEVER SCORE ]", scriptManager.uiColorManager.purpleColor);
+                break;
+            case 2:
+                scriptManager.messagePanel.DisplayMessage("BEATMAP RANKING [ ACCURACY ]", scriptManager.uiColorManager.purpleColor);
+                break;
+            case 3:
+                scriptManager.messagePanel.DisplayMessage("BEATMAP RANKING [ COMBO ]", scriptManager.uiColorManager.purpleColor);
+                break;
+        }
+
+        ResetLeaderboard();
+        ResetNotChecked();
     }
 
     // Retrieve beatmap leaderboard placement information for the position passed
-    public IEnumerator RetrieveBeatmapLeaderboard(int leaderboardPlaceToGetPass)
+    public IEnumerator RetrieveBeatmapLeaderboard(int _leaderboardPlaceToGet)
     {
         WWWForm form = new WWWForm();
         form.AddField("leaderboardTableName", leaderboardTableName);
-        form.AddField("leaderboardPlaceToGet", leaderboardPlaceToGetPass);
+        form.AddField("leaderboardPlaceToGet", _leaderboardPlaceToGet);
+        form.AddField("sorting", leaderboardSortTypeDropdown.value);
 
         UnityWebRequest www = UnityWebRequest.Post("http://localhost/rhythmgamex/retrieve_player_beatmap_ranking.php", form);
         www.chunkedTransfer = false;
@@ -510,7 +468,7 @@ public class BeatmapRanking : MonoBehaviour
         placeList.AddRange(Regex.Split(www.downloadHandler.text, "->"));
 
         // Loop through all the leaderboard data and assign
-        for (sbyte dataType = 0; dataType < 11; dataType++)
+        for (sbyte dataType = 0; dataType < 12; dataType++)
         {
             /*
               DataType:
@@ -525,24 +483,25 @@ public class BeatmapRanking : MonoBehaviour
               $returnarray[8] = $infoarray["miss"];
               $returnarray[9] = $infoarray["date"];
               $returnarray[10] = $infoarray["message"];
+              $returnarray[11] = $infoarray["image_url"];
             */
 
             switch (www.downloadHandler.text)
             {
                 case "ERROR":
                     // ERROR - NO LEADERBOARD DATA FOR THIS PLACEMENT
-                    placeExists[leaderboardPlaceToGetPass - 1] = false;
+                    placeExists[_leaderboardPlaceToGet - 1] = false;
                     break;
                 default:
                     // SUCCESS - LEADERBOARD DATA FOUND FOR THIS PLACEMENT
-                    placeLeaderboardData[leaderboardPlaceToGetPass - 1].Add(placeList[dataType].ToString());
-                    placeExists[leaderboardPlaceToGetPass - 1] = true;
+                    placeLeaderboardData[_leaderboardPlaceToGet - 1].Add(placeList[dataType].ToString());
+                    placeExists[_leaderboardPlaceToGet - 1] = true;
                     break;
             }
         }
 
         totalPlacesChecked++;
-        placeChecked[leaderboardPlaceToGetPass - 1] = true;
+        placeChecked[_leaderboardPlaceToGet - 1] = true;
     }
 
     // Get the leaderboard table name to load the beatmap leaderboard from
@@ -550,8 +509,6 @@ public class BeatmapRanking : MonoBehaviour
     {
         // Get it from the database gameobject
         leaderboardTableName = Database.database.LoadedLeaderboardTableName;
-
-        // Make sure to do a check on whether the leaderboard is ranked, if it is then get the leaderboard name and enable all the leaderbaord checks, if not disable
     }
 
     // Retrieve the users personal best score
@@ -562,10 +519,9 @@ public class BeatmapRanking : MonoBehaviour
         {
             WWWForm form = new WWWForm();
             form.AddField("leaderboardTableName", leaderboardTableName);
-            form.AddField("player_id", MySQLDBManager.username);
+            form.AddField("username", MySQLDBManager.username);
 
-
-            UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/retrieveuserpersonalbest.php", form);
+            UnityWebRequest www = UnityWebRequest.Post("http://localhost/rhythmgamex/retrieve_personalbest_beatmap_ranking.php", form);
             www.chunkedTransfer = false;
             yield return www.SendWebRequest();
 
@@ -576,18 +532,19 @@ public class BeatmapRanking : MonoBehaviour
             placeList.AddRange(Regex.Split(www.downloadHandler.text, "->"));
 
             // Loop through all the data retrieved and assign to the personal best leaderboard data list
-            for (int dataType = 0; dataType < 1; dataType++)
+            for (int dataType = 0; dataType < 12; dataType++)
             {
-                // If it succeeded
-                if (www.downloadHandler.text != "1")
+                switch (www.downloadHandler.text)
                 {
-                    personalBestLeaderboardData.Add(placeList[dataType].ToString());
-                    hasPersonalBest = true;
-                    hasCheckedPersonalBest = true;
-                }
-                else
-                {
-                    // FAILED - NO PERSONAL BEST DATA FOUND FOR THIS BEATMAP LEADERBOARD
+                    case "ERROR":
+                        // ERROR - NO PERSONAL DATA FOUND
+                        break;
+                    default:
+                        // SUCCESS - PERSONAL BEST DATA FOUND
+                        personalBestLeaderboardData.Add(placeList[dataType].ToString());
+                        hasPersonalBest = true;
+                        hasCheckedPersonalBest = true;
+                        break;
                 }
             }
 
@@ -623,6 +580,7 @@ public class BeatmapRanking : MonoBehaviour
             rankedButtonMiss[placementToCheck] = "";
             rankedButtonMessage[placementToCheck] = "";
             rankedButtonDate[placementToCheck] = "";
+            rankedButtonImageURL[placementToCheck] = "";
 
             // Clear the leaderboard data stattext
             placeLeaderboardData[placementToCheck].Clear();
@@ -631,20 +589,15 @@ public class BeatmapRanking : MonoBehaviour
             // Reset all places checked
             placeChecked[placementToCheck] = false;
 
-            // Reset all images
-            personalBestImage.gameObject.SetActive(false);
-            leaderboardButtonArray[placementToCheck].profileImage.gameObject.SetActive(false);
-
             // Null all text
             leaderboardButtonArray[placementToCheck].playernameText.text = "";
             leaderboardButtonArray[placementToCheck].scoreText.text = "";
             leaderboardButtonArray[placementToCheck].statText.text = "";
+            leaderboardButtonArray[placementToCheck].perfectJudgementText.text = "";
+            leaderboardButtonArray[placementToCheck].goodJudgementText.text = "";
+            leaderboardButtonArray[placementToCheck].earlyJudgementText.text = "";
+            leaderboardButtonArray[placementToCheck].missJudgementText.text = "";
             leaderboardButtonArray[placementToCheck].rankText.text = "";
-
-            personalBestButtonUsernameText.text = "-";
-            personalBestButtonScoreText.text = "-";
-            personalBestButtonStatText.text = "-";
-            personalBestButtonGradeText.text = "";
         }
 
         // Deactivate all leaderboard buttons
@@ -654,13 +607,24 @@ public class BeatmapRanking : MonoBehaviour
         personalBestScore = "";
         personalBestCombo = "";
         personalBestPercentage = "";
-        personalBestGrade = "";
         personalBestMod = "";
+        personalBestFeverScore = "";
+        personalBestDate = "";
+        personalBestPerfect = "";
+        personalBestGood = "";
+        personalBestEarly = "";
+        personalBestMiss = "";
+        personalBestMessage = "";
 
         // Reset personal best text
-        personalBestButtonUsernameText.text = "";
-        personalBestButtonScoreText.text = "";
-        personalBestButtonStatText.text = "";
+        personalBestButtonScript.playernameText.text = "";
+        personalBestButtonScript.scoreText.text = "";
+        personalBestButtonScript.statText.text = "";
+        personalBestButtonScript.perfectJudgementText.text = "";
+        personalBestButtonScript.goodJudgementText.text = "";
+        personalBestButtonScript.earlyJudgementText.text = "";
+        personalBestButtonScript.missJudgementText.text = "";
+        personalBestButtonScript.rankText.text = "";
 
         // Reset personal best leaderboard data
         personalBestLeaderboardData.Clear();
@@ -668,6 +632,7 @@ public class BeatmapRanking : MonoBehaviour
         // Reset the leaderboard loading animation
         hasLoadedLeaderboard = false;
 
+        // Reset total url images updated
         totalURLImagesUpdated = 0;
 
         // Reset scroll bar
@@ -675,6 +640,9 @@ public class BeatmapRanking : MonoBehaviour
 
         // Turn on loading icon
         loadingIcon.gameObject.SetActive(true);
+
+        // Reset timer
+        leaderboardFlashTimer = 0;
     }
 
     // Reset the leaderboard checking variables
@@ -684,42 +652,11 @@ public class BeatmapRanking : MonoBehaviour
         notChecked = true;
         hasPersonalBest = false;
         hasCheckedPersonalBest = false;
-        hasCheckedPlayerProfiles = false;
-        hasLoadedImages = false;
-        playLeaderboardFlashAnimation = true;
-        playFullLeaderboardFlashAnimation = true;
-        fullLeaderboardFlashAnimationFinished = false;
-
         leaderboardPlaceToGet = 1;
-        totalLeaderboardPlacementsUpdated = 0;
         totalPlacesChecked = 0;
         totalImagesUpdated = 0;
-    }
-
-    // Set the grade icon color based on the grade passed
-    public TMP_ColorGradient SetGradeColor(string _grade)
-    {
-        switch (_grade)
-        {
-            case "X":
-                return xColorGradient;
-            case "P":
-                return pColorGradient;
-            case "S":
-                return sColorGradient;
-            case "A":
-                return aColorGradient;
-            case "B":
-                return bColorGradient;
-            case "C":
-                return cColorGradient;
-            case "D":
-                return dColorGradient;
-            case "E":
-                return eColorGradient;
-            default:
-                return eColorGradient;
-        }
+        totalExistingPlaces = 0;
+        totalURLImagesToLoad = 0;
     }
 
     // Calculate and return grade
@@ -764,12 +701,8 @@ public class BeatmapRanking : MonoBehaviour
         }
 
         personalBestButton.gameObject.SetActive(false);
-
-        // Update scroll bar canvas group
         leaderboardScrollbarCanvasGroup.alpha = 0;
-        // Turn off scroll functionality
         leaderboardScrollbar.interactable = false;
-
         completeLeaderboardReady = false;
     }
 
@@ -788,32 +721,33 @@ public class BeatmapRanking : MonoBehaviour
     // Activate all leaderboard buttons
     private void ActivateAllLeaderboardButtons()
     {
-        // Control content panel and no record text
         for (int i = 0; i < totalRankingPlacements; i++)
         {
-            // Activate the content panel only if place exists
-            if (placeExists[i] == true)
+            switch (placeExists[i])
             {
-                leaderboardButtonArray[i].contentPanel.gameObject.SetActive(true);
-                leaderboardButtonArray[i].noRecordSetText.gameObject.SetActive(false);
-            }
-
-            if (placeExists[i] == false)
-            {
-                leaderboardButtonArray[i].contentPanel.gameObject.SetActive(false);
-                leaderboardButtonArray[i].noRecordSetText.gameObject.SetActive(true);
+                case true:
+                    leaderboardButtonArray[i].contentPanel.gameObject.SetActive(true);
+                    leaderboardButtonArray[i].noRecordSetText.gameObject.SetActive(false);
+                    leaderboardButtonArray[i].leaderboardButton.interactable = true;
+                    break;
+                case false:
+                    leaderboardButtonArray[i].contentPanel.gameObject.SetActive(false);
+                    leaderboardButtonArray[i].noRecordSetText.gameObject.SetActive(true);
+                    leaderboardButtonArray[i].leaderboardButton.interactable = false;
+                    break;
             }
         }
 
-        if (hasPersonalBest == true)
+        switch (hasPersonalBest)
         {
-            personalBestButtonContainer.gameObject.SetActive(true);
-            personalBestNoRankingSetText.gameObject.SetActive(false);
-        }
-        else
-        {
-            personalBestButtonContainer.gameObject.SetActive(false);
-            personalBestNoRankingSetText.gameObject.SetActive(true);
+            case true:
+                personalBestButtonScript.contentPanel.gameObject.SetActive(true);
+                personalBestButtonScript.noRecordSetText.gameObject.SetActive(false);
+                break;
+            case false:
+                personalBestButtonScript.contentPanel.gameObject.SetActive(false);
+                personalBestButtonScript.noRecordSetText.gameObject.SetActive(true);
+                break;
         }
 
         // Turn on scroll functionality
@@ -825,4 +759,5 @@ public class BeatmapRanking : MonoBehaviour
         // Play activation animation
         StartCoroutine(ActivateAllLeaderboardButtonsAnimation());
     }
+    #endregion
 }

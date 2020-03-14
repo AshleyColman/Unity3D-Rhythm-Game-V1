@@ -57,26 +57,8 @@ public class OverallRanking : MonoBehaviour
         totalCareerCRankRanking = "total_career_c_rank", totalXRankRanking = "total_x_rank", totalSRankRanking = "total_s_rank",
         totalARankRanking = "total_a_rank", totalBRankRanking = "total_b_rank", totalCRankRanking = "total_c_rank";
 
-
+    // Scripts
     private ScriptManager scriptManager;
-
-    private void OnEnable()
-    {
-        if (scriptManager = null)
-        {
-            scriptManager = FindObjectOfType<ScriptManager>();
-        }
-
-        if (scriptManager != null)
-        {
-            bottomColorPanel.color = scriptManager.songSelectManager.topColorPanelImage.color;
-        }
-        else
-        {
-            scriptManager = FindObjectOfType<ScriptManager>();
-            bottomColorPanel.color = scriptManager.songSelectManager.topColorPanelImage.color;
-        }
-    }
 
     private void Start()
     {
@@ -687,75 +669,75 @@ public class OverallRanking : MonoBehaviour
         {
             case 0:
                 overallRankingText.text = "TOTAL SCORE RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL SCORE RANKING (ALL PLAYS)", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL SCORE RANKING (ALL PLAYS)", scriptManager.uiColorManager.purpleColor);
                 break;
             case 1:
                 overallRankingText.text = "TOTAL CAREER SCORE RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER SCORE RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER SCORE RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             case 2:
                 overallRankingText.text = "LEVEL RANKING";
-                scriptManager.messagePanel.DisplayMessage("LEVEL RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("LEVEL RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             case 3:
                 overallRankingText.text = "CAREER ACCURACY RANKING";
-                scriptManager.messagePanel.DisplayMessage("CAREER ACCURACY RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("CAREER ACCURACY RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             case 4:
                 overallRankingText.text = "COMBO RANKING";
-                scriptManager.messagePanel.DisplayMessage("HIGHEST COMBO RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("HIGHEST COMBO RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             case 5:
                 overallRankingText.text = "TOTAL NOTES RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL NOTES HIT RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL NOTES HIT RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             case 6:
                 overallRankingText.text = "PLAY COUNT RANKING";
-                scriptManager.messagePanel.DisplayMessage("PLAY COUNT RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("PLAY COUNT RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             case 7:
                 overallRankingText.text = "TOTAL CAREER X RANK RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER X RANK RANKING (TOTAL PLAYS)", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER X RANK RANKING (TOTAL PLAYS)", scriptManager.uiColorManager.purpleColor);
                 break;
             case 8:
                 overallRankingText.text = "TOTAL CAREER S RANK RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER S RANK RANKING (TOTAL PLAYS)", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER S RANK RANKING (TOTAL PLAYS)", scriptManager.uiColorManager.purpleColor);
                 break;
             case 9:
                 overallRankingText.text = "TOTAL CAREER A RANK RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER A RANK RANKING (TOTAL PLAYS)", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER A RANK RANKING (TOTAL PLAYS)", scriptManager.uiColorManager.purpleColor);
                 break;
             case 10:
                 overallRankingText.text = "TOTAL CAREER B RANK RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER B RANK RANKING (TOTAL PLAYS)", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER B RANK RANKING (TOTAL PLAYS)", scriptManager.uiColorManager.purpleColor);
                 break;
             case 11:
                 overallRankingText.text = "TOTAL CAREER C RANK RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER C RANK RANKING (TOTAL PLAYS)", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL CAREER C RANK RANKING (TOTAL PLAYS)", scriptManager.uiColorManager.purpleColor);
                 break;
             case 12:
                 overallRankingText.text = "TOTAL X RANK RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL X RANK RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL X RANK RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             case 13:
                 overallRankingText.text = "TOTAL S RANK RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL S RANK RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL S RANK RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             case 14:
                 overallRankingText.text = "TOTAL A RANK RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL A RANK RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL A RANK RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             case 15:
                 overallRankingText.text = "TOTAL B RANK RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL B RANK RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL B RANK RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             case 16:
                 overallRankingText.text = "TOTAL C RANK RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL C RANK RANKING", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL C RANK RANKING", scriptManager.uiColorManager.purpleColor);
                 break;
             default:
                 overallRankingText.text = "TOTAL SCORE RANKING";
-                scriptManager.messagePanel.DisplayMessage("TOTAL SCORE RANKING (ALL PLAYS)", "PURPLE");
+                scriptManager.messagePanel.DisplayMessage("TOTAL SCORE RANKING (ALL PLAYS)", scriptManager.uiColorManager.purpleColor);
                 break;
         }
     }

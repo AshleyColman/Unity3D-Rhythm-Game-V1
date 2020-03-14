@@ -95,8 +95,6 @@ public class PlayerSkillsManager : MonoBehaviour
         // Select first button
         difficultyIncreaseFirstButton.Select();
         yield return new WaitForSeconds(0.9f);
-        // Display current sorting
-        scriptManager.messagePanel.DisplayCharacterDifficultyIncreaseListMessage();
     }
 
     // Activate coroutine to deactivate character panel on click
@@ -150,15 +148,12 @@ public class PlayerSkillsManager : MonoBehaviour
         {
             case 0:
                 difficultyIncreaseList.gameObject.SetActive(true);
-                scriptManager.messagePanel.DisplayCharacterDifficultyIncreaseListMessage();
                 break;
             case 1:
                 difficultyDecreaseList.gameObject.SetActive(true);
-                scriptManager.messagePanel.DisplayCharacterDifficultyDecreaseListMessage();
                 break;
             case 2:
                 rankList.gameObject.SetActive(true);
-                scriptManager.messagePanel.DisplayCharacterRankListMessage();
                 break;
         }
 
@@ -179,7 +174,7 @@ public class PlayerSkillsManager : MonoBehaviour
                 }
                 else
                 {
-                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", "RED");
+                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", scriptManager.uiColorManager.offlineColorSolid);
                 }
                 break;
             case speed175Skill:
@@ -190,7 +185,7 @@ public class PlayerSkillsManager : MonoBehaviour
                 }
                 else
                 {
-                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", "RED");
+                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", scriptManager.uiColorManager.offlineColorSolid);
                 }
                 break;
             case speed150Skill:
@@ -201,7 +196,7 @@ public class PlayerSkillsManager : MonoBehaviour
                 }
                 else
                 {
-                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", "RED");
+                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", scriptManager.uiColorManager.offlineColorSolid);
                 }
                 break;
             case speed125Skill:
@@ -212,7 +207,7 @@ public class PlayerSkillsManager : MonoBehaviour
                 }
                 else
                 {
-                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", "RED");
+                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", scriptManager.uiColorManager.offlineColorSolid);
                 }
                 break;
             case hiddenSkill:
@@ -235,7 +230,7 @@ public class PlayerSkillsManager : MonoBehaviour
                 }
                 else
                 {
-                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", "RED");
+                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", scriptManager.uiColorManager.offlineColorSolid);
                 }
                 break;
             case speed50Skill:
@@ -246,7 +241,7 @@ public class PlayerSkillsManager : MonoBehaviour
                 }
                 else
                 {
-                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", "RED");
+                    scriptManager.messagePanel.DisplayMessage("ANOTHER SPEED SKILL HAS ALREADY BEEN EQUIPED", scriptManager.uiColorManager.offlineColorSolid);
                 }
                 break;
             case noFailSkill:
@@ -283,7 +278,7 @@ public class PlayerSkillsManager : MonoBehaviour
         }
         else
         {
-            scriptManager.messagePanel.DisplayMessage("ANOTHER RANK SKILL HAS ALREADY BEEN EQUIPED", "RED");
+            scriptManager.messagePanel.DisplayMessage("ANOTHER RANK SKILL HAS ALREADY BEEN EQUIPED", scriptManager.uiColorManager.offlineColorSolid);
         }
     }
 
@@ -304,7 +299,6 @@ public class PlayerSkillsManager : MonoBehaviour
         else
         {
             // Display warning message
-            scriptManager.messagePanel.DisplayMaxEquipedSkillsMessage();
         }
     }
 
@@ -360,13 +354,12 @@ public class PlayerSkillsManager : MonoBehaviour
             else
             {
                 // Display warning message
-                scriptManager.messagePanel.DisplayMessage(_skill + " IS ALREADY EQUIPPED", "RED");
+                scriptManager.messagePanel.DisplayMessage(_skill + " IS ALREADY EQUIPPED", scriptManager.uiColorManager.offlineColorSolid);
             }
         }
         else
         {
             // Display warning message
-            scriptManager.messagePanel.DisplayMaxEquipedSkillsMessage();
         }
 
         // Update the song select menu character button information
@@ -484,8 +477,7 @@ public class PlayerSkillsManager : MonoBehaviour
 
         unquipedSkillMessage = "REMOVED: " + equipedSkillTextArray[_buttonIndex].text;
 
-        // Display message
-        scriptManager.messagePanel.DisplayUnquipedSkillMessage(unquipedSkillMessage);
+        // Display unequiped message
 
         // Decrement equipped skills count
         equipedSkills--;
@@ -509,8 +501,7 @@ public class PlayerSkillsManager : MonoBehaviour
             equipedSkillButtonArray[i].gameObject.SetActive(false);
         }
 
-        // Display message
-        scriptManager.messagePanel.DisplayUnquipedSkillMessage("ALL SKILLS REMOVED");
+        // Display display unequiped message
 
         // Reset equiped skills value
         equipedSkills = 0;

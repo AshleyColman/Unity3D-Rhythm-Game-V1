@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: dRankGradient
   m_EditorClassIdentifier: 
   colorMode: 2
-  topLeft: {r: 1, g: 0, b: 0.7465019, a: 1}
-  topRight: {r: 1, g: 0, b: 0.7465019, a: 1}
-  bottomLeft: {r: 1, g: 0, b: 0.7465019, a: 1}
-  bottomRight: {r: 1, g: 0, b: 0.7465019, a: 1}
+  topLeft: {r: 0.5729389, g: 0, b: 1, a: 1}
+  topRight: {r: 0.5729389, g: 0, b: 1, a: 1}
+  bottomLeft: {r: 0, g: 0.05708027, b: 1, a: 1}
+  bottomRight: {r: 0, g: 0.05708027, b: 1, a: 1}

@@ -22,23 +22,24 @@ public class SetupBeatmap : MonoBehaviour
     public TextMeshProUGUI defaultAudioFileText, defaultBackgroundImageText, existsAudioFileText, existsBackgroundImageText;
 
     // Dropdown
-    public TMP_Dropdown difficultyDropdown;
+    public TMP_Dropdown difficultyDropdown, difficultyLevelDropdown;
 
     // Input field
-    public TMP_InputField songNameInputField, artistNameInputField;
+    public TMP_InputField songNameInputField, artistNameInputField, creatorMessageInputField;
 
     // Button
     public Button createFolderButton, fileSetupContinueButton;
 
     // String
-    private string beatmapDifficulty, beatmapCreatedDate, folderDirectory, beatmapFolderName, songName, artistName, creatorName, creatorMessage;
-    private const string EASYDIFFICULTY = "EASY", ADVANCEDDIFFICULTY = "ADVANCED", EXTRADIFFICULTY = "EXTRA", AUDIONAME = "audio", AUDIOTYPE = ".ogg",
+    private string beatmapDifficulty, beatmapCreatedDate, folderDirectory, beatmapFolderName, songName, artistName, creatorName, creatorMessage,
+        difficultyLevel;
+    private const string EASY_DIFFICULTY = "EASY", NORMAL_DIFFICULTY = "NORMAL", HARD_DIFFICULTY = "HARD", AUDIONAME = "audio", AUDIOTYPE = ".ogg",
         IMAGENAME = "img", IMAGETYPE = ".png";
 
     // Bool
     private bool folderCreated, audioFileFound, backgroundImageFound, filesUpdated;
 
-    // Float
+    // Integer
     private float timer, songPreviewStartTime;
     private const float FILECHECKTIME = 2f;
 
@@ -86,6 +87,16 @@ public class SetupBeatmap : MonoBehaviour
         get { return beatmapCreatedDate; }
     }
 
+    public string CreatorMessage
+    {
+        get { return creatorMessage; }
+    }
+
+    public string DifficultyLevel
+    {
+        get { return difficultyLevel; }
+    }
+
     private void Start()
     {
         folderCreated = false;
@@ -93,6 +104,8 @@ public class SetupBeatmap : MonoBehaviour
         backgroundImageFound = false;
         filesUpdated = false;
         songPreviewStartTime = 0;
+        difficultyLevel = "0";
+        creatorMessage = "";
 
         // Get the user logged in and set the creator to that user
         if (MySQLDBManager.loggedIn)
@@ -158,7 +171,7 @@ public class SetupBeatmap : MonoBehaviour
         }
         else
         {
-            scriptManager.messagePanel.DisplayMessage("BEATMAP AUDIO FILE NOT FOUND", "RED");
+            scriptManager.messagePanel.DisplayMessage("BEATMAP AUDIO FILE NOT FOUND", scriptManager.uiColorManager.offlineColorSolid);
         }
     }
 
@@ -171,7 +184,7 @@ public class SetupBeatmap : MonoBehaviour
 
             if (www.isNetworkError)
             {
-                scriptManager.messagePanel.DisplayMessage("BEATMAP AUDIO FILE NOT FOUND", "RED");
+                scriptManager.messagePanel.DisplayMessage("BEATMAP AUDIO FILE NOT FOUND", scriptManager.uiColorManager.offlineColorSolid);
             }
             else
             {
@@ -250,8 +263,6 @@ public class SetupBeatmap : MonoBehaviour
         }
     }
 
-
-
     public void CreateFolder()
     {
         // Create folder
@@ -274,7 +285,6 @@ public class SetupBeatmap : MonoBehaviour
         createFolderButton.interactable = false;
         folderCreated = true;
 
-
         // Change active panel
         folderSetupPanel.gameObject.SetActive(false);
         fileSetupPanel.gameObject.SetActive(true);
@@ -292,16 +302,16 @@ public class SetupBeatmap : MonoBehaviour
         switch (difficultyDropdown.value)
         {
             case 1:
-                beatmapDifficulty = EASYDIFFICULTY;
+                beatmapDifficulty = EASY_DIFFICULTY;
                 break;
             case 2:
-                beatmapDifficulty = ADVANCEDDIFFICULTY;
+                beatmapDifficulty = NORMAL_DIFFICULTY;
                 break;
             case 3:
-                beatmapDifficulty = EXTRADIFFICULTY;
+                beatmapDifficulty = HARD_DIFFICULTY;
                 break;
             default:
-                beatmapDifficulty = EASYDIFFICULTY;
+                beatmapDifficulty = EASY_DIFFICULTY;
                 break;
         }
     }
@@ -316,14 +326,14 @@ public class SetupBeatmap : MonoBehaviour
     {
         if (File.Exists(folderDirectory + AUDIONAME + AUDIOTYPE))
         {
-            audioFileLoadingIconImage.color = scriptManager.colorManager.selectedColor;
+            audioFileLoadingIconImage.color = scriptManager.uiColorManager.selectedColor;
             defaultAudioFileText.gameObject.SetActive(false);
             existsAudioFileText.gameObject.SetActive(true);
             audioFileFound = true;
         }
         else
         {
-            audioFileLoadingIconImage.color = scriptManager.colorManager.whiteColor;
+            audioFileLoadingIconImage.color = scriptManager.uiColorManager.solidWhiteColor;
             defaultAudioFileText.gameObject.SetActive(true);
             existsAudioFileText.gameObject.SetActive(false);
             audioFileFound = false;
@@ -335,18 +345,31 @@ public class SetupBeatmap : MonoBehaviour
     {
         if (File.Exists(folderDirectory + IMAGENAME + IMAGETYPE))
         {
-            backgroundImageLoadingIconImage.color = scriptManager.colorManager.selectedColor;
+            backgroundImageLoadingIconImage.color = scriptManager.uiColorManager.selectedColor;
             defaultBackgroundImageText.gameObject.SetActive(false);
             existsBackgroundImageText.gameObject.SetActive(true);
             backgroundImageFound = true;
         }
         else
         {
-            backgroundImageLoadingIconImage.color = scriptManager.colorManager.whiteColor;
+            backgroundImageLoadingIconImage.color = scriptManager.uiColorManager.solidWhiteColor;
             defaultBackgroundImageText.gameObject.SetActive(true);
             existsBackgroundImageText.gameObject.SetActive(false);
             backgroundImageFound = false;
             filesUpdated = false;
         }
+    }
+
+    // Update creator message from the input field
+    public void UpdateCreatorMessage()
+    {
+        creatorMessage = creatorMessageInputField.text;
+    }
+
+    // Update difficulty level from the dropdown options
+    public void UpdateDifficultyLevel()
+    {
+        // + 2 as starts at index 0
+        difficultyLevel = (difficultyLevelDropdown.value + 2).ToString();
     }
 }

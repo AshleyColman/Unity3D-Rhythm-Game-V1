@@ -1,24 +1,15 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 public class SongSelectMenuFlash : MonoBehaviour
 {
-    // Strings
-    private string easyBeatmapDifficulty, advancedBeatmapDifficulty, extraBeatmapDifficulty;
-
+    #region Variables
     // Scripts
     private ScriptManager scriptManager;
+    #endregion
 
-
-    void Start()
+    #region Functions
+    private void Start()
     {
-
-        // Initialize 
-        easyBeatmapDifficulty = "easy";
-        advancedBeatmapDifficulty = "advanced";
-        extraBeatmapDifficulty = "extra";
-
-        // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
     }
 
@@ -93,7 +84,7 @@ public class SongSelectMenuFlash : MonoBehaviour
         scriptManager.beatmapRanking.ResetNotChecked();
     }
 
-    // Select the Extra difficulty, update and flash
+    // Select the difficulty, update and flash
     public void LoadBeatmapDifficulty(string _difficulty)
     {
         if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
@@ -115,38 +106,43 @@ public class SongSelectMenuFlash : MonoBehaviour
             switch (_difficulty)
             {
                 case "easy":
-                    // Load extra difficulty information and beatmap file from database
-                    scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex, easyBeatmapDifficulty);
+                    // Load difficulty information and beatmap file from database
+                    scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex, 
+                        scriptManager.songSelectManager.EasyDifficultyName);
                     break;
-                case "advanced":
-                    // Load extra difficulty information and beatmap file from database
-                    scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex, advancedBeatmapDifficulty);
+                case "normal":
+                    // Load difficulty information and beatmap file from database
+                    scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex,
+                        scriptManager.songSelectManager.NormalDifficultyName);
                     break;
-                case "extra":
-                    // Load extra difficulty information and beatmap file from database
-                    scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex, extraBeatmapDifficulty);
+                case "hard":
+                    // Load difficulty information and beatmap file from database
+                    scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex,
+                        scriptManager.songSelectManager.HardDifficultyName);
                     break;
             }
         }
     }
 
-    // Select the Extra difficulty, update and flash
-    public void LoadBeatmapExtraDifficulty()
+    // Select the Hard difficulty, update and flash
+    public void LoadBeatmapHardDifficulty()
     {
         if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
         {
-            // Load advanced difficulty information and beatmap file from database
-            scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex, extraBeatmapDifficulty);
+            // Load difficulty information and beatmap file from database
+            scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex,
+                scriptManager.songSelectManager.HardDifficultyName);
         }
     }
 
-    // Select the Advanced difficulty, update and flash
-    public void LoadBeatmapAdvancedDifficulty()
+    // Select the Normal difficulty, update and flash
+    public void LoadBeatmapNormalDifficulty()
     {
         if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
         {
-            // Load advanced difficulty information and beatmap file from database
-            scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex, advancedBeatmapDifficulty);
+            // Load difficulty information and beatmap file from database
+            scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex,
+                scriptManager.songSelectManager.NormalDifficultyName);
         }
     }
 
@@ -156,7 +152,8 @@ public class SongSelectMenuFlash : MonoBehaviour
         if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
         {
             // Load easy difficulty information and beatmap file from database
-            scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex, easyBeatmapDifficulty);
+            scriptManager.songSelectManager.LoadBeatmapSongSelectInformation(scriptManager.songSelectManager.SelectedBeatmapDirectoryIndex,
+                scriptManager.songSelectManager.EasyDifficultyName);
         }
     }
 
@@ -167,5 +164,6 @@ public class SongSelectMenuFlash : MonoBehaviour
 
         scriptManager.songSelectManager.ResetCurrentSelectedBeatmapButton();
     }
+    #endregion
 }
 

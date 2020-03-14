@@ -363,13 +363,13 @@ public class BeatsnapManager : MonoBehaviour
         {
             case 4:
                 // Update image color
-                beatsnapObjectScript.beatsnapImage.color = scriptManager.colorManager.selectedColor;
+                beatsnapObjectScript.beatsnapImage.color = scriptManager.uiColorManager.selectedColor;
                 // Update size
                 rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, LINE_HEIGHT_15);
                 break;
             default:
                 // Update image color
-                beatsnapObjectScript.beatsnapImage.color = scriptManager.colorManager.whiteColor;
+                beatsnapObjectScript.beatsnapImage.color = scriptManager.uiColorManager.solidWhiteColor;
                 // Update size
                 rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, LINE_HEIGHT_10);
                 break;

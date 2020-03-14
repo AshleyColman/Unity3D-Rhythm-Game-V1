@@ -39,11 +39,11 @@ public class ScriptManager : MonoBehaviour
     public MouseFollow mouseFollow;
     public CursorHitObject cursorHitObject;
     public EditableHitObject editableHitObject;
-    public ColorManager colorManager;
     public EditorBottomMenu editorBottomMenu;
     public FailAndRetryManager failAndRetryManager;
     public ScoreManager scoreManager;
     public ExplosionManager explosionManager;
     public HitSoundManager hitSoundManager;
     public FeverTimeManager feverTimeManager;
+    public ConnectionManager connectionManager;
 }
