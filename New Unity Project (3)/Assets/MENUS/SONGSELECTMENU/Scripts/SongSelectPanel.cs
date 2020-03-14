@@ -437,7 +437,7 @@ public class SongSelectPanel : MonoBehaviour
             SortBeatmapButtonsDefault();
 
             // Update beatmap button navigation
-            //UpdateBeatmapButtonNavigation(defaultDifficultySortingValue);
+            UpdateBeatmapButtonNavigation(defaultDifficultySortingValue);
         }
 
         hasLoadedAllBeatmapDirectories = true;

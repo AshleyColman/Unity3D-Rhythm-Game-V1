@@ -22,7 +22,7 @@ public class BeatmapRanking : MonoBehaviour
     public GameObject loadingIcon;
 
     // Bools
-    private bool notChecked, hasPersonalBest, hasCheckedPersonalBest, hasLoadedLeaderboard, completeLeaderboardReady;
+    public bool notChecked, hasPersonalBest, hasCheckedPersonalBest, hasLoadedLeaderboard, completeLeaderboardReady;
     public bool[] placeExists;
     public bool[] placeChecked;
 
@@ -45,7 +45,7 @@ public class BeatmapRanking : MonoBehaviour
     public sbyte leaderboardPlaceToGet;
     public sbyte totalRankingPlacements;
     public int totalPlacesChecked, totalImagesUpdated, totalURLImagesUpdated, totalExistingPlaces, totalURLImagesToLoad,
-        timeToNextLeaderboardFlash, totalOnlineRecordsUploaded, personalBestPlacement;
+        timeToNextLeaderboardFlash;
     private float leaderboardFlashTimer;
 
     // Material
@@ -233,52 +233,47 @@ public class BeatmapRanking : MonoBehaviour
                     // If logged in
                     if (MySQLDBManager.loggedIn == true)
                     {
-                        // If personal best has been found
-                        if (hasPersonalBest == true)
+                        switch (hasPersonalBest)
                         {
-                            // Assign variables
-                            personalBestUsername = MySQLDBManager.username;
-                            personalBestScore = personalBestLeaderboardData[1];
-                            personalBestFeverScore = personalBestLeaderboardData[2];
-                            personalBestCombo = personalBestLeaderboardData[3];
-                            personalBestPercentage = personalBestLeaderboardData[4];
-                            personalBestPerfect = personalBestLeaderboardData[5];
-                            personalBestGood = personalBestLeaderboardData[6];
-                            personalBestEarly = personalBestLeaderboardData[7];
-                            personalBestMiss = personalBestLeaderboardData[8];
-                            personalBestDate = personalBestLeaderboardData[9];
-                            personalBestMessage = personalBestLeaderboardData[10];
+                            case true:
+                                // Assign variables
+                                personalBestUsername = MySQLDBManager.username;
+                                personalBestScore = personalBestLeaderboardData[1];
+                                personalBestFeverScore = personalBestLeaderboardData[2];
+                                personalBestCombo = personalBestLeaderboardData[3];
+                                personalBestPercentage = personalBestLeaderboardData[4];
+                                personalBestPerfect = personalBestLeaderboardData[5];
+                                personalBestGood = personalBestLeaderboardData[6];
+                                personalBestEarly = personalBestLeaderboardData[7];
+                                personalBestMiss = personalBestLeaderboardData[8];
+                                personalBestDate = personalBestLeaderboardData[9];
+                                personalBestMessage = personalBestLeaderboardData[10];
 
-                            string personalBestPlacement = " / " + personalBestLeaderboardData[11]; 
+                                // Assign text
+                                personalBestButtonScript.playernameText.text = personalBestUsername;
+                                personalBestButtonScript.scoreText.text = personalBestScore;
+                                personalBestButtonScript.statText.text = "[ " + personalBestPercentage + "% ] [ " + personalBestCombo + "x ] [ " + personalBestDate + " ]";
+                                personalBestButtonScript.perfectJudgementText.text = perfectPrefix + personalBestPerfect;
+                                personalBestButtonScript.goodJudgementText.text = goodPrefix + personalBestGood;
+                                personalBestButtonScript.earlyJudgementText.text = earlyPrefix + personalBestEarly;
+                                personalBestButtonScript.missJudgementText.text = missPrefix + personalBestMiss;
 
-                            // Assign text
-                            personalBestButtonScript.playernameText.text = personalBestUsername;
-                            personalBestButtonScript.scoreText.text = personalBestScore;
-                            personalBestButtonScript.statText.text = "[ " + personalBestPercentage + "% ] [ " + personalBestCombo + "x ] [ " + personalBestDate + " ]";
-                            personalBestButtonScript.perfectJudgementText.text = perfectPrefix + personalBestPerfect;
-                            personalBestButtonScript.goodJudgementText.text = goodPrefix + personalBestGood;
-                            personalBestButtonScript.earlyJudgementText.text = earlyPrefix + personalBestEarly;
-                            personalBestButtonScript.missJudgementText.text = missPrefix + personalBestMiss;
+                                // Send parsed percentage to calculate grade
+                                string grade = CalculateGrade(float.Parse(personalBestPercentage));
 
-                            // Send parsed percentage to calculate grade
-                            string grade = CalculateGrade(float.Parse(personalBestPercentage));
+                                // Update text
+                                personalBestButtonScript.rankText.text = grade;
 
-                            // Update text
-                            personalBestButtonScript.rankText.text = grade;
+                                // Update color gradient
+                                personalBestButtonScript.rankText.colorGradientPreset = scriptManager.uiColorManager.SetGradeColorGradient(grade);
 
-                            // Update color gradient
-                            personalBestButtonScript.rankText.colorGradientPreset = scriptManager.uiColorManager.SetGradeColorGradient(grade);
-
-                            /*
-                            // If a personal best record exists
-                            if (hasPersonalBest == true)
-                            {
-                                // Retrieve the players image for personal best placement
-                                personalBestImage.material = scriptManager.uploadPlayerImage.PlayerImage.material;
-                                personalBestImage.gameObject.SetActive(false);
-                                personalBestImage.gameObject.SetActive(true);
-                            }
-                            */
+                                // Turn on interactivity 
+                                personalBestButton.interactable = true;
+                                break;
+                            case false:
+                                // Turn of interactivity
+                                personalBestButton.interactable = false;
+                                break;
                         }
                     }
 
@@ -532,7 +527,7 @@ public class BeatmapRanking : MonoBehaviour
             placeList.AddRange(Regex.Split(www.downloadHandler.text, "->"));
 
             // Loop through all the data retrieved and assign to the personal best leaderboard data list
-            for (int dataType = 0; dataType < 12; dataType++)
+            for (int dataType = 0; dataType < 11; dataType++)
             {
                 switch (www.downloadHandler.text)
                 {
