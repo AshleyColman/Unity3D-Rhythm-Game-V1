@@ -15,7 +15,6 @@ public class BackgroundManager : MonoBehaviour
     // UI
     public Button videoTickBoxButton;
     public Image img, img2;
-    public Image videoTickBoxSelectedImage;
     public Texture2D imageTexture;
 
     // Video 
@@ -79,9 +78,6 @@ public class BackgroundManager : MonoBehaviour
         // Change bools when button is clicked
         if (videoTickBoxSelected == true)
         {
-            // Disable tick image
-            videoTickBoxSelectedImage.gameObject.SetActive(false);
-
             // Display message panel
             scriptManager.messagePanel.DisplayMessage("VIDEO TURNED OFF", scriptManager.uiColorManager.purpleColor);
 
@@ -90,9 +86,6 @@ public class BackgroundManager : MonoBehaviour
         }
         else if (videoTickBoxSelected == false)
         {
-            // Enable tick image
-            videoTickBoxSelectedImage.gameObject.SetActive(true);
-
             // Display message panel
             scriptManager.messagePanel.DisplayMessage("VIDEO TURNED OFF", scriptManager.uiColorManager.purpleColor);
 

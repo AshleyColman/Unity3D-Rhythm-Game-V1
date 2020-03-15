@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: sPlusRankGradient
   m_EditorClassIdentifier: 
   colorMode: 2
-  topLeft: {r: 1, g: 0.90592486, b: 0, a: 1}
-  topRight: {r: 1, g: 0.90592486, b: 0, a: 1}
-  bottomLeft: {r: 1, g: 0.458042, b: 0, a: 1}
-  bottomRight: {r: 1, g: 0.458042, b: 0, a: 1}
+  topLeft: {r: 1, g: 0.9451673, b: 0, a: 1}
+  topRight: {r: 1, g: 0.9451673, b: 0, a: 1}
+  bottomLeft: {r: 1, g: 0.56755453, b: 0, a: 1}
+  bottomRight: {r: 1, g: 0.56755453, b: 0, a: 1}

@@ -252,7 +252,7 @@ public class MetronomeForEffects : MonoBehaviour
     {
         if (scriptManager.menuManager.overallRankingMenu.gameObject.activeSelf == true)
         {
-            overallRankingTitleAnimator.Play("TitleTextBeat_Animation", 0, 0f);
+            //overallRankingTitleAnimator.Play("TitleTextBeat_Animation", 0, 0f);
         }
     }
 
@@ -281,34 +281,15 @@ public class MetronomeForEffects : MonoBehaviour
     // Play the color panel glow animations
     private void PlayColorPanelGlowAnimation()
     {
-        // Top and bottom panel glow animations
-        if (playTopPanelGlowAnimation == true)
+        switch (playTopPanelGlowAnimation)
         {
-            topColorPanelGlowAnimator.Play("TopColorPanelGlow_Animation", 0, 0f);
-
-            playTopPanelGlowAnimation = false;
-        }
-        else
-        {
-            // Check if character menu is open
-            if (scriptManager.playerSkillsManager.characterPanel.activeSelf == true)
-            {
-                characterMenuColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
-            }
-            else if (scriptManager.menuManager.songSelectMenu.gameObject.activeSelf == true)
-            {
-                bottomColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
-            }
-            else if (scriptManager.menuManager.overallRankingMenu.gameObject.activeSelf == true)
-            {
-                overallRankingMenuColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
-            }
-            else if (scriptManager.menuManager.downloadMenu.gameObject.activeSelf == true)
-            {
-                downloadMenuColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
-            }
-            
-            playTopPanelGlowAnimation = true;
+            case true:
+                topColorPanelGlowAnimator.Play("TopColorPanelGlow_Animation", 0, 0f);
+                playTopPanelGlowAnimation = false;
+                break;
+            case false:
+                playTopPanelGlowAnimation = true;
+                break;
         }
     }
 

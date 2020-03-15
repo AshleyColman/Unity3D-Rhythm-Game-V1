@@ -383,9 +383,9 @@ public class PlayerProfile : MonoBehaviour
         WWWForm form = new WWWForm();
 
         // Get the placement username - profile to load
-        string username = scriptManager.beatmapRanking.RankedButtonUsername[_placement];
+        //string username = scriptManager.beatmapRanking.RankedButtonUsername[_placement];
 
-        form.AddField("username", username);
+        //form.AddField("username", username);
 
         UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/retrieveplayerprofileinformation.php", form);
         www.chunkedTransfer = false;
