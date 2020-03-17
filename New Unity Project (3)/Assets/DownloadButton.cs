@@ -1,28 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
 public class DownloadButton : MonoBehaviour
 {
+    #region Variables
+    // Text
+    public TextMeshProUGUI easyDifficultyLevelText, normalDifficultyLevelText, hardDifficultyLevelText,
+        songNameText, artistText, beatmapCreatorText;
+
+    // Image
+    public Image beatmapImage;
+
+    // Integer
     private int beatmapButtonIndex;
 
+    // Bool
     private bool hasEasyDifficulty, hasAdvancedDifficulty, hasExtraDifficulty;
 
-    private string imageUrl, downloadUrl, totalDownloads, totalFavorites, totalPlays, rankedDate, creatorMessage, creatorName, easyLevel, advancedLevel,
-        extraLevel;
-
-    public Image overlayColorImage;
-    public GameObject easyDifficultyImage, advancedDifficultyImage, extraDifficultyImage;
-    public TextMeshProUGUI easyDifficultyLevelText, advancedDifficultyLevelText, extraDifficultyLevelText;
-    public TextMeshProUGUI songNameText, artistText, beatmapCreatorText;
+    // String
+    private string imageUrl, downloadUrl, totalDownloads, totalPlays, rankedDate, creatorMessage, creatorName, easyLevel, normalLevel,
+        hardLevel, bpm;
 
     // Scripts
     private ScriptManager scriptManager;
+    #endregion
 
-    // Properties
-
+    #region Properties
     public int BeatmapButtonIndex
     {
         get { return beatmapButtonIndex; }
@@ -34,14 +38,14 @@ public class DownloadButton : MonoBehaviour
         set { easyLevel = value; }
     }
 
-    public string AdvancedLevel
+    public string NormalLevel
     {
-        set { advancedLevel = value; }
+        set { normalLevel = value; }
     }
 
-    public string ExtraLevel
+    public string HardLevel
     {
-        set { extraLevel = value; }
+        set { hardLevel = value; }
     }
 
     public string CreatorName
@@ -64,11 +68,6 @@ public class DownloadButton : MonoBehaviour
         set { totalDownloads = value; }
     }
 
-    public string TotalFavorites
-    {
-        set { totalFavorites = value; }
-    }
-
     public string TotalPlays
     {
         set { totalPlays = value; }
@@ -84,6 +83,13 @@ public class DownloadButton : MonoBehaviour
         set { downloadUrl = value; }
     }
 
+    public string Bpm
+    {
+        set { bpm = value; }
+    }
+    #endregion
+
+    #region Functions
     // Use this for initialization
     void Start()
     {
@@ -112,45 +118,53 @@ public class DownloadButton : MonoBehaviour
         scriptManager.uploadPlayerImage.CallBeatmapCreatorUploadImage(creatorName, scriptManager.uploadPlayerImage.downloadBeatmapCreatorProfileImage);
 
         // Play song information panel
-        scriptManager.downloadPanel.rankedDateText.text = "RANKED " + rankedDate;
-        scriptManager.downloadPanel.creatorText.text = "DESIGNED BY " + creatorName.ToUpper();
+        scriptManager.downloadPanel.downloadStatText.text = "[ " + totalDownloads + " DOWNLOADS | " + totalPlays + " PLAYS | " +
+            bpm + " BPM | " + rankedDate + " ]"; 
+        scriptManager.downloadPanel.creatorText.text = "Designed by " + creatorName.ToUpper();
         scriptManager.downloadPanel.creatorMessageText.text = creatorMessage;
-        scriptManager.downloadPanel.favoriteCountText.text = totalFavorites + " FAVORITES";
-        scriptManager.downloadPanel.playCountText.text = totalPlays + " PLAYS";
-        scriptManager.downloadPanel.downloadCountText.text = totalDownloads + " DOWNLOADS";
 
-        if (easyLevel != "0")
+        // Update level text and buttons
+        switch (easyLevel)
         {
-            scriptManager.downloadPanel.easyLevelText.text = "EASY " + easyLevel;
-        }
-        else
-        {
-            scriptManager.downloadPanel.easyLevelText.text = "-";
-        }
-
-        if (advancedLevel != "0")
-        {
-            scriptManager.downloadPanel.advancedLevelText.text = "ADVANCED " + advancedLevel;
-        }
-        else
-        {
-            scriptManager.downloadPanel.advancedLevelText.text = "-";
+            case "0":
+                scriptManager.downloadPanel.easyDifficultyButtonScript.levelText.text = "X";
+                scriptManager.downloadPanel.easyDifficultyButtonScript.difficultyButton.interactable = false;
+                scriptManager.downloadPanel.easyDifficultyButtonScript.selectedGameObject.gameObject.SetActive(false);
+                break;
+            default:
+                scriptManager.downloadPanel.easyDifficultyButtonScript.levelText.text = easyLevel;
+                scriptManager.downloadPanel.easyDifficultyButtonScript.difficultyButton.interactable = true;
+                scriptManager.downloadPanel.easyDifficultyButtonScript.selectedGameObject.gameObject.SetActive(true);
+                break;
         }
 
-        if (extraLevel != "0")
+        switch (normalLevel)
         {
-            scriptManager.downloadPanel.extraLevelText.text = "EXTRA " + extraLevel;
+            case "0":
+                scriptManager.downloadPanel.normalDifficultyButtonScript.levelText.text = "X";
+                scriptManager.downloadPanel.normalDifficultyButtonScript.difficultyButton.interactable = false;
+                scriptManager.downloadPanel.normalDifficultyButtonScript.selectedGameObject.gameObject.SetActive(false);
+                break;
+            default:
+                scriptManager.downloadPanel.normalDifficultyButtonScript.levelText.text = normalLevel;
+                scriptManager.downloadPanel.normalDifficultyButtonScript.difficultyButton.interactable = true;
+                scriptManager.downloadPanel.normalDifficultyButtonScript.selectedGameObject.gameObject.SetActive(true);
+                break;
         }
-        else
+
+        switch (hardLevel)
         {
-            scriptManager.downloadPanel.extraLevelText.text = "-";
+            case "0":
+                scriptManager.downloadPanel.hardDifficultyButtonScript.levelText.text = "X";
+                scriptManager.downloadPanel.hardDifficultyButtonScript.difficultyButton.interactable = false;
+                scriptManager.downloadPanel.hardDifficultyButtonScript.selectedGameObject.gameObject.SetActive(false);
+                break;
+            default:
+                scriptManager.downloadPanel.hardDifficultyButtonScript.levelText.text = hardLevel;
+                scriptManager.downloadPanel.hardDifficultyButtonScript.difficultyButton.interactable = true;
+                scriptManager.downloadPanel.hardDifficultyButtonScript.selectedGameObject.gameObject.SetActive(true);
+                break;
         }
-    }
-
-    // Play the song preview when clicked
-    private void PlaySongPreview()
-    {
-
     }
 
     // Set the beatmap butotn index during instantiation
@@ -158,4 +172,5 @@ public class DownloadButton : MonoBehaviour
     {
         beatmapButtonIndex = _beatmapButtonIndex;
     }
+    #endregion
 }

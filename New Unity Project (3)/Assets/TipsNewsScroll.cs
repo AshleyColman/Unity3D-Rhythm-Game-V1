@@ -5,17 +5,18 @@ public class TipsNewsScroll : MonoBehaviour
 {
     #region Variables
     // Text
-    public TextMeshProUGUI tipsText, characterMenuTipsText;
+    public TextMeshProUGUI tipsText, characterMenuTipsText, overallRankingTipText;
 
     // Animation
-    private Animator tipsTextAnimator, characterMenuTipsTextAnimator;
+    private Animator tipsTextAnimator, characterMenuTipsTextAnimator, overallRankingTipsTextAnimator;
 
     // String
     private string[] tips = new string[5];
     private string[] characterMenuTips = new string[10];
+    private string[] overallRankingTips = new string[5];
 
     // Integer
-    private int textResetTime, songSelectTipIndex, characterTipIndex;
+    private int textResetTime, songSelectTipIndex, characterTipIndex, overallRankingTipsIndex;
     private float timer;
 
     // Scripts
@@ -32,8 +33,10 @@ public class TipsNewsScroll : MonoBehaviour
         timer = 0f;
         textResetTime = 5;
         songSelectTipIndex = 0;
+        overallRankingTipsIndex = 0;
         tipsTextAnimator = tipsText.GetComponent<Animator>();
         characterMenuTipsTextAnimator = characterMenuTipsText.GetComponent<Animator>();
+        overallRankingTipsTextAnimator = overallRankingTipText.GetComponent<Animator>();
 
         // Song Select menu
         tips[0] = "Welcome to the game!";
@@ -52,11 +55,19 @@ public class TipsNewsScroll : MonoBehaviour
         characterMenuTips[6] = "You can combine skills from different classes as long as they're not the same type";
         characterMenuTips[7] = "If you have an idea for a new skill message Ashley#3286 on discord";
 
+        // Overall ranking menu
+        overallRankingTips[0] = "Here you can view the overall rankings for different aspects of the game";
+        overallRankingTips[1] = "CAREER: Ranked beatmaps, max potential points per beatmap, best on each beatmap";
+        overallRankingTips[2] = "TOTAL: Any beatmap, all plays contribute including replays";
+        overallRankingTips[3] = "keep playing to improve your rankings";
+        overallRankingTips[4] = "Have a question about a ranking category? Ask in the discord";
 
         // Set default text
-        tipsText.text = tips[0];
-        // Play animation
-        tipsTextAnimator.Play("GameplayTipsScroll_Animation", 0, 0f);
+        tipsText.text = "";
+        overallRankingTipText.text = "";
+
+        // Set timer to 5f to set text instantly (can remove this later when main menu has been created)
+        timer = textResetTime;
     }
 
     private void Update()
@@ -86,6 +97,19 @@ public class TipsNewsScroll : MonoBehaviour
                 case true:
                     // Update character panel tips text
                     ChangeCharacterSkillTipsText();
+                    // Reset timer
+                    timer = 0f;
+                    break;
+                case false:
+                    break;
+            }
+
+            // Overall ranking menu
+            switch (scriptManager.menuManager.overallRankingMenu.gameObject.activeSelf)
+            {
+                case true:
+                    // Update text
+                    ChangeOverallRankingTipText();
                     // Reset timer
                     timer = 0f;
                     break;
@@ -123,6 +147,21 @@ public class TipsNewsScroll : MonoBehaviour
 
         tipsText.text = tips[songSelectTipIndex];
         songSelectTipIndex++;
+    }
+
+    // Update overall ranking text
+    private void ChangeOverallRankingTipText()
+    {
+        // Error check index
+        if (overallRankingTipsIndex >= overallRankingTips.Length)
+        {
+            overallRankingTipsIndex = 0;
+        }
+
+        overallRankingTipsTextAnimator.Play("GameplayTipsScroll_Animation", 0, 0f);
+
+        overallRankingTipText.text = overallRankingTips[overallRankingTipsIndex];
+        overallRankingTipsIndex++;
     }
     #endregion
 }

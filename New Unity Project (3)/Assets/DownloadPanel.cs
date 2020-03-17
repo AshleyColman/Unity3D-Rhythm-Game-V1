@@ -5,84 +5,76 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using TMPro;
 using System.Text.RegularExpressions;
+using System.IO;
 
 public class DownloadPanel : MonoBehaviour
 {
-    // UI
-    public TextMeshProUGUI songNameText, artistText, creatorText, creatorMessageText, favoriteCountText, playCountText, downloadCountText, rankedDateText,
-        easyLevelText, advancedLevelText, extraLevelText;
-    private List<Image> instantiatedDownloadButtonImageList = new List<Image>();
-    private Image instantiatedDownloadButtonImage;
-    public Scrollbar downloadButtonListScrollbar;
-    public Image bottomColorPanel;
+    #region Variables
+    // Text    
+    public TextMeshProUGUI songNameText, artistText, creatorText, creatorMessageText, downloadStatText, downloadProgressText;
 
+    // Image
+    public Image downloadSliderBackgroundImage;
+
+    // Scrollbar
+    public Scrollbar downloadButtonListScrollbar;
+
+    // Slider
+    public Slider downloadSlider;
+
+    // Canvas group
+    public CanvasGroup downloadButtonListScrollbarCanvasGroup;
 
     // Animator
     public Animator songSelectInformationAnimator;
 
+    // Button
+    public Button downloadOpenFolderButton;
+
     // Navigation
-    private Button button;
-    private Button buttonDown;
-    private Button buttonUp;
+    private Button button, buttonDown, buttonUp;
     private Navigation navigation;
 
     // Gameobjects
-    public GameObject loadingIcon;
-    public GameObject downloadPanel;
-    public GameObject downloadButton;
+    public GameObject loadingIcon, downloadButton, downloadPanel;
     public List<GameObject> instantiatedDownloadButtonList = new List<GameObject>();
     private GameObject downloadButtonInstantiate; // The instantiated beatmap button
+    private GameObject currentSelectedDownloadButton;
+
+    // Transform
     public Transform buttonListContent; // Where the beatmap buttons instantiate to
-    private Transform downloadButtonInstantiateChildImage; // Child image for the beatmap button
-    private Transform downloadButtonPanelChild; // Beatmap button panel child when instantiating
 
     // Strings
-    private string shaderLocation, downloadUrl;
+    private string shaderLocation, downloadUrl, sorting;
+    public List<string>[] downloadData;
+    /*
+    private const string SONG_NAME = "song_name", ARTIST_NAME = "artist_name", CREATOR_NAME = "creator_name",
+        EASY_DIFFICULTY_LEVEL = "easy_difficulty_level", NORMAL_DIFFICULTY_LEVEL = "normal_difficulty_level",
+        HARD_DIFFICULTY_LEVEL = "hard_difficulty_level", RANKED_DATE = "ranked_date", DOWNLOADS = "downloads", PLAYS = "plays";
+        */
 
     // Integers
-    public int downloadButtonIndexToGet;
-    public int currentLoadedButtonIndex;
-    public int totalDownloadableBeatmaps;
-    public int totalDownloadsChecked;
-    public int totalDownloadImagesChecked;
-    public int rowToGet;
+    private int downloadButtonIndexToGet, currentLoadedButtonIndex, totalDownloadableBeatmaps, totalDownloadsChecked,
+        totalDownloadImagesChecked, rowToGet, currentSelectedDownloadButtonIndex;
+    private float buttonListContentPositionX, buttonListContentPositionY, buttonListContentPositionZ, newButtonListContentPositionY;
 
     // Bools
-    public bool hasLoadedAllBeatmapButtons;
-    public bool hasCheckedTotalDownloadCount;
-    public bool hasCheckedAllDownloadInformation;
-    public bool hasActivatedPanel;
+    public bool hasLoadedAllBeatmapButtons, hasCheckedTotalDownloadCount, hasCheckedAllDownloadInformation, hasActivatedPanel;
 
     // Material
-    private Material childImageMaterial; // Child image for beatmap buttons
-    public Material defautChildImageMaterial; // Default image that is displayed when no file can be found 
+    private Material beatmapImageMaterial, defautBeatmapImageMaterial;
 
     // Vectors
-    private Vector3 downloadButtonPosition;
-
-    // Move button list content scroll rect up and down variables
-    private GameObject currentSelectedDownloadButton;
-    private DownloadButton selectedDownloadButtonScript;
-    private int currentSelectedDownloadButtonIndex;
-    private float buttonListContentPositionX;
-    private float buttonListContentPositionY;
-    private float buttonListContentPositionZ;
-    private float newButtonListContentPositionY;
-    private Vector3 newButtonListContentPosition;
-
-    private DownloadButton instantiatedDownloadButtonScript;
-
-    // Sorting lists
-    public List<DownloadButton> downloadButtonList = new List<DownloadButton>();
-    public List<string>[] downloadData;
-
-    // Vector3
-    private Vector3 defaultScrollbarPosition, offscreenScrollbarPosition;
+    private Vector3 downloadButtonPosition, newButtonListContentPosition;
 
     // Scripts
     private ScriptManager scriptManager;
+    private DownloadButton instantiatedDownloadButtonScript, selectedDownloadButtonScript;
+    public List<DownloadButton> downloadButtonList = new List<DownloadButton>();
+    public DifficultyButton easyDifficultyButtonScript, normalDifficultyButtonScript, hardDifficultyButtonScript;
+    #endregion
 
-    // Properties
+    #region Properties
     public string DownloadUrl
     {
         set { downloadUrl = value; }
@@ -100,6 +92,10 @@ public class DownloadPanel : MonoBehaviour
     {
         loadingIcon.gameObject.SetActive(false);
     }
+    #endregion
+
+    #region Functions
+    #endregion
 
     // Use this for initialization
     void Start()
@@ -112,8 +108,6 @@ public class DownloadPanel : MonoBehaviour
         shaderLocation = "UI/Unlit/Transparent";
         hasCheckedTotalDownloadCount = false;
         hasLoadedAllBeatmapButtons = false;
-        defaultScrollbarPosition = downloadButtonListScrollbar.transform.position;
-        offscreenScrollbarPosition = new Vector3(2000, 2000, 0);
         hasActivatedPanel = false;
 
         // Get the total number of beatmaps to download
@@ -184,17 +178,6 @@ public class DownloadPanel : MonoBehaviour
     {
         // Deactivate at the start
         downloadPanel.gameObject.SetActive(false);
-
-        for (int i = 0; i < totalDownloadableBeatmaps; i++)
-        {
-            instantiatedDownloadButtonList[i].gameObject.SetActive(false);
-        }
-
-        loadingIcon.gameObject.SetActive(true);
-
-        songSelectInformationAnimator.gameObject.SetActive(false);
-
-        downloadButtonListScrollbar.transform.position = offscreenScrollbarPosition;
     }
 
     private void ActivateDownloadPanel()
@@ -213,7 +196,8 @@ public class DownloadPanel : MonoBehaviour
 
         songSelectInformationAnimator.gameObject.SetActive(true);
 
-        downloadButtonListScrollbar.transform.position = defaultScrollbarPosition;
+        downloadButtonListScrollbarCanvasGroup.alpha = 1;
+        downloadButtonListScrollbar.interactable = true;
     }
 
     // Initialize the downloadData list
@@ -234,22 +218,23 @@ public class DownloadPanel : MonoBehaviour
     {
         WWWForm form = new WWWForm();
 
-        UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/retrievetotalbeatmapdownloadcount.php", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost/rhythmgamex/retrieve_total_beatmap_download_count.php", form);
         www.chunkedTransfer = false;
         yield return www.SendWebRequest();
 
-        // If there 
-        if (www.downloadHandler.text != "0")
+        switch (www.downloadHandler.text)
         {
-            // SUCCESS - Maps to download
-            totalDownloadableBeatmaps = int.Parse(www.downloadHandler.text);
-            scriptManager.messagePanel.DisplayMessage(totalDownloadableBeatmaps + " BEATMAPS FOUND, LOADING...", scriptManager.uiColorManager.purpleColor);
-        }
-        else
-        {
-            // FAILED - No maps to download
-            totalDownloadableBeatmaps = 0;
-            scriptManager.messagePanel.DisplayMessage("NO BEATMAPS TO DOWNLOAD, TRY AGAIN LATER", scriptManager.uiColorManager.offlineColorSolid);
+            case "ERROR":
+                // FAILED - No maps to download
+                totalDownloadableBeatmaps = 0;
+                scriptManager.messagePanel.DisplayMessage("NO BEATMAPS TO DOWNLOAD, TRY AGAIN LATER",
+                    scriptManager.uiColorManager.offlineColorSolid); break;
+            default:
+                // SUCCESS - Maps to download
+                totalDownloadableBeatmaps = int.Parse(www.downloadHandler.text);
+                scriptManager.messagePanel.DisplayMessage(totalDownloadableBeatmaps + " BEATMAPS FOUND, LOADING...", 
+                    scriptManager.uiColorManager.purpleColor);
+                break;
         }
 
         // Set to true
@@ -260,9 +245,9 @@ public class DownloadPanel : MonoBehaviour
     private IEnumerator GetDownloadButtonInformation(int _index)
     {
         WWWForm form = new WWWForm();
-        form.AddField("id", _index + 1);
+        form.AddField("id", _index);
 
-        UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/retrievedownloadinformation.php", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost/rhythmgamex/retrieve_beatmap_download.php", form);
         www.chunkedTransfer = false;
         yield return www.SendWebRequest();
 
@@ -276,30 +261,29 @@ public class DownloadPanel : MonoBehaviour
         for (sbyte dataType = 0; dataType < 13; dataType++)
         {
             /*
-                $dataArray[0] = $data['song_name'];
-                $dataArray[1] = $data['artist_name'];
-                $dataArray[2] = $data['creator_name'];
-                $dataArray[3] = $data['easy_level'];
-                $dataArray[4] = $data['advanced_level'];
-                $dataArray[5] = $data['extra_level'];
-                $dataArray[6] = $data['total_downloads'];
-                $dataArray[7] = $data['total_favorites'];
-                $dataArray[8] = $data['total_plays'];
-                $dataArray[9] = $data['image_url'];
-                $dataArray[10] = $data['download_url'];
-                $dataArray[11] = $data['ranked_date'];
-                $dataArray[12] = $data['creator_message'];
+                $returnarray[0] = $infoarray["song_name"];
+                $returnarray[1] = $infoarray["artist_name"];
+                $returnarray[2] = $infoarray["creator_name"];
+                $returnarray[3] = $infoarray["ranked_date"];
+                $returnarray[4] = $infoarray["easy_level"];
+                $returnarray[5] = $infoarray["normal_level"];
+                $returnarray[6] = $infoarray["hard_level"];
+                $returnarray[7] = $infoarray["background_image_url"];
+                $returnarray[8] = $infoarray["bpm"];
+                $returnarray[9] = $infoarray["creator_message"];
+                $returnarray[10] = $infoarray["plays"];
+                $returnarray[11] = $infoarray["downloads"];
+                $returnarray[12] = $infoarray["download_url"];
             */
 
-            // SUCCESS
-            if (www.downloadHandler.text != "1")
+            switch (www.downloadHandler.text)
             {
-                // Save the data to the list for this index
-                downloadData[_index].Add(placeList[dataType].ToString());
-            }
-            else
-            {
-                // ERROR
+                case "ERROR":
+                    break;
+                default:
+                    // Save the data to the list for this index
+                    downloadData[_index].Add(placeList[dataType].ToString());
+                    break;
             }
         }
 
@@ -317,9 +301,6 @@ public class DownloadPanel : MonoBehaviour
             {
                 // Instantiate a new beatmap button to go in the song select panel
                 InstantiateButton(i);
-
-                // Change the beatmap image
-                StartCoroutine(LoadNewBeatmapButtonImage(i));
 
                 // Update the download button information
                 UpdateDownloadButtonInformation(i);
@@ -343,65 +324,64 @@ public class DownloadPanel : MonoBehaviour
     private void UpdateDownloadButtonInformation(int _index)
     {
         /*
-            $dataArray[0] = $data['song_name'];
-            $dataArray[1] = $data['artist_name'];
-            $dataArray[2] = $data['creator_name'];
-            $dataArray[3] = $data['easy_level'];
-            $dataArray[4] = $data['advanced_level'];
-            $dataArray[5] = $data['extra_level'];
-            $dataArray[6] = $data['total_downloads'];
-            $dataArray[7] = $data['total_favorites'];
-            $dataArray[8] = $data['total_plays'];
-            $dataArray[9] = $data['image_url'];
-            $dataArray[10] = $data['download_url'];
-            $dataArray[11] = $data['ranked_date'];
-            $dataArray[12] = $data['creator_message'];
+            $returnarray[0] = $infoarray["song_name"];
+            $returnarray[1] = $infoarray["artist_name"];
+            $returnarray[2] = $infoarray["creator_name"];
+            $returnarray[3] = $infoarray["ranked_date"];
+            $returnarray[4] = $infoarray["easy_level"];
+            $returnarray[5] = $infoarray["normal_level"];
+            $returnarray[6] = $infoarray["hard_level"];
+            $returnarray[7] = $infoarray["background_image_url"];
+            $returnarray[8] = $infoarray["bpm"];
+            $returnarray[9] = $infoarray["creator_message"];
+            $returnarray[10] = $infoarray["plays"];
+            $returnarray[11] = $infoarray["downloads"];
+            $returnarray[12] = $infoarray["download_url"];
         */
 
         downloadButtonList[_index].songNameText.text = downloadData[_index][0];
         downloadButtonList[_index].artistText.text = downloadData[_index][1];
         downloadButtonList[_index].CreatorName = downloadData[_index][2];
-        downloadButtonList[_index].TotalDownloads = downloadData[_index][6];
-        downloadButtonList[_index].TotalFavorites = downloadData[_index][7];
-        downloadButtonList[_index].TotalPlays = downloadData[_index][8];
-        downloadButtonList[_index].ImageUrl = downloadData[_index][9];
-        downloadButtonList[_index].DownloadUrl = downloadData[_index][10];
-        downloadButtonList[_index].RankedDate = downloadData[_index][11];
-        downloadButtonList[_index].CreatorMessage = downloadData[_index][12];
+        downloadButtonList[_index].RankedDate = downloadData[_index][3];
+        downloadButtonList[_index].EasyLevel = downloadData[_index][4];
+        downloadButtonList[_index].NormalLevel = downloadData[_index][5];
+        downloadButtonList[_index].HardLevel = downloadData[_index][6];
+        downloadButtonList[_index].ImageUrl = downloadData[_index][7];
+        downloadButtonList[_index].Bpm = downloadData[_index][8];
+        downloadButtonList[_index].CreatorMessage = downloadData[_index][9];
+        downloadButtonList[_index].TotalPlays = downloadData[_index][10];
+        downloadButtonList[_index].TotalDownloads = downloadData[_index][11];
+        downloadButtonList[_index].DownloadUrl = downloadData[_index][12];
 
-        // If no level found
-        if (downloadData[_index][3] == "0")
+        switch (downloadData[_index][4])
         {
-            // Disable the level gameobject
-            downloadButtonList[_index].easyDifficultyImage.gameObject.SetActive(false);
-        }
-        else
-        {
-            // Update the level text
-            downloadButtonList[_index].easyDifficultyLevelText.text = downloadData[_index][3];
-        }
-
-        if (downloadData[_index][4] == "0")
-        {
-            downloadButtonList[_index].advancedDifficultyImage.gameObject.SetActive(false);
-        }
-        else
-        {
-            downloadButtonList[_index].advancedDifficultyLevelText.text = downloadData[_index][4];
+            case "0":
+                downloadButtonList[_index].easyDifficultyLevelText.gameObject.SetActive(false);
+                break;
+            default:
+                downloadButtonList[_index].easyDifficultyLevelText.text = downloadData[_index][4];
+                break;
         }
 
-        if (downloadData[_index][5] == "0")
+        switch (downloadData[_index][5])
         {
-            downloadButtonList[_index].extraDifficultyImage.gameObject.SetActive(false);
-        }
-        else
-        {
-            downloadButtonList[_index].extraDifficultyLevelText.text = downloadData[_index][5];
+            case "0":
+                downloadButtonList[_index].normalDifficultyLevelText.gameObject.SetActive(false);
+                break;
+            default:
+                downloadButtonList[_index].normalDifficultyLevelText.text = downloadData[_index][5];
+                break;
         }
 
-        downloadButtonList[_index].EasyLevel = downloadData[_index][3];
-        downloadButtonList[_index].AdvancedLevel = downloadData[_index][4];
-        downloadButtonList[_index].ExtraLevel = downloadData[_index][5];
+        switch (downloadData[_index][6])
+        {
+            case "0":
+                downloadButtonList[_index].hardDifficultyLevelText.gameObject.SetActive(false);
+                break;
+            default:
+                downloadButtonList[_index].hardDifficultyLevelText.text = downloadData[_index][6];
+                break;
+        }
     }
 
     // Load the first download button in the list
@@ -468,34 +448,26 @@ public class DownloadPanel : MonoBehaviour
         // Add the instantiated button to the list
         instantiatedDownloadButtonList.Add(downloadButtonInstantiate);
 
-        // Get the child image transform from the instantiated button so we can change the image
-        downloadButtonPanelChild = downloadButtonInstantiate.gameObject.transform.GetChild(1);
-        downloadButtonInstantiateChildImage = downloadButtonPanelChild.gameObject.transform.GetChild(0);
-
-        // Get the image component of the instantiated button
-        instantiatedDownloadButtonImage = downloadButtonInstantiateChildImage.GetComponent<Image>();
-
-        // Store in the list so we can change it later
-        instantiatedDownloadButtonImageList.Add(instantiatedDownloadButtonImage);
-
-        // Get the beatmap button script component attached to the newly instantiated button
-        // Assign the beatmap index to load inside the script
+        // Get button script reference
+        instantiatedDownloadButtonScript = downloadButtonInstantiate.GetComponent<DownloadButton>();
+        
+        // Set button index
+        instantiatedDownloadButtonScript.SetBeatmapButtonIndex(_buttonIndex);
 
         // Create a new material for the button to assign the beatmap file image to 
-        childImageMaterial = new Material(Shader.Find(shaderLocation));
-        instantiatedDownloadButtonImage.material = childImageMaterial;
-
-        instantiatedDownloadButtonScript = downloadButtonInstantiate.GetComponent<DownloadButton>();
-        instantiatedDownloadButtonScript.SetBeatmapButtonIndex(_buttonIndex);
+        instantiatedDownloadButtonScript.beatmapImage.material = new Material(Shader.Find(shaderLocation));
 
         // Add the beatmap button to the list
         downloadButtonList.Add(instantiatedDownloadButtonScript);
+
+        // Change the beatmap image
+        StartCoroutine(LoadNewBeatmapButtonImage(_buttonIndex));
     }
 
     // Load a new beatmap image for the beatmap button instantiated
     private IEnumerator LoadNewBeatmapButtonImage(int _buttonIndex)
     {
-       string completePath = downloadData[_buttonIndex][9];
+       string completePath = downloadData[_buttonIndex][7];
 
         using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(completePath))
         {
@@ -504,7 +476,7 @@ public class DownloadPanel : MonoBehaviour
             if (uwr.isNetworkError || uwr.isHttpError)
             {
                 // Update the beatmap button image material to the default material
-                instantiatedDownloadButtonImageList[_buttonIndex].material = defautChildImageMaterial;
+                downloadButtonList[_buttonIndex].beatmapImage.material = defautBeatmapImageMaterial;
             }
             else
             {
@@ -512,7 +484,7 @@ public class DownloadPanel : MonoBehaviour
                 var texture = DownloadHandlerTexture.GetContent(uwr);
 
                 // Update the beatmap button image material to the file found
-                instantiatedDownloadButtonImageList[_buttonIndex].material.mainTexture = texture;
+                downloadButtonList[_buttonIndex].beatmapImage.material.mainTexture = texture;
             }
         }
 
@@ -525,8 +497,65 @@ public class DownloadPanel : MonoBehaviour
     // Download the beatmap from the URL
     public void DownloadBeatmap()
     {
+        /*
         Application.OpenURL(downloadUrl);
 
         scriptManager.messagePanel.DisplayMessage("DOWNLOADING BEATMAP", scriptManager.uiColorManager.easyDifficultyColor);
+        */
+
+
+        StartCoroutine(DownloadFile());
+
+    }
+
+
+    IEnumerator DownloadFile()
+    {
+        var uwr = new UnityWebRequest("https://cdn.discordapp.com/attachments/626149350828933161/689214904896585760/GUEST_Tune_Up_Bounce.zip", UnityWebRequest.kHttpVerbGET);
+        string path = Path.Combine(Application.persistentDataPath, "Beatmaps.zip");
+        uwr.downloadHandler = new DownloadHandlerFile(path);
+
+        downloadSlider.value = uwr.downloadProgress;
+
+        // Activate slider
+        downloadSlider.gameObject.SetActive(true);
+        downloadOpenFolderButton.gameObject.SetActive(false);
+
+        uwr.SendWebRequest();
+
+        // While downloading
+        while (uwr.isDone == false)
+        {
+            downloadProgressText.text = "Downloading " + (uwr.downloadProgress * 100).ToString("F0") + "%"; 
+
+            downloadSlider.value = uwr.downloadProgress;
+
+            if (uwr.downloadProgress >= 0 && uwr.downloadProgress < 0.33f)
+            {
+                downloadSliderBackgroundImage.color = scriptManager.uiColorManager.offlineColor08;
+            }
+            else if (uwr.downloadProgress >= 0.33f && uwr.downloadProgress < 0.66f)
+            {
+                downloadSliderBackgroundImage.color = scriptManager.uiColorManager.orangeColor08;
+            }
+            else if (uwr.downloadProgress >= 0.66f && uwr.downloadProgress < 1f)
+            {
+                downloadSliderBackgroundImage.color = scriptManager.uiColorManager.onlineColor08;
+            }
+            yield return null;
+        }
+
+        if (uwr.isNetworkError || uwr.isHttpError)
+        {
+            Debug.LogError(uwr.error);
+            downloadSlider.gameObject.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("File successfully downloaded and saved to " + path);
+            downloadSliderBackgroundImage.color = scriptManager.uiColorManager.onlineColorSolid;
+            downloadProgressText.text = "Download complete";
+            downloadOpenFolderButton.gameObject.SetActive(true);
+        }
     }
 }

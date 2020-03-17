@@ -8,10 +8,9 @@ public class UIColorManager : MonoBehaviour
     private ColorBlock dropDownColorBlock, dropDownItemColorBlock, tickBoxButtonColorBlock, gradientButtonColorBlock, scrollbarColorBlock;
     public Color dropDownPressedColor, dropDownSelectedColor;
     public Color solidBlackColor, blackColor08, invisibleColor, difficultyColor, solidWhiteColor, difficultyColor08;
-    public Color onlineColor08, onlineColor09, onlineColorSolid, offlineColor08, offlineColor09, offlineColorSolid;
+    public Color onlineColor08, onlineColor09, onlineColorSolid, offlineColor08, offlineColor09, offlineColorSolid, orangeColor08;
     public Color selectedColor, sPlusRankColor, sRankColor, aRankColor, bRankColor, cRankColor, dRankColor, eRankColor, fRankColor;
     public Color easyDifficultyColor, normalDifficultyColor, hardDifficultyColor, purpleColor;
-
 
     public TMP_ColorGradient sPlusColorGradient, sColorGradient, aColorGradient, bColorGradient, cColorGradient, dColorGradient, eColorGradient,
         fColorGradient;

@@ -9,6 +9,9 @@ public class BeatmapButton : MonoBehaviour
     // Button
     public Button beatmapButton;
 
+    // Image
+    public Image beatmapImage;
+
     // Text
     public TextMeshProUGUI easyDifficultyLevelText, normalDifficultyLevelText, hardDifficultyLevelText, songNameText, artistText,
         beatmapCreatorText, newText;

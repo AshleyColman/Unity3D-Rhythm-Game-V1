@@ -112,33 +112,36 @@ public class UploadPlayerImage : MonoBehaviour
     {
         if (_url != "")
         {
-            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
+            if (_url != null)
             {
-                yield return uwr.SendWebRequest();
-
-                if (uwr.isNetworkError || uwr.isHttpError)
+                using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
                 {
-                    Debug.Log("Error uploading profile image");
-                }
-                else
-                {
-                    // Get downloaded asset bundle
-                    var texture = DownloadHandlerTexture.GetContent(uwr);
+                    yield return uwr.SendWebRequest();
 
-                    _image.material.mainTexture = texture;
-
-                    // Set image to false then to true to activate new image
-                    _image.gameObject.SetActive(false);
-                    _image.gameObject.SetActive(true);
-
-                    // Display loading icon
-                    if (_image == beatmapCreatorProfileImage)
+                    if (uwr.isNetworkError || uwr.isHttpError)
                     {
-                        beatmapCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
+                        Debug.Log("Error uploading profile image");
                     }
-                    else if (_image == downloadBeatmapCreatorProfileImage)
+                    else
                     {
-                        downloadCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
+                        // Get downloaded asset bundle
+                        var texture = DownloadHandlerTexture.GetContent(uwr);
+
+                        _image.material.mainTexture = texture;
+
+                        // Set image to false then to true to activate new image
+                        _image.gameObject.SetActive(false);
+                        _image.gameObject.SetActive(true);
+
+                        // Display loading icon
+                        if (_image == beatmapCreatorProfileImage)
+                        {
+                            beatmapCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
+                        }
+                        else if (_image == downloadBeatmapCreatorProfileImage)
+                        {
+                            downloadCreatorProfileImageLoadingIcon.gameObject.SetActive(false);
+                        }
                     }
                 }
             }
