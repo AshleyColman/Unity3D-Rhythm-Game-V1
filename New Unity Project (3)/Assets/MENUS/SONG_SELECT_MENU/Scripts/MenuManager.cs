@@ -40,6 +40,10 @@ public class MenuManager : MonoBehaviour
                 overallRankingMenu.gameObject.SetActive(true);
                 currentActiveMenu = overallRankingMenu;
                 break;
+            case 3:
+                downloadMenu.gameObject.SetActive(true);
+                currentActiveMenu = downloadMenu;
+                break;
         }
     }
 
@@ -57,6 +61,10 @@ public class MenuManager : MonoBehaviour
         else if (overallRankingMenu.gameObject.activeSelf == true)
         {
             currentActiveMenu = overallRankingMenu;
+        }
+        else if (downloadMenu.gameObject.activeSelf == true)
+        {
+            currentActiveMenu = downloadMenu;
         }
     }
     #endregion

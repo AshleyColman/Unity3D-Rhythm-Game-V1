@@ -6,8 +6,7 @@ public class MetronomeForEffects : MonoBehaviour
     // Animator
     public Animator flashGlassAnimator;
     public Animator backgroundImageAnimator, backgroundImageAnimator2, videoPlayerImageAnimator, videoPlayerImageAnimator2, lightPanelBeatAnimator;
-    public Animator topColorPanelGlowAnimator, bottomColorPanelGlowAnimator, characterMenuColorPanelGlowAnimator, overallRankingMenuColorPanelGlowAnimator,
-        downloadMenuColorPanelGlowAnimator;
+    public Animator topColorPanelGlowAnimator, bottomColorPanelGlowAnimator;
     public Animator overallRankingTitleAnimator;
     
 
@@ -288,6 +287,7 @@ public class MetronomeForEffects : MonoBehaviour
                 playTopPanelGlowAnimation = false;
                 break;
             case false:
+                bottomColorPanelGlowAnimator.Play("BottomColorPanelGlow_Animation", 0, 0f);
                 playTopPanelGlowAnimation = true;
                 break;
         }

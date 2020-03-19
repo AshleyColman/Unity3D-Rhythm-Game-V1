@@ -1,26 +1,39 @@
 ﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Networking;
+using System.Collections;
+using System.IO;
 
 public class DownloadButton : MonoBehaviour
 {
     #region Variables
     // Text
     public TextMeshProUGUI easyDifficultyLevelText, normalDifficultyLevelText, hardDifficultyLevelText,
-        songNameText, artistText, beatmapCreatorText;
+        songNameText, artistText, beatmapCreatorText, downloadProgressText, rankedDateText, totalDownloadsText, totalPlaysText;
+
+    // Gameobject
+    public GameObject flashAnimationImage;
+
+    // Slider
+    public Slider downloadProgressSlider;
 
     // Image
-    public Image beatmapImage;
+    public Image beatmapImage, downloadProgressSliderImage, creatorProfileImage;
+
+    // Button
+    public Button button, viewInDirectoryButton;
 
     // Integer
     private int beatmapButtonIndex;
 
     // Bool
-    private bool hasEasyDifficulty, hasAdvancedDifficulty, hasExtraDifficulty;
+    private bool hasEasyDifficulty, hasAdvancedDifficulty, hasExtraDifficulty, hasDownloaded;
 
     // String
-    private string imageUrl, downloadUrl, totalDownloads, totalPlays, rankedDate, creatorMessage, creatorName, easyLevel, normalLevel,
-        hardLevel, bpm;
+    private string imageUrl, downloadUrl, totalDownloads, totalPlays, rankedDate, creatorName, easyLevel, normalLevel,
+        hardLevel, bpm, folderDirectory, songName, artistName;
+    private const string FILE_EXTENSION = ".zip", FOLDER = "Beatmaps";
 
     // Scripts
     private ScriptManager scriptManager;
@@ -33,44 +46,58 @@ public class DownloadButton : MonoBehaviour
         set { beatmapButtonIndex = value; }
     }
 
+    public string SongName
+    {
+        get { return songName; }
+        set { songName = value; }
+    }
+
+    public string ArtistName
+    {
+        get { return artistName; }
+        set { artistName = value; }
+    }
+
     public string EasyLevel
     {
         set { easyLevel = value; }
+        get { return easyLevel; }
     }
 
     public string NormalLevel
     {
         set { normalLevel = value; }
+        get { return normalLevel; }
     }
 
     public string HardLevel
     {
         set { hardLevel = value; }
+        get { return hardLevel; }
     }
 
     public string CreatorName
     {
         set { creatorName = value; }
-    }
-
-    public string CreatorMessage
-    {
-        set { creatorMessage = value; }
+        get { return creatorName; }
     }
 
     public string RankedDate
     {
         set { rankedDate = value; }
+        get { return rankedDate; }
     }
 
     public string TotalDownloads
     {
         set { totalDownloads = value; }
+        get { return totalDownloads; }
     }
 
     public string TotalPlays
     {
         set { totalPlays = value; }
+        get { return totalPlays; }
     }
 
     public string ImageUrl
@@ -86,6 +113,12 @@ public class DownloadButton : MonoBehaviour
     public string Bpm
     {
         set { bpm = value; }
+        get { return bpm; }
+    }
+
+    public bool HasDownloaded
+    {
+        get { return hasDownloaded; }
     }
     #endregion
 
@@ -104,73 +137,89 @@ public class DownloadButton : MonoBehaviour
             scriptManager = FindObjectOfType<ScriptManager>();
         }
 
-        scriptManager.uploadPlayerImage.StopAllCoroutines();
+        // Load background image
         scriptManager.backgroundManager.StopAllCoroutines();
-
-        scriptManager.downloadPanel.songSelectInformationAnimator.gameObject.SetActive(false);
-
-        // Set the new url for the download button
-        scriptManager.downloadPanel.DownloadUrl = downloadUrl;
-
         scriptManager.backgroundManager.LoadBackgroundImageURL(imageUrl);
-
-        // Load beatmap creator profile image
-        scriptManager.uploadPlayerImage.CallBeatmapCreatorUploadImage(creatorName, scriptManager.uploadPlayerImage.downloadBeatmapCreatorProfileImage);
-
-        // Play song information panel
-        scriptManager.downloadPanel.downloadStatText.text = "[ " + totalDownloads + " DOWNLOADS | " + totalPlays + " PLAYS | " +
-            bpm + " BPM | " + rankedDate + " ]"; 
-        scriptManager.downloadPanel.creatorText.text = "Designed by " + creatorName.ToUpper();
-        scriptManager.downloadPanel.creatorMessageText.text = creatorMessage;
-
-        // Update level text and buttons
-        switch (easyLevel)
-        {
-            case "0":
-                scriptManager.downloadPanel.easyDifficultyButtonScript.levelText.text = "X";
-                scriptManager.downloadPanel.easyDifficultyButtonScript.difficultyButton.interactable = false;
-                scriptManager.downloadPanel.easyDifficultyButtonScript.selectedGameObject.gameObject.SetActive(false);
-                break;
-            default:
-                scriptManager.downloadPanel.easyDifficultyButtonScript.levelText.text = easyLevel;
-                scriptManager.downloadPanel.easyDifficultyButtonScript.difficultyButton.interactable = true;
-                scriptManager.downloadPanel.easyDifficultyButtonScript.selectedGameObject.gameObject.SetActive(true);
-                break;
-        }
-
-        switch (normalLevel)
-        {
-            case "0":
-                scriptManager.downloadPanel.normalDifficultyButtonScript.levelText.text = "X";
-                scriptManager.downloadPanel.normalDifficultyButtonScript.difficultyButton.interactable = false;
-                scriptManager.downloadPanel.normalDifficultyButtonScript.selectedGameObject.gameObject.SetActive(false);
-                break;
-            default:
-                scriptManager.downloadPanel.normalDifficultyButtonScript.levelText.text = normalLevel;
-                scriptManager.downloadPanel.normalDifficultyButtonScript.difficultyButton.interactable = true;
-                scriptManager.downloadPanel.normalDifficultyButtonScript.selectedGameObject.gameObject.SetActive(true);
-                break;
-        }
-
-        switch (hardLevel)
-        {
-            case "0":
-                scriptManager.downloadPanel.hardDifficultyButtonScript.levelText.text = "X";
-                scriptManager.downloadPanel.hardDifficultyButtonScript.difficultyButton.interactable = false;
-                scriptManager.downloadPanel.hardDifficultyButtonScript.selectedGameObject.gameObject.SetActive(false);
-                break;
-            default:
-                scriptManager.downloadPanel.hardDifficultyButtonScript.levelText.text = hardLevel;
-                scriptManager.downloadPanel.hardDifficultyButtonScript.difficultyButton.interactable = true;
-                scriptManager.downloadPanel.hardDifficultyButtonScript.selectedGameObject.gameObject.SetActive(true);
-                break;
-        }
     }
 
     // Set the beatmap butotn index during instantiation
     public void SetBeatmapButtonIndex(int _beatmapButtonIndex)
     {
         beatmapButtonIndex = _beatmapButtonIndex;
+    }
+
+    // Click function for buttons
+    public void DownloadBeatmap()
+    {
+        // Download beatmap file
+        StartCoroutine(DownloadBeatmapFile());
+    }
+
+    // Download beatmap file
+    private IEnumerator DownloadBeatmapFile()
+    {
+        var uwr = new UnityWebRequest(downloadUrl, UnityWebRequest.kHttpVerbGET);
+        string path = Path.Combine(Application.persistentDataPath, FOLDER + "/" + creatorName + "_" + songName + FILE_EXTENSION);
+        uwr.downloadHandler = new DownloadHandlerFile(path);
+
+        // Assign
+        folderDirectory = path;
+
+        yield return null;
+
+        downloadProgressSlider.value = uwr.downloadProgress;
+
+        downloadProgressSlider.gameObject.SetActive(true);
+        viewInDirectoryButton.gameObject.SetActive(false);
+        button.interactable = false;
+        hasDownloaded = false;
+
+        uwr.SendWebRequest();
+
+        // While downloading
+        while (uwr.isDone == false)
+        {
+            downloadProgressText.text = "DOWNLOADING " + (uwr.downloadProgress * 100).ToString("F0") + "%";
+
+            downloadProgressSlider.value = uwr.downloadProgress;
+
+            if (uwr.downloadProgress >= 0 && uwr.downloadProgress < 0.33f)
+            {
+                downloadProgressSliderImage.color = scriptManager.uiColorManager.offlineColor08;
+            }
+            else if (uwr.downloadProgress >= 0.33f && uwr.downloadProgress < 0.66f)
+            {
+                downloadProgressSliderImage.color = scriptManager.uiColorManager.orangeColor08;
+            }
+            else if (uwr.downloadProgress >= 0.66f && uwr.downloadProgress < 1f)
+            {
+                downloadProgressSliderImage.color = scriptManager.uiColorManager.onlineColor08;
+            }
+            yield return null;
+        }
+
+        if (uwr.isNetworkError || uwr.isHttpError)
+        {
+            hasDownloaded = false;
+            button.interactable = true;
+            viewInDirectoryButton.gameObject.SetActive(false);
+            downloadProgressSliderImage.color = scriptManager.uiColorManager.offlineColor08;
+            downloadProgressText.text = "DOWNLOAD FAILED";
+        }
+        else
+        {
+            hasDownloaded = true;
+            downloadProgressSliderImage.color = scriptManager.uiColorManager.onlineColor08;
+            downloadProgressText.text = "DOWNLOAD COMPLETE";
+            viewInDirectoryButton.gameObject.SetActive(true);
+            downloadProgressSlider.value = 1f;
+        }
+    }
+
+    // Open beatmap folder directory
+    public void OpenBeatmapFolder()
+    {
+        System.Diagnostics.Process.Start(folderDirectory);
     }
     #endregion
 }

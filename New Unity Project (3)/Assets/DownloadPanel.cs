@@ -3,33 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-using TMPro;
 using System.Text.RegularExpressions;
-using System.IO;
+using System.Linq;
+using TMPro;
 
 public class DownloadPanel : MonoBehaviour
 {
     #region Variables
-    // Text    
-    public TextMeshProUGUI songNameText, artistText, creatorText, creatorMessageText, downloadStatText, downloadProgressText;
+    // Dropdown
+    public TMP_Dropdown sortingDropdown;
 
-    // Image
-    public Image downloadSliderBackgroundImage;
-
-    // Scrollbar
-    public Scrollbar downloadButtonListScrollbar;
-
-    // Slider
-    public Slider downloadSlider;
-
-    // Canvas group
-    public CanvasGroup downloadButtonListScrollbarCanvasGroup;
-
-    // Animator
-    public Animator songSelectInformationAnimator;
-
-    // Button
-    public Button downloadOpenFolderButton;
+    // Input field
+    public TMP_InputField beatmapSearchInputField;
 
     // Navigation
     private Button button, buttonDown, buttonUp;
@@ -45,21 +30,16 @@ public class DownloadPanel : MonoBehaviour
     public Transform buttonListContent; // Where the beatmap buttons instantiate to
 
     // Strings
-    private string shaderLocation, downloadUrl, sorting;
+    private string shaderLocation;
     public List<string>[] downloadData;
-    /*
-    private const string SONG_NAME = "song_name", ARTIST_NAME = "artist_name", CREATOR_NAME = "creator_name",
-        EASY_DIFFICULTY_LEVEL = "easy_difficulty_level", NORMAL_DIFFICULTY_LEVEL = "normal_difficulty_level",
-        HARD_DIFFICULTY_LEVEL = "hard_difficulty_level", RANKED_DATE = "ranked_date", DOWNLOADS = "downloads", PLAYS = "plays";
-        */
 
     // Integers
-    private int downloadButtonIndexToGet, currentLoadedButtonIndex, totalDownloadableBeatmaps, totalDownloadsChecked,
-        totalDownloadImagesChecked, rowToGet, currentSelectedDownloadButtonIndex;
+    public int downloadButtonIndexToGet, currentLoadedButtonIndex, totalDownloadableBeatmaps, totalDownloadsChecked,
+        totalDownloadImagesChecked, rowToGet, currentSelectedDownloadButtonIndex, totalCreatorImagesChecked;
     private float buttonListContentPositionX, buttonListContentPositionY, buttonListContentPositionZ, newButtonListContentPositionY;
 
     // Bools
-    public bool hasLoadedAllBeatmapButtons, hasCheckedTotalDownloadCount, hasCheckedAllDownloadInformation, hasActivatedPanel;
+    private bool hasLoadedAllBeatmapButtons, hasCheckedTotalDownloadCount, hasCheckedAllDownloadInformation, hasActivatedPanel;
 
     // Material
     private Material beatmapImageMaterial, defautBeatmapImageMaterial;
@@ -71,15 +51,10 @@ public class DownloadPanel : MonoBehaviour
     private ScriptManager scriptManager;
     private DownloadButton instantiatedDownloadButtonScript, selectedDownloadButtonScript;
     public List<DownloadButton> downloadButtonList = new List<DownloadButton>();
-    public DifficultyButton easyDifficultyButtonScript, normalDifficultyButtonScript, hardDifficultyButtonScript;
+    public List<DownloadButton> listToSort = new List<DownloadButton>();
     #endregion
 
     #region Properties
-    public string DownloadUrl
-    {
-        set { downloadUrl = value; }
-    }
-
     private void OnEnable()
     {
         if (scriptManager == null)
@@ -103,6 +78,7 @@ public class DownloadPanel : MonoBehaviour
         // Initialize
         rowToGet = 1;
         totalDownloadsChecked = 0;
+        totalDownloadImagesChecked = 0;
         downloadButtonIndexToGet = 0;
         downloadButtonPosition = new Vector3(0, 0, 500); // Set to 500 on z to fix the "moving image" problem, instantiates the images to z of 0 so the images don't move when the mouse cursor has moved
         shaderLocation = "UI/Unlit/Transparent";
@@ -124,54 +100,125 @@ public class DownloadPanel : MonoBehaviour
     {
         if (scriptManager.menuManager.downloadMenu.gameObject.activeSelf == true)
         {
-            if (hasCheckedTotalDownloadCount == true && totalDownloadableBeatmaps != 0)
+            switch (hasActivatedPanel)
             {
-                if (hasCheckedAllDownloadInformation == false)
-                {
-                    // Retrieve all download button information for all buttons
-                    for (sbyte i = 0; i < totalDownloadableBeatmaps; i++)
+                case false:
+                    if (hasCheckedTotalDownloadCount == true && totalDownloadableBeatmaps != 0)
                     {
-                        // Initialize the downloadData list
-                        InitializeDownloadDataList();
+                        if (hasCheckedAllDownloadInformation == false)
+                        {
+                            // Retrieve all download button information for all buttons
+                            for (sbyte i = 0; i < totalDownloadableBeatmaps; i++)
+                            {
+                                // Initialize the downloadData list
+                                InitializeDownloadDataList();
 
-                        // Get all download button information
-                        StartCoroutine(GetDownloadButtonInformation(i));
+                                // Get all download button information
+                                StartCoroutine(GetDownloadButtonInformation(i));
+                            }
+
+                            // Set to true to prevent looping requests
+                            hasCheckedAllDownloadInformation = true;
+                        }
+
+
+                        if (totalDownloadsChecked == totalDownloadableBeatmaps)
+                        {
+                            // Create all beatmap buttons to go in the song select panel
+                            CreateDownloadPanel();
+
+                            if (totalDownloadImagesChecked == totalDownloadableBeatmaps && totalCreatorImagesChecked == totalDownloadableBeatmaps)
+                            {
+                                // Update the information for each button
+                                if (hasActivatedPanel == false)
+                                {
+                                    // Enable the panel
+                                    ActivateDownloadPanel();
+
+                                    // Sort buttons to new sorting
+                                    SortDownloadButtonsToNewSorting();
+
+                                    hasActivatedPanel = true;
+                                }
+                            }
+                        }
                     }
+                    break;
+                case true:
+                    // Check for any input
+                    if (Input.anyKeyDown)
+                    {
+                        // Check for mouse or navigation input
+                        if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)
+                            || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Return))
+                        {
+                            // Scroll the beatmap button content panel up
+                            //ScrollListUp();
 
-                    // Set to true to prevent looping requests
-                    hasCheckedAllDownloadInformation = true;
+                            // Scroll the beatmap button content panel up
+                            //ScrollListDown();
+                        }
+                        else
+                        {
+                            if (beatmapSearchInputField.isFocused == false)
+                            {
+                                // Select search bar if any keyboard key has been pressed
+                                beatmapSearchInputField.ActivateInputField();
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    // Search beatmaps with the search bar
+    public void SearchBeatmaps()
+    {
+        listToSort = downloadButtonList;
+
+        // Turn input to upper case
+        string beatmapSearchValue = beatmapSearchInputField.text.ToUpper();
+
+        // Button search variables
+        string songName, artistName, creatorName, bpm, easyLevel, normalLevel, hardLevel, totalDownloads, totalPlays;
+    
+        if (beatmapSearchValue.Length == 0)
+        {
+            SortDownloadButtonsToNewSorting();
+        }
+        else
+        {
+            // Loop through all button scripts
+            for (int i = 0; i < listToSort.Count; i++)
+            {
+                songName = listToSort[i].SongName.ToUpper();
+                artistName = listToSort[i].ArtistName.ToUpper();
+                creatorName = listToSort[i].CreatorName.ToUpper();
+                bpm = listToSort[i].Bpm;
+                easyLevel = listToSort[i].EasyLevel;
+                normalLevel = listToSort[i].NormalLevel;
+                hardLevel = listToSort[i].HardLevel;
+                totalDownloads = listToSort[i].TotalDownloads;
+                totalPlays = listToSort[i].TotalPlays;
+
+                // Search all buttons to see if the current input field text is the same as the song name, artist, beatmap creator or difficulty levels
+                if (songName.Contains(beatmapSearchValue) || artistName.Contains(beatmapSearchValue) ||
+                    creatorName.Contains(beatmapSearchValue) || bpm.Contains(beatmapSearchValue) || easyLevel.Contains(beatmapSearchValue)
+                    || normalLevel.Contains(beatmapSearchValue) || hardLevel.Contains(beatmapSearchValue) ||
+                    totalDownloads.Contains(beatmapSearchValue) || totalPlays.Contains(beatmapSearchValue))
+                {
+                    listToSort[i].gameObject.SetActive(true);
                 }
-
-
-                if (totalDownloadsChecked == totalDownloadableBeatmaps)
+                else
                 {
-                    // Create all beatmap buttons to go in the song select panel
-                    CreateDownloadPanel();
-
-                    if (totalDownloadImagesChecked == totalDownloadableBeatmaps)
-                    {
-                        // Update the information for each button
-
-                        if (hasActivatedPanel == false)
-                        {
-                            // Enable the panel
-                            ActivateDownloadPanel();
-
-                            hasActivatedPanel = true;
-                        }
-                    }
-
-                    // Download
-                    if (Input.GetKeyDown(KeyCode.D))
-                    {
-                        if (downloadUrl != null)
-                        {
-                            DownloadBeatmap();
-                        }
-                    }
+                    listToSort[i].gameObject.SetActive(false);
                 }
             }
         }
+
+        // Update navigation of all buttons
+        UpdateButtonNavigation();
     }
 
     private void DeactivateDownloadPanel()
@@ -183,21 +230,7 @@ public class DownloadPanel : MonoBehaviour
     private void ActivateDownloadPanel()
     {
         downloadPanel.gameObject.SetActive(true);
-
-        for (int i = 0; i < totalDownloadableBeatmaps; i++)
-        {
-            instantiatedDownloadButtonList[i].gameObject.SetActive(true);
-        }
-
         loadingIcon.gameObject.SetActive(false);
-
-        // Select first button in the list
-        downloadButtonList[0].GetComponent<Button>().Select();
-
-        songSelectInformationAnimator.gameObject.SetActive(true);
-
-        downloadButtonListScrollbarCanvasGroup.alpha = 1;
-        downloadButtonListScrollbar.interactable = true;
     }
 
     // Initialize the downloadData list
@@ -270,10 +303,10 @@ public class DownloadPanel : MonoBehaviour
                 $returnarray[6] = $infoarray["hard_level"];
                 $returnarray[7] = $infoarray["background_image_url"];
                 $returnarray[8] = $infoarray["bpm"];
-                $returnarray[9] = $infoarray["creator_message"];
-                $returnarray[10] = $infoarray["plays"];
-                $returnarray[11] = $infoarray["downloads"];
-                $returnarray[12] = $infoarray["download_url"];
+                $returnarray[9] = $infoarray["plays"];
+                $returnarray[10] = $infoarray["downloads"];
+                $returnarray[11] = $infoarray["download_url"];
+                $returnarray[12] = $infoarray["image_url"];
             */
 
             switch (www.downloadHandler.text)
@@ -314,9 +347,6 @@ public class DownloadPanel : MonoBehaviour
 
             // Set to true
             hasLoadedAllBeatmapButtons = true;
-
-            // Update beatmap button navigation
-            //UpdateBeatmapButtonNavigation(defaultDifficultySortingValue);
         }
     }
 
@@ -333,14 +363,16 @@ public class DownloadPanel : MonoBehaviour
             $returnarray[6] = $infoarray["hard_level"];
             $returnarray[7] = $infoarray["background_image_url"];
             $returnarray[8] = $infoarray["bpm"];
-            $returnarray[9] = $infoarray["creator_message"];
-            $returnarray[10] = $infoarray["plays"];
-            $returnarray[11] = $infoarray["downloads"];
-            $returnarray[12] = $infoarray["download_url"];
+            $returnarray[9] = $infoarray["plays"];
+            $returnarray[10] = $infoarray["downloads"];
+            $returnarray[11] = $infoarray["download_url"];
+            $returnarray[12] = $infoarray["image_url"];
         */
 
-        downloadButtonList[_index].songNameText.text = downloadData[_index][0];
-        downloadButtonList[_index].artistText.text = downloadData[_index][1];
+
+
+        downloadButtonList[_index].SongName = downloadData[_index][0];
+        downloadButtonList[_index].ArtistName = downloadData[_index][1];
         downloadButtonList[_index].CreatorName = downloadData[_index][2];
         downloadButtonList[_index].RankedDate = downloadData[_index][3];
         downloadButtonList[_index].EasyLevel = downloadData[_index][4];
@@ -348,10 +380,17 @@ public class DownloadPanel : MonoBehaviour
         downloadButtonList[_index].HardLevel = downloadData[_index][6];
         downloadButtonList[_index].ImageUrl = downloadData[_index][7];
         downloadButtonList[_index].Bpm = downloadData[_index][8];
-        downloadButtonList[_index].CreatorMessage = downloadData[_index][9];
-        downloadButtonList[_index].TotalPlays = downloadData[_index][10];
-        downloadButtonList[_index].TotalDownloads = downloadData[_index][11];
-        downloadButtonList[_index].DownloadUrl = downloadData[_index][12];
+        downloadButtonList[_index].TotalPlays = downloadData[_index][9];
+        downloadButtonList[_index].TotalDownloads = downloadData[_index][10];
+        downloadButtonList[_index].DownloadUrl = downloadData[_index][11];
+
+        // Update text
+        downloadButtonList[_index].songNameText.text = downloadData[_index][0];
+        downloadButtonList[_index].artistText.text = downloadData[_index][1];
+        downloadButtonList[_index].beatmapCreatorText.text = downloadData[_index][2];
+        downloadButtonList[_index].rankedDateText.text = downloadData[_index][3];
+        downloadButtonList[_index].totalDownloadsText.text = "DOWNLOADS: " + downloadData[_index][10];
+        downloadButtonList[_index].totalPlaysText.text = "PLAYS: " + downloadData[_index][9];
 
         switch (downloadData[_index][4])
         {
@@ -445,6 +484,9 @@ public class DownloadPanel : MonoBehaviour
         downloadButtonInstantiate = Instantiate(downloadButton, downloadButtonPosition, Quaternion.Euler(0, 0, 0),
         buttonListContent) as GameObject;
 
+        downloadButtonInstantiate.transform.localPosition = new Vector3(downloadButtonInstantiate.transform.localPosition.x,
+            downloadButtonInstantiate.transform.localPosition.y, 0f);
+
         // Add the instantiated button to the list
         instantiatedDownloadButtonList.Add(downloadButtonInstantiate);
 
@@ -462,6 +504,12 @@ public class DownloadPanel : MonoBehaviour
 
         // Change the beatmap image
         StartCoroutine(LoadNewBeatmapButtonImage(_buttonIndex));
+
+        // Create new material for creator button image
+        instantiatedDownloadButtonScript.creatorProfileImage.material = new Material(Shader.Find(shaderLocation));
+
+        // Load beatmap creator image
+        StartCoroutine(LoadCreatorButtonImage(_buttonIndex));
     }
 
     // Load a new beatmap image for the beatmap button instantiated
@@ -494,68 +542,350 @@ public class DownloadPanel : MonoBehaviour
         yield return null;
     }
 
-    // Download the beatmap from the URL
-    public void DownloadBeatmap()
+    // Load beatmap creator profile image
+    private IEnumerator LoadCreatorButtonImage(int _buttonIndex)
     {
-        /*
-        Application.OpenURL(downloadUrl);
+        string completePath = downloadData[_buttonIndex][12];
 
-        scriptManager.messagePanel.DisplayMessage("DOWNLOADING BEATMAP", scriptManager.uiColorManager.easyDifficultyColor);
-        */
+        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(completePath))
+        {
+            yield return uwr.SendWebRequest();
 
+            if (uwr.isNetworkError || uwr.isHttpError)
+            {
 
-        StartCoroutine(DownloadFile());
+            }
+            else
+            {
+                // Get downloaded asset bundle
+                var texture = DownloadHandlerTexture.GetContent(uwr);
 
+                // Update the creator profile image
+                downloadButtonList[_buttonIndex].creatorProfileImage.material.mainTexture = texture;
+            }
+        }
+
+        // Increment
+        totalCreatorImagesChecked++;
+
+        yield return null;
     }
 
-
-    IEnumerator DownloadFile()
+    // Open directory of beatmaps
+    public void OpenBeatmapDirectory()
     {
-        var uwr = new UnityWebRequest("https://cdn.discordapp.com/attachments/626149350828933161/689214904896585760/GUEST_Tune_Up_Bounce.zip", UnityWebRequest.kHttpVerbGET);
-        string path = Path.Combine(Application.persistentDataPath, "Beatmaps.zip");
-        uwr.downloadHandler = new DownloadHandlerFile(path);
+        System.Diagnostics.Process.Start(Application.persistentDataPath);
+    }
 
-        downloadSlider.value = uwr.downloadProgress;
-
-        // Activate slider
-        downloadSlider.gameObject.SetActive(true);
-        downloadOpenFolderButton.gameObject.SetActive(false);
-
-        uwr.SendWebRequest();
-
-        // While downloading
-        while (uwr.isDone == false)
+    // Sort beatmap buttons by song name alphabetical order 
+    public void SortDownloadButtonsToNewSorting()
+    {
+        // Sort the difficulty buttons based on the current difficulty sorting in place
+        switch (sortingDropdown.value)
         {
-            downloadProgressText.text = "Downloading " + (uwr.downloadProgress * 100).ToString("F0") + "%"; 
+            case 0:
+                listToSort = downloadButtonList.OrderBy(x => x.TotalDownloads).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("TOTAL DOWNLOADS [ HIGH TO LOW ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsFirstSibling();
+                break;
+            case 1:
+                listToSort = downloadButtonList.OrderBy(x => x.TotalDownloads).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("TOTAL DOWNLOADS [ LOW TO HIGH ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsLastSibling();
+                break;
+            case 2:
+                listToSort = downloadButtonList.OrderBy(x => x.TotalPlays).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("TOTAL PLAYS [ HIGH TO LOW ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsFirstSibling();
+                break;
+            case 3:
+                listToSort = downloadButtonList.OrderBy(x => x.TotalPlays).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("TOTAL PLAYS [ LOW TO HIGH ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsLastSibling();
+                break;
+            case 4:
+                listToSort = downloadButtonList.OrderBy(x => x.SongName).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("SONG NAME [ A - Z ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsLastSibling();
+                break;
+            case 5:
+                listToSort = downloadButtonList.OrderBy(x => x.SongName).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("SONG NAME [ Z - A ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsFirstSibling();
+                break;
+            case 6:
+                listToSort = downloadButtonList.OrderBy(x => x.ArtistName).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("ARTIST NAME [ A - Z ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsLastSibling();
+                break;
+            case 7:
+                listToSort = downloadButtonList.OrderBy(x => x.ArtistName).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("ARTIST NAME [ Z - A ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsFirstSibling();
+                break;
+            case 8:
+                listToSort = downloadButtonList.OrderBy(x => x.CreatorName).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("CREATOR NAME [ A - Z ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsLastSibling();
+                break;
+            case 9:
+                listToSort = downloadButtonList.OrderBy(x => x.CreatorName).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("CREATOR NAME [ Z - A ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsFirstSibling();
+                break;
+            case 10:
+                listToSort = downloadButtonList.OrderBy(x => x.EasyLevel).ToList();
 
-            downloadSlider.value = uwr.downloadProgress;
+                for (int i = 0; i < listToSort.Count; i++)
+                {
+                    switch (listToSort[i].EasyLevel)
+                    {
+                        case "0":
+                            listToSort[i].gameObject.SetActive(false);
+                            break;
+                        default:
+                            listToSort[i].gameObject.SetActive(true);
+                            break;
+                    }
+                }
 
-            if (uwr.downloadProgress >= 0 && uwr.downloadProgress < 0.33f)
-            {
-                downloadSliderBackgroundImage.color = scriptManager.uiColorManager.offlineColor08;
-            }
-            else if (uwr.downloadProgress >= 0.33f && uwr.downloadProgress < 0.66f)
-            {
-                downloadSliderBackgroundImage.color = scriptManager.uiColorManager.orangeColor08;
-            }
-            else if (uwr.downloadProgress >= 0.66f && uwr.downloadProgress < 1f)
-            {
-                downloadSliderBackgroundImage.color = scriptManager.uiColorManager.onlineColor08;
-            }
-            yield return null;
+                scriptManager.messagePanel.DisplayMessage("EASY LEVEL [ 1 - 10 ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsLastSibling();
+                break;
+            case 11:
+                listToSort = downloadButtonList.OrderBy(x => x.EasyLevel).ToList();
+
+                for (int i = 0; i < listToSort.Count; i++)
+                {
+                    switch (listToSort[i].EasyLevel)
+                    {
+                        case "0":
+                            listToSort[i].gameObject.SetActive(false);
+                            break;
+                        default:
+                            listToSort[i].gameObject.SetActive(true);
+                            break;
+                    }
+                }
+
+                scriptManager.messagePanel.DisplayMessage("EASY LEVEL [ 10 - 1 ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsFirstSibling();
+                break;
+            case 12:
+                listToSort = downloadButtonList.OrderBy(x => x.NormalLevel).ToList();
+
+                for (int i = 0; i < listToSort.Count; i++)
+                {
+                    switch (listToSort[i].NormalLevel)
+                    {
+                        case "0":
+                            listToSort[i].gameObject.SetActive(false);
+                            break;
+                        default:
+                            listToSort[i].gameObject.SetActive(true);
+                            break;
+                    }
+                }
+
+                scriptManager.messagePanel.DisplayMessage("NORMAL LEVEL [ 1 - 10 ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsLastSibling();
+                break;
+            case 13:
+                listToSort = downloadButtonList.OrderBy(x => x.NormalLevel).ToList();
+
+                for (int i = 0; i < listToSort.Count; i++)
+                {
+                    switch (listToSort[i].NormalLevel)
+                    {
+                        case "0":
+                            listToSort[i].gameObject.SetActive(false);
+                            break;
+                        default:
+                            listToSort[i].gameObject.SetActive(true);
+                            break;
+                    }
+                }
+
+                scriptManager.messagePanel.DisplayMessage("NORMAL LEVEL [ 10 - 1 ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsFirstSibling();
+                break;
+            case 14:
+                listToSort = downloadButtonList.OrderBy(x => x.HardLevel).ToList();
+
+                for (int i = 0; i < listToSort.Count; i++)
+                {
+                    switch (listToSort[i].HardLevel)
+                    {
+                        case "0":
+                            listToSort[i].gameObject.SetActive(false);
+                            break;
+                        default:
+                            listToSort[i].gameObject.SetActive(true);
+                            break;
+                    }
+                }
+
+                scriptManager.messagePanel.DisplayMessage("HARD LEVEL [ 1 - 10 ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsLastSibling();
+                break;
+            case 15:
+                listToSort = downloadButtonList.OrderBy(x => x.HardLevel).ToList();
+
+                for (int i = 0; i < listToSort.Count; i++)
+                {
+                    switch (listToSort[i].HardLevel)
+                    {
+                        case "0":
+                            listToSort[i].gameObject.SetActive(false);
+                            break;
+                        default:
+                            listToSort[i].gameObject.SetActive(true);
+                            break;
+                    }
+                }
+
+                scriptManager.messagePanel.DisplayMessage("HARD LEVEL [ 10 - 1 ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsFirstSibling();
+                break;
+            case 16:
+                listToSort = downloadButtonList.OrderBy(x => x.Bpm).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("BPM [ LOW TO HIGH ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsLastSibling();
+                break;
+            case 17:
+                listToSort = downloadButtonList.OrderBy(x => x.Bpm).ToList();
+                ActivateAllListButtons();
+                scriptManager.messagePanel.DisplayMessage("BPM [ HIGH TO LOW ]", scriptManager.uiColorManager.purpleColor);
+                SetListButtonsAsFirstSibling();
+                break;
         }
 
-        if (uwr.isNetworkError || uwr.isHttpError)
+        // Update navigation of all buttons
+        UpdateButtonNavigation();
+
+        // Play flash animation for all buttons
+        StartCoroutine(PlayFullButtonListFlashAnimation());
+    }
+
+    // Update download button navigation
+    private void UpdateButtonNavigation()
+    {
+        for (int i = 0; i < listToSort.Count; i++)
         {
-            Debug.LogError(uwr.error);
-            downloadSlider.gameObject.SetActive(false);
-        }
-        else
-        {
-            Debug.Log("File successfully downloaded and saved to " + path);
-            downloadSliderBackgroundImage.color = scriptManager.uiColorManager.onlineColorSolid;
-            downloadProgressText.text = "Download complete";
-            downloadOpenFolderButton.gameObject.SetActive(true);
+            // Get current button setting navigation for
+            button = listToSort[i].button;
+
+            // Get the Navigation data
+            navigation = button.navigation;
+
+            // Switch mode to Explicit to allow for custom assigned behavior
+            navigation.mode = Navigation.Mode.Explicit;
+
+            // Get button down
+            if (i == listToSort.Count - 1)
+            {
+                // If at end of list set down navigation to own button
+                buttonDown = button;
+            }
+            else
+            {
+                // Set button down to the next button in the list
+                buttonDown = listToSort[i + 1].GetComponent<Button>();
+            }
+
+            switch (i)
+            {
+                case 0:
+                    // If at the start of the list set up button to it's own button
+                    buttonUp = button;
+                    break;
+                default:
+                    // Set button up to the previous button in the list
+                    buttonUp = listToSort[i - 1].GetComponent<Button>();
+                    break;
+            }
+
+            // Set navigation
+            navigation.selectOnDown = buttonDown;
+            navigation.selectOnUp = buttonUp;
+
+            // Reassign the struct data to the button
+            button.navigation = navigation;
         }
     }
+
+    // Activate all list buttons
+    private void ActivateAllListButtons()
+    {
+        for (int i = 0; i < listToSort.Count; i++)
+        {
+            if (listToSort[i].gameObject.activeSelf == false)
+            {
+                listToSort[i].gameObject.SetActive(true);
+            }
+        }
+    }
+
+    // Set list buttons as last siblings in the UI canvas
+    private void SetListButtonsAsLastSibling()
+    {
+        // Loop through all button scripts
+        for (int i = 0; i < listToSort.Count; i++)
+        {
+            // Update order of UI buttons
+            listToSort[i].transform.SetAsLastSibling();
+        }
+    }
+
+    // Set list buttons as first siblings in the UI canvas
+    private void SetListButtonsAsFirstSibling()
+    {
+        // Loop through all button scripts
+        for (int i = 0; i < listToSort.Count; i++)
+        {
+            // Update order of UI buttons
+            listToSort[i].transform.SetAsFirstSibling();
+        }
+    }
+
+    // Deselect search bar
+    public void DeselectBeatmapSearchbar()
+    {
+        if (beatmapSearchInputField.text.Length == 0)
+        {
+            // Sort buttons
+            SortDownloadButtonsToNewSorting();
+        }
+    }
+
+    // Play full button list flash animation
+    private IEnumerator PlayFullButtonListFlashAnimation()
+    {
+        // Activate
+        for (int i = 0; i < listToSort.Count; i++)
+        {
+            listToSort[i].flashAnimationImage.gameObject.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        // Deactivate
+        for (int i = 0; i < listToSort.Count; i++)
+        {
+            listToSort[i].flashAnimationImage.gameObject.SetActive(false);
+        }
+    }
+
+    
 }

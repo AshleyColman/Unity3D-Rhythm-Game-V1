@@ -263,12 +263,6 @@ public class BackgroundManager : MonoBehaviour
                     backgroundImageTransitionAnimator.Play("BackgroundImage1ToBackgroundImage2_Animation", 0, 0f);
                 }
 
-                // Activate the animator gameobject
-                scriptManager.downloadPanel.songSelectInformationAnimator.gameObject.SetActive(true);
-
-                // Enable download panel song information panel animation
-                scriptManager.downloadPanel.songSelectInformationAnimator.Play("DownloadSongInformationPanel_Animation", 0, 0f);
-
                 // Disable loading icon
                 loadingIcon.gameObject.SetActive(false);
             }
