@@ -32,7 +32,7 @@ public class DownloadButton : MonoBehaviour
 
     // String
     private string imageUrl, downloadUrl, totalDownloads, totalPlays, rankedDate, creatorName, easyLevel, normalLevel,
-        hardLevel, bpm, folderDirectory, songName, artistName;
+        hardLevel, bpm, folderDirectory, songName, artistName, tableID;
     private const string FILE_EXTENSION = ".zip", FOLDER = "Beatmaps";
 
     // Scripts
@@ -44,6 +44,12 @@ public class DownloadButton : MonoBehaviour
     {
         get { return beatmapButtonIndex; }
         set { beatmapButtonIndex = value; }
+    }
+
+    public string TableID
+    {
+        get { return tableID; }
+        set { tableID = value; }
     }
 
     public string SongName
@@ -213,6 +219,7 @@ public class DownloadButton : MonoBehaviour
             downloadProgressText.text = "DOWNLOAD COMPLETE";
             viewInDirectoryButton.gameObject.SetActive(true);
             downloadProgressSlider.value = 1f;
+            StartCoroutine(IncrementTotalDownloadCount());
         }
     }
 
@@ -220,6 +227,29 @@ public class DownloadButton : MonoBehaviour
     public void OpenBeatmapFolder()
     {
         System.Diagnostics.Process.Start(folderDirectory);
+    }
+
+    // Increment total downloads for this beatmap in the table
+    private IEnumerator IncrementTotalDownloadCount()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("id", tableID);
+
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost/rhythmgamex/increment_beatmap_download.php", form);
+        www.chunkedTransfer = false;
+        yield return www.SendWebRequest();
+
+        /*
+        switch (www.downloadHandler.text)
+        {
+            case "ERROR":
+                //Debug.Log("ERROR");
+                break;
+            default:
+                //Debug.Log("SUCCESS");
+                break;
+        }
+        */
     }
     #endregion
 }

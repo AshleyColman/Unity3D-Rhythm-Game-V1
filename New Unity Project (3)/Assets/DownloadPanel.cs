@@ -291,7 +291,7 @@ public class DownloadPanel : MonoBehaviour
         placeList.AddRange(Regex.Split(www.downloadHandler.text, "->"));
 
         // Loop and assign the data to the list
-        for (sbyte dataType = 0; dataType < 13; dataType++)
+        for (sbyte dataType = 0; dataType < 14; dataType++)
         {
             /*
                 $returnarray[0] = $infoarray["song_name"];
@@ -307,6 +307,7 @@ public class DownloadPanel : MonoBehaviour
                 $returnarray[10] = $infoarray["downloads"];
                 $returnarray[11] = $infoarray["download_url"];
                 $returnarray[12] = $infoarray["image_url"];
+                $returnarray[12] = $infoarray["id"];
             */
 
             switch (www.downloadHandler.text)
@@ -367,6 +368,7 @@ public class DownloadPanel : MonoBehaviour
             $returnarray[10] = $infoarray["downloads"];
             $returnarray[11] = $infoarray["download_url"];
             $returnarray[12] = $infoarray["image_url"];
+            $returnarray[13] = $infoarray["id"];
         */
 
 
@@ -383,6 +385,7 @@ public class DownloadPanel : MonoBehaviour
         downloadButtonList[_index].TotalPlays = downloadData[_index][9];
         downloadButtonList[_index].TotalDownloads = downloadData[_index][10];
         downloadButtonList[_index].DownloadUrl = downloadData[_index][11];
+        downloadButtonList[_index].TableID = downloadData[_index][13];
 
         // Update text
         downloadButtonList[_index].songNameText.text = downloadData[_index][0];

@@ -18,6 +18,9 @@ public class BeatmapRanking : MonoBehaviour
     public Button personalBestButton;
     public Button[] leaderboardProfileButton;
 
+    // Animation
+    private Animator personalBestButtonTextAnimator;
+
     // Gameobject
     public GameObject loadingIcon;
 
@@ -81,6 +84,8 @@ public class BeatmapRanking : MonoBehaviour
 
         leaderboardButtonArray = new LeaderboardButton[10];
         personalBestButtonScript = personalBestButton.GetComponent<LeaderboardButton>();
+        personalBestButtonTextAnimator = personalBestButtonScript.placementText.GetComponent<Animator>();
+
 
         totalImagesUpdated = 0;
         totalPlacesChecked = 0;
@@ -164,6 +169,7 @@ public class BeatmapRanking : MonoBehaviour
                             rankedButtonDate[placementToCheck] = placeLeaderboardData[placementToCheck][9];
                             rankedButtonMessage[placementToCheck] = placeLeaderboardData[placementToCheck][10];
                             rankedButtonImageURL[placementToCheck] = placeLeaderboardData[placementToCheck][11];
+                            rankedButtonPlacement[placementToCheck] = placeLeaderboardData[placementToCheck][12];
                             */
 
                             // Assign variables to text on leaderboard buttons
@@ -231,6 +237,7 @@ public class BeatmapRanking : MonoBehaviour
                                     personalBestMiss = personalBestLeaderboardData[8];
                                     personalBestDate = personalBestLeaderboardData[9];
                                     personalBestMessage = personalBestLeaderboardData[10];
+                                    personalBestPlacement = personalBestLeaderboardData[11];
                                     */
 
                                     // Assign text
@@ -242,6 +249,8 @@ public class BeatmapRanking : MonoBehaviour
                                     personalBestButtonScript.goodJudgementText.text = goodPrefix + personalBestLeaderboardData[6];
                                     personalBestButtonScript.earlyJudgementText.text = earlyPrefix + personalBestLeaderboardData[7];
                                     personalBestButtonScript.missJudgementText.text = missPrefix + personalBestLeaderboardData[8];
+                                    personalBestButtonScript.placementText.text = "Personal Best " + personalBestLeaderboardData[11]
+                                        + "# of " + personalBestLeaderboardData[12] + "#";
 
                                     // Send parsed percentage to calculate grade
                                     string grade = CalculateGrade(float.Parse(personalBestLeaderboardData[4]));
@@ -508,7 +517,7 @@ public class BeatmapRanking : MonoBehaviour
             placeList.AddRange(Regex.Split(www.downloadHandler.text, "->"));
 
             // Loop through all the data retrieved and assign to the personal best leaderboard data list
-            for (int dataType = 0; dataType < 11; dataType++)
+            for (int dataType = 0; dataType < 13; dataType++)
             {
                 switch (www.downloadHandler.text)
                 {
@@ -573,7 +582,7 @@ public class BeatmapRanking : MonoBehaviour
         personalBestButtonScript.earlyJudgementText.text = "";
         personalBestButtonScript.missJudgementText.text = "";
         personalBestButtonScript.rankText.text = "";
-
+        personalBestButtonScript.placementText.text = "";
         // Reset personal best leaderboard data
         personalBestLeaderboardData.Clear();
 
@@ -664,6 +673,7 @@ public class BeatmapRanking : MonoBehaviour
         }
 
         personalBestButton.gameObject.SetActive(true);
+        personalBestButtonTextAnimator.Play("SelectedBeatmapNumberText_Animation", 0, 0f);
     }
 
     // Activate all leaderboard buttons
