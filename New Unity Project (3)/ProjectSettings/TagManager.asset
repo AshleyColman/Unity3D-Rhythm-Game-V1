@@ -8,6 +8,12 @@ TagManager:
   - LEFT
   - RIGHT
   - DOUBLE
+  - KEY
+  - UP
+  - DOWN
+  - Right
+  - KEY1
+  - KEY2
   layers:
   - Default
   - TransparentFX

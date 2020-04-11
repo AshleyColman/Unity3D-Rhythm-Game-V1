@@ -5,12 +5,14 @@ using TMPro;
 public class UIColorManager : MonoBehaviour
 {
     // Color blocks
-    private ColorBlock dropDownColorBlock, dropDownItemColorBlock, tickBoxButtonColorBlock, gradientButtonColorBlock, scrollbarColorBlock;
+    private ColorBlock dropDownColorBlock, dropDownItemColorBlock, buttonColorBlock, scrollbarColorBlock;
     public Color dropDownPressedColor, dropDownSelectedColor;
     public Color solidBlackColor, blackColor08, invisibleColor, difficultyColor, solidWhiteColor, difficultyColor08;
     public Color onlineColor08, onlineColor09, onlineColorSolid, offlineColor08, offlineColor09, offlineColorSolid, orangeColor08;
     public Color selectedColor, sPlusRankColor, sRankColor, aRankColor, bRankColor, cRankColor, dRankColor, eRankColor, fRankColor;
     public Color easyDifficultyColor, normalDifficultyColor, hardDifficultyColor, purpleColor;
+    public Color HIT_OBJECT_COLOR_KEY1, HIT_OBJECT_COLOR_KEY2, HIT_OBJECT_MOUSE_COLOR_LEFT, HIT_OBJECT_MOUSE_COLOR_RIGHT,
+        HIT_OBJECT_MOUSE_COLOR_UP, HIT_OBJECT_MOUSE_COLOR_DOWN;
 
     public TMP_ColorGradient sPlusColorGradient, sColorGradient, aColorGradient, bColorGradient, cColorGradient, dColorGradient, eColorGradient,
         fColorGradient;
@@ -19,8 +21,7 @@ public class UIColorManager : MonoBehaviour
     {
         dropDownColorBlock.colorMultiplier = 1;
         dropDownItemColorBlock.colorMultiplier = 1;
-        tickBoxButtonColorBlock.colorMultiplier = 1;
-        gradientButtonColorBlock.colorMultiplier = 1;
+        buttonColorBlock.colorMultiplier = 1;
         scrollbarColorBlock.colorMultiplier = 1;
     }
 
@@ -72,8 +73,8 @@ public class UIColorManager : MonoBehaviour
         }
     }
 
-    // Update drop down colors
-    public void UpdateDropDownColors(TMP_Dropdown _dropdown)
+    // Update the colorblock for difficulty selected colors
+    public void UpdateDifficultyColorBlocks()
     {
         // Update difficulty color 08
         var tempColor = difficultyColor;
@@ -85,13 +86,15 @@ public class UIColorManager : MonoBehaviour
         // Update colorblock
         UpdateDropDownItemColorBlock();
         // Update colorblock
-        UpdateTickBoxButtonColorBlock();
-        // Update colorblock
-        UpdateGradientButtonColorBlock();
+        UpdateButtonColorBlock();
         // Update colorblock
         UpdateScrollbarColorBlock();
+    }
 
-        // UPdate drop down list color button
+    // Update drop down colors
+    public void UpdateDropDownColors(TMP_Dropdown _dropdown)
+    {
+        // Update drop down list color button
         _dropdown.colors = dropDownColorBlock;
 
         // Update item template for drop down list children
@@ -113,34 +116,19 @@ public class UIColorManager : MonoBehaviour
         _scrollbar.colors = scrollbarColorBlock;
     }
 
-    // Update gradient button color block
-    public void UpdateGradientButtonColorBlock()
+    // Update button color block
+    public void UpdateButtonColorBlock()
     {
-        gradientButtonColorBlock.normalColor = invisibleColor;
-        gradientButtonColorBlock.highlightedColor = difficultyColor08;
-        gradientButtonColorBlock.pressedColor = difficultyColor;
-        gradientButtonColorBlock.selectedColor = difficultyColor08;
+        buttonColorBlock.normalColor = blackColor08;
+        buttonColorBlock.highlightedColor = difficultyColor08;
+        buttonColorBlock.pressedColor = difficultyColor;
+        buttonColorBlock.selectedColor = difficultyColor08;
     }
 
     // Update gradient buttons colors
-    public void UpdateGradientButtonColors(Button _button)
+    public void UpdateButtonColors(Button _button)
     {
-        _button.colors = gradientButtonColorBlock;
-    }
-
-    // Update tick box colors
-    public void UpdateTickBoxButtonColorBlock()
-    {
-        tickBoxButtonColorBlock.normalColor = blackColor08;
-        tickBoxButtonColorBlock.highlightedColor = difficultyColor08;
-        tickBoxButtonColorBlock.pressedColor = difficultyColor;
-        tickBoxButtonColorBlock.selectedColor = difficultyColor08;
-    }
-
-    // Update tick box button
-    public void UpdateTickBoxButtonColors(Button _button)
-    {
-        _button.colors = tickBoxButtonColorBlock;
+        _button.colors = buttonColorBlock;
     }
 
     // Update the color block colors

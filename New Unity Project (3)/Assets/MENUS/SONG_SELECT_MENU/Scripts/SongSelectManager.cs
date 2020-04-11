@@ -29,6 +29,7 @@ public class SongSelectManager : MonoBehaviour
     private string beatmapCreator, beatmapCreatedDate, beatmapCreatorMessage; // Creator
     private string disabledLevelTextValue;
     private string previousDifficulty;
+    private const string BEATMAP_FOLDER = "Beatmaps";
 
     // Integers
     private int selectedBeatmapDirectoryIndex, previousBeatmapDirectoryIndex; // Beatmap directory indexs
@@ -50,6 +51,11 @@ public class SongSelectManager : MonoBehaviour
     #endregion
 
     #region Properties
+    public string BeatmapFolder
+    {
+        get { return BEATMAP_FOLDER; }
+    }
+
     public string EasyDifficultyName
     {
         get { return easyDifficultyName; }
@@ -101,6 +107,8 @@ public class SongSelectManager : MonoBehaviour
 
     private void Awake()
     {
+        ReferenceScriptManager();
+        scriptManager.songSelectPanel.GetBeatmapDirectoryPaths(); // Get the directory paths for all the beatmap folders in the beatmap directory
         CheckBeatmapDirectories(); // Get and check the beatmaps in the directory#
 
         easyBeatmapFileName = "easy.dia";
@@ -118,12 +126,6 @@ public class SongSelectManager : MonoBehaviour
         // Initialize
         hasPlayedSongPreviewOnce = false;
 
-        // Reference
-        scriptManager = FindObjectOfType<ScriptManager>();
-
-        // Outside script functions
-        scriptManager.songSelectPanel.GetBeatmapDirectoryPaths(); // Get the directory paths for all the beatmap folders in the beatmap directory
-
         // Property initalize
         selectedBeatmapDirectoryIndex = scriptManager.loadLastBeatmapManager.LastBeatmapDirectoryIndex; // Load the last beatmap directory index
         previousBeatmapDirectoryIndex = selectedBeatmapDirectoryIndex; // Assign the previous beatmap index to the current beatmap index
@@ -136,11 +138,19 @@ public class SongSelectManager : MonoBehaviour
         hasPlayedSongPreviewOnce = true;
     }
 
+    private void ReferenceScriptManager()
+    {
+        if (scriptManager == null)
+        {
+            scriptManager = FindObjectOfType<ScriptManager>();
+        }
+    }
+
     // Get and check the beatmaps in the directory
     private void CheckBeatmapDirectories()
     {
         // Get the beatmap directoriess
-        beatmapDirectories = Directory.GetDirectories(@"c:\Beatmaps");
+        beatmapDirectories = scriptManager.songSelectPanel.beatmapDirectoryPaths;
 
         // Check how many beatmaps are in the directory
         beatmapDirectoryCount = beatmapDirectories.Length;
@@ -209,14 +219,16 @@ public class SongSelectManager : MonoBehaviour
         }
 
         // Assign new UI colors
+        scriptManager.uiColorManager.UpdateDifficultyColorBlocks();
+        scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.topMenu.menuDropdown);
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.songSelectPanel.difficultySortingDropDown);
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.songSelectPanel.sortingDropDown);
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.beatmapRanking.leaderboardSortViewDropdown);
         scriptManager.uiColorManager.UpdateDropDownColors(scriptManager.beatmapRanking.leaderboardSortTypeDropdown);
-        scriptManager.uiColorManager.UpdateGradientButtonColors(scriptManager.playerSkillsManager.songSelectCharacterButton);
-        scriptManager.uiColorManager.UpdateTickBoxButtonColors(scriptManager.backgroundManager.videoTickBoxButton);
+        scriptManager.uiColorManager.UpdateButtonColors(scriptManager.topMenu.profileButton);
         scriptManager.uiColorManager.UpdateScrollbarColors(scriptManager.beatmapRanking.leaderboardScrollbar);
         scriptManager.uiColorManager.UpdateScrollbarColors(scriptManager.songSelectPanel.beatmapButtonListScrollbar);
+        
 
         // If any difficulty files exist
         if (normalDifficultyExist == true || hardDifficultyExist == true || easyDifficultyExist == true)

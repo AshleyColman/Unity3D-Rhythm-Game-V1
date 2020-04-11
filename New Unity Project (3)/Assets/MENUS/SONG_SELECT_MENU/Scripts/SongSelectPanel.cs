@@ -128,11 +128,16 @@ public class SongSelectPanel : MonoBehaviour
         fileCheckPath = "";
         currentDifficultySorting = allDifficultySortingValue;
 
-        // Reference
-        scriptManager = FindObjectOfType<ScriptManager>();
-
         // Create all beatmap buttons to go in the song select panel
         CreateSongSelectPanel();
+    }
+
+    private void ReferenceScriptManager()
+    {
+        if (scriptManager == null)
+        {
+            scriptManager = FindObjectOfType<ScriptManager>();
+        }
     }
 
     private void Update()
@@ -160,28 +165,31 @@ public class SongSelectPanel : MonoBehaviour
     // Check input for song select panel features
     private void CheckSongSelectPanelInput()
     {
-        // Check for any input
-        if (Input.anyKeyDown)
+        if (scriptManager.playerProfile.gameObject.activeSelf == false)
         {
-            // Check for mouse or navigation input
-            if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)
-                || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Return))
+            // Check for any input
+            if (Input.anyKeyDown)
             {
-                // Scroll the beatmap button content panel up
-                ScrollListUp();
-
-                // Scroll the beatmap button content panel up
-                ScrollListDown();
-
-                // Select the next difficulty
-                SelectNextDifficulty();
-            }
-            else
-            {
-                if (beatmapSearchInputField.isFocused == false)
+                // Check for mouse or navigation input
+                if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)
+                    || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Return))
                 {
-                    // Select search bar if any keyboard key has been pressed
-                    beatmapSearchInputField.ActivateInputField();
+                    // Scroll the beatmap button content panel up
+                    ScrollListUp();
+
+                    // Scroll the beatmap button content panel up
+                    ScrollListDown();
+
+                    // Select the next difficulty
+                    SelectNextDifficulty();
+                }
+                else
+                {
+                    if (beatmapSearchInputField.isFocused == false)
+                    {
+                        // Select search bar if any keyboard key has been pressed
+                        beatmapSearchInputField.ActivateInputField();
+                    }
                 }
             }
         }
@@ -454,9 +462,13 @@ public class SongSelectPanel : MonoBehaviour
     // Get the beatmap directory paths
     public void GetBeatmapDirectoryPaths()
     {
+        // Reference
+        ReferenceScriptManager();
+
         // Initialise the array with the amount of beatmap directories found
         // Get the beatmap directoriess
-        beatmapDirectoryPaths = Directory.GetDirectories(@"c:\Beatmaps");
+        beatmapDirectoryPaths = Directory.GetDirectories(Application.persistentDataPath + "/" + 
+            scriptManager.songSelectManager.BeatmapFolder);
     }
 
     // Update beatmap button navigation

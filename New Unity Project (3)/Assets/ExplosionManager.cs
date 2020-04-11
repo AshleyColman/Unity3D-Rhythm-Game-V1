@@ -47,7 +47,7 @@ public class ExplosionManager : MonoBehaviour
     }
 
     // Spawn explosion from the pool
-    private void SpawnFromPool(string _tag, Vector3 _position, float _judgementScore, Color _colorImageColor)
+    private void SpawnFromPool(string _tag, Vector3 _position, int _judgementScore, Color _colorImageColor)
     {
         if (poolDictionary.ContainsKey(_tag) == true)
         {
@@ -65,17 +65,13 @@ public class ExplosionManager : MonoBehaviour
             // Update text
             switch (_tag)
             {
-                case "LEFT_HIT":
-                    objectToSpawnScript.UpdateText(_judgementScore.ToString());
+                case (Constants.KEY_HIT_OBJECT_TYPE_KEY1_TAG + "_" + Constants.HIT_TAG):
+                    objectToSpawnScript.keyText.text = Constants.KEY_HIT_OBJECT_TYPE_KEY1_CHAR;
+                    objectToSpawnScript.keyText.color = _colorImageColor;
                     break;
-                case "RIGHT_HIT":
-                    objectToSpawnScript.UpdateText(_judgementScore.ToString());
-                    break;
-                case "LEFT_MISS":
-
-                    break;
-                case "RIGHT_MISS":
-
+                case (Constants.KEY_HIT_OBJECT_TYPE_KEY2_TAG + "_" + Constants.HIT_TAG):
+                    objectToSpawnScript.keyText.text = Constants.KEY_HIT_OBJECT_TYPE_KEY2_CHAR;
+                    objectToSpawnScript.keyText.color = _colorImageColor;
                     break;
             }
 
@@ -84,7 +80,7 @@ public class ExplosionManager : MonoBehaviour
     }
 
     // Spawn hit explosion
-    public void SpawnExplosion(string _type, string _action, Vector3 _position, float _judgementScore, Color _colorImageColor)
+    public void SpawnExplosion(string _type, string _action, Vector3 _position, int _judgementScore, Color _colorImageColor)
     {
         // Create tag based on the type and action
         string tag = _type + "_" + _action;

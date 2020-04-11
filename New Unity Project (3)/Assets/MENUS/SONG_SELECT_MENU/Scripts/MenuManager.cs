@@ -10,11 +10,17 @@ public class MenuManager : MonoBehaviour
 
     // Dropdown
     public TMP_Dropdown modeDropdown;
+
+    // Script
+    private ScriptManager scriptManager;
     #endregion
 
     #region Functions
     private void Start()
     {
+        // Reference
+        scriptManager = FindObjectOfType<ScriptManager>();
+
         // Get current active menu
         GetCurrentActiveMenu();
     }
@@ -66,6 +72,18 @@ public class MenuManager : MonoBehaviour
         {
             currentActiveMenu = downloadMenu;
         }
+    }
+
+    // Enable player profile panel and script 
+    public void EnablePlayerProfile()
+    {
+        scriptManager.playerProfile.gameObject.SetActive(true);
+    }
+
+    // Disable player profile panel and script 
+    public void DisablePlayerProfile()
+    {
+        scriptManager.playerProfile.gameObject.SetActive(false);
     }
     #endregion
 }

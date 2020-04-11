@@ -784,7 +784,7 @@ public class OverallRanking : MonoBehaviour
     }
 
     // Convert the seconds to days hours minutes
-    private string CalculateDaysHoursMinutes(float _secs)
+    public string CalculateDaysHoursMinutes(float _secs)
     {
         TimeSpan t = TimeSpan.FromSeconds(_secs);
 

@@ -200,7 +200,7 @@ public class BeatmapRanking : MonoBehaviour
                             */
 
                             // Send parsed percentage to calculate grade
-                            string grade = CalculateGrade(float.Parse(placeLeaderboardData[placementToCheck][4]));
+                            string grade = scriptManager.gradeManager.CalculateGrade(float.Parse(placeLeaderboardData[placementToCheck][4]));
 
                             // Update text
                             leaderboardButtonArray[placementToCheck].rankText.text = grade;
@@ -253,7 +253,7 @@ public class BeatmapRanking : MonoBehaviour
                                         + "# of " + personalBestLeaderboardData[12] + "#";
 
                                     // Send parsed percentage to calculate grade
-                                    string grade = CalculateGrade(float.Parse(personalBestLeaderboardData[4]));
+                                    string grade = scriptManager.gradeManager.CalculateGrade(float.Parse(personalBestLeaderboardData[4]));
 
                                     // Update text
                                     personalBestButtonScript.rankText.text = grade;
@@ -614,39 +614,6 @@ public class BeatmapRanking : MonoBehaviour
         totalImagesUpdated = 0;
         totalExistingPlaces = 0;
         totalURLImagesToLoad = 0;
-    }
-
-    // Calculate and return grade
-    public string CalculateGrade(float _percentage)
-    {
-        if (_percentage == 100)
-        {
-            return "S";
-        }
-        else if (_percentage >= 90 && _percentage < 100)
-        {
-            return "A";
-        }
-        else if (_percentage >= 80 && _percentage < 90)
-        {
-            return "B";
-        }
-        else if (_percentage >= 70 && _percentage < 80)
-        {
-            return "C";
-        }
-        else if (_percentage >= 60 && _percentage < 70)
-        {
-            return "D";
-        }
-        else if (_percentage >= 50 && _percentage < 60)
-        {
-            return "E";
-        }
-        else
-        {
-            return "F";
-        }
     }
 
     // Deactivate all leaderboard buttons

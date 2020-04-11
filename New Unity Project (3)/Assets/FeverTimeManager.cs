@@ -1,35 +1,89 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+
 public class FeverTimeManager : MonoBehaviour
 {
-    public Slider feverTimeSlider;
-    private const float feverTimeValue25 = 0.25f, feverTimeValue50 = 0.5f, feverTimeValue75 = 0.75f, feverTimeValue100 = 1.0f;
-    private const float perNoteFillAmount = 0.01f;
+    #region Variables
+    // Animator
+    public Animator feverSliderAnimator;
 
-    // Start is called before the first frame update
-    void Start()
+    // Slider
+    public Slider feverTimeSlider;
+
+    // Float
+    private const float FEVER_FILL_1 = 0.25f, FEVER_FILL_2 = 0.5f, FEVER_FILL_3 = 0.75f, FEVER_FILL_4 = 1.0f,
+        PER_NOTE_FILL = 0.01f, DEACTIVATE_FEVER_VALUE = 0.0f;
+
+    // Bool 
+    private bool feverActivated;
+
+    // Keycode
+    private const KeyCode FEVER_ACTIVATION_KEY = KeyCode.LeftShift;
+    #endregion
+
+    #region Functions
+    private void Start()
     {
         feverTimeSlider.value = 0f;
+        feverActivated = false;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(FEVER_ACTIVATION_KEY))
+        {
+            if (feverActivated == false)
+            {
+                ActivateFever();
+            }
+        }
+    
+        switch (feverActivated)
+        {
+            case true:
+                if (feverTimeSlider.value == DEACTIVATE_FEVER_VALUE)
+                {
+                    DeactivateFever();
+                }
+
+                // Drain fever value for testing
+                feverTimeSlider.value -= PER_NOTE_FILL;
+                break;
+            case false:
+                break;
+        }
+    }
+
+    private void ActivateFever()
+    {
+        feverActivated = true;
+        feverSliderAnimator.Play("FeverEffect1_Animation", 0, 0f);
+    }
+
+    private void DeactivateFever()
+    {
+        // Reset animation to default
+        feverSliderAnimator.gameObject.SetActive(false);
+        feverSliderAnimator.gameObject.SetActive(true);
+        feverActivated = false;
     }
 
     public void FillFeverSlider()
     {
-        if ((feverTimeSlider.value += perNoteFillAmount) <= 1f)
+        if ((feverTimeSlider.value += PER_NOTE_FILL) <= 1f)
         {
-            feverTimeSlider.value += perNoteFillAmount;
+            feverTimeSlider.value += PER_NOTE_FILL;
         }
     }
 
     public void DecreaseFeverSlider()
     {
-        feverTimeSlider.value -= perNoteFillAmount;
+        feverTimeSlider.value -= PER_NOTE_FILL;
     }
 
     public void ResetFeverSlider()
     {
         feverTimeSlider.value = 0f;
     }
+    #endregion
 }

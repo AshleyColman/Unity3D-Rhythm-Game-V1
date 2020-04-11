@@ -40,10 +40,13 @@ public class ScriptManager : MonoBehaviour
     public CursorHitObject cursorHitObject;
     public EditableHitObject editableHitObject;
     public EditorBottomMenu editorBottomMenu;
-    public FailAndRetryManager failAndRetryManager;
-    public ScoreManager scoreManager;
+    public PlayInformation playInformation;
     public ExplosionManager explosionManager;
     public HitSoundManager hitSoundManager;
     public FeverTimeManager feverTimeManager;
     public ConnectionManager connectionManager;
+    public OverallRanking overallRanking;
+    public TopMenu topMenu;
+    public GradeManager gradeManager;
+    public Healthbar healthbar;
 }

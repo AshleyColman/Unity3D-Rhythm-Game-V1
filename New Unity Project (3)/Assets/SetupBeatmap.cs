@@ -34,7 +34,7 @@ public class SetupBeatmap : MonoBehaviour
     private string beatmapDifficulty, beatmapCreatedDate, folderDirectory, beatmapFolderName, songName, artistName, creatorName, creatorMessage,
         difficultyLevel;
     private const string EASY_DIFFICULTY = "EASY", NORMAL_DIFFICULTY = "NORMAL", HARD_DIFFICULTY = "HARD", AUDIONAME = "audio", AUDIOTYPE = ".ogg",
-        IMAGENAME = "img", IMAGETYPE = ".png";
+        IMAGENAME = "img", IMAGETYPE = ".png", BEATMAP_FOLDER = "/beatmaps/";
 
     // Bool
     private bool folderCreated, audioFileFound, backgroundImageFound, filesUpdated;
@@ -275,9 +275,15 @@ public class SetupBeatmap : MonoBehaviour
         beatmapFolderName = creatorName + "_" + songName + "_" + artistName;
 
         // Create a new folder for the beatmap
-        var folder = Directory.CreateDirectory(@"C:\Beatmaps\" + beatmapFolderName);
+        //var folder = Directory.CreateDirectory(@"C:\Beatmaps\" + beatmapFolderName);
         // Save the folder directory to save the files into later
-        folderDirectory = @"C:\Beatmaps\" + beatmapFolderName + @"\";
+        //folderDirectory = @"C:\Beatmaps\" + beatmapFolderName + @"\";
+
+        // Create a new folder for the beatmap
+        var folder = Directory.CreateDirectory(Application.persistentDataPath + BEATMAP_FOLDER + beatmapFolderName);
+        // Save the folder directory to save the files into later
+        folderDirectory = Application.persistentDataPath + BEATMAP_FOLDER + beatmapFolderName + @"\";
+        Debug.Log(folderDirectory);
 
         // Get the current date
         GetCurrentDate();

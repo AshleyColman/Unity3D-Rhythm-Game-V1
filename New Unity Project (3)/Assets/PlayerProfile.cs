@@ -8,386 +8,92 @@ using UnityEngine.UI;
 
 public class PlayerProfile : MonoBehaviour
 {
-
-    // Ints
-    public int totalPlacements, totalProfilesChecked, totalExistingProfiles, totalURLImagesToUpload;
-
+    #region Variables
     // Strings
-    private string playerName, playerImageUrl;
-    private List<string>[] placeData;
-    public string[] usernameArray, playerImageUrlArray, playcountArray, highestComboArray, notesHitArray, feverTimeActivationsArray, highestBeatmapScoreArray,
-        oneKeyTotalScoreArray, twoKeyTotalScoreArray, fourKeyTotalScoreArray, sixKeyTotalScoreArray, overallTotalScoreArray,
-        pRankTotalArray, sRankTotalArray, aRankTotalArray, bRankTotalArray, cRankTotalArray, dRankTotalArray, eRankTotalArray, fRankTotalArray,
-        highestPercentageArray, levelArray, messageArray, dateJoinedArray;
+    private string playerName, playerImageUrl, profileImageUrl, bannerImageUrl, facebookProfileUrl, twitterProfileUrl,
+        youtubeProfileUrl;
+    private List<string> placeData = new List<string>();
 
-    // Bools
-    public bool[] placeExists;
+    // Bool
     public bool profileHasLoaded;
-    public bool informationAssigned;
+    public bool informationAssigned, informationRetrieved;
 
     // Text
-    public TextMeshProUGUI usernameText, playCountText, highestComboText, notesHitText, feverTimeActivationsText, highestBeatmapScoreText,
-        oneKeyTotalScoreText, twoKeyTotalScoreText, fourKeyTotalScoreText, sixKeyTotalScoreText, overallTotalScoreText, pRankText,
-        sRankText, aRankText, bRankText, cRankText, dRankText, eRankText, fRankText, highestPercentageText, levelText, messageText, dateJoinedText;
+    public TextMeshProUGUI titleUsernameText, careerDateJoinedText, totalDateJoinedText, totalPlayCountText, levelText,
+        highestBeatmapScoreText, careerScoreText, careerEasyScoreText, careerNormalScoreText, careerHardScoreText,
+        careerComboText, careerHighestComboText, careerPerfectText, careerGoodText, careerEarlyText, careerMissText,
+        careerNotesHitText, careerSPlusRankText, careerSRankText, careerARankText, careerBRankText, careerCRankText,
+        careerDRankText, careerERankText, careerFRankText, totalPlaytime, totalScoreText, totalEasyScoreText, totalNormalScoreText,
+        totalHardScoreText, totalComboText, totalPerfectText, totalGoodText, totalEarlyText, totalMissText, totalNotesHitText,
+        totalSPlusRankText, totalSRankText, totalARankText, totalBRankText, totalCRankText, totalDRankText, totalERankText,
+        totalFRankText, careerUsernameText, totalUsernameText, totalLevelText, editConfirmationText;
 
+    // Inputfield
+    public TMP_InputField profileImageUrlInputfield, bannerImageUrlInputfield, twitterProfileUrlInputfield,
+        facebookProfileUrlInputfield, youtubeProfileUrlInputfield;
+
+    // Slider
     public Slider levelSlider;
 
     // Images
-    public Image profileImage;
+    public Image profileImage, bannerImage;
 
-    // Materials
-    public Material place1Material, place2Material, place3Material, place4Material, place5Material, place6Material, place7Material, place8Material,
-        place9Material, place10Material;
-
-    public Material defaultPlayerProfileMaterial;
+    // Material
+    public Material defaultMaterial, userImagePlayerProfileMaterial, userBannerProfileMaterial;
 
     // Gameobjects
-    public GameObject profileLoadingIcon;
-    public GameObject playerProfilePanel;
-    public GameObject playerProfile, characterSelect, leaderboard;
+    public GameObject profileLoadingIcon, profilePanel, editProfilePanel, editorProfileConfirmationPanel,
+        viewProfileInformationPanel, editProfileInputFieldsPanel;
+
+    // Button
+    public Button editProfileButton, facebookButton, twitterButton, youtubeButton, saveProfileButton;
 
     // Scripts
     private ScriptManager scriptManager;
+    #endregion
 
-    // Properties
-    public bool InformationAssigned
+    #region Functions
+    private void OnEnable()
     {
-        get { return informationAssigned; }
+        ResetPlayerProfile();
     }
-
-    public int TotalExistingProfiles
-    {
-        get { return totalExistingProfiles; }
-    }
-
-    public string[] PlayerImageUrlArray
-    {
-        get { return playerImageUrlArray; }
-    }
-
-    public int TotalURLImagesToUpload
-    {
-        get { return totalURLImagesToUpload; }
-    }
-
 
     // Use this for initialization
     void Start()
     {
-
-        // Initalize
-        placeData = new List<string>[10];
-        usernameArray = new string[10];
-        playcountArray = new string[10];
-        highestComboArray = new string[10];
-        notesHitArray = new string[10];
-        feverTimeActivationsArray = new string[10];
-        highestBeatmapScoreArray = new string[10];
-        oneKeyTotalScoreArray = new string[10];
-        twoKeyTotalScoreArray = new string[10];
-        fourKeyTotalScoreArray = new string[10];
-        sixKeyTotalScoreArray = new string[10];
-        overallTotalScoreArray = new string[10];
-        pRankTotalArray = new string[10];
-        sRankTotalArray = new string[10];
-        aRankTotalArray = new string[10];
-        bRankTotalArray = new string[10];
-        cRankTotalArray = new string[10];
-        dRankTotalArray = new string[10];
-        eRankTotalArray = new string[10];
-        fRankTotalArray = new string[10];
-        playerImageUrlArray = new string[10];
-        highestPercentageArray = new string[10];
-        levelArray = new string[10];
-        messageArray = new string[10];
-        dateJoinedArray = new string[10];
-
-        placeExists = new bool[10];
-        totalPlacements = 10;
-        totalProfilesChecked = 0;
-        totalExistingProfiles = 99; // Set to 99 at start to prevent auto assign at start of frame
-        profileHasLoaded = false;
-        informationAssigned = false;
-
-        // Instantiate the lists
-        for (int i = 0; i < placeData.Length; i++)
-        {
-            placeData[i] = new List<string>();
-        }
-
-        playerProfilePanel.gameObject.SetActive(false);
-
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     private void Update()
     {
-        // If all profiles have been checked
-        if (totalProfilesChecked == totalExistingProfiles && informationAssigned == false)
+        if (profileHasLoaded == false)
         {
-            // Loop through all player profile placements and assign the information
-            AssignPlayerProfileInformation();
-
-            // Information has been assigned
-            informationAssigned = true;
-        }
-    }
-
-
-    // Loop through all player profile placements and assign the information
-    private void AssignPlayerProfileInformation()
-    {
-        // Loop through all the placements
-        for (sbyte placementToCheck = 0; placementToCheck < totalExistingProfiles; placementToCheck++)
-        {
-            // If placement information was found for the position on the leaderboard
-            if (placeExists[placementToCheck] == true)
+            switch (informationRetrieved)
             {
-                /*
-                    [0] = $player_name_return;
-                    [1] = $play_count_return;
-                    [2] = $highest_combo_return; 
-                    [3] = $notes_hit_return; 
-                    [4] = $highest_beatmap_score_return;
-                    [5] = $fever_time_activations_return; 
-                    [6] = $1key_total_score_return; 
-                    [7] = $2key_total_score_return;
-                    [8] = $4key_total_score_return; 
-                    [9] = $6key_total_score_return;
-                    [10] = $overall_total_score_return;
-                    [11] = $p_rank_total_return;
-                    [12] = $s_rank_total_return; 
-                    [13] = $a_rank_total_return;
-                    [14] = $b_rank_total_return; 
-                    [15] = $c_rank_total_return; 
-                    [16] = $d_rank_total_return; 
-                    [17] = $e_rank_total_return; 
-                    [18] = $f_rank_total_return; 
-                    [19] = $image_url_return; 
-                    [20] = $highestPercentage_return;
-                    [21] = $level_return;
-                    [22] = $date_joined_return;
-                */
-
-                // Assign the database information to the variables
-                usernameArray[placementToCheck] = placeData[placementToCheck][0];
-                playcountArray[placementToCheck] = placeData[placementToCheck][1];
-                highestComboArray[placementToCheck] = placeData[placementToCheck][2];
-                notesHitArray[placementToCheck] = placeData[placementToCheck][3];
-                feverTimeActivationsArray[placementToCheck] = placeData[placementToCheck][4];
-                highestBeatmapScoreArray[placementToCheck] = placeData[placementToCheck][5];
-                oneKeyTotalScoreArray[placementToCheck] = placeData[placementToCheck][6];
-                twoKeyTotalScoreArray[placementToCheck] = placeData[placementToCheck][7];
-                fourKeyTotalScoreArray[placementToCheck] = placeData[placementToCheck][8];
-                sixKeyTotalScoreArray[placementToCheck] = placeData[placementToCheck][9];
-                overallTotalScoreArray[placementToCheck] = placeData[placementToCheck][10];
-                pRankTotalArray[placementToCheck] = placeData[placementToCheck][11];
-                sRankTotalArray[placementToCheck] = placeData[placementToCheck][12];
-                aRankTotalArray[placementToCheck] = placeData[placementToCheck][13];
-                bRankTotalArray[placementToCheck] = placeData[placementToCheck][14];
-                cRankTotalArray[placementToCheck] = placeData[placementToCheck][15];
-                dRankTotalArray[placementToCheck] = placeData[placementToCheck][16];
-                eRankTotalArray[placementToCheck] = placeData[placementToCheck][17];
-                fRankTotalArray[placementToCheck] = placeData[placementToCheck][18];
-                playerImageUrlArray[placementToCheck] = placeData[placementToCheck][19];
-                highestPercentageArray[placementToCheck] = placeData[placementToCheck][20];
-                levelArray[placementToCheck] = placeData[placementToCheck][21];
-                messageArray[placementToCheck] = placeData[placementToCheck][22];
-                dateJoinedArray[placementToCheck] = placeData[placementToCheck][23];
-
-
-
-                // Check if the player image url is null
-                if (playerImageUrlArray[placementToCheck] != null)
-                {
-                    // Increment the total amount of totalURLImages to upload
-                    totalURLImagesToUpload++;
-                }
+                case false:
+                    StartCoroutine(GetPlayerProfileInformation());
+                    break;
+                case true:
+                    switch (informationAssigned)
+                    {
+                        case false:
+                            AssignProfileInformation();
+                            profileHasLoaded = true;
+                            break;
+                    }
+                    break;
             }
         }
     }
 
-    // Display the player profile selected
-    public void DisplayPlayerProfile(int _leaderboardPlacement)
-    {
-        // _leadeboardPlacement = the leadeboard button selected
-
-        // Turn on player profile
-        // Hide character select 
-        // Hide leaderboard
-        playerProfile.gameObject.SetActive(true);
-        characterSelect.gameObject.SetActive(false);
-        leaderboard.gameObject.SetActive(false);
-
-        // Reset the player profile text and image
-        ResetPlayerProfile();
-
-        // Update player profile text
-        usernameText.text = usernameArray[_leaderboardPlacement].ToUpper();
-        playCountText.text = playcountArray[_leaderboardPlacement];
-        highestComboText.text = highestComboArray[_leaderboardPlacement];
-        notesHitText.text = notesHitArray[_leaderboardPlacement];
-        feverTimeActivationsText.text = feverTimeActivationsArray[_leaderboardPlacement];
-        highestBeatmapScoreText.text = highestBeatmapScoreArray[_leaderboardPlacement];
-        oneKeyTotalScoreText.text = oneKeyTotalScoreArray[_leaderboardPlacement];
-        twoKeyTotalScoreText.text = twoKeyTotalScoreArray[_leaderboardPlacement];
-        fourKeyTotalScoreText.text = fourKeyTotalScoreArray[_leaderboardPlacement];
-        sixKeyTotalScoreText.text = sixKeyTotalScoreArray[_leaderboardPlacement];
-        overallTotalScoreText.text = overallTotalScoreArray[_leaderboardPlacement];
-        pRankText.text = pRankTotalArray[_leaderboardPlacement];
-        sRankText.text = sRankTotalArray[_leaderboardPlacement];
-        aRankText.text = aRankTotalArray[_leaderboardPlacement];
-        bRankText.text = bRankTotalArray[_leaderboardPlacement];
-        cRankText.text = cRankTotalArray[_leaderboardPlacement];
-        dRankText.text = dRankTotalArray[_leaderboardPlacement];
-        eRankText.text = eRankTotalArray[_leaderboardPlacement];
-        fRankText.text = fRankTotalArray[_leaderboardPlacement];
-        messageText.text = messageArray[_leaderboardPlacement];
-        //levelText.text =
-        // levelSlider.value = 
-        highestPercentageText.text = highestPercentageArray[_leaderboardPlacement] + "%";
-        dateJoinedText.text = dateJoinedArray[_leaderboardPlacement];
-
-        // Load the profile image
-        LoadProfileImage((_leaderboardPlacement + 1));
-
-        // Update player profile image
-        // StartCoroutine(LoadPlayerImg(playerImageUrlArray[_leaderboardPlacement]));
-    }
-
-    // Load the player image
-    IEnumerator LoadPlayerImg(string _url)
-    {
-        // Activate the loading icon
-        profileLoadingIcon.gameObject.SetActive(true);
-
-        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
-        {
-            yield return uwr.SendWebRequest();
-
-            if (uwr.isNetworkError || uwr.isHttpError)
-            {
-                // ERROR 
-                Debug.Log(uwr.error);
-
-                // Deactivate the loading icon
-                profileLoadingIcon.gameObject.SetActive(false);
-
-                // Display error message
-            }
-            else
-            {
-                // Deactivate the loading icon
-                profileLoadingIcon.gameObject.SetActive(false);
-                // Activate the profile panel
-                playerProfilePanel.gameObject.SetActive(true);
-
-                // Get downloaded asset bundle
-                var texture = DownloadHandlerTexture.GetContent(uwr);
-
-                // Update the image with the new image
-                profileImage.material.mainTexture = texture;
-
-                // Set image to false then to true to activate new image
-                profileImage.gameObject.SetActive(false);
-                profileImage.gameObject.SetActive(true);
-            }
-        }
-    }
-
-    private void LoadProfileImage(int _leaderboardPlaceIndex)
-    {
-        // Get downloaded asset bundle
-
-        switch (_leaderboardPlaceIndex)
-        {
-            case 1:
-                profileImage.material = place1Material;
-                break;
-            case 2:
-                profileImage.material = place2Material;
-                break;
-            case 3:
-                profileImage.material = place3Material;
-                break;
-            case 4:
-                profileImage.material = place4Material;
-                break;
-            case 5:
-                profileImage.material = place5Material;
-                break;
-            case 6:
-                profileImage.material = place6Material;
-                break;
-            case 7:
-                profileImage.material = place7Material;
-                break;
-            case 8:
-                profileImage.material = place8Material;
-                break;
-            case 9:
-                profileImage.material = place9Material;
-                break;
-            case 10:
-                profileImage.material = place10Material;
-                break;
-        }
-
-        // Update the image with the new image
-
-
-        // Set image to false then to true to activate new image
-        profileImage.gameObject.SetActive(false);
-        profileImage.gameObject.SetActive(true);
-
-        // Activate the profile panel
-        playerProfilePanel.gameObject.SetActive(true);
-        // Deactivate the loading icon
-        profileLoadingIcon.gameObject.SetActive(false);
-
-    }
-
-    // Close the player profile and go to the leaderboard
-    public void ClosePlayerProfile()
-    {
-        leaderboard.gameObject.SetActive(true);
-        playerProfilePanel.gameObject.SetActive(false);
-    }
-
-    // Loop through and get all player profile information
-    public void GetPlayerProfiles()
-    {
-        // Calculate total existing placements
-        CalculateTotalExistingPlacements();
-
-        // Loop through all the placements
-        for (int placementToCheck = 0; placementToCheck < totalExistingProfiles; placementToCheck++)
-        {
-            // If the leaderboard placement exists
-            if (scriptManager.beatmapRanking.PlaceExists[placementToCheck] == true)
-            {
-                StartCoroutine(RetrievePlayerProfilesFromServer(placementToCheck));
-            }
-            else
-            {
-                // Disable interaction for the leaderboard button that would load a profile that does not contain information
-            }
-        }
-    }
-
-
-    // Retrieve player profile information from the server
-    private IEnumerator RetrievePlayerProfilesFromServer(int _placement)
+    // Get player profile information
+    private IEnumerator GetPlayerProfileInformation()
     {
         WWWForm form = new WWWForm();
+        form.AddField("username", MySQLDBManager.username);
 
-        // Get the placement username - profile to load
-        //string username = scriptManager.beatmapRanking.RankedButtonUsername[_placement];
-
-        //form.AddField("username", username);
-
-        UnityWebRequest www = UnityWebRequest.Post("http://rhythmgamex.knightstone.io/retrieveplayerprofileinformation.php", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost/rhythmgamex/retrieve_profile.php", form);
         www.chunkedTransfer = false;
         yield return www.SendWebRequest();
 
@@ -397,148 +103,464 @@ public class PlayerProfile : MonoBehaviour
         // Split the information retrieved from the database
         placeList.AddRange(Regex.Split(www.downloadHandler.text, "->"));
 
-        // Loop through all the player profile data and assign
-        for (sbyte dataType = 0; dataType < 24; dataType++)
+        // Loop through all the leaderboard data and assign
+        for (sbyte dataType = 0; dataType < 48; dataType++)
         {
             /*
-              DataType:
-              [0] = $player_name_return;
-              [1] = $play_count_return;
-              [2] = $highest_combo_return; 
-              [3] = $notes_hit_return; 
-              [4] = $highest_beatmap_score_return;
-              [5] = $fever_time_activations_return; 
-              [6] = $1key_total_score_return; 
-              [7] = $2key_total_score_return;
-              [8] = $4key_total_score_return; 
-              [9] = $6key_total_score_return;
-              [10] = $overall_total_score_return;
-              [11] = $p_rank_total_return;
-              [12] = $s_rank_total_return; 
-              [13] = $a_rank_total_return;
-              [14] = $b_rank_total_return; 
-              [15] = $c_rank_total_return; 
-              [16] = $d_rank_total_return; 
-              [17] = $e_rank_total_return; 
-              [18] = $f_rank_total_return; 
-              [19] = $image_url_return; 
-              [20] = $highestPercentage_return;
-              [21] = $level_return;
-              [22] = $date_joined_return;
+                $returnarray[0] = $infoarray["username"];
+                $returnarray[1] = $infoarray["date_joined"];
+                $returnarray[2] = $infoarray["image_url"];
+                $returnarray[3] = $infoarray["play_count"];
+                $returnarray[4] = $infoarray["play_time"];
+                $returnarray[5] = $infoarray["level"];
+    
+                // Career
+                $returnarray[6] = $infoarray["highest_beatmap_score"];
+                $returnarray[7] = $infoarray["career_score"];
+                $returnarray[8] = $infoarray["career_easy_score"];
+                $returnarray[9] = $infoarray["career_normal_score"];
+                $returnarray[10] = $infoarray["career_hard_score"];
+                $returnarray[11] = $infoarray["career_combo"];
+                $returnarray[12] = $infoarray["highest_combo"];
+                $returnarray[13] = $infoarray["career_perfect"];
+                $returnarray[14] = $infoarray["career_good"];
+                $returnarray[15] = $infoarray["career_early"];
+                $returnarray[16] = $infoarray["career_miss"];
+                $returnarray[17] = $infoarray["career_notes_hit"];
+                $returnarray[18] = $infoarray["career_s+_rank"];
+                $returnarray[19] = $infoarray["career_s_rank"];
+                $returnarray[20] = $infoarray["career_a_rank"];
+                $returnarray[21] = $infoarray["career_b_rank"];
+                $returnarray[22] = $infoarray["career_c_rank"];
+                $returnarray[23] = $infoarray["career_d_rank"];
+                $returnarray[24] = $infoarray["career_e_rank"];
+                $returnarray[25] = $infoarray["career_f_rank"];
+
+                // Total
+                $returnarray[26] = $infoarray["total_score"];
+                $returnarray[27] = $infoarray["total_easy_score"];
+                $returnarray[28] = $infoarray["total_normal_score"];
+                $returnarray[29] = $infoarray["total_hard_score"];
+                $returnarray[30] = $infoarray["total_combo"];
+                $returnarray[31] = $infoarray["total_perfect"];
+                $returnarray[32] = $infoarray["total_good"];
+                $returnarray[33] = $infoarray["total_early"];
+                $returnarray[34] = $infoarray["total_miss"];
+                $returnarray[35] = $infoarray["total_notes_hit"];
+                $returnarray[36] = $infoarray["total_s+_rank"];
+                $returnarray[37] = $infoarray["total_s_rank"];
+                $returnarray[38] = $infoarray["total_a_rank"];
+                $returnarray[39] = $infoarray["total_b_rank"];
+                $returnarray[40] = $infoarray["total_c_rank"];
+                $returnarray[41] = $infoarray["total_d_rank"];
+                $returnarray[42] = $infoarray["total_e_rank"];
+                $returnarray[43] = $infoarray["total_f_rank"];
+                $returnarray[44] = $infoarray["banner_image_url"];
+                $returnarray[45] = $infoarray["facebook_url"];
+                $returnarray[46] = $infoarray["twitter_url"];
+                $returnarray[47] = $infoarray["youtube_url"];
             */
 
-            if (www.downloadHandler.text != "1")
+            switch (www.downloadHandler.text)
             {
-                // SUCCESS - DATA FOUND
-                // Save to the player profile data for this placement number
-                placeData[_placement].Add(placeList[dataType].ToString());
-                placeExists[_placement] = true;
+                case "ERROR":
+                    Debug.Log("ERROR");
+                    break;
+                default:
+                    placeData.Add(placeList[dataType].ToString());
+                    break;
+            }
+        }
+
+        informationRetrieved = true;
+    }
+
+    // Assign the profile information
+    private void AssignProfileInformation()
+    {
+        titleUsernameText.text = placeData[0] + "'s";
+
+        // CAREER PANEL
+        careerUsernameText.text = placeData[0];
+        careerDateJoinedText.text = placeData[1];
+        highestBeatmapScoreText.text = placeData[6];
+        careerScoreText.text = placeData[7];
+        careerEasyScoreText.text = placeData[8];
+        careerNormalScoreText.text = placeData[9];
+        careerHardScoreText.text = placeData[10];
+        careerComboText.text = placeData[11];
+        careerHighestComboText.text = placeData[12];
+        careerPerfectText.text = placeData[13];
+        careerGoodText.text = placeData[14];
+        careerEarlyText.text = placeData[15];
+        careerMissText.text = placeData[16];
+        careerNotesHitText.text = placeData[17];
+        careerSPlusRankText.text = placeData[18];
+        careerSRankText.text = placeData[19];
+        careerARankText.text = placeData[20];
+        careerBRankText.text = placeData[21];
+        careerCRankText.text = placeData[22];
+        careerDRankText.text = placeData[23];
+        careerERankText.text = placeData[24];
+        careerFRankText.text = placeData[25];
+
+        // TOTAL PANEL
+        totalUsernameText.text = placeData[0];
+        totalDateJoinedText.text = placeData[1];
+        totalPlayCountText.text = placeData[3];
+        totalPlaytime.text = scriptManager.overallRanking.CalculateDaysHoursMinutes(float.Parse(placeData[4]));
+        totalScoreText.text = placeData[26];
+        totalEasyScoreText.text = placeData[27];
+        totalNormalScoreText.text = placeData[28];
+        totalHardScoreText.text = placeData[29];
+        totalComboText.text = placeData[30];
+        totalPerfectText.text = placeData[31];
+        totalGoodText.text = placeData[32];
+        totalEarlyText.text = placeData[33];
+        totalMissText.text = placeData[34];
+        totalNotesHitText.text = placeData[35];
+        totalSPlusRankText.text = placeData[36];
+        totalSRankText.text = placeData[37];
+        totalARankText.text = placeData[38];
+        totalBRankText.text = placeData[39];
+        totalCRankText.text = placeData[40];
+        totalDRankText.text = placeData[41];
+        totalERankText.text = placeData[42];
+        totalFRankText.text = placeData[43];
+        totalLevelText.text = placeData[5];
+
+        if (placeData[45].Contains("facebook.com"))
+        {
+            facebookButton.interactable = true;
+        }
+
+        if (placeData[46].Contains("twitter.com"))
+        {
+            twitterButton.interactable = true;
+        }
+
+        if (placeData[47].Contains("youtube.com"))
+        {
+            youtubeButton.interactable = true;
+        }
+
+        // Load profile image
+        StartCoroutine(LoadProfileImage());
+
+        // Load banner image
+        StartCoroutine(LoadBannerImage());
+
+        informationAssigned = true;
+    }
+
+    // Load profile image
+    private IEnumerator LoadProfileImage()
+    {
+        // placeData[2] = image url
+        string completePath = placeData[2];
+
+        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(completePath))
+        {
+            yield return uwr.SendWebRequest();
+
+            if (uwr.isNetworkError || uwr.isHttpError)
+            {
+                LoadDefaultMaterial(profileImage);      
             }
             else
             {
-                // ERROR - NO DATA FOR THIS PLACEMENT
-                placeData[_placement].Add("");
-                placeExists[_placement] = false;
+                // Get downloaded asset bundle
+                var texture = DownloadHandlerTexture.GetContent(uwr);
+
+                profileImage.material = userImagePlayerProfileMaterial;
+                profileImage.material.mainTexture = texture;
             }
         }
-
-        // Increment profiles checked
-        totalProfilesChecked++;
+        yield return null;
     }
 
-    // Calculate the total amount of existing leaderboard placements that can show profile information
-    public void CalculateTotalExistingPlacements()
+    // Load banner image
+    private IEnumerator LoadBannerImage()
     {
-        // Reset to 0
-        totalExistingProfiles = 0;
+        // placeData[44] = banner_image_url
+        string completePath = placeData[44];
 
-        for (int i = 0; i < scriptManager.beatmapRanking.PlaceExists.Length; i++)
+        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(completePath))
         {
-            if (scriptManager.beatmapRanking.PlaceExists[i] == true)
+            yield return uwr.SendWebRequest();
+
+            if (uwr.isNetworkError || uwr.isHttpError)
             {
-                totalExistingProfiles++;
+                LoadDefaultMaterial(bannerImage);
+            }
+            else
+            {
+                // Get downloaded asset bundle
+                var texture = DownloadHandlerTexture.GetContent(uwr);
+
+                bannerImage.material = userBannerProfileMaterial;
+                bannerImage.material.mainTexture = texture;
             }
         }
 
+        // Activate panel
+        profileLoadingIcon.gameObject.SetActive(false);
+        profilePanel.gameObject.SetActive(true);
+        viewProfileInformationPanel.gameObject.SetActive(true);
+
+        yield return null;
     }
 
-    // Reset all player profile information
-    public void ResetPlayerProfileVariables()
+    // Load default material
+    private void LoadDefaultMaterial(Image _image)
     {
-        playerName = "";
-        playerImageUrl = "";
-
-        profileHasLoaded = false;
-        informationAssigned = false; // Allow information to be assigned again
-        totalProfilesChecked = 0; // Reset profiles check
-        totalExistingProfiles = 99; // Reset to 99 to prevent instant assign on first frame
-        totalURLImagesToUpload = 0; // Reset total url images to upload
-
-        // RESET ARRAYS
-        // Loop through all the placements
-        for (sbyte placementToCheck = 0; placementToCheck < totalPlacements; placementToCheck++)
-        {
-            // Assign the database information to the variables
-            usernameArray[placementToCheck] = "";
-            playcountArray[placementToCheck] = "";
-            highestComboArray[placementToCheck] = "";
-            notesHitArray[placementToCheck] = "";
-            feverTimeActivationsArray[placementToCheck] = "";
-            highestBeatmapScoreArray[placementToCheck] = "";
-            oneKeyTotalScoreArray[placementToCheck] = "";
-            twoKeyTotalScoreArray[placementToCheck] = "";
-            fourKeyTotalScoreArray[placementToCheck] = "";
-            sixKeyTotalScoreArray[placementToCheck] = "";
-            overallTotalScoreArray[placementToCheck] = "";
-            pRankTotalArray[placementToCheck] = "";
-            sRankTotalArray[placementToCheck] = "";
-            aRankTotalArray[placementToCheck] = "";
-            bRankTotalArray[placementToCheck] = "";
-            cRankTotalArray[placementToCheck] = "";
-            dRankTotalArray[placementToCheck] = "";
-            eRankTotalArray[placementToCheck] = "";
-            fRankTotalArray[placementToCheck] = "";
-            playerImageUrlArray[placementToCheck] = "";
-            highestPercentageArray[placementToCheck] = "";
-            levelArray[placementToCheck] = "";
-            messageArray[placementToCheck] = "";
-            dateJoinedArray[placementToCheck] = "";
-        }
+        _image.material = defaultMaterial;
     }
 
-    // Reset the player profile text and image
+    // Reset profile 
     private void ResetPlayerProfile()
     {
-        // Deactivate the player profile panel
-        playerProfilePanel.gameObject.SetActive(false);
+        placeData.Clear();
 
-        // Reset material
-        profileImage.material = defaultPlayerProfileMaterial;
+        titleUsernameText.text = "";
 
-        // Reset text
-        usernameText.text = "";
-        playCountText.text = "";
-        highestComboText.text = "";
-        notesHitText.text = "";
-        feverTimeActivationsText.text = "";
+        // CAREER PANEL
+        careerUsernameText.text = "";
+        careerDateJoinedText.text = "";
         highestBeatmapScoreText.text = "";
-        oneKeyTotalScoreText.text = "";
-        twoKeyTotalScoreText.text = "";
-        fourKeyTotalScoreText.text = "";
-        sixKeyTotalScoreText.text = "";
-        overallTotalScoreText.text = "";
-        pRankText.text = "";
-        sRankText.text = "";
-        aRankText.text = "";
-        bRankText.text = "";
-        cRankText.text = "";
-        dRankText.text = "";
-        eRankText.text = "";
-        fRankText.text = "";
-        //levelText.text = "";
-        highestPercentageText.text = "";
-        messageText.text = "";
+        careerScoreText.text = "";
+        careerEasyScoreText.text = "";
+        careerNormalScoreText.text = "";
+        careerHardScoreText.text = "";
+        careerComboText.text = "";
+        careerHighestComboText.text = "";
+        careerPerfectText.text = "";
+        careerGoodText.text = "";
+        careerEarlyText.text = "";
+        careerMissText.text = "";
+        careerNotesHitText.text = "";
+        careerSPlusRankText.text = "";
+        careerSRankText.text = "";
+        careerARankText.text = "";
+        careerBRankText.text = "";
+        careerCRankText.text = "";
+        careerDRankText.text = "";
+        careerERankText.text = "";
+        careerFRankText.text = "";
 
-        //levelSlider.value = 0;
+        // TOTAL PANEL
+        careerUsernameText.text = "";
+        totalDateJoinedText.text = "";
+        totalPlayCountText.text = "";
+        totalPlaytime.text = "";
+        totalScoreText.text = "";
+        totalEasyScoreText.text = "";
+        totalNormalScoreText.text = "";
+        totalHardScoreText.text = "";
+        totalComboText.text = "";
+        totalPerfectText.text = "";
+        totalGoodText.text = "";
+        totalEarlyText.text = "";
+        totalMissText.text = "";
+        totalNotesHitText.text = "";
+        totalSPlusRankText.text = "";
+        totalSRankText.text = "";
+        totalARankText.text = "";
+        totalBRankText.text = "";
+        totalCRankText.text = "";
+        totalDRankText.text = "";
+        totalERankText.text = "";
+        totalFRankText.text = "";
+
+        LoadDefaultMaterial(profileImage);
+        LoadDefaultMaterial(bannerImage);
+
+        facebookButton.interactable = false;
+        twitterButton.interactable = false;
+        youtubeButton.interactable = false;
+
+        informationRetrieved = false;
+        profileHasLoaded = false;
+        informationAssigned = false;
+        profilePanel.gameObject.SetActive(false);
+        profileLoadingIcon.gameObject.SetActive(true);
     }
+
+    public void OpenFacebookURL()
+    {
+        Application.OpenURL(placeData[45]);
+    }
+
+    public void OpenTwitterURL()
+    {
+        Application.OpenURL(placeData[46]);
+    }
+
+    public void OpenYoutubeURL()
+    {
+        Application.OpenURL(placeData[47]);
+    }
+
+    // Enable profile edit panel
+    public void EnableProfileEditPanel()
+    {
+        // If profile is players own profile
+        if (placeData[0] == MySQLDBManager.username)
+        {
+            // Enable editing
+            StopAllCoroutines();
+            viewProfileInformationPanel.gameObject.SetActive(false);
+            editProfilePanel.gameObject.SetActive(true);
+            editProfileInputFieldsPanel.gameObject.SetActive(true);
+            editorProfileConfirmationPanel.gameObject.SetActive(false);
+        }
+    }
+
+    // Reset edit profile panel
+    public void ResetEditProfilePanel()
+    {
+        profileImageUrlInputfield.text = "";
+        bannerImageUrlInputfield.text = "";
+        facebookProfileUrlInputfield.text = "";
+        twitterProfileUrlInputfield.text = "";
+        youtubeProfileUrlInputfield.text = "";
+        saveProfileButton.interactable = false;
+    }
+
+    // Enable save button if any input field length > 0
+    public void ValidateEditProfilePanelInputFieldLength()
+    {
+        if (profileImageUrlInputfield.text.Length > 0 || bannerImageUrlInputfield.text.Length > 0 ||
+            facebookProfileUrlInputfield.text.Length > 0 || twitterProfileUrlInputfield.text.Length > 0 ||
+            youtubeProfileUrlInputfield.text.Length > 0)
+        {
+            saveProfileButton.interactable = true;
+        }
+        else
+        {
+            saveProfileButton.interactable = false;
+        }
+    }
+
+    // Display edit profile confirmation panel
+    public void DisplayEditProfileConfirmationPanel()
+    {
+        editProfileInputFieldsPanel.gameObject.SetActive(false);
+        editorProfileConfirmationPanel.gameObject.SetActive(true);
+        CheckProfileEdit();
+    }
+
+    // Close edit profile confirmation panel
+    public void HideEditProfileConfirmationPanel()
+    {
+        editorProfileConfirmationPanel.gameObject.SetActive(false);
+        editProfileInputFieldsPanel.gameObject.SetActive(true);
+    }
+
+    // Check profile url addresses are valid
+    public void CheckProfileEdit()
+    {
+        // Set to empty
+        profileImageUrl = "";
+        bannerImageUrl = "";
+        facebookProfileUrl = "";
+        twitterProfileUrl = "";
+        youtubeProfileUrl = "";
+
+        editConfirmationText.text = "You are about to update: ";
+
+
+        if (profileImageUrlInputfield.text.Length > 0)
+        {
+            profileImageUrl = profileImageUrlInputfield.text;
+            editConfirmationText.text += "profile image url, ";
+        }
+
+        if (bannerImageUrlInputfield.text.Length > 0)
+        {
+            bannerImageUrl = bannerImageUrlInputfield.text;
+            editConfirmationText.text += "banner image url, ";
+        }
+
+        if (facebookProfileUrlInputfield.text.Contains("www.facebook.com"))
+        {
+            facebookProfileUrl = facebookProfileUrlInputfield.text;
+            editConfirmationText.text += "facebook profile url, ";
+        }
+
+        if (twitterProfileUrlInputfield.text.Contains("www.twitter.com"))
+        {
+            twitterProfileUrl = twitterProfileUrlInputfield.text;
+            editConfirmationText.text += "twitter profile url, ";
+        }
+
+        if (youtubeProfileUrlInputfield.text.Contains("www.youtube.com"))
+        {
+            youtubeProfileUrl = youtubeProfileUrlInputfield.text;
+            editConfirmationText.text += "youtube profile url, ";
+        }
+
+        // Remove last 2 characters from string
+        editConfirmationText.text = editConfirmationText.text.Remove(editConfirmationText.text.Length - 2);
+    }
+
+    // Button click save profile information
+    public void OnClickSaveProfileEdit()
+    {
+        StartCoroutine(SaveProfileEdit());
+    }
+
+    private IEnumerator SaveProfileEdit()
+    {
+        profileLoadingIcon.gameObject.SetActive(true);
+
+        WWWForm form = new WWWForm();
+        form.AddField("username", MySQLDBManager.username);
+        form.AddField("profileImageUrl", profileImageUrl);
+        form.AddField("bannerImageUrl", bannerImageUrl);
+        form.AddField("facebookProfileUrl", facebookProfileUrl);
+        form.AddField("twitterProfileUrl", twitterProfileUrl);
+        form.AddField("youtubeProfileUrl", youtubeProfileUrl);
+
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost/rhythmgamex/edit_player_profile.php", form);
+        www.chunkedTransfer = false;
+        yield return www.SendWebRequest();
+
+        switch (www.downloadHandler.text)
+        {
+            case "ERROR":
+                scriptManager.messagePanel.DisplayMessage("ERROR UPDATING PROFILE", scriptManager.uiColorManager.offlineColorSolid);
+                break;
+            case "SUCCESS":
+                scriptManager.messagePanel.DisplayMessage("SUCCESSFULLY UPDATED PROFILE", 
+                    scriptManager.uiColorManager.onlineColorSolid);
+                CloseEditProfilePanel();
+                CloseProfile();
+                break;
+        }
+
+        profileLoadingIcon.gameObject.SetActive(false);
+    }
+
+    // Close edit profile panel
+    public void CloseEditProfilePanel()
+    {
+        StopAllCoroutines();
+        editProfilePanel.gameObject.SetActive(false);
+        viewProfileInformationPanel.gameObject.SetActive(true);
+    }
+
+    // Close player profile
+    public void CloseProfile()
+    {
+        editProfilePanel.gameObject.SetActive(false);
+        editorProfileConfirmationPanel.gameObject.SetActive(false);
+        editProfileInputFieldsPanel.gameObject.SetActive(false);
+        ResetPlayerProfile();
+        ResetEditProfilePanel();
+        StopAllCoroutines();
+        this.gameObject.SetActive(false);
+        scriptManager.menuManager.DisablePlayerProfile();
+    }
+    #endregion
 }

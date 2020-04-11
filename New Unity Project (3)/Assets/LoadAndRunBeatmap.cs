@@ -7,55 +7,54 @@ using UnityEngine.Networking;
 
 public class LoadAndRunBeatmap : MonoBehaviour
 {
-
+    #region Variables
     // UI
-    public TextMeshProUGUI gameplayTitleText, beatmapCreatorText, difficultyText;
+    public TextMeshProUGUI SongNameAndArtistNameText, designedByCreatorText, easyDifficultyText, normalDifficultyText,
+        hardDifficultyText, pressSpacebarToPlayText;
 
     // Gameobjects
-    public List<GameObject> spawnedList = new List<GameObject>(); // List of all spawned hit objects in the scene
+    public List<GameObject> spawnedList = new List<GameObject>();
+    public GameObject noteLight; 
 
     // Transform
     public Transform canvas;
 
     // Strings
-    private string hitObjectTag; // The tag on the hit object - Blue, Green, Purple, Red, Orange, Yellow
+    private string hitObjectTag; 
 
     // Integers
-    private int nextIndex;
-    private int totalHitObjects;
-    private int totalHitObjectListSize; // The total amount of hit objects to be spawned
-    private int startingYPosition; // The y position that is decremented each time a hit object is spawned to make the earliest appear ontop of future spawns
-    private int startYPositionDecrementValue; // Value to decrement the y positions by each time they spawn
-    private int hitObjectID; // The hit object ID
-    private int objectThatCanBeHitIndex; // The current hit object that can be hit - activated
-    private float songTimer; // The current time in the song
-    private float trackStartTime; // The time that the song started from
-    private float[] hitObjectSpawnTimes;  // Hit object spawn times
+    private int nextIndex, totalHitObjects, totalHitObjectListSize, hitObjectID, objectThatCanBeHitIndex,
+        lastHitMouseHitObject;
+    private float songTimer, trackStartTime;
+    private float[] hitObjectSpawnTimes;
+
+    public int TESTNUMBER;
+
 
     // Vectors
-    private Vector3[] hitObjectPositions; // Hit object positions containing all 3 xyz values from the other lists
-    private Vector3 hitObjectPosition; // The hit object position to spawn at
+    private Vector3[] hitObjectPositions; 
+    private Vector3 hitObjectPosition;
 
     // Bools
-    private bool startCheck; // Controls checking for the first hit object when the first hit object has spawned
-    private bool hasSpawnedAllHitObjects; // Has the game spawned all hit objects?
-    private bool gameplayHasStarted; // Tracks starting and stopping gameplay
-    private bool allHitObjectsHaveBeenHit; // Have all the hit objects been hit? Used for going to the results screen if they have
+    private bool startCheck, hasSpawnedAllHitObjects, gameplayHasStarted, allHitObjectsHaveBeenHit, mouseActive;
 
     // Keycodes
-    private KeyCode startGameKey; // Game to start the gameplay
+    private KeyCode startGameKey; 
 
     // Scripts
     private ScriptManager scriptManager;
+    #endregion
 
-    // Properties
-
-    // Get all hit object have been hit
+    #region Properties
     public bool AllHitObjectsHaveBeenHit
     {
         get { return allHitObjectsHaveBeenHit; }
     }
 
+    public int LastHitMouseHitObject
+    {
+        set { lastHitMouseHitObject = value; }
+    }
 
     [System.Serializable]
     public class Pool
@@ -67,8 +66,9 @@ public class LoadAndRunBeatmap : MonoBehaviour
 
     public List<Pool> pools;
     public Dictionary<int, Queue<GameObject>> poolDictionary;
+    #endregion
 
-    // Use this for initialization
+    #region Functions
     void Start()
     {
         // Initialize
@@ -76,12 +76,12 @@ public class LoadAndRunBeatmap : MonoBehaviour
         objectThatCanBeHitIndex = 0;
         nextIndex = 0;
         hitObjectID = 0;
-        startYPositionDecrementValue = 10;
-        startingYPosition = 99500; // Set the startYPosition to the highest range of the camera
+        lastHitMouseHitObject = 0;
         startCheck = false;
         gameplayHasStarted = false;
-        hasSpawnedAllHitObjects = false; // Set to false as all object haven't been spawned yet
-        startGameKey = KeyCode.Space; // Assign starting the game key to the spacebar
+        hasSpawnedAllHitObjects = false;
+        mouseActive = true;
+        startGameKey = KeyCode.Space;
 
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
@@ -91,11 +91,11 @@ public class LoadAndRunBeatmap : MonoBehaviour
         totalHitObjectListSize = totalHitObjects; // Get total number of objects to spawn
         LoadHitObjectPositions(); // Load the hit object xyz positions from the beatmap file
         LoadHitObjectSpawnTimes(); // Load and update the hit object spawn times with the fade speed selected value
-        //UpdateGameplayUI(); // When gameplay scene has loaded update the UI text
         StartCoroutine(GetAudioFile()); // Get the audio file and load it into an audio clip
+        EnableMouse(); // Enable mouse to hit mouse hit objects
 
+        // Initialize pool
         poolDictionary = new Dictionary<int, Queue<GameObject>>();
-
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
@@ -115,13 +115,16 @@ public class LoadAndRunBeatmap : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (gameplayHasStarted == false)
         {
-            gameplayHasStarted = true; // Allow gameplay functions to run
-            StartMusic(); // Start gameplay music
+            if (Input.GetKeyDown(startGameKey))
+            {
+                gameplayHasStarted = true;
+                StartMusic(); 
+                pressSpacebarToPlayText.gameObject.SetActive(false);
+            }
         }
 
         // Update the song timer with the current song time if gameplay has started
@@ -133,6 +136,9 @@ public class LoadAndRunBeatmap : MonoBehaviour
         // Check if it's time to spawn the next hit object
         CheckIfTimeToSpawnHitObject();
 
+        // Check mouse reset
+        CheckMouseReset();
+
         // Control which hit object can be hit - earliest spawned
         EnableHitObjectsToBeHit();
 
@@ -140,6 +146,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
         CheckIfAllHitObjectsHaveBeenHit();
     }
 
+    // Spawn hit object from pool
     private void SpawnFromPool(int _tag, Vector3 _position)
     {
         if (poolDictionary.ContainsKey(_tag) == true)
@@ -203,20 +210,6 @@ public class LoadAndRunBeatmap : MonoBehaviour
         }
     }
 
-    // Calculate all the y positions for the hit objects, preventing overlap during gameplay
-    private void CalculateNewHitObjectYPositions()
-    {
-        // For all y positions calculate the new positions to prevent overlap in the gameplay
-        for (int i = 0; i < totalHitObjects; i++)
-        {
-            // Decrement startYPosition so each note has a differnt Y position sorting the layer
-            startingYPosition -= startYPositionDecrementValue;
-
-            // Assign the changed y position to the hit object y position list used for spawning the hit objects
-            Database.database.LoadedPositionY[i] = startingYPosition;
-        }
-    }
-
     // Check keyboard input to start gameplay
     private void CheckToStartGameplay()
     {
@@ -262,8 +255,11 @@ public class LoadAndRunBeatmap : MonoBehaviour
             // Check if it's time to spawn the next hit boject
             if (songTimer >= Database.database.LoadedHitObjectSpawnTime[hitObjectID])
             {
+                TESTNUMBER = Random.Range(0, 6);
 
-                SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
+
+                //SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
+                SpawnFromPool(TESTNUMBER, hitObjectPositions[hitObjectID]);
 
                 // Spawn the next hit object
                 //SpawnHitObject(hitObjectPositions[hitObjectID], Database.database.LoadedObjectType[hitObjectID], hitObjectID);
@@ -280,10 +276,9 @@ public class LoadAndRunBeatmap : MonoBehaviour
         if (startCheck == true)
         {
             // If there has been a hit object spawned into the gameplay scene
-            if (spawnedList.Count != 0) // 3
+            if (spawnedList.Count != 0)
             {
                 // If there is a hit object in the spawnedList to track 
-                //if (spawnedList[objectThatCanBeHitIndex] == null)
                 if (spawnedList[objectThatCanBeHitIndex].gameObject.activeSelf == false)
                 {
                     // Check if the hit object is within the range of the hit object list and that there is another hit object to track after
@@ -307,17 +302,20 @@ public class LoadAndRunBeatmap : MonoBehaviour
                 }
                 else
                 {
-                    // If the user has failed set can be hit to false
-                    if (scriptManager.failAndRetryManager.HasFailed == true)
+                    // Mouse object type
+                    //switch (Database.database.LoadedObjectType[objectThatCanBeHitIndex])
+                    if (mouseActive == true)
                     {
-                        // Make hit objects unhittable
-                        spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().CanBeHit = false;
+                        spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit = true;
                     }
-                    else
+
+                    if (TESTNUMBER == 5 || TESTNUMBER == 6)
                     {
-                        // Allow the hit objects to be hit
-                        spawnedList[objectThatCanBeHitIndex].GetComponent<TimingAndScore>().CanBeHit = true;
+                        spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit = true;
                     }
+
+                    // Set note light to next note position (lerp?)
+                    //noteLight.transform.position = spawnedList[objectThatCanBeHitIndex].transform.position;
                 }
             }
         }
@@ -331,22 +329,6 @@ public class LoadAndRunBeatmap : MonoBehaviour
         scriptManager.rhythmVisualizatorPro.audioSource.volume = 0.5f;
     }
 
-    // Update the song name, artist and difficulty with the values entered
-    public void UpdateGameplayUI()
-    {
-        // Create the gameplay title from song name + artist
-        string gameplayTitle = Database.database.LoadedSongName + " [ " + Database.database.LoadedSongArtist + " ]";
-
-        // Set gameplay text to gameplay title, make all upper case
-        gameplayTitleText.text = gameplayTitle.ToUpper();
-
-        beatmapCreatorText.text = "DESIGNED BY " + Database.database.LoadedBeatmapCreator.ToUpper();
-
-        difficultyText.text = Database.database.LoadedBeatmapDifficulty.ToUpper() + " " + Database.database.LoadedBeatmapDifficultyLevel;
-
-        // Set difficulty text color 
-    }
-
     // Check if all hit objects have been hit (for scene transition)
     private void CheckIfAllHitObjectsHaveBeenHit()
     {
@@ -358,13 +340,6 @@ public class LoadAndRunBeatmap : MonoBehaviour
             {
                 // Set to true
                 allHitObjectsHaveBeenHit = true;
-
-                // If the user hasn't failed
-                if (scriptManager.failAndRetryManager.HasFailed == false)
-                {
-                    // Transition to the next scene
-                    //gameplayToResultsManager.TransitionScene();
-                }
             }
             else
             {
@@ -379,6 +354,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
         }
     }
 
+    // Get audio file from path
     private IEnumerator GetAudioFile()
     {
         string audioFilePath = Database.database.LoadedBeatmapFolderDirectory + "audio.ogg";
@@ -390,7 +366,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
 
             if (www.isNetworkError)
             {
-                
+
             }
             else
             {
@@ -400,4 +376,54 @@ public class LoadAndRunBeatmap : MonoBehaviour
             }
         }
     }
+
+    // Reset mouse
+    public void ResetMouse()
+    {
+        mouseActive = false;
+        scriptManager.mouseFollow.cursorImage.color = Color.red;
+    }
+
+    // Enable mouse
+    private void EnableMouse()
+    {
+        mouseActive = true;
+        scriptManager.mouseFollow.cursorImage.color = Color.green;
+    }
+
+    // Check mouse reset
+    private void CheckMouseReset()
+    {
+        if (mouseActive == false)
+        {
+            switch (lastHitMouseHitObject)
+            {
+                case Constants.MOUSE_HIT_OBJECT_TYPE_LEFT:
+                    if (Input.mousePosition.x >= Constants.RESET_MOUSE_LEFT_POS_X)
+                    {
+                        EnableMouse();
+                    }
+                    break;
+                case Constants.MOUSE_HIT_OBJECT_TYPE_RIGHT:
+                    if (Input.mousePosition.x <= Constants.RESET_MOUSE_RIGHT_POS_X)
+                    {
+                        EnableMouse();
+                    }
+                    break;
+                case Constants.MOUSE_HIT_OBJECT_TYPE_UP:
+                    if (Input.mousePosition.y <= Constants.RESET_MOUSE_UP_POS_Y)
+                    {
+                        EnableMouse();
+                    }
+                    break;
+                case Constants.MOUSE_HIT_OBJECT_TYPE_DOWN:
+                    if (Input.mousePosition.y >= Constants.RESET_MOUSE_DOWN_POS_Y)
+                    {
+                        EnableMouse();
+                    }
+                    break;
+            }
+        }
+    }
+    #endregion
 }
