@@ -97,6 +97,12 @@ public class HitObject : MonoBehaviour
             case Constants.KEY_HIT_OBJECT_TYPE_KEY2_TAG:
                 colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY2;
                 break;
+            case Constants.KEY_HIT_OBJECT_TYPE_KEY3_TAG:
+                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY1;
+                break;
+            case Constants.KEY_HIT_OBJECT_TYPE_KEY4_TAG:
+                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY2;
+                break;
             case Constants.MOUSE_HIT_OBJECT_TYPE_LEFT_TAG:
                 colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_MOUSE_COLOR_LEFT;
                 break;
@@ -200,8 +206,8 @@ public class HitObject : MonoBehaviour
     private void MissedObject()
     {
         // Spawn explosion
-        //scriptManager.explosionManager.SpawnExplosion(tag, MISS_TAG, this.transform.position, 
-        //scriptManager.playInformation.MissScoreValue, colorImage.color);
+        scriptManager.explosionManager.SpawnExplosion(tag, Constants.MISS_TAG, this.transform.position, Constants.MISS_SCORE_VALUE,
+            colorImage.color);
         // Sets judgement to miss
         scriptManager.playInformation.AddMissJudgement();
         // Reset combo as missed

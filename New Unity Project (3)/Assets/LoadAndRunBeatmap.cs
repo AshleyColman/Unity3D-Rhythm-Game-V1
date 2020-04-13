@@ -127,23 +127,26 @@ public class LoadAndRunBeatmap : MonoBehaviour
             }
         }
 
-        // Update the song timer with the current song time if gameplay has started
-        UpdateSongTimer();
+        if (allHitObjectsHaveBeenHit == false)
+        {
+            // Update the song timer with the current song time if gameplay has started
+            UpdateSongTimer();
 
-        // Check if all the hit objects have spawned
-        CheckIfAllHitObjectsHaveSpawned();
+            // Check if all the hit objects have spawned
+            CheckIfAllHitObjectsHaveSpawned();
 
-        // Check if it's time to spawn the next hit object
-        CheckIfTimeToSpawnHitObject();
+            // Check if it's time to spawn the next hit object
+            CheckIfTimeToSpawnHitObject();
 
-        // Check mouse reset
-        CheckMouseReset();
+            // Check mouse reset
+            CheckMouseReset();
 
-        // Control which hit object can be hit - earliest spawned
-        EnableHitObjectsToBeHit();
+            // Control which hit object can be hit - earliest spawned
+            EnableHitObjectsToBeHit();
 
-        // Check if all hit objects have been hit
-        CheckIfAllHitObjectsHaveBeenHit();
+            // Check if all hit objects have been hit
+            CheckIfAllHitObjectsHaveBeenHit();
+        }
     }
 
     // Spawn hit object from pool
@@ -255,9 +258,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
             // Check if it's time to spawn the next hit boject
             if (songTimer >= Database.database.LoadedHitObjectSpawnTime[hitObjectID])
             {
-                TESTNUMBER = Random.Range(0, 6);
-
-
+                TESTNUMBER = Random.Range(4, 8);
                 //SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
                 SpawnFromPool(TESTNUMBER, hitObjectPositions[hitObjectID]);
 
@@ -304,14 +305,23 @@ public class LoadAndRunBeatmap : MonoBehaviour
                 {
                     // Mouse object type
                     //switch (Database.database.LoadedObjectType[objectThatCanBeHitIndex])
-                    if (mouseActive == true)
+                    switch (TESTNUMBER)
                     {
-                        spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit = true;
-                    }
-
-                    if (TESTNUMBER == 5 || TESTNUMBER == 6)
-                    {
-                        spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit = true;
+                        case Constants.MOUSE_HIT_OBJECT_TYPE_DOWN:
+                            SetMouseHitObjectToBeHit();
+                            break;
+                        case Constants.MOUSE_HIT_OBJECT_TYPE_UP:
+                            SetMouseHitObjectToBeHit();
+                            break;
+                        case Constants.MOUSE_HIT_OBJECT_TYPE_LEFT:
+                            SetMouseHitObjectToBeHit();
+                            break;
+                        case Constants.MOUSE_HIT_OBJECT_TYPE_RIGHT:
+                            SetMouseHitObjectToBeHit();
+                            break;
+                        default:
+                            spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit = true;
+                            break;
                     }
 
                     // Set note light to next note position (lerp?)
@@ -326,7 +336,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
     {
         trackStartTime = (float)AudioSettings.dspTime;
         scriptManager.rhythmVisualizatorPro.audioSource.PlayScheduled(trackStartTime);
-        scriptManager.rhythmVisualizatorPro.audioSource.volume = 0.5f;
+        scriptManager.rhythmVisualizatorPro.audioSource.volume = 1f;
     }
 
     // Check if all hit objects have been hit (for scene transition)
@@ -374,6 +384,15 @@ public class LoadAndRunBeatmap : MonoBehaviour
 
                 SetupTiming(); // Setting metronome timing information
             }
+        }
+    }
+
+    // Set mouse hit object to be hit
+    private void SetMouseHitObjectToBeHit()
+    {
+        if (mouseActive == true)
+        {
+            spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit = true;
         }
     }
 

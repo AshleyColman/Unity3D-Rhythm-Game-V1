@@ -62,19 +62,6 @@ public class ExplosionManager : MonoBehaviour
             // Assign position
             objectToSpawnScript.transform.position = _position;
 
-            // Update text
-            switch (_tag)
-            {
-                case (Constants.KEY_HIT_OBJECT_TYPE_KEY1_TAG + "_" + Constants.HIT_TAG):
-                    objectToSpawnScript.keyText.text = Constants.KEY_HIT_OBJECT_TYPE_KEY1_CHAR;
-                    objectToSpawnScript.keyText.color = _colorImageColor;
-                    break;
-                case (Constants.KEY_HIT_OBJECT_TYPE_KEY2_TAG + "_" + Constants.HIT_TAG):
-                    objectToSpawnScript.keyText.text = Constants.KEY_HIT_OBJECT_TYPE_KEY2_CHAR;
-                    objectToSpawnScript.keyText.color = _colorImageColor;
-                    break;
-            }
-
             poolDictionary[_tag].Enqueue(objectToSpawnScript);
         }
     }

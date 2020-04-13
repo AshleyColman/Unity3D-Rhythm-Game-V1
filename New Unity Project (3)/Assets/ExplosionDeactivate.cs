@@ -10,9 +10,6 @@ public class ExplosionDeactivate : MonoBehaviour
     // UI
     public Image colorImage;
 
-    // Text
-    public TextMeshProUGUI keyText;
-
     // Color
     private Color color;
 

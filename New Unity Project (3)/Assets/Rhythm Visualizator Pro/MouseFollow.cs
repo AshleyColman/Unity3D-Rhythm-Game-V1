@@ -9,17 +9,17 @@ public class MouseFollow : MonoBehaviour {
     {
         SetToCurrentMousePosition();
 
+        /*
         if (Input.mousePosition.x < Constants.MAX_MOUSE_LEFT_POS_X)
         {
             this.gameObject.transform.position = new Vector3(Constants.MAX_MOUSE_LEFT_POS_X, Input.mousePosition.y);
         }
 
-
         if (Input.mousePosition.x > Screen.width)
         {
             this.gameObject.transform.position = new Vector3(Screen.width, Input.mousePosition.y);
         }
-
+        */
     }
 
     private void SetToCurrentMousePosition()
