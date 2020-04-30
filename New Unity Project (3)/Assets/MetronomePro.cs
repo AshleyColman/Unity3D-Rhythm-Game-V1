@@ -9,7 +9,7 @@ using TMPro;
 public class MetronomePro : MonoBehaviour
 {
     // Animator
-    public Animator flashGlassAnimator, noteLightAnimator, rankFlashAnimator;
+    public Animator flashGlassAnimator, noteLightAnimator;
     public Animator backgroundImageAnimator, backgroundImageAnimator2, videoPlayerImageAnimator, videoPlayerImageAnimator2, 
         topColorPanelGlowAnimator, bottomColorPanelGlowAnimator;
 
@@ -570,9 +570,7 @@ public class MetronomePro : MonoBehaviour
     // Gameplay scene on measure animations
     void GameplaySceneOnMeasure()
     {
-        flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
         PlayBackgroundBeatAnimation();
-        rankFlashAnimator.Play("RankFlash_Animation", 0, 0f);
     }
 
     // Gameplay scene on tick animations

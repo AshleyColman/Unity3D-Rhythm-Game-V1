@@ -640,7 +640,11 @@ public class BeatmapRanking : MonoBehaviour
         }
 
         personalBestButton.gameObject.SetActive(true);
-        personalBestButtonTextAnimator.Play("SelectedBeatmapNumberText_Animation", 0, 0f);
+
+        if (hasPersonalBest == true)
+        {
+            personalBestButtonTextAnimator.Play("SelectedBeatmapNumberText_Animation", 0, 0f);
+        }
     }
 
     // Activate all leaderboard buttons

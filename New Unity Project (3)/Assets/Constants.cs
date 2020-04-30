@@ -22,9 +22,8 @@ public static class Constants
     public const int MOUSE_HIT_OBJECT_TYPE_DOWN = 3;
     public const int KEY_HIT_OBJECT_TYPE_KEY1 = 4, KEY_HIT_OBJECT_TYPE_KEY2 = 5, KEY_HIT_OBJECT_TYPE_KEY3 = 6, 
         KEY_HIT_OBJECT_TYPE_KEY4 = 7;
-    //public const int START_FEVER_KEY_HIT_OBJECT_TYPE_KEY1 = 8, START_FEVER_KEY_HIT_OBJECT_TYPE_KEY2 = 9,
-        //FEVER_KEY_HIT_OBJECT_TYPE_KEY1 = 10, FEVER_KEY_HIT_OBJECT_TYPE_KEY2 = 11,
-        //END_FEVER_KEY_HIT_OBJECT_TYPE_KEY1 = 12, END_FEVER_KEY_HIT_OBJECT_TYPE_KEY2 = 13;
+    public const int START_FEVER_HIT_OBJECT_TYPE = 8, PHRASE_FEVER_HIT_OBJECT_TYPE = 9, FEVER_HIT_OBJECT_TYPE_KEY1 = 10,
+        FEVER_HIT_OBJECT_TYPE_KEY2 = 11;
     public const int NO_FAIL_TIMER_DURATION = 10;
     public const int STREAK_INTERVAL = 5;
     public const float RED_HEALTH_VALUE = 35f, ORANGE_HEALTH_VALUE = 70f, GREEN_HEALTH_VALUE = 100f;
@@ -45,10 +44,10 @@ public static class Constants
     public const string MOUSE_HIT_OBJECT_TYPE_RIGHT_TAG = "RIGHT";
     public const string MOUSE_HIT_OBJECT_TYPE_UP_TAG = "UP";
     public const string MOUSE_HIT_OBJECT_TYPE_DOWN_TAG = "DOWN";
-    public const string KEY_HIT_OBJECT_TYPE_KEY1_TAG = "KEY1";
-    public const string KEY_HIT_OBJECT_TYPE_KEY2_TAG = "KEY2";
-    public const string KEY_HIT_OBJECT_TYPE_KEY3_TAG = "KEY3";
-    public const string KEY_HIT_OBJECT_TYPE_KEY4_TAG = "KEY4";
+    public const string KEY_HIT_OBJECT_TYPE_KEY1_TAG = "KEY1", KEY_HIT_OBJECT_TYPE_KEY2_TAG = "KEY2", 
+        KEY_HIT_OBJECT_TYPE_KEY3_TAG = "KEY3", KEY_HIT_OBJECT_TYPE_KEY4_TAG = "KEY4";
+    public const string START_FEVER_HIT_OBJECT_TYPE_TAG = "START", PHRASE_FEVER_HIT_OBJECT_TYPE_TAG = "PHRASE",
+        FEVER_HIT_OBJECT_TYPE_KEY1_TAG = "FEVER_KEY1", FEVER_HIT_OBJECT_TYPE_KEY2_TAG = "FEVER_KEY2";
     public const string KEY_HIT_OBJECT_TYPE_KEY1_CHAR = "D F";
     public const string KEY_HIT_OBJECT_TYPE_KEY2_CHAR = "J K";
     public const string HIT_TAG = "HIT";
@@ -66,8 +65,8 @@ public static class Constants
     public const string EARLY_SCORE_STRING = "100", GOOD_SCORE_STRING = "250", PERFECT_SCORE_STRING = "500";
     public const string PERFECT_JUDGEMENT = "PERFECT", GOOD_JUDGEMENT = "GOOD", EARLY_JUDGEMENT = "EARLY", MISS_JUDGEMENT = "MISS";
     public const char COMBO_PREFIX = 'x', PERCENTAGE_PREFIX = '%', PLUS_PREFIX = '+', NEGATIVE_PREFIX = '-';
-    public const KeyCode KEY_HIT_OBJECT_TYPE_KEY1_KEYCODE = KeyCode.D;
-    public const KeyCode KEY_HIT_OBJECT_TYPE_KEY1_ALTERNATE_KEYCODE = KeyCode.F;
+    public const KeyCode KEY_HIT_OBJECT_TYPE_KEY1_KEYCODE = KeyCode.F;
+    public const KeyCode KEY_HIT_OBJECT_TYPE_KEY1_ALTERNATE_KEYCODE = KeyCode.D;
     public const KeyCode KEY_HIT_OBJECT_TYPE_KEY2_KEYCODE = KeyCode.J;
     public const KeyCode KEY_HIT_OBJECT_TYPE_KEY2_ALTERNATE_KEYCODE = KeyCode.K;
     public const KeyCode FEVER_ACTIVATION_KEY = KeyCode.T;

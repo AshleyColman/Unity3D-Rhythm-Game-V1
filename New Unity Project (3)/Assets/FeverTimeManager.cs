@@ -5,7 +5,7 @@ public class FeverTimeManager : MonoBehaviour
 {
     #region Variables
     // Animator
-    public Animator feverSliderAnimator;
+    public Animator feverSliderAnimator, flashGlassAnimator;
 
     // Audio
     public AudioReverbFilter audioReverbFilter;
@@ -18,7 +18,7 @@ public class FeverTimeManager : MonoBehaviour
         feverDuration3, feverDuration4;
 
     // Bool 
-    private bool feverActivated, lerpFeverSlider, canActivate, feverPhraseActive;
+    private bool feverActivated, canActivate, feverPhraseActive, feverPhraseBroken;
 
     // Scripts
     ScriptManager scriptManager;
@@ -29,6 +29,11 @@ public class FeverTimeManager : MonoBehaviour
     {
         get { return feverPhraseActive; }
     }
+
+    public bool FeverPhraseBroken
+    {
+        get { return feverPhraseBroken; }
+    }
     #endregion
 
     #region Functions
@@ -38,9 +43,9 @@ public class FeverTimeManager : MonoBehaviour
         feverTimeSlider.value = 0f;
         feverSliderValueToLerpTo = 0f;
         feverActivated = false;
-        lerpFeverSlider = false;
         canActivate = false;
-        feverPhraseActive = true;
+        feverPhraseActive = false;
+        feverPhraseBroken = false;
 
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
@@ -104,38 +109,56 @@ public class FeverTimeManager : MonoBehaviour
     }
 
     // Add phrase to fever
-    public void AddPhrase()
+    public void AddPhrase(string _tag)
     {
-        switch (feverTimeSlider.value)
+        if (feverTimeSlider.value != Constants.FEVER_FILL_4)
         {
-            case 0:
-                feverTimeSlider.value = Constants.FEVER_FILL_1;
-                break;
-            case Constants.FEVER_FILL_1:
-                feverTimeSlider.value = Constants.FEVER_FILL_2;
-                break;
-            case Constants.FEVER_FILL_2:
-                feverTimeSlider.value = Constants.FEVER_FILL_3;
-                break;
-            case Constants.FEVER_FILL_3:
-                feverTimeSlider.value = Constants.FEVER_FILL_4;
-                break;
+            // Check if the fever note hit was a single phrase type
+            if (_tag == Constants.PHRASE_FEVER_HIT_OBJECT_TYPE_TAG)
+            {
+                // Add phrase, increase fever slider value
+                if (feverPhraseActive == true)
+                {
+                    if (feverPhraseBroken == false)
+                    {
+                        flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
+
+                        switch (feverTimeSlider.value)
+                        {
+                            case 0:
+                                feverTimeSlider.value = Constants.FEVER_FILL_1;
+                                break;
+                            case Constants.FEVER_FILL_1:
+                                feverTimeSlider.value = Constants.FEVER_FILL_2;
+                                break;
+                            case Constants.FEVER_FILL_2:
+                                feverTimeSlider.value = Constants.FEVER_FILL_3;
+                                break;
+                            case Constants.FEVER_FILL_3:
+                                feverTimeSlider.value = Constants.FEVER_FILL_4;
+                                break;
+                        }
+                    }
+                }
+
+                // Reset phrase tracking 
+                feverPhraseActive = false;
+                feverPhraseBroken = false;
+            }
         }
     }
 
     // Break fever phrase
     public void BreakFeverPhrase()
     {
-        feverActivated = false;
+        feverPhraseBroken = true;
     }
 
     // Reset fever phrase
     public void ActivateFeverPhrase()
     {
-        if (feverActivated == false)
-        {
-            feverActivated = true;
-        }
+        feverPhraseActive = true;
+        feverPhraseBroken = false;
     }
 
     // Lerp fever slider
@@ -151,9 +174,9 @@ public class FeverTimeManager : MonoBehaviour
     {
         feverActivated = true;
         canActivate = false;
-        lerpFeverSlider = true;
         feverSliderLerp = 0f;
         feverSliderAnimator.Play("FeverEffect1_Animation", 0, 0f);
+        flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
         audioReverbFilter.enabled = true;
     }
 

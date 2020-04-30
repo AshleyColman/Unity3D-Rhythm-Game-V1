@@ -34,7 +34,8 @@ public class ExplosionDeactivate : MonoBehaviour
     private void OnEnable()
     {
         timer = 0f;
-        UpdateColors();
+        UpdateImageColor();
+        UpdateExplosionColor();
     }
 
     private void Awake()
@@ -65,13 +66,22 @@ public class ExplosionDeactivate : MonoBehaviour
     }
 
     // Update color image color
-    private void UpdateColors()
+    private void UpdateImageColor()
     {
         colorImage.color = color;
+    }
 
-        if (particleExplosion != null)
+    // Update explosion color
+    private void UpdateExplosionColor()
+    {
+        switch (tag)
         {
-            particleExplosionMain.startColor = new ParticleSystem.MinMaxGradient(color, Color.white);
+            case Constants.KEY_HIT_OBJECT_TYPE_KEY1_TAG:
+                particleExplosionMain.startColor = new ParticleSystem.MinMaxGradient(color, Color.white);
+                break;
+            case Constants.KEY_HIT_OBJECT_TYPE_KEY2_TAG:
+                particleExplosionMain.startColor = new ParticleSystem.MinMaxGradient(color, Color.white);
+                break;
         }
     }
 

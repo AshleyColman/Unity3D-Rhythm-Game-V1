@@ -256,9 +256,6 @@ public class PlayInformation : MonoBehaviour
             nextStreak += Constants.STREAK_INTERVAL;
             streakText.gameObject.SetActive(false);
             streakText.gameObject.SetActive(true);
-
-            // DELETE THIS FOR TESTING
-            scriptManager.feverTimeManager.AddPhrase();
         }
     }
 

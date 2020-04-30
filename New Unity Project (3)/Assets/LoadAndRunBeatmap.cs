@@ -29,11 +29,11 @@ public class LoadAndRunBeatmap : MonoBehaviour
     private string hitObjectTag;
 
     // Integers
-    private int nextIndex, totalHitObjects, totalHitObjectListSize, hitObjectID, objectThatCanBeHitIndex,
+    public int nextIndex, totalHitObjects, totalHitObjectListSize, hitObjectID, objectThatCanBeHitIndex,
         lastHitMouseHitObject;
     private float songTimer, trackStartTime, noteLightPositionLerp;
     private float[] hitObjectSpawnTimes;
-    public int TESTNUMBER;
+    public List<int> TESTNUMBER = new List<int>();
 
 
     // Vectors
@@ -41,7 +41,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
     private Vector3 hitObjectPosition, noteLightPositionToLerpTo;
 
     // Bools
-    private bool startCheck, hasSpawnedAllHitObjects, gameplayHasStarted, allHitObjectsHaveBeenHit, mouseActive, lerpNoteLight;
+    public bool startCheck, hasSpawnedAllHitObjects, gameplayHasStarted, allHitObjectsHaveBeenHit, mouseActive, lerpNoteLight;
 
     // Keycodes
     private KeyCode startGameKey; 
@@ -206,6 +206,33 @@ public class LoadAndRunBeatmap : MonoBehaviour
     {
         if (poolDictionary.ContainsKey(_tag) == true)
         {
+            // Check fever type notes for controlling fever phrases
+            switch (scriptManager.feverTimeManager.FeverPhraseActive)
+            {
+                case false:
+                    // NOT ACTIVE
+                    switch (_tag)
+                    {
+                        case Constants.START_FEVER_HIT_OBJECT_TYPE:
+                            scriptManager.feverTimeManager.ActivateFeverPhrase();
+                            break;
+                    }
+                    break;
+                case true:
+                    // ACTIVE
+                    switch (_tag)
+                    {
+                        // Change the note to the fever variant
+                        case Constants.KEY_HIT_OBJECT_TYPE_KEY1:
+                            _tag = Constants.FEVER_HIT_OBJECT_TYPE_KEY1;
+                            break;
+                        case Constants.KEY_HIT_OBJECT_TYPE_KEY2:
+                            _tag = Constants.FEVER_HIT_OBJECT_TYPE_KEY2;
+                            break;
+                    }
+                    break;
+            }
+
             GameObject objectToSpawn = poolDictionary[_tag].Dequeue();
             objectToSpawn.gameObject.SetActive(true);
             objectToSpawn.transform.position = _position;
@@ -306,9 +333,32 @@ public class LoadAndRunBeatmap : MonoBehaviour
             // Check if it's time to spawn the next hit boject
             if (songTimer >= Database.database.LoadedHitObjectSpawnTime[hitObjectID])
             {
-                TESTNUMBER = Random.Range(4, 6);
+                if (scriptManager.feverTimeManager.FeverPhraseActive == false)
+                {
+                    TESTNUMBER.Add(Constants.START_FEVER_HIT_OBJECT_TYPE);    
+                }
+                else
+                {
+                    int num = Random.Range(0, 4);
+
+                    switch (num)
+                    {
+                        case 1:
+                            //TESTNUMBER.Add(Random.Range(4, 6));
+                            TESTNUMBER.Add(4);
+                            break;
+                        case 2:
+                            TESTNUMBER.Add(5);
+                            break;
+                        case 3:
+                            TESTNUMBER.Add(9);
+                            break;
+                    }
+
+                }
+
                 //SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
-                SpawnFromPool(TESTNUMBER, hitObjectPositions[hitObjectID]);
+                SpawnFromPool(TESTNUMBER[hitObjectID], hitObjectPositions[hitObjectID]);
 
                 // Spawn the next hit object
                 //SpawnHitObject(hitObjectPositions[hitObjectID], Database.database.LoadedObjectType[hitObjectID], hitObjectID);
@@ -353,7 +403,8 @@ public class LoadAndRunBeatmap : MonoBehaviour
                 {
                     // Mouse object type
                     //switch (Database.database.LoadedObjectType[objectThatCanBeHitIndex])
-                    switch (TESTNUMBER)
+                    /*
+                    switch (TESTNUMBER[hitObjectID])
                     {
                         case Constants.MOUSE_HIT_OBJECT_TYPE_DOWN:
                             SetMouseHitObjectToBeHit();
@@ -373,6 +424,12 @@ public class LoadAndRunBeatmap : MonoBehaviour
                                 spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit = true;
                             }
                             break;
+                    }
+                    */
+
+                    if (spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit == false)
+                    {
+                        spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit = true;
                     }
 
                     // Assign next note light lerp position

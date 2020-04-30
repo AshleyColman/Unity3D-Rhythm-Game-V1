@@ -16,6 +16,10 @@ TagManager:
   - KEY2
   - KEY3
   - KEY4
+  - START
+  - PHRASE
+  - FEVER_KEY1
+  - FEVER_KEY2
   layers:
   - Default
   - TransparentFX

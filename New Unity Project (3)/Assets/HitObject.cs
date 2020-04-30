@@ -49,8 +49,8 @@ public class HitObject : MonoBehaviour
         // Assign color
         AssignColor();
 
-        // Play animation
-        hitObjectAnimator.Play("HitObject_FadeIn_Animation", 0, 0f);
+        // Play approach animation
+        PlayApproachAnimation();
     }
 
     private void OnDisable()
@@ -68,9 +68,6 @@ public class HitObject : MonoBehaviour
         canBeHit = false;
         hitObjectHit = false;
         timeWhenHit = 0;
-
-        // Reference
-        //scriptManager = FindObjectOfType<ScriptManager>();
     }
 
     // Update is called once per frame
@@ -84,6 +81,33 @@ public class HitObject : MonoBehaviour
 
         // Check input for hitting object
         CheckInput();
+    }
+
+    // Play approach animation
+    private void PlayApproachAnimation()
+    {
+        switch (tag)
+        {
+            case Constants.KEY_HIT_OBJECT_TYPE_KEY1_TAG:
+                hitObjectAnimator.Play("HitObject_FadeIn_Animation", 0, 0f);
+                break;
+            case Constants.KEY_HIT_OBJECT_TYPE_KEY2_TAG:
+                hitObjectAnimator.Play("HitObject_FadeIn_Animation", 0, 0f);
+                break;
+            case Constants.FEVER_HIT_OBJECT_TYPE_KEY1_TAG:
+                hitObjectAnimator.Play("HitObject_FadeIn_OuterApproach_Animation", 0, 0f);
+                break;
+            case Constants.FEVER_HIT_OBJECT_TYPE_KEY2_TAG:
+                hitObjectAnimator.Play("HitObject_FadeIn_OuterApproach_Animation", 0, 0f);
+                break;
+            case Constants.START_FEVER_HIT_OBJECT_TYPE_TAG:
+                hitObjectAnimator.Play("HitObject_FadeIn_OuterApproach_Animation", 0, 0f);
+                break;
+            case Constants.PHRASE_FEVER_HIT_OBJECT_TYPE_TAG:
+                hitObjectAnimator.Play("HitObject_FadeIn_OuterApproach_Animation", 0, 0f);
+                break;
+        }
+        
     }
 
     // Assign color based on tag
@@ -101,6 +125,12 @@ public class HitObject : MonoBehaviour
                 colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY1;
                 break;
             case Constants.KEY_HIT_OBJECT_TYPE_KEY4_TAG:
+                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY2;
+                break;
+            case Constants.FEVER_HIT_OBJECT_TYPE_KEY1_TAG:
+                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY1;
+                break;
+            case Constants.FEVER_HIT_OBJECT_TYPE_KEY2_TAG:
                 colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY2;
                 break;
             case Constants.MOUSE_HIT_OBJECT_TYPE_LEFT_TAG:
@@ -132,30 +162,35 @@ public class HitObject : MonoBehaviour
             // If the hit object has been hit before the destroyed time has been reached
             if (hitObjectTimer < MISS_TIME)
             {
-                // Check if the player hit early judgement
-                CheckEarlyJudgement();
-                // Check if the player hit good judgement
-                CheckGoodJudgement();
-                // Check if the player hit perfect judgement
-                CheckPerfectJudgement();
-                // Increment the current combo
-                scriptManager.playInformation.AddCombo();
-                // Get the time when the user pressed the key to hit the hit object
-                timeWhenHit = hitObjectTimer;
-                // Play hit sound
-                scriptManager.hitSoundManager.PlayHitSound();
-                // Fill fever slider
-                //scriptManager.feverTimeManager.FillFeverSlider();
-                // Display follow info
-                scriptManager.playInformation.DisplayFollowInfo(this.transform.position);
-                // Deactivate gameobject
-                this.gameObject.SetActive(false);
+                // Hit object has been hit
+                HasHit();
             }
         }
     }
 
+    // Hit object has been hit
+    protected virtual void HasHit()
+    {
+        // Check if the player hit early judgement
+        CheckEarlyJudgement();
+        // Check if the player hit good judgement
+        CheckGoodJudgement();
+        // Check if the player hit perfect judgement
+        CheckPerfectJudgement();
+        // Increment the current combo
+        scriptManager.playInformation.AddCombo();
+        // Get the time when the user pressed the key to hit the hit object
+        timeWhenHit = hitObjectTimer;
+        // Play hit sound
+        scriptManager.hitSoundManager.PlayHitSound();
+        // Display follow info
+        scriptManager.playInformation.DisplayFollowInfo(this.transform.position);
+        // Deactivate gameobject
+        this.gameObject.SetActive(false);
+    }
+
     // Check if the player hit early judgement
-    protected virtual void CheckEarlyJudgement()
+    private void CheckEarlyJudgement()
     {
         if (hitObjectTimer >= HIT_OBJECT_START_TIME && hitObjectTimer <= EARLY_JUDGEMENT_TIME)
         {
@@ -167,7 +202,7 @@ public class HitObject : MonoBehaviour
     }
 
     // Check if the player hit good judgement
-    protected virtual void CheckGoodJudgement()
+    private void CheckGoodJudgement()
     {
         if (hitObjectTimer >= EARLY_JUDGEMENT_TIME && hitObjectTimer <= PERFECT_JUDGEMENT_TIME)
         {
@@ -179,7 +214,7 @@ public class HitObject : MonoBehaviour
     }
 
     // Check if the player hit perfect judgement
-    protected virtual void CheckPerfectJudgement()
+    private void CheckPerfectJudgement()
     {
         if (hitObjectTimer >= PERFECT_JUDGEMENT_TIME && hitObjectTimer <= MISS_TIME)
         {
@@ -209,7 +244,7 @@ public class HitObject : MonoBehaviour
     }
 
     // Do the miss object functions
-    private void MissedObject()
+    protected virtual void MissedObject()
     {
         // Spawn explosion
         scriptManager.explosionManager.SpawnExplosion(tag, Constants.MISS_TAG, this.transform.position, Constants.MISS_SCORE_VALUE,

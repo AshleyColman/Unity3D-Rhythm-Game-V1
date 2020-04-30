@@ -131,7 +131,7 @@ public class MetronomeForEffects : MonoBehaviour
         }
         catch
         {
-            Debug.LogWarning("There isn't an Audio Clip assigned in the Player.");
+            
         }
     }
 
