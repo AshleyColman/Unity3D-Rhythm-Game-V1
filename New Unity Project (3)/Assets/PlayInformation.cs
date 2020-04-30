@@ -6,29 +6,39 @@ public class PlayInformation : MonoBehaviour
 {
     #region Variables
     // Animator
-    public Animator comboTextAnimator, gradeTextAnimator, multiplierAnimator;
-    private Animator[] plusScoreTextAnimatorArr;
-
-    // Slider
-    public Slider multiplierSlider;
-
-    public Image multiplierSliderImage;
+    public Animator comboTextAnimator, multiplierAnimator, gradeTextAnimator;
+    private Animator[] plusScoreTextAnimatorArr, plusAccuracyTextAnimatorArr;
 
     // UI
     public TextMeshProUGUI scoreText, zeroScoreText, comboText, comboShadowText, gradeText, gradeShadowText,
-        feverScoreText, percentageText, multiplierText;
-    public TextMeshProUGUI[] plusScoreTextArr;
+        feverScoreText, percentageText, multiplierText, totalPerfectText, totalGoodText, totalEarlyText, totalMissText,
+        streakText, followJudgementText, followComboText;
+    public TextMeshProUGUI[] plusScoreTextArr, plusAccuracyTextArr;
+
+    // Gameobject
+    public GameObject followInfo;
 
     // Integers
-    private int highestCombo, totalPerfect, totalGood, totalEarly, totalMiss, currentCombo, currentScore, totalScorePossible,
-        totalHit, currentMultiplier, scoreStringLength, plusScoreIndex;
-    private float currentPercentage;
+    private int highestCombo, totalPerfect, totalGood, totalEarly, totalMiss, currentCombo, currentScore, totalHit,
+        currentMultiplier, scoreStringLength, plusScoreIndex, nextStreak, plusAccuracyIndex;
+    private float currentPercentage, scoreToLerpTo, scoreLerp, percentageCalculationScore, totalScorePossible,
+        prevFramePercentage;
 
     // Strings
     private string gradeAchieved, scoreString;
 
+    // Bool
+    private bool lerpScore;
+
     // Scripts
     private ScriptManager scriptManager;
+    #endregion
+
+    #region Properties
+    public bool LerpScore
+    {
+        set { lerpScore = value; }
+    }
     #endregion
 
     #region Functions
@@ -38,12 +48,19 @@ public class PlayInformation : MonoBehaviour
         highestCombo = 0;
         currentCombo = 0;
         currentScore = 0;
+        scoreToLerpTo = 0;
         plusScoreIndex = 0;
+        plusAccuracyIndex = 0;
+        percentageCalculationScore = 0;
+        scoreLerp = 0;
         currentMultiplier = 0;
         currentPercentage = 100;
+        prevFramePercentage = 100;
         scoreStringLength = 0;
+        nextStreak = Constants.STREAK_INTERVAL;
         scoreString = "";
-        multiplierSlider.value = 0f;
+        //gradeAchieved = Constants.Grade
+        lerpScore = false;
 
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
@@ -52,10 +69,18 @@ public class PlayInformation : MonoBehaviour
         CalculateHighestScoreForBeatmap();
         UpdateComboText();
         CalculatePercentage();
-        UpdatePercentageText();
         ReferencePlusScoreTextAnimatorArr();
+        ReferencePlusAccuracyTextAnimatorArr();
+    }
 
-        multiplierSliderImage.color = scriptManager.uiColorManager.offlineColorSolid;
+    private void Update()
+    {
+        switch (lerpScore)
+        {
+            case true:
+                LerpToScore();
+                break;
+        }
     }
 
     // Get all references to plus score text animators
@@ -66,6 +91,17 @@ public class PlayInformation : MonoBehaviour
         for (int i = 0; i < plusScoreTextArr.Length; i++)
         {
             plusScoreTextAnimatorArr[i] = plusScoreTextArr[i].GetComponent<Animator>();
+        }
+    }
+
+    // Get all references to plus accuracy text animators
+    private void ReferencePlusAccuracyTextAnimatorArr()
+    {
+        plusAccuracyTextAnimatorArr = new Animator[plusAccuracyTextArr.Length];
+
+        for (int i = 0; i < plusAccuracyTextArr.Length; i++)
+        {
+            plusAccuracyTextAnimatorArr[i] = plusAccuracyTextArr[i].GetComponent<Animator>();
         }
     }
 
@@ -85,11 +121,27 @@ public class PlayInformation : MonoBehaviour
         plusScoreIndex++;
     }
 
+    // Play the next plus accuracy text animation
+    private void PlayPlusAccuracyTextAnimation(Color _color, string _accuracy)
+    {
+        if (plusAccuracyIndex == plusAccuracyTextAnimatorArr.Length)
+        {
+            plusAccuracyIndex = 0;
+        }
+
+        plusAccuracyTextArr[plusAccuracyIndex].text = _accuracy;
+        plusAccuracyTextArr[plusAccuracyIndex].color = _color;
+        plusAccuracyTextArr[plusAccuracyIndex].transform.SetAsLastSibling();
+        plusAccuracyTextAnimatorArr[plusAccuracyIndex].Play("PlusScoreText_Animation", 0, 0f);
+
+        plusAccuracyIndex++;
+    }
+
+
     // Increase multiplier
     private void IncreaseMultiplier()
     {
         currentMultiplier++;
-        multiplierSlider.value += Constants.MULTIPLIER_PER_NOTE_SLIDER_VALUE;
 
         switch (multiplierText.text)
         {
@@ -99,7 +151,6 @@ public class PlayInformation : MonoBehaviour
                     multiplierText.text = Constants.MULTIPLIER_2X_STRING;
                     multiplierAnimator.Play("Multiplier_Increase_Animation", 0, 0f);
                     multiplierText.color = scriptManager.uiColorManager.eRankColor;
-                    multiplierSliderImage.color = scriptManager.uiColorManager.eRankColor;
                 }
                 break;
             case Constants.MULTIPLIER_2X_STRING:
@@ -108,7 +159,6 @@ public class PlayInformation : MonoBehaviour
                     multiplierText.text = Constants.MULTIPLIER_3X_STRING;
                     multiplierAnimator.Play("Multiplier_Increase_Animation", 0, 0f);
                     multiplierText.color = scriptManager.uiColorManager.cRankColor;
-                    multiplierSliderImage.color = scriptManager.uiColorManager.cRankColor;
                 }
                 break;
             case Constants.MULTIPLIER_3X_STRING:
@@ -117,7 +167,6 @@ public class PlayInformation : MonoBehaviour
                     multiplierText.text = Constants.MULTIPLIER_4X_STRING;
                     multiplierAnimator.Play("Multiplier_Increase_Animation", 0, 0f);
                     multiplierText.color = scriptManager.uiColorManager.dRankColor;
-                    multiplierSliderImage.color = scriptManager.uiColorManager.dRankColor;
 
                     switch (currentCombo)
                     {
@@ -127,7 +176,7 @@ public class PlayInformation : MonoBehaviour
                 }
                 break;
             case Constants.MULTIPLIER_4X_STRING:
-                multiplierSlider.value = 1f;
+
                 break;
         }
     }
@@ -140,11 +189,8 @@ public class PlayInformation : MonoBehaviour
             currentMultiplier = Constants.DEFAULT_MULTIPLIER;
             multiplierText.text = Constants.MULTIPLIER_1X_STRING;
             multiplierText.color = scriptManager.uiColorManager.offlineColorSolid;
-            multiplierSliderImage.color = scriptManager.uiColorManager.offlineColorSolid;
             multiplierAnimator.Play("Multiplier_Reset_Animation", 0, 0f);
         }
-
-        multiplierSlider.value = 0f;
     }
 
     // Add combo
@@ -156,6 +202,9 @@ public class PlayInformation : MonoBehaviour
         // Check the current combo and see if it's the highest so far;
         CheckHighestCombo();
 
+        // Check streak
+        CheckStreak();
+
         // Increase multiplier
         IncreaseMultiplier();
 
@@ -164,7 +213,6 @@ public class PlayInformation : MonoBehaviour
 
         // Update percentage
         CalculatePercentage();
-        UpdatePercentageText();
     }
 
     // Reset combo
@@ -175,6 +223,9 @@ public class PlayInformation : MonoBehaviour
 
         // Check the current combo and see if it's the highest so far;
         CheckHighestCombo();
+
+        // Check streak
+        CheckStreak();
 
         // Check if combo is greater than comboBreakValue
         if (currentCombo >= Constants.COMBO_BREAK)
@@ -194,7 +245,27 @@ public class PlayInformation : MonoBehaviour
 
         // Update percentage
         CalculatePercentage();
-        UpdatePercentageText();
+    }
+
+    // Check the current streak
+    private void CheckStreak()
+    {
+        if (currentCombo >= nextStreak)
+        {
+            streakText.text = nextStreak + Constants.STREAK_PREFIX;
+            nextStreak += Constants.STREAK_INTERVAL;
+            streakText.gameObject.SetActive(false);
+            streakText.gameObject.SetActive(true);
+
+            // DELETE THIS FOR TESTING
+            scriptManager.feverTimeManager.AddPhrase();
+        }
+    }
+
+    // Reset streak
+    private void ResetStreak()
+    {
+        nextStreak = Constants.STREAK_INTERVAL;
     }
 
     // Update combo text
@@ -202,13 +273,26 @@ public class PlayInformation : MonoBehaviour
     {
         comboText.text = currentCombo.ToString() + Constants.COMBO_PREFIX;
         comboShadowText.text = comboText.text;
+        followComboText.text = comboText.text;
     }
 
     // Add score and update score text
     public void AddScore(int _scoreValue)
     {
-        // Increment score
-        currentScore += _scoreValue;
+        scoreToLerpTo = (currentScore + _scoreValue);
+        scoreLerp = 0f;
+        lerpScore = true;
+
+        CalculatePercentage();
+    }
+
+    // Lerp to the score
+    private void LerpToScore()
+    {
+        scoreLerp += Time.deltaTime / Constants.SCORE_LERP_DURATION;
+        int score = (int)Mathf.Lerp(currentScore, scoreToLerpTo, scoreLerp);
+
+        currentScore = score;
 
         // Add 0's
         if (currentScore == 0)
@@ -252,8 +336,12 @@ public class PlayInformation : MonoBehaviour
                 break;
         }
 
-        // Set score text
-        scoreText.text = scoreString;
+        scoreText.text = currentScore.ToString();
+
+        if (currentScore >= scoreToLerpTo)
+        {
+            lerpScore = false;
+        }
     }
 
     // Add early judgement
@@ -261,8 +349,17 @@ public class PlayInformation : MonoBehaviour
     {
         totalEarly++;
 
+        // Take away the difference between early and perfect to update the percentage
+        percentageCalculationScore -= (Constants.PERFECT_SCORE_VALUE - Constants.EARLY_SCORE_VALUE);
+
+        // Increment text
+        totalEarlyText.text = Constants.TOTAL_EARLY_PREFIX + totalEarly.ToString();
+
         // Play the next plus score text animation
         PlayPlusScoreTextAnimation(scriptManager.uiColorManager.normalDifficultyColor, Constants.EARLY_SCORE_STRING);
+
+        // Display follow info
+        UpdateJudgementText(Constants.EARLY_JUDGEMENT, scriptManager.uiColorManager.cRankColor);
     }
 
     // Add good judgement
@@ -270,8 +367,17 @@ public class PlayInformation : MonoBehaviour
     {
         totalGood++;
 
+        // Take away the difference between good and perfect to update the percentage
+        percentageCalculationScore -= (Constants.PERFECT_SCORE_VALUE - Constants.GOOD_SCORE_VALUE);
+
+        // Increment text
+        totalGoodText.text = Constants.TOTAL_GOOD_PREFIX + totalGood.ToString();
+
         // Play the next plus score text animation
         PlayPlusScoreTextAnimation(scriptManager.uiColorManager.easyDifficultyColor, Constants.GOOD_SCORE_STRING);
+
+        // Display follow info
+        UpdateJudgementText(Constants.GOOD_JUDGEMENT, scriptManager.uiColorManager.easyDifficultyColor);
     }
 
     // Add perfect judgement
@@ -279,14 +385,29 @@ public class PlayInformation : MonoBehaviour
     {
         totalPerfect++;
 
+        // Increment text
+        totalPerfectText.text = Constants.TOTAL_PERFECT_PREFIX + totalPerfect.ToString();
+
         // Play the next plus score text animation
         PlayPlusScoreTextAnimation(scriptManager.uiColorManager.selectedColor, Constants.PERFECT_SCORE_STRING);
+
+        // Display follow info
+        UpdateJudgementText(Constants.PERFECT_JUDGEMENT, scriptManager.uiColorManager.selectedColor);
     }
 
     // Add miss judgement
     public void AddMissJudgement()
     {
         totalMiss++;
+
+        // Take away perfect score difference
+        percentageCalculationScore -= Constants.PERFECT_SCORE_VALUE;
+
+        // Increment text
+        totalMissText.text = Constants.TOTAL_MISS_PREFIX + totalMiss.ToString();
+
+        // Hide follow info
+        HideFollowInfo();
     }
 
     // Check if the current combo is the highest combo so far
@@ -298,47 +419,77 @@ public class PlayInformation : MonoBehaviour
         }
     }
 
+    // Display judgement text
+    private void UpdateJudgementText(string _judgementString, Color _color)
+    {
+        followJudgementText.text = _judgementString;
+        followJudgementText.color = _color;
+    }
+
+    // Display follow info
+    public void DisplayFollowInfo(Vector3 _position)
+    {
+        followInfo.transform.position = _position;
+        HideFollowInfo();
+        followInfo.gameObject.SetActive(true);
+    }
+
+    // Hide follow info
+    public void HideFollowInfo()
+    {
+        followInfo.gameObject.SetActive(false);
+    }
+
     // Check the highest score possible by calculating the total notes in the song x perfect judgement
     public void CalculateHighestScoreForBeatmap()
     {
         totalScorePossible = Database.database.LoadedPositionX.Count * Constants.PERFECT_SCORE_VALUE;
+        percentageCalculationScore = totalScorePossible;
     }
 
     // Calculate percentage
     private void CalculatePercentage()
     {
-        currentPercentage = (currentScore / totalScorePossible) * 100;
+        currentPercentage = (percentageCalculationScore / totalScorePossible) * 100;
 
         // Check if current grade has increased
-        string returnedGradeAchieved = scriptManager.gradeManager.CheckGradeAchieved(gradeAchieved, currentPercentage);
+        string returnedGradeAchieved = scriptManager.gradeManager.CalculateGrade(currentPercentage);
 
         // Update grade if it has changed
         if (returnedGradeAchieved != gradeAchieved)
         {
             gradeAchieved = returnedGradeAchieved;
             UpdateGradeAchievedText();
-            gradeTextAnimator.Play("NewGradeAchieved_Animation", 0, 0f);
         }
 
-        /*
-        // NEED TO TRACK DEFAULT SCORE SEPERATELY FROM ACTUAL SCORE WITH SP FOR ACCURATE %
-        currentPercentage = (currentScore / totalScorePossibleNow) * 100;
-        int totalScorePossibleNow = scriptManager.loadAndRunBeatmap.totalspawnedandhit ?;
-        */
-    }
-
-    // Update percentage text
-    private void UpdatePercentageText()
-    {
+        // Update percentage text
         percentageText.text = currentPercentage.ToString("F2") + Constants.PERCENTAGE_PREFIX;
+
+        // Check previous frame percentage with new percentage
+        if (prevFramePercentage != currentPercentage)
+        {
+            string accuracyString = (prevFramePercentage - currentPercentage).ToString("F2");
+
+            if (prevFramePercentage > currentPercentage)
+            {
+                PlayPlusAccuracyTextAnimation(scriptManager.uiColorManager.offlineColorSolid,
+                    (Constants.NEGATIVE_PREFIX + accuracyString));
+            }
+        }
+
+        // Update previous frame percentage
+        prevFramePercentage = currentPercentage;
+
+        //currentPercentage = (currentScore / totalScorePossible) * 100;
     }
 
     // Update grade achieved text
     private void UpdateGradeAchievedText()
     {
         gradeText.text = gradeAchieved;
-        gradeShadowText.text = gradeText.text;
+        gradeShadowText.text = gradeAchieved;
         gradeText.colorGradientPreset = scriptManager.uiColorManager.SetGradeColorGradient(gradeAchieved);
+        gradeTextAnimator.Play("Grade_Achieved_Animation", 0, 0f);
     }
     #endregion
 }

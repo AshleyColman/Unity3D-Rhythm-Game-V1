@@ -10,6 +10,10 @@ public class ExplosionDeactivate : MonoBehaviour
     // UI
     public Image colorImage;
 
+    // Particle
+    public ParticleSystem particleExplosion;
+    private ParticleSystem.MainModule particleExplosionMain;
+
     // Color
     private Color color;
 
@@ -30,11 +34,18 @@ public class ExplosionDeactivate : MonoBehaviour
     private void OnEnable()
     {
         timer = 0f;
-        UpdateColorImageColor();
+        UpdateColors();
     }
 
-    // Use this for initialization
-    void Start()
+    private void Awake()
+    {
+        if (particleExplosion != null)
+        {
+            particleExplosionMain = particleExplosion.main;
+        }
+    }
+
+    private void Start()
     {
         // Initialize
         timer = 0f;
@@ -54,9 +65,14 @@ public class ExplosionDeactivate : MonoBehaviour
     }
 
     // Update color image color
-    private void UpdateColorImageColor()
+    private void UpdateColors()
     {
         colorImage.color = color;
+
+        if (particleExplosion != null)
+        {
+            particleExplosionMain.startColor = new ParticleSystem.MinMaxGradient(color, Color.white);
+        }
     }
 
     // Deactivate

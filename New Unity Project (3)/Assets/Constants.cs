@@ -20,19 +20,27 @@ public static class Constants
     public const int MOUSE_HIT_OBJECT_TYPE_RIGHT = 1;
     public const int MOUSE_HIT_OBJECT_TYPE_UP = 2;
     public const int MOUSE_HIT_OBJECT_TYPE_DOWN = 3;
-    public const int KEY_HIT_OBJECT_TYPE_KEY1 = 4;
-    public const int KEY_HIT_OBJECT_TYPE_KEY2 = 5;
-    public const int KEY_HIT_OBJECT_TYPE_KEY3 = 6;
-    public const int KEY_HIT_OBJECT_TYPE_KEY4 = 7;
+    public const int KEY_HIT_OBJECT_TYPE_KEY1 = 4, KEY_HIT_OBJECT_TYPE_KEY2 = 5, KEY_HIT_OBJECT_TYPE_KEY3 = 6, 
+        KEY_HIT_OBJECT_TYPE_KEY4 = 7;
+    //public const int START_FEVER_KEY_HIT_OBJECT_TYPE_KEY1 = 8, START_FEVER_KEY_HIT_OBJECT_TYPE_KEY2 = 9,
+        //FEVER_KEY_HIT_OBJECT_TYPE_KEY1 = 10, FEVER_KEY_HIT_OBJECT_TYPE_KEY2 = 11,
+        //END_FEVER_KEY_HIT_OBJECT_TYPE_KEY1 = 12, END_FEVER_KEY_HIT_OBJECT_TYPE_KEY2 = 13;
+    public const int NO_FAIL_TIMER_DURATION = 10;
+    public const int STREAK_INTERVAL = 5;
+    public const float RED_HEALTH_VALUE = 35f, ORANGE_HEALTH_VALUE = 70f, GREEN_HEALTH_VALUE = 100f;
+    public const float MISS_HEALTH_VALUE = -5f, PERFECT_HEALTH_VALUE = 5f;
     public const float RESET_MOUSE_LEFT_POS_X = 100f;
+    public const float SCORE_LERP_DURATION = 0.2f, NOTE_LIGHT_LERP_DURATION = 0.2f;
+    public const float FEVER_FILL_1 = 0.25f, FEVER_FILL_2 = 0.5f, FEVER_FILL_3 = 0.75f, FEVER_FILL_4 = 1.0f,
+    PER_NOTE_FILL = 0.01f, DEACTIVATE_FEVER_VALUE = 0.0f;
     public readonly static float RESET_MOUSE_RIGHT_POS_X = Screen.width - 100f;
     public readonly static float RESET_MOUSE_UP_POS_Y = Screen.height - 100f;
     public readonly static float RESET_MOUSE_DOWN_POS_Y = 100f;
     public const float EXPLOSION_DEACTIVATE_TIME = 1f;
-    public const float MULTIPLIER_PER_NOTE_SLIDER_VALUE = 0.033f;
     public const string MULTIPLIER_1X_STRING = "1x", MULTIPLIER_2X_STRING = "2x", MULTIPLIER_3X_STRING = "3x",
         MULTIPLIER_4X_STRING = "4x", MULTIPLIER_6X_STRING = "6x",
         MULTIPLIER_8X_STRING = "8x";
+    public const string STREAK_PREFIX = " NOTE STREAK!";
     public const string MOUSE_HIT_OBJECT_TYPE_LEFT_TAG = "LEFT";
     public const string MOUSE_HIT_OBJECT_TYPE_RIGHT_TAG = "RIGHT";
     public const string MOUSE_HIT_OBJECT_TYPE_UP_TAG = "UP";
@@ -52,11 +60,24 @@ public static class Constants
     public const string ZERO_SCORE_PREFIX_3 = "000";
     public const string ZERO_SCORE_PREFIX_2 = "00";
     public const string ZERO_SCORE_PREFIX_1 = "0";
+    public const string TOTAL_EARLY_PREFIX = "E: ", TOTAL_GOOD_PREFIX = "G: ", TOTAL_PERFECT_PREFIX = "P: ",
+        TOTAL_MISS_PREFIX = "M: ";
+    public const string HEALTH_GUARD_STRING = "GUARD ", HEALTH_STRING = "HEALTH ";
     public const string EARLY_SCORE_STRING = "100", GOOD_SCORE_STRING = "250", PERFECT_SCORE_STRING = "500";
-    public const char COMBO_PREFIX = 'x', PERCENTAGE_PREFIX = '%', PLUS_PREFIX = '+';
+    public const string PERFECT_JUDGEMENT = "PERFECT", GOOD_JUDGEMENT = "GOOD", EARLY_JUDGEMENT = "EARLY", MISS_JUDGEMENT = "MISS";
+    public const char COMBO_PREFIX = 'x', PERCENTAGE_PREFIX = '%', PLUS_PREFIX = '+', NEGATIVE_PREFIX = '-';
     public const KeyCode KEY_HIT_OBJECT_TYPE_KEY1_KEYCODE = KeyCode.D;
     public const KeyCode KEY_HIT_OBJECT_TYPE_KEY1_ALTERNATE_KEYCODE = KeyCode.F;
     public const KeyCode KEY_HIT_OBJECT_TYPE_KEY2_KEYCODE = KeyCode.J;
     public const KeyCode KEY_HIT_OBJECT_TYPE_KEY2_ALTERNATE_KEYCODE = KeyCode.K;
+    public const KeyCode FEVER_ACTIVATION_KEY = KeyCode.T;
+    #endregion
+
+    #region SongSelect
+    public const float LEFT_SIDE_GRADIENT_IMAGE_ALPHA = 0.5f;
+    public const string EASY_DIFFICULTY = "easy", NORMAL_DIFFICULTY = "normal", HARD_DIFFICULTY = "hard";
+    public const string GRADE_S = "S", GRADE_A = "A", GRADE_B = "B", GRADE_C = "C", GRADE_D = "D", GRADE_E = "E", GRADE_F = "F";
+    public const int GRADE_S_REQUIRED = 100, GRADE_A_REQUIRED = 90, GRADE_B_REQUIRED = 80, GRADE_C_REQUIRED = 70,
+        GRADE_D_REQUIRED = 60, GRADE_E_REQUIRED = 50;
     #endregion
 }

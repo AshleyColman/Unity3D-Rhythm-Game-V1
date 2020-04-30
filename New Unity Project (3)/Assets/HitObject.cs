@@ -127,25 +127,30 @@ public class HitObject : MonoBehaviour
     // Check keypresses for judgements
     protected virtual void CheckJudgements()
     {
-        // If the hit object has been hit before the destroyed time has been reached
-        if (hitObjectTimer < MISS_TIME)
+        if (scriptManager.healthbar.Failed == false)
         {
-            // Check if the player hit early judgement
-            CheckEarlyJudgement();
-            // Check if the player hit good judgement
-            CheckGoodJudgement();
-            // Check if the player hit perfect judgement
-            CheckPerfectJudgement();
-            // Increment the current combo
-            scriptManager.playInformation.AddCombo();
-            // Get the time when the user pressed the key to hit the hit object
-            timeWhenHit = hitObjectTimer;
-            // Play hit sound
-            scriptManager.hitSoundManager.PlayHitSound();
-            // Fill fever slider
-            scriptManager.feverTimeManager.FillFeverSlider();
-            // Deactivate gameobject
-            this.gameObject.SetActive(false);
+            // If the hit object has been hit before the destroyed time has been reached
+            if (hitObjectTimer < MISS_TIME)
+            {
+                // Check if the player hit early judgement
+                CheckEarlyJudgement();
+                // Check if the player hit good judgement
+                CheckGoodJudgement();
+                // Check if the player hit perfect judgement
+                CheckPerfectJudgement();
+                // Increment the current combo
+                scriptManager.playInformation.AddCombo();
+                // Get the time when the user pressed the key to hit the hit object
+                timeWhenHit = hitObjectTimer;
+                // Play hit sound
+                scriptManager.hitSoundManager.PlayHitSound();
+                // Fill fever slider
+                //scriptManager.feverTimeManager.FillFeverSlider();
+                // Display follow info
+                scriptManager.playInformation.DisplayFollowInfo(this.transform.position);
+                // Deactivate gameobject
+                this.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -182,6 +187,7 @@ public class HitObject : MonoBehaviour
             scriptManager.playInformation.AddScore(Constants.PERFECT_SCORE_VALUE);
             scriptManager.explosionManager.SpawnExplosion(tag, Constants.HIT_TAG, this.transform.position,
                Constants.PERFECT_SCORE_VALUE, colorImage.color);
+            scriptManager.healthbar.UpdateHealth(Constants.PERFECT_HEALTH_VALUE);
         }
     }
 
@@ -214,10 +220,12 @@ public class HitObject : MonoBehaviour
         scriptManager.playInformation.ResetCombo();
         // Play miss sound
         scriptManager.hitSoundManager.PlayMissSound();
+        // Update health
+        scriptManager.healthbar.UpdateHealth(Constants.MISS_HEALTH_VALUE);
+        // Decrease fever slider
+        //scriptManager.feverTimeManager.DecreaseFeverSlider();
         // Deactivate gameobject
         this.gameObject.SetActive(false);
-        // Decrease fever slider
-        scriptManager.feverTimeManager.DecreaseFeverSlider();
     }
     #endregion
 }

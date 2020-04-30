@@ -37,7 +37,6 @@ public class SongSelectManager : MonoBehaviour
     private float beatmapSongOffset, beatmapSongBpm;
     private int frameInterval;
     private int beatmapDirectoryCount;
-    private const float leftSideGradientImageAlpha = 0.5f;
 
     // Bools
     private bool easyDifficultyExist, normalDifficultyExist, hardDifficultyExist;
@@ -186,7 +185,7 @@ public class SongSelectManager : MonoBehaviour
                     beatmapCreatorMessageText.color = scriptManager.uiColorManager.easyDifficultyColor;
                     leftSideGradientImage.color = new Color(scriptManager.uiColorManager.easyDifficultyColor.r,
                         scriptManager.uiColorManager.easyDifficultyColor.g, scriptManager.uiColorManager.easyDifficultyColor.b,
-                        leftSideGradientImageAlpha);
+                        Constants.LEFT_SIDE_GRADIENT_IMAGE_ALPHA);
 
                     // Update highlighted colors for UI buttons
                     scriptManager.uiColorManager.difficultyColor = scriptManager.uiColorManager.easyDifficultyColor;
@@ -197,7 +196,7 @@ public class SongSelectManager : MonoBehaviour
                     beatmapCreatorMessageText.color = scriptManager.uiColorManager.normalDifficultyColor;
                     leftSideGradientImage.color = new Color(scriptManager.uiColorManager.normalDifficultyColor.r,
                         scriptManager.uiColorManager.normalDifficultyColor.g, scriptManager.uiColorManager.normalDifficultyColor.b,
-                        leftSideGradientImageAlpha);
+                        Constants.LEFT_SIDE_GRADIENT_IMAGE_ALPHA);
 
                     // Update highlighted colors for UI buttons
                     scriptManager.uiColorManager.difficultyColor = scriptManager.uiColorManager.normalDifficultyColor;
@@ -208,7 +207,7 @@ public class SongSelectManager : MonoBehaviour
                     beatmapCreatorMessageText.color = scriptManager.uiColorManager.hardDifficultyColor;
                     leftSideGradientImage.color = new Color(scriptManager.uiColorManager.hardDifficultyColor.r,
                         scriptManager.uiColorManager.hardDifficultyColor.g, scriptManager.uiColorManager.hardDifficultyColor.b,
-                        leftSideGradientImageAlpha);
+                        Constants.LEFT_SIDE_GRADIENT_IMAGE_ALPHA);
 
                     // Update highlighted colors for UI buttons
                     scriptManager.uiColorManager.difficultyColor = scriptManager.uiColorManager.hardDifficultyColor;

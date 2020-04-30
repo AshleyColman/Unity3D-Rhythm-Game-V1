@@ -9,34 +9,39 @@ public class LoadAndRunBeatmap : MonoBehaviour
 {
     #region Variables
     // UI
-    public TextMeshProUGUI SongNameAndArtistNameText, designedByCreatorText, easyDifficultyText, normalDifficultyText,
-        hardDifficultyText, pressSpacebarToPlayText;
+    public TextMeshProUGUI songNameText, artistNameText, creatorNameText, difficultyLevelText, 
+        difficultyNameText, pressSpacebarToPlayText;
+
+    // Button
+    public Button difficultyButton;
 
     // Gameobjects
     public List<GameObject> spawnedList = new List<GameObject>();
     public GameObject noteLight; 
 
+    // Image
+    public Image leftSideGradientImage;
+
     // Transform
     public Transform canvas;
 
     // Strings
-    private string hitObjectTag; 
+    private string hitObjectTag;
 
     // Integers
     private int nextIndex, totalHitObjects, totalHitObjectListSize, hitObjectID, objectThatCanBeHitIndex,
         lastHitMouseHitObject;
-    private float songTimer, trackStartTime;
+    private float songTimer, trackStartTime, noteLightPositionLerp;
     private float[] hitObjectSpawnTimes;
-
     public int TESTNUMBER;
 
 
     // Vectors
-    private Vector3[] hitObjectPositions; 
-    private Vector3 hitObjectPosition;
+    private Vector3[] hitObjectPositions;
+    private Vector3 hitObjectPosition, noteLightPositionToLerpTo;
 
     // Bools
-    private bool startCheck, hasSpawnedAllHitObjects, gameplayHasStarted, allHitObjectsHaveBeenHit, mouseActive;
+    private bool startCheck, hasSpawnedAllHitObjects, gameplayHasStarted, allHitObjectsHaveBeenHit, mouseActive, lerpNoteLight;
 
     // Keycodes
     private KeyCode startGameKey; 
@@ -77,6 +82,9 @@ public class LoadAndRunBeatmap : MonoBehaviour
         nextIndex = 0;
         hitObjectID = 0;
         lastHitMouseHitObject = 0;
+        noteLightPositionLerp = 0;
+        lerpNoteLight = false;
+        noteLightPositionToLerpTo = noteLight.transform.position;
         startCheck = false;
         gameplayHasStarted = false;
         hasSpawnedAllHitObjects = false;
@@ -93,6 +101,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
         LoadHitObjectSpawnTimes(); // Load and update the hit object spawn times with the fade speed selected value
         StartCoroutine(GetAudioFile()); // Get the audio file and load it into an audio clip
         EnableMouse(); // Enable mouse to hit mouse hit objects
+        UpdateUI(); // Update ui
 
         // Initialize pool
         poolDictionary = new Dictionary<int, Queue<GameObject>>();
@@ -122,7 +131,8 @@ public class LoadAndRunBeatmap : MonoBehaviour
             if (Input.GetKeyDown(startGameKey))
             {
                 gameplayHasStarted = true;
-                StartMusic(); 
+                StartMusic();
+                StartCoroutine(scriptManager.healthbar.PlayNoFailCountdown());
                 pressSpacebarToPlayText.gameObject.SetActive(false);
             }
         }
@@ -146,6 +156,48 @@ public class LoadAndRunBeatmap : MonoBehaviour
 
             // Check if all hit objects have been hit
             CheckIfAllHitObjectsHaveBeenHit();
+
+            // Lerp note light
+            switch (lerpNoteLight)
+            {
+                case true:
+                    LerpNoteLightToNextPosition();
+                    break;
+            }
+        }
+    }
+    
+    // Update gameplay ui
+    private void UpdateUI()
+    {
+        songNameText.text = Database.database.LoadedSongName;
+        artistNameText.text = Database.database.LoadedSongArtist;
+        creatorNameText.text = Database.database.LoadedBeatmapCreator;
+        difficultyLevelText.text = Database.database.LoadedBeatmapDifficultyLevel;
+
+        switch (Database.database.LoadedBeatmapDifficulty)
+        {
+            case Constants.EASY_DIFFICULTY:
+                difficultyButton.GetComponent<Image>().color = scriptManager.uiColorManager.easyDifficultyColor;
+                difficultyNameText.text = Constants.EASY_DIFFICULTY.ToUpper();
+                leftSideGradientImage.color = new Color(scriptManager.uiColorManager.easyDifficultyColor.r,
+                        scriptManager.uiColorManager.easyDifficultyColor.g, scriptManager.uiColorManager.easyDifficultyColor.b,
+                        Constants.LEFT_SIDE_GRADIENT_IMAGE_ALPHA);
+                break;
+            case Constants.NORMAL_DIFFICULTY:
+                difficultyButton.GetComponent<Image>().color = scriptManager.uiColorManager.normalDifficultyColor;
+                difficultyNameText.text = Constants.NORMAL_DIFFICULTY.ToUpper();
+                leftSideGradientImage.color = new Color(scriptManager.uiColorManager.normalDifficultyColor.r,
+                        scriptManager.uiColorManager.normalDifficultyColor.g, scriptManager.uiColorManager.normalDifficultyColor.b,
+                        Constants.LEFT_SIDE_GRADIENT_IMAGE_ALPHA);
+                break;
+            case Constants.HARD_DIFFICULTY:
+                difficultyButton.GetComponent<Image>().color = scriptManager.uiColorManager.hardDifficultyColor;
+                difficultyNameText.text = Constants.HARD_DIFFICULTY.ToUpper();
+                leftSideGradientImage.color = new Color(scriptManager.uiColorManager.hardDifficultyColor.r,
+                        scriptManager.uiColorManager.hardDifficultyColor.g, scriptManager.uiColorManager.hardDifficultyColor.b,
+                        Constants.LEFT_SIDE_GRADIENT_IMAGE_ALPHA);
+                break;
         }
     }
 
@@ -156,14 +208,10 @@ public class LoadAndRunBeatmap : MonoBehaviour
         {
             GameObject objectToSpawn = poolDictionary[_tag].Dequeue();
             objectToSpawn.gameObject.SetActive(true);
-
             objectToSpawn.transform.position = _position;
             objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
-
             objectToSpawn.transform.SetAsFirstSibling();
-
             poolDictionary[_tag].Enqueue(objectToSpawn);
-
             spawnedList.Add(objectToSpawn);
 
             // If the first hit object has spawned allow the next index to increment
@@ -258,7 +306,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
             // Check if it's time to spawn the next hit boject
             if (songTimer >= Database.database.LoadedHitObjectSpawnTime[hitObjectID])
             {
-                TESTNUMBER = Random.Range(4, 8);
+                TESTNUMBER = Random.Range(4, 6);
                 //SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
                 SpawnFromPool(TESTNUMBER, hitObjectPositions[hitObjectID]);
 
@@ -320,14 +368,40 @@ public class LoadAndRunBeatmap : MonoBehaviour
                             SetMouseHitObjectToBeHit();
                             break;
                         default:
-                            spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit = true;
+                            if (spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit == false)
+                            {
+                                spawnedList[objectThatCanBeHitIndex].GetComponent<HitObject>().CanBeHit = true;
+                            }
                             break;
                     }
 
-                    // Set note light to next note position (lerp?)
-                    //noteLight.transform.position = spawnedList[objectThatCanBeHitIndex].transform.position;
+                    // Assign next note light lerp position
+                    AssignNextNoteLightPosition(spawnedList[objectThatCanBeHitIndex].transform.position);
                 }
             }
+        }
+    }
+
+    // Assign next note light position
+    public void AssignNextNoteLightPosition(Vector3 _position)
+    {
+        noteLightPositionToLerpTo = _position;
+
+        noteLightPositionLerp = 0f;
+        lerpNoteLight = true;
+    }
+
+    // Lerp note light to the next hit object position
+    private void LerpNoteLightToNextPosition()
+    {
+        noteLightPositionLerp += Time.deltaTime / Constants.SCORE_LERP_DURATION;
+        Vector3 position = Vector3.Lerp(noteLight.transform.position, noteLightPositionToLerpTo, noteLightPositionLerp);
+
+        noteLight.transform.position = position;
+
+        if (noteLight.transform.position == noteLightPositionToLerpTo)
+        {
+            lerpNoteLight = false;
         }
     }
 
@@ -383,6 +457,8 @@ public class LoadAndRunBeatmap : MonoBehaviour
                 scriptManager.rhythmVisualizatorPro.audioSource.clip = DownloadHandlerAudioClip.GetContent(www);
 
                 SetupTiming(); // Setting metronome timing information
+                scriptManager.feverTimeManager.CalculateMeasureDuration(); // Calculate measure duration for fever time
+                scriptManager.feverTimeManager.CalculateFeverDuration(); // Calculate fever duration for fever time
             }
         }
     }

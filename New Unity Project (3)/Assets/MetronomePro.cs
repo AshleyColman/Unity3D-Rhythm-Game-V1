@@ -9,7 +9,7 @@ using TMPro;
 public class MetronomePro : MonoBehaviour
 {
     // Animator
-    public Animator flashGlassAnimator;
+    public Animator flashGlassAnimator, noteLightAnimator, rankFlashAnimator;
     public Animator backgroundImageAnimator, backgroundImageAnimator2, videoPlayerImageAnimator, videoPlayerImageAnimator2, 
         topColorPanelGlowAnimator, bottomColorPanelGlowAnimator;
 
@@ -516,6 +516,8 @@ public class MetronomePro : MonoBehaviour
         }
         else if (scriptManager.levelChanger.CurrentSceneIndex == scriptManager.levelChanger.GameplaySceneIndex)
         {
+            GameplaySceneOnTick();
+
             // If measure
             if (currentStep == 1)
             {
@@ -570,6 +572,13 @@ public class MetronomePro : MonoBehaviour
     {
         flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
         PlayBackgroundBeatAnimation();
+        rankFlashAnimator.Play("RankFlash_Animation", 0, 0f);
+    }
+
+    // Gameplay scene on tick animations
+    void GameplaySceneOnTick()
+    {
+        noteLightAnimator.Play("NoteLight_Beat_Animation", 0, 0f);
     }
 
     // Editor scene on measure animations
