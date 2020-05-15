@@ -468,7 +468,7 @@ public class SongSelectPanel : MonoBehaviour
         // Initialise the array with the amount of beatmap directories found
         // Get the beatmap directoriess
         beatmapDirectoryPaths = Directory.GetDirectories(Application.persistentDataPath + "/" + 
-            scriptManager.songSelectManager.BeatmapFolder);
+            Constants.BEATMAP_FOLDER);
     }
 
     // Update beatmap button navigation

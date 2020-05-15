@@ -8,10 +8,7 @@ public class HitObject : MonoBehaviour
     public Image colorImage;
 
     // Integers
-    private float timeWhenHit;
-    private float hitObjectTimer;
-    private const float HIT_OBJECT_START_TIME = 0, PERFECT_JUDGEMENT_TIME = 0.8f, EARLY_JUDGEMENT_TIME = 0.4f,
-        MISS_TIME = 1.1f;
+    private float timeWhenHit, hitObjectTimer;
 
     // Bools
     protected bool hitObjectHit;
@@ -79,73 +76,36 @@ public class HitObject : MonoBehaviour
         // Check if it's time to destroy the hit object - miss
         CheckIfReadyToDestroy();
 
-        // Check input for hitting object
-        CheckInput();
+        // If hit object has failed or not
+        switch (scriptManager.healthbar.Failed)
+        {
+            case false:
+                // Check input for hitting object
+                CheckInput();
+                break;
+        }
     }
 
     // Play approach animation
-    private void PlayApproachAnimation()
+    protected virtual void PlayApproachAnimation()
     {
-        switch (tag)
-        {
-            case Constants.KEY_HIT_OBJECT_TYPE_KEY1_TAG:
-                hitObjectAnimator.Play("HitObject_FadeIn_Animation", 0, 0f);
-                break;
-            case Constants.KEY_HIT_OBJECT_TYPE_KEY2_TAG:
-                hitObjectAnimator.Play("HitObject_FadeIn_Animation", 0, 0f);
-                break;
-            case Constants.FEVER_HIT_OBJECT_TYPE_KEY1_TAG:
-                hitObjectAnimator.Play("HitObject_FadeIn_OuterApproach_Animation", 0, 0f);
-                break;
-            case Constants.FEVER_HIT_OBJECT_TYPE_KEY2_TAG:
-                hitObjectAnimator.Play("HitObject_FadeIn_OuterApproach_Animation", 0, 0f);
-                break;
-            case Constants.START_FEVER_HIT_OBJECT_TYPE_TAG:
-                hitObjectAnimator.Play("HitObject_FadeIn_OuterApproach_Animation", 0, 0f);
-                break;
-            case Constants.PHRASE_FEVER_HIT_OBJECT_TYPE_TAG:
-                hitObjectAnimator.Play("HitObject_FadeIn_OuterApproach_Animation", 0, 0f);
-                break;
-        }
-        
+
+    }
+
+    public virtual void AssignFeverColors()
+    {
+
+    }
+
+    public virtual void AssignNormalColors()
+    {
+
     }
 
     // Assign color based on tag
-    private void AssignColor()
+    protected virtual void AssignColor()
     {
-        switch (tag)
-        {
-            case Constants.KEY_HIT_OBJECT_TYPE_KEY1_TAG:
-                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY1;
-                break;
-            case Constants.KEY_HIT_OBJECT_TYPE_KEY2_TAG:
-                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY2;
-                break;
-            case Constants.KEY_HIT_OBJECT_TYPE_KEY3_TAG:
-                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY1;
-                break;
-            case Constants.KEY_HIT_OBJECT_TYPE_KEY4_TAG:
-                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY2;
-                break;
-            case Constants.FEVER_HIT_OBJECT_TYPE_KEY1_TAG:
-                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY1;
-                break;
-            case Constants.FEVER_HIT_OBJECT_TYPE_KEY2_TAG:
-                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY2;
-                break;
-            case Constants.MOUSE_HIT_OBJECT_TYPE_LEFT_TAG:
-                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_MOUSE_COLOR_LEFT;
-                break;
-            case Constants.MOUSE_HIT_OBJECT_TYPE_RIGHT_TAG:
-                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_MOUSE_COLOR_RIGHT;
-                break;
-            case Constants.MOUSE_HIT_OBJECT_TYPE_UP_TAG:
-                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_MOUSE_COLOR_UP;
-                break;
-            case Constants.MOUSE_HIT_OBJECT_TYPE_DOWN_TAG:
-                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_MOUSE_COLOR_DOWN;
-                break;
-        }
+
     }
 
     // Checks input for hitting the hit object
@@ -160,7 +120,7 @@ public class HitObject : MonoBehaviour
         if (scriptManager.healthbar.Failed == false)
         {
             // If the hit object has been hit before the destroyed time has been reached
-            if (hitObjectTimer < MISS_TIME)
+            if (hitObjectTimer < Constants.MISS_TIME)
             {
                 // Hit object has been hit
                 HasHit();
@@ -168,61 +128,134 @@ public class HitObject : MonoBehaviour
         }
     }
 
+    // Check incorrect inputs
+    protected virtual void CheckIncorrectInput()
+    {
+        // Input for checking incorrect input
+    }
+
     // Hit object has been hit
     protected virtual void HasHit()
     {
-        // Check if the player hit early judgement
+        // Check judgements
         CheckEarlyJudgement();
-        // Check if the player hit good judgement
-        CheckGoodJudgement();
-        // Check if the player hit perfect judgement
-        CheckPerfectJudgement();
-        // Increment the current combo
-        scriptManager.playInformation.AddCombo();
-        // Get the time when the user pressed the key to hit the hit object
-        timeWhenHit = hitObjectTimer;
-        // Play hit sound
-        scriptManager.hitSoundManager.PlayHitSound();
-        // Display follow info
-        scriptManager.playInformation.DisplayFollowInfo(this.transform.position);
-        // Deactivate gameobject
-        this.gameObject.SetActive(false);
+        CheckGreatJudgement();
+        CheckMaxJudgement();
+        CheckMaxPlusJudgement();
+        CheckLateJudgement();
+
+        if (hitObjectHit == true)
+        {
+            // Increment the current combo
+            scriptManager.playInformation.AddCombo();
+            // Get the time when the user pressed the key to hit the hit object
+            timeWhenHit = hitObjectTimer;
+            // Play hit sound
+            scriptManager.hitSoundManager.PlayHitSound();
+            // Remove this object from the active list
+            scriptManager.loadAndRunBeatmap.RemoveObjectFromActiveList(this);
+            // Deactivate gameobject
+            this.gameObject.SetActive(false);
+        }
     }
 
-    // Check if the player hit early judgement
+    // Check early judgement timing
     private void CheckEarlyJudgement()
     {
-        if (hitObjectTimer >= HIT_OBJECT_START_TIME && hitObjectTimer <= EARLY_JUDGEMENT_TIME)
+        if (hitObjectTimer >= Constants.JUDGEMENT_START_TIME_EARLY && hitObjectTimer < Constants.JUDGEMENT_START_TIME_GREAT)
         {
             scriptManager.playInformation.AddEarlyJudgement();
             scriptManager.playInformation.AddScore(Constants.EARLY_SCORE_VALUE);
-            scriptManager.explosionManager.SpawnExplosion(tag, Constants.HIT_TAG, this.transform.position,
+            scriptManager.explosionManager.SpawnHitExplosion(this.transform.position,
                 Constants.EARLY_SCORE_VALUE, colorImage.color);
+            IncreaseFeverScore(Constants.EARLY_SCORE_VALUE);
+            scriptManager.playInformation.DisplayFollowInfo(this.transform.position, Constants.EARLY_JUDGEMENT);
+            hitObjectHit = true;
         }
     }
 
-    // Check if the player hit good judgement
-    private void CheckGoodJudgement()
+    // Check great judgement timing
+    private void CheckGreatJudgement()
     {
-        if (hitObjectTimer >= EARLY_JUDGEMENT_TIME && hitObjectTimer <= PERFECT_JUDGEMENT_TIME)
+        if (hitObjectTimer >= Constants.JUDGEMENT_START_TIME_GREAT && hitObjectTimer < Constants.JUDGEMENT_START_TIME_MAX)
         {
-            scriptManager.playInformation.AddGoodJudgement();
-            scriptManager.playInformation.AddScore(Constants.GOOD_SCORE_VALUE);
-            scriptManager.explosionManager.SpawnExplosion(tag, Constants.HIT_TAG, this.transform.position,
-                Constants.GOOD_SCORE_VALUE, colorImage.color);
+            scriptManager.playInformation.AddGreatJudgement();
+            scriptManager.playInformation.AddScore(Constants.GREAT_SCORE_VALUE);
+            scriptManager.explosionManager.SpawnHitExplosion(this.transform.position,
+                Constants.GREAT_SCORE_VALUE, colorImage.color);
+            IncreaseFeverScore(Constants.GREAT_SCORE_VALUE);
+            scriptManager.playInformation.DisplayFollowInfo(this.transform.position, Constants.GREAT_JUDGEMENT);
+            hitObjectHit = true;
+            scriptManager.healthbar.UpdateHealth(Constants.GREAT_HEALTH_VALUE);
         }
     }
 
-    // Check if the player hit perfect judgement
-    private void CheckPerfectJudgement()
+    // Check max judgement timing
+    private void CheckMaxJudgement()
     {
-        if (hitObjectTimer >= PERFECT_JUDGEMENT_TIME && hitObjectTimer <= MISS_TIME)
+        if (hitObjectTimer >= Constants.JUDGEMENT_START_TIME_MAX && hitObjectTimer < Constants.JUDGEMENT_START_TIME_MAXPLUS)
         {
-            scriptManager.playInformation.AddPerfectJudgement();
-            scriptManager.playInformation.AddScore(Constants.PERFECT_SCORE_VALUE);
-            scriptManager.explosionManager.SpawnExplosion(tag, Constants.HIT_TAG, this.transform.position,
-               Constants.PERFECT_SCORE_VALUE, colorImage.color);
-            scriptManager.healthbar.UpdateHealth(Constants.PERFECT_HEALTH_VALUE);
+            MaxJudgementFunctions();
+        }
+        else if (hitObjectTimer >= Constants.JUDGEMENT_END_TIME_MAXPLUS && hitObjectTimer < Constants.JUDGEMENT_START_TIME_LATE)
+        {
+            MaxJudgementFunctions();
+        }
+    }
+
+    // Check max plus judgement timing
+    private void CheckMaxPlusJudgement()
+    {
+        if (hitObjectTimer >= Constants.JUDGEMENT_START_TIME_MAXPLUS && hitObjectTimer < Constants.JUDGEMENT_END_TIME_MAXPLUS)
+        {
+            scriptManager.playInformation.AddMaxPlusJudgement();
+            scriptManager.playInformation.AddScore(Constants.MAXPLUS_SCORE_VALUE);
+            scriptManager.explosionManager.SpawnHitExplosion(this.transform.position,
+                Constants.MAXPLUS_SCORE_VALUE, colorImage.color);
+            IncreaseFeverScore(Constants.MAXPLUS_SCORE_VALUE);
+            scriptManager.playInformation.DisplayFollowInfo(this.transform.position, Constants.MAXPLUS_JUDGEMENT);
+            hitObjectHit = true;
+            scriptManager.healthbar.UpdateHealth(Constants.MAXPLUS_HEALTH_VALUE);
+        }
+    }
+
+    // Check late judgement timing
+    private void CheckLateJudgement()
+    {
+        if (hitObjectTimer >= Constants.JUDGEMENT_START_TIME_LATE && hitObjectTimer < Constants.JUDGEMENT_END_TIME_LATE)
+        {
+            scriptManager.playInformation.AddLateJudgement();
+            scriptManager.playInformation.AddScore(Constants.LATE_SCORE_VALUE);
+            scriptManager.explosionManager.SpawnHitExplosion(this.transform.position,
+                Constants.LATE_SCORE_VALUE, colorImage.color);
+            IncreaseFeverScore(Constants.LATE_SCORE_VALUE);
+            scriptManager.playInformation.DisplayFollowInfo(this.transform.position, Constants.LATE_JUDGEMENT);
+            hitObjectHit = true;
+            scriptManager.healthbar.UpdateHealth(Constants.LATE_HEALTH_VALUE);
+        }
+    }
+
+    // Max judgement functions
+    private void MaxJudgementFunctions()
+    {
+        scriptManager.playInformation.AddMaxJudgement();
+        scriptManager.playInformation.AddScore(Constants.MAX_SCORE_VALUE);
+        scriptManager.explosionManager.SpawnHitExplosion(this.transform.position,
+            Constants.MAX_SCORE_VALUE, colorImage.color);
+        IncreaseFeverScore(Constants.MAX_SCORE_VALUE);
+        scriptManager.playInformation.DisplayFollowInfo(this.transform.position, Constants.MAX_JUDGEMENT);
+        hitObjectHit = true;
+        scriptManager.healthbar.UpdateHealth(Constants.MAX_HEALTH_VALUE);
+    }
+
+    // Increase fever score
+    private void IncreaseFeverScore(int _score)
+    {
+        switch (scriptManager.feverTimeManager.FeverActivated)
+        {
+            case true:
+                scriptManager.playInformation.IncreaseTotalFeverBonusScore(_score);
+                break;
         }
     }
 
@@ -237,7 +270,7 @@ public class HitObject : MonoBehaviour
     private void CheckIfReadyToDestroy()
     {
         // Missed object, spawn the miss explosion, set the healthbar to miss value and play sound effect
-        if (hitObjectTimer >= MISS_TIME)
+        if (hitObjectTimer >= Constants.MISS_TIME)
         {
             MissedObject();
         }
@@ -247,8 +280,8 @@ public class HitObject : MonoBehaviour
     protected virtual void MissedObject()
     {
         // Spawn explosion
-        scriptManager.explosionManager.SpawnExplosion(tag, Constants.MISS_TAG, this.transform.position, Constants.MISS_SCORE_VALUE,
-            colorImage.color);
+        scriptManager.explosionManager.SpawnMissExplosion(tag, this.transform.position, 
+            Constants.MISS_SCORE_VALUE, colorImage.color);
         // Sets judgement to miss
         scriptManager.playInformation.AddMissJudgement();
         // Reset combo as missed
@@ -257,8 +290,8 @@ public class HitObject : MonoBehaviour
         scriptManager.hitSoundManager.PlayMissSound();
         // Update health
         scriptManager.healthbar.UpdateHealth(Constants.MISS_HEALTH_VALUE);
-        // Decrease fever slider
-        //scriptManager.feverTimeManager.DecreaseFeverSlider();
+        // Remove this object from the active list
+        scriptManager.loadAndRunBeatmap.RemoveObjectFromActiveList(this);
         // Deactivate gameobject
         this.gameObject.SetActive(false);
     }

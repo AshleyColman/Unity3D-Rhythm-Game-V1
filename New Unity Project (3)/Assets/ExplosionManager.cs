@@ -67,12 +67,16 @@ public class ExplosionManager : MonoBehaviour
     }
 
     // Spawn hit explosion
-    public void SpawnExplosion(string _type, string _action, Vector3 _position, int _judgementScore, Color _colorImageColor)
+    public void SpawnHitExplosion(Vector3 _position, int _judgementScore, Color _colorImageColor)
     {
-        // Create tag based on the type and action
-        string tag = _type + "_" + _action;
-
         // Activate the correct coloured explosion at the hit objects position
-        SpawnFromPool(tag, _position, _judgementScore, _colorImageColor);
+        SpawnFromPool(Constants.HIT_TAG, _position, _judgementScore, _colorImageColor);
+    }
+
+    // Spawn hit explosion
+    public void SpawnMissExplosion(string _tag, Vector3 _position, int _judgementScore, Color _colorImageColor)
+    {
+        // Activate the correct coloured explosion at the hit objects position
+        SpawnFromPool(Constants.MISS_TAG, _position, _judgementScore, _colorImageColor);
     }
 }

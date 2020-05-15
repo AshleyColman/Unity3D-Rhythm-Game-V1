@@ -269,7 +269,7 @@ public class RhythmVisualizatorPro : MonoBehaviour {
 
 		soundBars.Clear ();
 
-		Application.targetFrameRate = 144;
+		//Application.targetFrameRate = 144;
 
 		// Check the prefabs
 		if ((soundBarPrefabCenter != null) && (soundBarPrefabDownside != null)) {

@@ -12,14 +12,10 @@ TagManager:
   - UP
   - DOWN
   - Right
-  - KEY1
-  - KEY2
-  - KEY3
-  - KEY4
-  - START
-  - PHRASE
-  - FEVER_KEY1
-  - FEVER_KEY2
+  - KEY_D
+  - KEY_F
+  - KEY_J
+  - KEY_K
   layers:
   - Default
   - TransparentFX

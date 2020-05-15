@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -9,18 +10,14 @@ public class LoadAndRunBeatmap : MonoBehaviour
 {
     #region Variables
     // UI
-    public TextMeshProUGUI songNameText, artistNameText, creatorNameText, difficultyLevelText, 
-        difficultyNameText, pressSpacebarToPlayText;
-
-    // Button
-    public Button difficultyButton;
+    public TextMeshProUGUI songNameText, artistNameText, creatorNameText, difficultyNameText, pressSpacebarToPlayText,
+        beingPlayedByText;
 
     // Gameobjects
-    public List<GameObject> spawnedList = new List<GameObject>();
-    public GameObject noteLight; 
+    public GameObject noteLight;
 
     // Image
-    public Image leftSideGradientImage;
+    public Image leftSideGradientImage, difficultyButtonImage;
 
     // Transform
     public Transform canvas;
@@ -30,24 +27,29 @@ public class LoadAndRunBeatmap : MonoBehaviour
 
     // Integers
     public int nextIndex, totalHitObjects, totalHitObjectListSize, hitObjectID, objectThatCanBeHitIndex,
-        lastHitMouseHitObject;
-    private float songTimer, trackStartTime, noteLightPositionLerp;
+        lastHitMouseHitObject, nextFeverPhraseObjectID, feverPhraseArrayLength;
+    private float songTimer, trackStartTime, noteLightPositionLerp, notesLockedTimer;
     private float[] hitObjectSpawnTimes;
-    public List<int> TESTNUMBER = new List<int>();
-
+    private int TESTNUMBER;
+    private int feverPhraseToCheck;
 
     // Vectors
     private Vector3[] hitObjectPositions;
     private Vector3 hitObjectPosition, noteLightPositionToLerpTo;
 
     // Bools
-    public bool startCheck, hasSpawnedAllHitObjects, gameplayHasStarted, allHitObjectsHaveBeenHit, mouseActive, lerpNoteLight;
+    public bool startCheck, hasSpawnedAllHitObjects, gameplayHasStarted, allHitObjectsHaveBeenHit, mouseActive, lerpNoteLight,
+        notesLocked;
 
     // Keycodes
-    private KeyCode startGameKey; 
+    private KeyCode startGameKey;
 
     // Scripts
     private ScriptManager scriptManager;
+    private FeverPhrase[] feverPhraseArr;
+    private List<FeverHitObject> spawnedFeverPhraseHitObjects = new List<FeverHitObject>();
+    public List<HitObject> spawnedList = new List<HitObject>();
+    public List<HitObject> activeList = new List<HitObject>();
     #endregion
 
     #region Properties
@@ -61,16 +63,32 @@ public class LoadAndRunBeatmap : MonoBehaviour
         set { lastHitMouseHitObject = value; }
     }
 
+    public int FeverPhraseToCheck
+    {
+        get { return feverPhraseToCheck; }
+    }
+
+    public bool NotesLocked
+    {
+        get { return notesLocked; }
+        set { notesLocked = value; }
+    }
+
+    public FeverPhrase[] FeverPhraseArr
+    {
+        get { return feverPhraseArr; }
+    }
+
     [System.Serializable]
     public class Pool
     {
         public int tag;
-        public GameObject prefab;
+        public HitObject prefab;
         public int size;
     }
 
     public List<Pool> pools;
-    public Dictionary<int, Queue<GameObject>> poolDictionary;
+    public Dictionary<int, Queue<HitObject>> poolDictionary;
     #endregion
 
     #region Functions
@@ -83,12 +101,16 @@ public class LoadAndRunBeatmap : MonoBehaviour
         hitObjectID = 0;
         lastHitMouseHitObject = 0;
         noteLightPositionLerp = 0;
+        feverPhraseToCheck = 0;
+        feverPhraseArrayLength = 0;
+        notesLockedTimer = 0f;
         lerpNoteLight = false;
-        noteLightPositionToLerpTo = noteLight.transform.position;
         startCheck = false;
         gameplayHasStarted = false;
         hasSpawnedAllHitObjects = false;
+        notesLocked = false;
         mouseActive = true;
+        noteLightPositionToLerpTo = noteLight.transform.position;
         startGameKey = KeyCode.Space;
 
         // Reference
@@ -104,24 +126,43 @@ public class LoadAndRunBeatmap : MonoBehaviour
         UpdateUI(); // Update ui
 
         // Initialize pool
-        poolDictionary = new Dictionary<int, Queue<GameObject>>();
+        poolDictionary = new Dictionary<int, Queue<HitObject>>();
         foreach (Pool pool in pools)
         {
-            Queue<GameObject> objectPool = new Queue<GameObject>();
+            Queue<HitObject> objectPool = new Queue<HitObject>();
 
             for (int i = 0; i < pool.size; i++)
             {
-                GameObject obj = Instantiate(pool.prefab);
+                HitObject obj = Instantiate(pool.prefab);
                 obj.transform.SetParent(canvas.transform);
                 obj.transform.localScale = new Vector3(1, 1, 1);
                 obj.transform.localPosition = Vector3.zero;
                 obj.transform.rotation = Quaternion.identity;
-                obj.SetActive(false);
+                obj.gameObject.SetActive(false);
                 objectPool.Enqueue(obj);
             }
 
             poolDictionary.Add(pool.tag, objectPool);
         }
+
+        // INITIALIZE FEVER PHRASE FOR TESTING
+        int totalPhrases = 3;
+        int totalNoteInPhrase = 5;
+
+        FeverPhrase feverPhrase1 = new FeverPhrase();
+        FeverPhrase feverPhrase2 = new FeverPhrase();
+        FeverPhrase feverPhrase3 = new FeverPhrase();
+
+        feverPhraseArr = new FeverPhrase[totalPhrases];
+
+        feverPhrase1.Contructor(totalNoteInPhrase, 0);
+        feverPhraseArr[0] = feverPhrase1;
+
+        feverPhrase2.Contructor(totalNoteInPhrase, 1);
+        feverPhraseArr[1] = feverPhrase2;
+
+        feverPhrase3.Contructor(totalNoteInPhrase, 2);
+        feverPhraseArr[2] = feverPhrase3;
     }
 
     void Update()
@@ -139,6 +180,9 @@ public class LoadAndRunBeatmap : MonoBehaviour
 
         if (allHitObjectsHaveBeenHit == false)
         {
+            // Check locked note timer
+            CheckLockedNoteTimer();
+
             // Update the song timer with the current song time if gameplay has started
             UpdateSongTimer();
 
@@ -167,38 +211,79 @@ public class LoadAndRunBeatmap : MonoBehaviour
         }
     }
     
+    // Check locked note timer
+    private void CheckLockedNoteTimer()
+    {
+        if (notesLocked == true)
+        {
+            notesLockedTimer += Time.deltaTime;
+
+            if (notesLockedTimer >= Constants.LOCK_NOTE_DURATION)
+            {
+                notesLocked = false;
+            }
+        }
+    }
+
+    // Lock all notes from being hit due to incorrect note/spam
+    public void ResetLockNoteTimer()
+    {
+        notesLocked = true;
+        notesLockedTimer = 0f;
+        scriptManager.cameraScript.PlayCameraShakeAnimation();
+    }
+
     // Update gameplay ui
     private void UpdateUI()
     {
         songNameText.text = Database.database.LoadedSongName;
         artistNameText.text = Database.database.LoadedSongArtist;
         creatorNameText.text = Database.database.LoadedBeatmapCreator;
-        difficultyLevelText.text = Database.database.LoadedBeatmapDifficultyLevel;
+        beingPlayedByText.text = Constants.BEING_PLAYED_BY_STRING + MySQLDBManager.username + " " + Utilities.GetCurrentDate();
+
+        Color color08, color05;
 
         switch (Database.database.LoadedBeatmapDifficulty)
         {
             case Constants.EASY_DIFFICULTY:
-                difficultyButton.GetComponent<Image>().color = scriptManager.uiColorManager.easyDifficultyColor;
-                difficultyNameText.text = Constants.EASY_DIFFICULTY.ToUpper();
-                leftSideGradientImage.color = new Color(scriptManager.uiColorManager.easyDifficultyColor.r,
+                // Text
+                difficultyNameText.text = Constants.EASY_DIFFICULTY.ToUpper() + " " + Constants.LEVEL_PREFIX + 
+                    " " + Database.database.LoadedBeatmapDifficultyLevel;
+
+                // Create new color
+                color08 = new Color(scriptManager.uiColorManager.easyDifficultyColor.r,
                         scriptManager.uiColorManager.easyDifficultyColor.g, scriptManager.uiColorManager.easyDifficultyColor.b,
-                        Constants.LEFT_SIDE_GRADIENT_IMAGE_ALPHA);
+                        0.8f);
                 break;
             case Constants.NORMAL_DIFFICULTY:
-                difficultyButton.GetComponent<Image>().color = scriptManager.uiColorManager.normalDifficultyColor;
-                difficultyNameText.text = Constants.NORMAL_DIFFICULTY.ToUpper();
-                leftSideGradientImage.color = new Color(scriptManager.uiColorManager.normalDifficultyColor.r,
+                // Text
+                difficultyNameText.text = Constants.NORMAL_DIFFICULTY.ToUpper() + " " + Constants.LEVEL_PREFIX +
+                    " " + Database.database.LoadedBeatmapDifficultyLevel;
+
+                // Create new color
+                color08 = new Color(scriptManager.uiColorManager.normalDifficultyColor.r,
                         scriptManager.uiColorManager.normalDifficultyColor.g, scriptManager.uiColorManager.normalDifficultyColor.b,
-                        Constants.LEFT_SIDE_GRADIENT_IMAGE_ALPHA);
+                        0.8f);
                 break;
             case Constants.HARD_DIFFICULTY:
-                difficultyButton.GetComponent<Image>().color = scriptManager.uiColorManager.hardDifficultyColor;
-                difficultyNameText.text = Constants.HARD_DIFFICULTY.ToUpper();
-                leftSideGradientImage.color = new Color(scriptManager.uiColorManager.hardDifficultyColor.r,
+                // Text
+                difficultyNameText.text = Constants.HARD_DIFFICULTY.ToUpper() + " " + Constants.LEVEL_PREFIX +
+                    " " + Database.database.LoadedBeatmapDifficultyLevel;
+                // Create new color
+                color08 = new Color(scriptManager.uiColorManager.hardDifficultyColor.r,
                         scriptManager.uiColorManager.hardDifficultyColor.g, scriptManager.uiColorManager.hardDifficultyColor.b,
-                        Constants.LEFT_SIDE_GRADIENT_IMAGE_ALPHA);
+                        0.8f);
+                break;
+            default:
+                color08 = scriptManager.uiColorManager.blackColor08;
                 break;
         }
+
+        // Create color
+        color05 = new Color(color08.r, color08.g, color08.b, Constants.LEFT_SIDE_GRADIENT_IMAGE_ALPHA);
+        // Set color
+        leftSideGradientImage.color = color05;
+        difficultyButtonImage.color = color08;
     }
 
     // Spawn hit object from pool
@@ -206,40 +291,128 @@ public class LoadAndRunBeatmap : MonoBehaviour
     {
         if (poolDictionary.ContainsKey(_tag) == true)
         {
-            // Check fever type notes for controlling fever phrases
-            switch (scriptManager.feverTimeManager.FeverPhraseActive)
+            // If fever phrase array has more than 0 phrases
+            if (feverPhraseArr.Length > 0)
             {
-                case false:
-                    // NOT ACTIVE
-                    switch (_tag)
+                // If the fever phrase has not started yet
+                if (feverPhraseArr[feverPhraseToCheck].PhraseStarted == false)
+                {
+                    // Check if the current hit object id == the next hit object id for the phrase
+                    //if (hitObjectID == feverPhraseArr[feverPhraseToCheck].NextObjectID)
+                    if (hitObjectID == feverPhraseArr[feverPhraseToCheck].PhraseObjectIDArr[0])
                     {
-                        case Constants.START_FEVER_HIT_OBJECT_TYPE:
-                            scriptManager.feverTimeManager.ActivateFeverPhrase();
-                            break;
+                        // Set phrase started to true
+                        feverPhraseArr[feverPhraseToCheck].PhraseStarted = true;
+
+                        // Update fever phrase array length
+                        feverPhraseArrayLength = (feverPhraseArr[feverPhraseToCheck].PhraseObjectIDArr.Length - 1);
+
+                        // Control remaining note count text and play animation
+                        switch (scriptManager.feverTimeManager.remainingPhraseNoteCountText.gameObject.activeSelf)
+                        {
+                            case true:
+                                scriptManager.feverTimeManager.remainingPhraseNoteCountText.gameObject.SetActive(true);
+                                break;
+                            case false:
+                                scriptManager.feverTimeManager.remainingPhraseNoteCountText.gameObject.SetActive(false);
+                                scriptManager.feverTimeManager.remainingPhraseNoteCountText.gameObject.SetActive(true);
+                                break;
+                        }
+
+                        // Update text count with the total amount of notes in the phrase
+                        scriptManager.feverTimeManager.UpdateRemainingPhraseNoteCountText((feverPhraseArrayLength + 1));
                     }
-                    break;
-                case true:
-                    // ACTIVE
-                    switch (_tag)
+                }
+
+                // If the fever phrase has started
+                if (feverPhraseArr[feverPhraseToCheck].PhraseStarted == true)
+                {
+                    // If the fever phrase hasn't finished
+                    if (feverPhraseArr[feverPhraseToCheck].PhraseFinished == false)
                     {
-                        // Change the note to the fever variant
-                        case Constants.KEY_HIT_OBJECT_TYPE_KEY1:
-                            _tag = Constants.FEVER_HIT_OBJECT_TYPE_KEY1;
-                            break;
-                        case Constants.KEY_HIT_OBJECT_TYPE_KEY2:
-                            _tag = Constants.FEVER_HIT_OBJECT_TYPE_KEY2;
-                            break;
+                        // Check current fever phrase coming up
+                        nextFeverPhraseObjectID = feverPhraseArr[feverPhraseToCheck].NextObjectID;
+
+                        // Check the current fever phrase, check the next object in the phrase
+                        // If the current fever phrase, next object to spawn ID == hitObjectID
+                        if (feverPhraseArr[feverPhraseToCheck].PhraseObjectIDArr[nextFeverPhraseObjectID] == hitObjectID)
+                        {
+                            //switch (Database.database.LoadedObjectType[hitObjectID])
+
+                            // Change note to fever variant 
+                            switch (TESTNUMBER)
+                            {
+                                case Constants.HIT_OBJECT_TYPE_KEY_D:
+                                    _tag = Constants.FEVER_HIT_OBJECT_TYPE_KEY_D;
+                                    break;
+                                case Constants.HIT_OBJECT_TYPE_KEY_F:
+                                    _tag = Constants.FEVER_HIT_OBJECT_TYPE_KEY_F;
+                                    break;
+                                case Constants.HIT_OBJECT_TYPE_KEY_J:
+                                    _tag = Constants.FEVER_HIT_OBJECT_TYPE_KEY_J;
+                                    break;
+                                case Constants.HIT_OBJECT_TYPE_KEY_K:
+                                    _tag = Constants.FEVER_HIT_OBJECT_TYPE_KEY_K;
+                                    break;
+                            }
+                            #region Code for last hit object type
+                            /*
+                            // If the next object ID is the last note in the fever series
+                            if (nextFeverPhraseObjectID == (feverPhraseArr[feverPhraseToCheck].PhraseObjectIDArr.Length - 1))
+                            {
+                                _tag = Constants.PHRASE_FEVER_HIT_OBJECT_TYPE;
+                            }
+                            else
+                            {
+                                //switch (Database.database.LoadedObjectType[hitObjectID])
+                                switch (TESTNUMBER)
+                                {
+                                    case Constants.KEY_HIT_OBJECT_TYPE_KEY1:
+                                        _tag = Constants.FEVER_HIT_OBJECT_TYPE_KEY1;
+                                        //CheckFeverPhraseNextObjectIDAgainstLength();
+                                        break;
+                                    case Constants.KEY_HIT_OBJECT_TYPE_KEY2:
+                                        _tag = Constants.FEVER_HIT_OBJECT_TYPE_KEY2;
+                                        //CheckFeverPhraseNextObjectIDAgainstLength();
+                                        break;
+                                }
+                            }
+                            */
+                            #endregion
+                        }
                     }
-                    break;
+                }
             }
 
-            GameObject objectToSpawn = poolDictionary[_tag].Dequeue();
+            HitObject objectToSpawn = poolDictionary[_tag].Dequeue();
             objectToSpawn.gameObject.SetActive(true);
             objectToSpawn.transform.position = _position;
             objectToSpawn.transform.rotation = Quaternion.Euler(0, 0, 0);
             objectToSpawn.transform.SetAsFirstSibling();
             poolDictionary[_tag].Enqueue(objectToSpawn);
             spawnedList.Add(objectToSpawn);
+            activeList.Add(objectToSpawn);
+
+            // Initialize the fever phrase hit object index if the note type is fever
+            switch (_tag)
+            {
+                case Constants.FEVER_HIT_OBJECT_TYPE_KEY_D:
+                    InitializeFeverPhraseObject();
+                    CheckFeverPhraseNextObjectIDAgainstLength();
+                    break;
+                case Constants.FEVER_HIT_OBJECT_TYPE_KEY_F:
+                    InitializeFeverPhraseObject();
+                    CheckFeverPhraseNextObjectIDAgainstLength();
+                    break;
+                case Constants.FEVER_HIT_OBJECT_TYPE_KEY_J:
+                    InitializeFeverPhraseObject();
+                    CheckFeverPhraseNextObjectIDAgainstLength();
+                    break;
+                case Constants.FEVER_HIT_OBJECT_TYPE_KEY_K:
+                    InitializeFeverPhraseObject();
+                    CheckFeverPhraseNextObjectIDAgainstLength();
+                    break;
+            }
 
             // If the first hit object has spawned allow the next index to increment
             if (startCheck != false)
@@ -250,6 +423,131 @@ public class LoadAndRunBeatmap : MonoBehaviour
 
             // Set to true as the first hit object has been instantiated
             startCheck = true;
+        }
+    }
+
+    // Remove hit object from the active hit object list
+    public void RemoveObjectFromActiveList(HitObject _hitObject)
+    {
+        activeList.RemoveAt(activeList.IndexOf(_hitObject));
+    }
+
+    // Initialize the fever phrase hit object index
+    private void InitializeFeverPhraseObject()
+    {
+        // Get reference to script of object
+        FeverHitObject feverHitObject = spawnedList[hitObjectID].GetComponent<FeverHitObject>();
+        // update fever phrase object index
+        feverHitObject.FeverPhraseObjectIndex = feverPhraseArr[feverPhraseToCheck].PhraseObjectIDArr[nextFeverPhraseObjectID];
+        // Add fever phrase to spawned fever phrase object list
+        spawnedFeverPhraseHitObjects.Add(feverHitObject);
+    }
+
+    // Fever phrase broken
+    private void FeverPhraseBroken()
+    {
+        // Play fever broken animation on first note miss only
+        switch (feverPhraseArr[feverPhraseToCheck].PhraseBroken)
+        {
+            case false:
+                switch (scriptManager.feverTimeManager.feverFailedPanel.gameObject.activeSelf)
+                {
+                    case false:
+                        scriptManager.feverTimeManager.feverFailedPanel.gameObject.SetActive(true);
+                        break;
+                    case true:
+                        scriptManager.feverTimeManager.feverFailedPanel.gameObject.SetActive(false);
+                        scriptManager.feverTimeManager.feverFailedPanel.gameObject.SetActive(true);
+                        break;
+                }
+
+                scriptManager.feverTimeManager.remainingPhraseNoteCountText.gameObject.SetActive(false);
+                break;
+        }
+
+        // Set to true as fever phrase has been broke
+        feverPhraseArr[feverPhraseToCheck].PhraseBroken = true;
+        
+        // Change color of active fever objects to unactive
+        for (int i = 0; i < spawnedFeverPhraseHitObjects.Count; i++)
+        {
+            if (spawnedFeverPhraseHitObjects[i].gameObject.activeSelf == true)
+            {
+                spawnedFeverPhraseHitObjects[i].AssignUnactive();
+            }
+        }
+    }
+
+    // Update fever phrase information
+    public void UpdateFeverPhrase(bool _hit, int _feverPhraseObjectIndex)
+    {
+        switch (_hit)
+        {
+            case false:
+                FeverPhraseBroken();
+                break;
+        }
+
+        // Get index of the current note in the fever phrase
+        /*
+        int index = Array.IndexOf(feverPhraseArr[feverPhraseToCheck].PhraseObjectIDArr,
+            feverPhraseArr[feverPhraseToCheck].PhraseObjectIDArr[nextFeverPhraseObjectID]);
+        // Calculate the count
+        int count = (feverPhraseArrayLength - index);
+                    */
+
+        // Calculate the count
+        int count = ((feverPhraseArrayLength + 1) - nextFeverPhraseObjectID);
+
+        // Update remaining phrase note count text
+        scriptManager.feverTimeManager.UpdateRemainingPhraseNoteCountText(count);
+
+        // Check if last fever phrase hit object has been hit
+        if (_feverPhraseObjectIndex == feverPhraseArr[feverPhraseToCheck].PhraseObjectIDArr[feverPhraseArrayLength])
+        {
+            feverPhraseArr[feverPhraseToCheck].PhraseFinished = true;
+            spawnedFeverPhraseHitObjects.Clear();
+
+            // On last note hit/miss
+            switch (_hit)
+            {
+                case true:
+                    if (feverPhraseArr[feverPhraseToCheck].PhraseBroken != true)
+                    {
+                        scriptManager.feverTimeManager.AddPhrase();
+                    }
+                    break;
+            }
+
+            if (feverPhraseToCheck != (feverPhraseArr.Length - 1))
+            {
+                feverPhraseToCheck++;
+            }
+        }
+    }
+
+    // Check fever phrase next object id against the last object id found at the end of the fever phrase
+    private void CheckFeverPhraseNextObjectIDAgainstLength()
+    {
+        // If the next object id == the object id in the last note of the fever series
+        if (feverPhraseArr[feverPhraseToCheck].PhraseObjectIDArr[nextFeverPhraseObjectID] ==
+            feverPhraseArr[feverPhraseToCheck].PhraseObjectIDArr[feverPhraseArrayLength])
+        {
+            /*
+            // Do not increment next object index
+            feverPhraseArr[feverPhraseToCheck].PhraseFinished = true;
+            
+            // Check to make sure there is another fever phrase to check after incrementing
+            if (feverPhraseToCheck != (feverPhraseArr.Length - 1))
+            {
+                feverPhraseToCheck++;
+            }
+            */
+        }
+        else
+        {
+            // Increment
+            feverPhraseArr[feverPhraseToCheck].NextObjectID++;
         }
     }
 
@@ -333,32 +631,10 @@ public class LoadAndRunBeatmap : MonoBehaviour
             // Check if it's time to spawn the next hit boject
             if (songTimer >= Database.database.LoadedHitObjectSpawnTime[hitObjectID])
             {
-                if (scriptManager.feverTimeManager.FeverPhraseActive == false)
-                {
-                    TESTNUMBER.Add(Constants.START_FEVER_HIT_OBJECT_TYPE);    
-                }
-                else
-                {
-                    int num = Random.Range(0, 4);
-
-                    switch (num)
-                    {
-                        case 1:
-                            //TESTNUMBER.Add(Random.Range(4, 6));
-                            TESTNUMBER.Add(4);
-                            break;
-                        case 2:
-                            TESTNUMBER.Add(5);
-                            break;
-                        case 3:
-                            TESTNUMBER.Add(9);
-                            break;
-                    }
-
-                }
-
+                //TESTNUMBER = 4;
+                TESTNUMBER = UnityEngine.Random.Range(4, 6);
                 //SpawnFromPool(Database.database.LoadedObjectType[hitObjectID], hitObjectPositions[hitObjectID]);
-                SpawnFromPool(TESTNUMBER[hitObjectID], hitObjectPositions[hitObjectID]);
+                SpawnFromPool(TESTNUMBER, hitObjectPositions[hitObjectID]);
 
                 // Spawn the next hit object
                 //SpawnHitObject(hitObjectPositions[hitObjectID], Database.database.LoadedObjectType[hitObjectID], hitObjectID);

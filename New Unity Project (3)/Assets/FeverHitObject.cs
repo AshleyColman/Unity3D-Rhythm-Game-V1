@@ -1,115 +1,97 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
-public class FeverHitObject : HitObject
+public class FeverHitObject : KeyHitObject
 {
     #region Variables
-    // Keycodes
-    private KeyCode objectKey, alternateKey;
+    // Image
+    public Image approachImage;
+
+    // Int
+    private int feverPhraseObjectIndex;
+    #endregion
+
+    #region Properties
+    public int FeverPhraseObjectIndex
+    {
+        get { return feverPhraseObjectIndex; }
+        set { feverPhraseObjectIndex = value; }
+    }
     #endregion
 
     #region Functions
     protected override void OnEnable()
     {
         base.OnEnable();
-        AssignKeyType();
+        AssignApproachColor();
     }
 
-    private void AssignKeyType()
+    protected override void PlayApproachAnimation()
+    {
+        hitObjectAnimator.Play("HitObject_FadeIn_OuterApproach_Animation", 0, 0f);
+    }
+
+    protected override void AssignColor()
     {
         switch (tag)
         {
-            case Constants.START_FEVER_HIT_OBJECT_TYPE_TAG:
-                objectKey = Constants.KEY_HIT_OBJECT_TYPE_KEY1_KEYCODE;
-                alternateKey = Constants.KEY_HIT_OBJECT_TYPE_KEY2_KEYCODE;
+            case Constants.HIT_OBJECT_TYPE_KEY_D_TAG:
+                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY_D;
                 break;
-            case Constants.PHRASE_FEVER_HIT_OBJECT_TYPE_TAG:
-                objectKey = Constants.KEY_HIT_OBJECT_TYPE_KEY1_KEYCODE;
-                alternateKey = Constants.KEY_HIT_OBJECT_TYPE_KEY2_KEYCODE;
+            case Constants.HIT_OBJECT_TYPE_KEY_F_TAG:
+                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY_F;
                 break;
-            case Constants.FEVER_HIT_OBJECT_TYPE_KEY1_TAG:
-                objectKey = Constants.KEY_HIT_OBJECT_TYPE_KEY1_KEYCODE;
-                alternateKey = Constants.KEY_HIT_OBJECT_TYPE_KEY1_ALTERNATE_KEYCODE;
+            case Constants.HIT_OBJECT_TYPE_KEY_J_TAG:
+                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY_J;
                 break;
-            case Constants.FEVER_HIT_OBJECT_TYPE_KEY2_TAG:
-                objectKey = Constants.KEY_HIT_OBJECT_TYPE_KEY2_KEYCODE;
-                alternateKey = Constants.KEY_HIT_OBJECT_TYPE_KEY2_ALTERNATE_KEYCODE;
-                break;
-            default:
+            case Constants.HIT_OBJECT_TYPE_KEY_K_TAG:
+                colorImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY_K;
                 break;
         }
     }
 
-    protected override void CheckInput()
+    // Assign approach color based on whether the fever phrase has been broken or not
+    private void AssignApproachColor()
     {
-        if (canBeHit == true)
+        if (scriptManager.loadAndRunBeatmap.FeverPhraseArr != null)
         {
-            if (Input.anyKeyDown)
+            if (scriptManager.loadAndRunBeatmap.FeverPhraseArr.Length != 0)
             {
-                switch (tag)
+                switch (scriptManager.loadAndRunBeatmap.FeverPhraseArr[scriptManager.loadAndRunBeatmap.FeverPhraseToCheck].PhraseBroken)
                 {
-                    case Constants.START_FEVER_HIT_OBJECT_TYPE_TAG:
-                        CheckBothKeyInput();
+                    case true:
+                        AssignUnactive();
                         break;
-                    case Constants.PHRASE_FEVER_HIT_OBJECT_TYPE_TAG:
-                        CheckBothKeyInput();
-                        break;
-                    case Constants.FEVER_HIT_OBJECT_TYPE_KEY1_TAG:
-                        CheckEitherKeyInput();
-                        break;
-                    case Constants.FEVER_HIT_OBJECT_TYPE_KEY2_TAG:
-                        CheckEitherKeyInput();
-                        break;
-                    default:
+                    case false:
+                        AssignActive();
                         break;
                 }
-
-
             }
         }
     }
 
-    private void CheckBothKeyInput()
+    public void AssignUnactive()
     {
-        if (Input.GetKeyDown(objectKey) && Input.GetKeyDown(alternateKey))
-        {
-            if (hitObjectHit == false)
-            {
-                CheckJudgements();
-            }
-        }
+        approachImage.color = scriptManager.uiColorManager.solidWhiteColor;
+        outlineImage.color = scriptManager.uiColorManager.solidWhiteColor;
     }
 
-    private void CheckEitherKeyInput()
+    private void AssignActive()
     {
-        if (Input.GetKeyDown(objectKey) || Input.GetKeyDown(alternateKey))
-        {
-            if (hitObjectHit == false)
-            {
-                CheckJudgements();
-            }
-        }
-    }
-
-    protected override void MissedObject()
-    {
-        base.MissedObject();
-        scriptManager.feverTimeManager.BreakFeverPhrase();
+        approachImage.color = scriptManager.uiColorManager.selectedColor;
+        outlineImage.color = scriptManager.uiColorManager.selectedColor;
     }
 
     protected override void HasHit()
     {
-        CheckAddPhrase();
+        scriptManager.loadAndRunBeatmap.UpdateFeverPhrase(true, feverPhraseObjectIndex);
         base.HasHit();
     }
 
-    private void CheckAddPhrase()
+    protected override void MissedObject()
     {
-        switch (tag)
-        {
-            case Constants.PHRASE_FEVER_HIT_OBJECT_TYPE_TAG:
-                scriptManager.feverTimeManager.AddPhrase(tag);
-                break;
-        }
+        scriptManager.loadAndRunBeatmap.UpdateFeverPhrase(false, feverPhraseObjectIndex);
+        base.MissedObject();
     }
     #endregion
 }

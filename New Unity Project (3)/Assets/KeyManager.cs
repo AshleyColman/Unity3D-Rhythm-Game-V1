@@ -81,9 +81,9 @@ public class KeyManager : MonoBehaviour
             case KEY_F:
                 buttonAnimatorF.Play("Key_Held_Animation", 0, 0f);
                 break;
-            case KEY_SPACEBAR:
-                buttonAnimatorSpacebar.Play("Key_Held_Animation", 0, 0f);
-                break;
+           // case KEY_SPACEBAR:
+                //buttonAnimatorSpacebar.Play("Key_Held_Animation", 0, 0f);
+                //break;
             case KEY_J:
                 buttonAnimatorJ.Play("Key_Held_Animation", 0, 0f);
                 break;

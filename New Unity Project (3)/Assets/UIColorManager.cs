@@ -11,11 +11,13 @@ public class UIColorManager : MonoBehaviour
     public Color onlineColor08, onlineColor09, onlineColorSolid, offlineColor08, offlineColor09, offlineColorSolid, orangeColor08;
     public Color selectedColor, sPlusRankColor, sRankColor, aRankColor, bRankColor, cRankColor, dRankColor, eRankColor, fRankColor;
     public Color easyDifficultyColor, normalDifficultyColor, hardDifficultyColor, purpleColor;
-    public Color HIT_OBJECT_COLOR_KEY1, HIT_OBJECT_COLOR_KEY2, HIT_OBJECT_MOUSE_COLOR_LEFT, HIT_OBJECT_MOUSE_COLOR_RIGHT,
-        HIT_OBJECT_MOUSE_COLOR_UP, HIT_OBJECT_MOUSE_COLOR_DOWN;
+    public Color HIT_OBJECT_MOUSE_COLOR_LEFT, HIT_OBJECT_MOUSE_COLOR_RIGHT, HIT_OBJECT_MOUSE_COLOR_UP,
+        HIT_OBJECT_MOUSE_COLOR_DOWN, HIT_OBJECT_COLOR_KEY_D, HIT_OBJECT_COLOR_KEY_F, HIT_OBJECT_COLOR_KEY_J,
+        HIT_OBJECT_COLOR_KEY_K;
 
+    // Gradients
     public TMP_ColorGradient sPlusColorGradient, sColorGradient, aColorGradient, bColorGradient, cColorGradient, dColorGradient, eColorGradient,
-        fColorGradient;
+        fColorGradient, maxPlusColorGradient, maxColorGradient, greatColorGradient, lateColorGradient;
 
     private void Start()
     {

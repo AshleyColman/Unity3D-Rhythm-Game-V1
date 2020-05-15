@@ -13,7 +13,7 @@ public class Healthbar : MonoBehaviour
     public TextMeshProUGUI healthText, noFailText;
 
     // Bool
-    private bool failed;
+    private bool failed, healthLocked;
 
     // Slider
     public Slider healthbarSlider, noFailSlider;
@@ -41,6 +41,7 @@ public class Healthbar : MonoBehaviour
         // Initialize
         healthbarSlider.value = Constants.GREEN_HEALTH_VALUE;
         failed = false;
+        healthLocked = false;
 
         // Functions
         UpdateUI();
@@ -49,38 +50,41 @@ public class Healthbar : MonoBehaviour
     // Update UI slider colors
     private void UpdateUI()
     {
-        if (healthbarSlider.value <= 0)
+        if (healthLocked == false)
         {
-            // FAILED
-            failed = true;
-            // Display fail screen
-        }
-        else if (healthbarSlider.value > 0 && healthbarSlider.value <= Constants.RED_HEALTH_VALUE)
-        {
-            // RED
-            if (healthbarSliderImage.color != scriptManager.uiColorManager.offlineColor08)
+            if (healthbarSlider.value <= 0)
             {
-                healthbarSliderImage.color = scriptManager.uiColorManager.offlineColor08;
+                // FAILED
+                failed = true;
+                // Display fail screen
             }
-        }
-        else if (healthbarSlider.value > Constants.RED_HEALTH_VALUE && healthbarSlider.value <= Constants.ORANGE_HEALTH_VALUE)
-        {
-            // ORANGE
-            if (healthbarSliderImage.color != scriptManager.uiColorManager.orangeColor08)
+            else if (healthbarSlider.value > 0 && healthbarSlider.value <= Constants.RED_HEALTH_VALUE)
             {
-                healthbarSliderImage.color = scriptManager.uiColorManager.orangeColor08;
+                // RED
+                if (healthbarSliderImage.color != scriptManager.uiColorManager.offlineColor08)
+                {
+                    healthbarSliderImage.color = scriptManager.uiColorManager.offlineColor08;
+                }
             }
-        }
-        else if (healthbarSlider.value > Constants.ORANGE_HEALTH_VALUE && healthbarSlider.value <= Constants.GREEN_HEALTH_VALUE)
-        {
-            // GREEN
-            if (healthbarSliderImage.color != scriptManager.uiColorManager.onlineColor08)
+            else if (healthbarSlider.value > Constants.RED_HEALTH_VALUE && healthbarSlider.value <= Constants.ORANGE_HEALTH_VALUE)
             {
-                healthbarSliderImage.color = scriptManager.uiColorManager.onlineColor08;
+                // ORANGE
+                if (healthbarSliderImage.color != scriptManager.uiColorManager.orangeColor08)
+                {
+                    healthbarSliderImage.color = scriptManager.uiColorManager.orangeColor08;
+                }
             }
-        }
+            else if (healthbarSlider.value > Constants.ORANGE_HEALTH_VALUE && healthbarSlider.value <= Constants.GREEN_HEALTH_VALUE)
+            {
+                // GREEN
+                if (healthbarSliderImage.color != scriptManager.uiColorManager.onlineColor08)
+                {
+                    healthbarSliderImage.color = scriptManager.uiColorManager.onlineColor08;
+                }
+            }
 
-        healthText.text = Constants.HEALTH_STRING + healthbarSlider.value.ToString();
+            healthText.text = healthbarSlider.value.ToString();
+        }
     }
 
     // Update health
@@ -109,6 +113,11 @@ public class Healthbar : MonoBehaviour
     // Play no fail countdown
     public IEnumerator PlayNoFailCountdown()
     {
+        healthLocked = true;
+        noFailSlider.gameObject.SetActive(true);
+        healthText.text = Constants.LOCKED_HEALTH_STRING;
+        healthbarSliderImage.color = scriptManager.uiColorManager.offlineColor08;
+
         for (int i = 10; i > 0; i--)
         {
             noFailText.text = Constants.HEALTH_GUARD_STRING + i;
@@ -116,6 +125,8 @@ public class Healthbar : MonoBehaviour
         }
 
         noFailSlider.gameObject.SetActive(false);
+        healthLocked = false;
+        UpdateUI();
     }
     #endregion
 }

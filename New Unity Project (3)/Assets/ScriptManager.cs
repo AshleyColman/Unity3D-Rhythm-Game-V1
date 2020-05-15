@@ -49,4 +49,6 @@ public class ScriptManager : MonoBehaviour
     public TopMenu topMenu;
     public GradeManager gradeManager;
     public Healthbar healthbar;
+    public CameraScript cameraScript;
+    public Gradebar gradebar;
 }

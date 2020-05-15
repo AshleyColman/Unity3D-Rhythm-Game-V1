@@ -6,7 +6,6 @@ public class CursorLookAtY : MonoBehaviour {
     private float newRotationX, newRotationY;
     private string axisY, axisX;
 
-
     // Use this for initialization
     void Start()
     {
@@ -18,7 +17,6 @@ public class CursorLookAtY : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-
         newRotationX = transform.localEulerAngles.x - Input.GetAxis(axisY) * sensitivity;
         newRotationX = Mathf.Clamp(newRotationX, 0f, 2f);
 
@@ -26,6 +24,5 @@ public class CursorLookAtY : MonoBehaviour {
         newRotationY = Mathf.Clamp(newRotationY, 0f, 2f);
 
         gameObject.transform.localEulerAngles = new Vector3(newRotationX, newRotationY, 0);
-
     }
 }

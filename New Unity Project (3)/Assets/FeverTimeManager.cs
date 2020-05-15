@@ -1,9 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class FeverTimeManager : MonoBehaviour
 {
     #region Variables
+    // Text
+    public TextMeshProUGUI remainingPhraseNoteCountText;
+
+    // Gameobject
+    public GameObject feverSuccessPanel, feverFailedPanel, bonusFeverScorePanel;
+
     // Animator
     public Animator feverSliderAnimator, flashGlassAnimator;
 
@@ -13,26 +20,24 @@ public class FeverTimeManager : MonoBehaviour
     // Slider
     public Slider feverTimeSlider;
 
+    // Int 
+    public int currentPhraseCount;
+
     // Float
-    float tickDuration, measureDuration, feverSliderValueToLerpTo, feverSliderLerp, feverDuration2,
+    public float tickDuration, measureDuration, feverSliderValueToLerpTo, feverSliderLerp, feverDuration1, feverDuration2,
         feverDuration3, feverDuration4;
 
     // Bool 
-    private bool feverActivated, canActivate, feverPhraseActive, feverPhraseBroken;
+    private bool feverActivated, canActivate;
 
     // Scripts
     ScriptManager scriptManager;
     #endregion
 
     #region Properties
-    public bool FeverPhraseActive
+    public bool FeverActivated
     {
-        get { return feverPhraseActive; }
-    }
-
-    public bool FeverPhraseBroken
-    {
-        get { return feverPhraseBroken; }
+        get { return feverActivated; }
     }
     #endregion
 
@@ -42,10 +47,9 @@ public class FeverTimeManager : MonoBehaviour
         // Initialize
         feverTimeSlider.value = 0f;
         feverSliderValueToLerpTo = 0f;
+        currentPhraseCount = 0;
         feverActivated = false;
         canActivate = false;
-        feverPhraseActive = false;
-        feverPhraseBroken = false;
 
         // Reference
         scriptManager = FindObjectOfType<ScriptManager>();
@@ -55,7 +59,7 @@ public class FeverTimeManager : MonoBehaviour
     {
         if (canActivate == true)
         {
-            if (Input.GetKeyDown(Constants.FEVER_ACTIVATION_KEY))
+            if (Input.GetKeyDown(Constants.FEVER_ACTIVATION_KEYCODE))
             {
                 if (feverActivated == false)
                 {
@@ -82,6 +86,30 @@ public class FeverTimeManager : MonoBehaviour
         }
     }
 
+    // Update all active hit objects to fever appearance
+    private void UpdateHitObjectsToFever()
+    {
+        for (int i = 0; i < scriptManager.loadAndRunBeatmap.activeList.Count; i++)
+        {
+            scriptManager.loadAndRunBeatmap.activeList[i].AssignFeverColors();
+        }
+    }
+
+    // Update all active hit objects to normal appearance
+    private void UpdateHitObjectsToNormal()
+    {
+        for (int i = 0; i < scriptManager.loadAndRunBeatmap.activeList.Count; i++)
+        {
+            scriptManager.loadAndRunBeatmap.activeList[i].AssignNormalColors();
+        }
+    }
+
+    // Update the remaining phrase note count text
+    public void UpdateRemainingPhraseNoteCountText(int _count)
+    {
+        remainingPhraseNoteCountText.text = Constants.FEVER_NOTES_REMAINING_STRING + _count.ToString();
+    }
+
     // Calculate measure duration
     public void CalculateMeasureDuration()
     { 
@@ -94,100 +122,113 @@ public class FeverTimeManager : MonoBehaviour
     // Calculate how long fever will last once activated
     public void CalculateFeverDuration()
     {
-        switch (feverTimeSlider.value)
-        {
-            case Constants.FEVER_FILL_2:
-                feverDuration2 = (measureDuration * 2);
-                break;
-            case Constants.FEVER_FILL_3:
-                feverDuration3 = (measureDuration * 3);
-                break;
-            case Constants.FEVER_FILL_4:
-                feverDuration4 = (measureDuration * 4);
-                break;
-        }
+        feverDuration1 = (measureDuration * 2);
+        feverDuration2 = (measureDuration * 4);
+        feverDuration3 = (measureDuration * 6);
+        feverDuration4 = (measureDuration * 8);
     }
 
     // Add phrase to fever
-    public void AddPhrase(string _tag)
+    public void AddPhrase()
     {
-        if (feverTimeSlider.value != Constants.FEVER_FILL_4)
+        // Increase total fever phrases hit count
+        scriptManager.playInformation.IncreaseTotalFeverPhrasesHit();
+
+        // Play fever success
+        switch (feverSuccessPanel.gameObject.activeSelf)
         {
-            // Check if the fever note hit was a single phrase type
-            if (_tag == Constants.PHRASE_FEVER_HIT_OBJECT_TYPE_TAG)
-            {
-                // Add phrase, increase fever slider value
-                if (feverPhraseActive == true)
-                {
-                    if (feverPhraseBroken == false)
-                    {
-                        flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
-
-                        switch (feverTimeSlider.value)
-                        {
-                            case 0:
-                                feverTimeSlider.value = Constants.FEVER_FILL_1;
-                                break;
-                            case Constants.FEVER_FILL_1:
-                                feverTimeSlider.value = Constants.FEVER_FILL_2;
-                                break;
-                            case Constants.FEVER_FILL_2:
-                                feverTimeSlider.value = Constants.FEVER_FILL_3;
-                                break;
-                            case Constants.FEVER_FILL_3:
-                                feverTimeSlider.value = Constants.FEVER_FILL_4;
-                                break;
-                        }
-                    }
-                }
-
-                // Reset phrase tracking 
-                feverPhraseActive = false;
-                feverPhraseBroken = false;
-            }
+            case false:
+                feverSuccessPanel.gameObject.SetActive(true);
+                break;
+            case true:
+                feverSuccessPanel.gameObject.SetActive(false);
+                feverSuccessPanel.gameObject.SetActive(true);
+                break;
         }
-    }
 
-    // Break fever phrase
-    public void BreakFeverPhrase()
-    {
-        feverPhraseBroken = true;
-    }
+        scriptManager.feverTimeManager.remainingPhraseNoteCountText.gameObject.SetActive(false);
 
-    // Reset fever phrase
-    public void ActivateFeverPhrase()
-    {
-        feverPhraseActive = true;
-        feverPhraseBroken = false;
+        if (feverActivated == false)
+        {
+            if (feverTimeSlider.value != Constants.FEVER_FILL_4)
+            {
+                flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
+
+                switch (currentPhraseCount)
+                {
+                    case 0:
+                        feverTimeSlider.value = Constants.FEVER_FILL_1;
+                        currentPhraseCount = 1;
+                        break;
+                    case 1:
+                        feverTimeSlider.value = Constants.FEVER_FILL_2;
+                        currentPhraseCount = 2;
+                        break;
+                    case 2:
+                        feverTimeSlider.value = Constants.FEVER_FILL_3;
+                        currentPhraseCount = 3;
+                        break;
+                    case 3:
+                        feverTimeSlider.value = Constants.FEVER_FILL_4;
+                        currentPhraseCount = 4;
+                        break;
+                }
+            }
+
+            canActivate = true;
+        }
     }
 
     // Lerp fever slider
     private void LerpFeverSlider()
     {
-        feverSliderLerp += Time.deltaTime / Constants.SCORE_LERP_DURATION;
-        float sliderValue = Mathf.Lerp(feverTimeSlider.value, feverSliderValueToLerpTo, feverSliderLerp);
-        feverTimeSlider.value = sliderValue;
+        //float feverSliderLerpPercentage = feverSliderLerp / 10f;
+        switch (currentPhraseCount)
+        {
+            case 1:
+                feverSliderLerp += Time.deltaTime / feverDuration1;
+                feverTimeSlider.value = Mathf.Lerp(Constants.FEVER_FILL_1, feverSliderValueToLerpTo, feverSliderLerp);
+                break;
+            case 2:
+                feverSliderLerp += Time.deltaTime / feverDuration2;
+                feverTimeSlider.value = Mathf.Lerp(Constants.FEVER_FILL_2, feverSliderValueToLerpTo, feverSliderLerp);
+                break;
+            case 3:
+                feverSliderLerp += Time.deltaTime / feverDuration3;
+                feverTimeSlider.value = Mathf.Lerp(Constants.FEVER_FILL_3, feverSliderValueToLerpTo, feverSliderLerp);
+                break;
+            case 4:
+                feverSliderLerp += Time.deltaTime / feverDuration4;
+                feverTimeSlider.value = Mathf.Lerp(Constants.FEVER_FILL_4, feverSliderValueToLerpTo, feverSliderLerp);
+                break;
+        }
     }
 
     // Activate fever
     private void ActivateFever()
     {
+        UpdateHitObjectsToFever();
         feverActivated = true;
+        audioReverbFilter.enabled = true;
+        bonusFeverScorePanel.gameObject.SetActive(true);
         canActivate = false;
         feverSliderLerp = 0f;
         feverSliderAnimator.Play("FeverEffect1_Animation", 0, 0f);
         flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
-        audioReverbFilter.enabled = true;
     }
 
     // Deactivate fever
     private void DeactivateFever()
     {
+        UpdateHitObjectsToNormal();
         // Reset animation to default
         feverSliderAnimator.gameObject.SetActive(false);
         feverSliderAnimator.gameObject.SetActive(true);
+        bonusFeverScorePanel.gameObject.SetActive(false);
+        scriptManager.playInformation.ResetActiveFeverBonusScore();
         audioReverbFilter.enabled = false;
         feverActivated = false;
+        currentPhraseCount = 0;
     }
 
     // Fill fever slider

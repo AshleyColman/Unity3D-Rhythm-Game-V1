@@ -1,10 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.IO;
-using System;
 using UnityEngine.Networking;
 
 public class SetupBeatmap : MonoBehaviour
@@ -283,10 +281,9 @@ public class SetupBeatmap : MonoBehaviour
         var folder = Directory.CreateDirectory(Application.persistentDataPath + BEATMAP_FOLDER + beatmapFolderName);
         // Save the folder directory to save the files into later
         folderDirectory = Application.persistentDataPath + BEATMAP_FOLDER + beatmapFolderName + @"\";
-        Debug.Log(folderDirectory);
 
         // Get the current date
-        GetCurrentDate();
+        beatmapCreatedDate = Utilities.GetCurrentDate();
 
         createFolderButton.interactable = false;
         folderCreated = true;
@@ -320,12 +317,6 @@ public class SetupBeatmap : MonoBehaviour
                 beatmapDifficulty = EASY_DIFFICULTY;
                 break;
         }
-    }
-
-    // Get the current date
-    public void GetCurrentDate()
-    {
-        beatmapCreatedDate = DateTime.Now.ToString("MM/dd/yyyy h:mm");
     }
 
     public void CheckIfAudioFileExists()

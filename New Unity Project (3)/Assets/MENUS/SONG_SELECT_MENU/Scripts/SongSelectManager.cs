@@ -29,7 +29,6 @@ public class SongSelectManager : MonoBehaviour
     private string beatmapCreator, beatmapCreatedDate, beatmapCreatorMessage; // Creator
     private string disabledLevelTextValue;
     private string previousDifficulty;
-    private const string BEATMAP_FOLDER = "Beatmaps";
 
     // Integers
     private int selectedBeatmapDirectoryIndex, previousBeatmapDirectoryIndex; // Beatmap directory indexs
@@ -50,11 +49,6 @@ public class SongSelectManager : MonoBehaviour
     #endregion
 
     #region Properties
-    public string BeatmapFolder
-    {
-        get { return BEATMAP_FOLDER; }
-    }
-
     public string EasyDifficultyName
     {
         get { return easyDifficultyName; }

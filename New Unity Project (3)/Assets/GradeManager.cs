@@ -30,9 +30,13 @@ public class GradeManager : MonoBehaviour
         {
             return Constants.GRADE_E;
         }
-        else
+        else if (_percentage >= Constants.GRADE_F_REQUIRED && _percentage < Constants.GRADE_E_REQUIRED)
         {
             return Constants.GRADE_F;
+        }
+        else
+        {
+            return Constants.GRADE_TBD;
         }
     }
     #endregion

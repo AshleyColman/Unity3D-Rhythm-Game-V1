@@ -41,7 +41,8 @@ public class LoadLastBeatmapManager : MonoBehaviour
     private void ErrorCheckLastBeatmapDirectory()
     {
         // Check the beatmap directories in the C drive
-        beatmapDirectories = Directory.GetDirectories(@"C:\Beatmaps");
+        beatmapDirectories = Directory.GetDirectories(Application.persistentDataPath + "/" +
+            Constants.BEATMAP_FOLDER);
         // Get the number of folders found within the beatmaps folder
         beatmapDirectoryCount = (ushort)beatmapDirectories.Length;
 

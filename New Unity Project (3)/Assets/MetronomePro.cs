@@ -29,7 +29,6 @@ public class MetronomePro : MonoBehaviour
     public TextMeshProUGUI BPMText, OffsetText;
     public TMP_Dropdown divisionDropdown;
 
-
     // Float
     public float Bpm = 120f;
     public float OffsetMS = 0f;
@@ -577,6 +576,13 @@ public class MetronomePro : MonoBehaviour
     void GameplaySceneOnTick()
     {
         noteLightAnimator.Play("NoteLight_Beat_Animation", 0, 0f);
+
+        switch (scriptManager.feverTimeManager.FeverActivated)
+        {
+            case true:
+                flashGlassAnimator.Play("FlashGlass_Animation", 0, 0f);
+                break;
+        }
     }
 
     // Editor scene on measure animations
