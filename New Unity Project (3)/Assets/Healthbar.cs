@@ -41,10 +41,9 @@ public class Healthbar : MonoBehaviour
         // Initialize
         healthbarSlider.value = Constants.GREEN_HEALTH_VALUE;
         failed = false;
-        healthLocked = false;
-
-        // Functions
-        UpdateUI();
+        healthLocked = true;
+        healthText.text = Constants.LOCKED_HEALTH_STRING;
+        healthbarSliderImage.color = scriptManager.uiColorManager.offlineColor08;
     }
 
     // Update UI slider colors
@@ -113,11 +112,6 @@ public class Healthbar : MonoBehaviour
     // Play no fail countdown
     public IEnumerator PlayNoFailCountdown()
     {
-        healthLocked = true;
-        noFailSlider.gameObject.SetActive(true);
-        healthText.text = Constants.LOCKED_HEALTH_STRING;
-        healthbarSliderImage.color = scriptManager.uiColorManager.offlineColor08;
-
         for (int i = 10; i > 0; i--)
         {
             noFailText.text = Constants.HEALTH_GUARD_STRING + i;

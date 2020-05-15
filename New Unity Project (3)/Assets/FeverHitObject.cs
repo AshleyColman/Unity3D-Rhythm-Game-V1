@@ -78,8 +78,23 @@ public class FeverHitObject : KeyHitObject
 
     private void AssignActive()
     {
-        approachImage.color = scriptManager.uiColorManager.selectedColor;
-        outlineImage.color = scriptManager.uiColorManager.selectedColor;
+        switch (tag)
+        {
+            case Constants.HIT_OBJECT_TYPE_KEY_D_TAG:
+                approachImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY_D;
+                break;
+            case Constants.HIT_OBJECT_TYPE_KEY_F_TAG:
+                approachImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY_F;
+                break;
+            case Constants.HIT_OBJECT_TYPE_KEY_J_TAG:
+                approachImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY_J;
+                break;
+            case Constants.HIT_OBJECT_TYPE_KEY_K_TAG:
+                approachImage.color = scriptManager.uiColorManager.HIT_OBJECT_COLOR_KEY_K;
+                break;
+        }
+
+        outlineImage.color = scriptManager.uiColorManager.solidWhiteColor;
     }
 
     protected override void HasHit()

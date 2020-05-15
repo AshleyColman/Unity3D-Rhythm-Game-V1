@@ -247,7 +247,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
         {
             case Constants.EASY_DIFFICULTY:
                 // Text
-                difficultyNameText.text = Constants.EASY_DIFFICULTY.ToUpper() + " " + Constants.LEVEL_PREFIX + 
+                difficultyNameText.text = Constants.EASY_DIFFICULTY.ToUpper() + " " + 
                     " " + Database.database.LoadedBeatmapDifficultyLevel;
 
                 // Create new color
@@ -257,7 +257,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
                 break;
             case Constants.NORMAL_DIFFICULTY:
                 // Text
-                difficultyNameText.text = Constants.NORMAL_DIFFICULTY.ToUpper() + " " + Constants.LEVEL_PREFIX +
+                difficultyNameText.text = Constants.NORMAL_DIFFICULTY.ToUpper() + " " + 
                     " " + Database.database.LoadedBeatmapDifficultyLevel;
 
                 // Create new color
@@ -267,7 +267,7 @@ public class LoadAndRunBeatmap : MonoBehaviour
                 break;
             case Constants.HARD_DIFFICULTY:
                 // Text
-                difficultyNameText.text = Constants.HARD_DIFFICULTY.ToUpper() + " " + Constants.LEVEL_PREFIX +
+                difficultyNameText.text = Constants.HARD_DIFFICULTY.ToUpper() + " " +
                     " " + Database.database.LoadedBeatmapDifficultyLevel;
                 // Create new color
                 color08 = new Color(scriptManager.uiColorManager.hardDifficultyColor.r,
