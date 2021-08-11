@@ -7,7 +7,7 @@ The latest version and code can be found at: https://github.com/Ashleyc97/Rhythm
 
 Video updates from newest to oldest:
 
-(https://gyazo.com/4f0488a2376d708362f679079f05b085)
+![alt text](https://gyazo.com/4f0488a2376d708362f679079f05b085)
 
 * https://www.youtube.com/watch?v=DUVZtbHpXGA
 * https://www.youtube.com/watch?v=5Tr4UNmSFF4
