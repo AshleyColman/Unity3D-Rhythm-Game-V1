@@ -4,12 +4,11 @@ A japanese anime style rhythm game inspired by Osu!
 This project was continued - rewritten from the beginning focusing on being more optimized and better coded.
 The latest version and code can be found at: https://github.com/Ashleyc97/Rhythm-Game-Final-Version
 
-
-Video updates from newest to oldest:
-
 <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif2.gif"/>
 
 <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif1.gif" height="278" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif3.gif" height="278" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif4.gif" height="278" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif5.gif" height="278" />
+
+# Video updates from newest to oldest:
 
 * https://www.youtube.com/watch?v=DUVZtbHpXGA
 * https://www.youtube.com/watch?v=5Tr4UNmSFF4
