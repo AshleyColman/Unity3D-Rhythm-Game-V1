@@ -7,7 +7,7 @@ The latest version and code can be found at: https://github.com/Ashleyc97/Rhythm
 
 Video updates from newest to oldest:
 
-![alt text]<img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-/blob/master/Gif1.gif" width="40" height="40" />
+![alt text]<img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-/blob/master/Gif1.gif" height="400" />
 
 * https://www.youtube.com/watch?v=DUVZtbHpXGA
 * https://www.youtube.com/watch?v=5Tr4UNmSFF4
