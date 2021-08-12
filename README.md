@@ -11,6 +11,7 @@ The latest version and code can be found at: https://github.com/Ashleyc97/Rhythm
 # Video updates from newest to oldest:
 
 * https://www.youtube.com/watch?v=DUVZtbHpXGA
+* https://www.youtube.com/watch?v=gVDRCHPZPR4
 * https://www.youtube.com/watch?v=5Tr4UNmSFF4
 * https://www.youtube.com/watch?v=GNGcBkcTftQ
 * https://www.youtube.com/watch?v=pdOg1rH_Jrc
