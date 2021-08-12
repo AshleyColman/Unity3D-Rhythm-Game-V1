@@ -9,7 +9,7 @@ Video updates from newest to oldest:
 
 <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif2.gif"/>
 
-<img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif1.gif" height="300" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif3.gif" height="300" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif4.gif" height="200" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif5.gif" height="200" />
+<img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif1.gif" height="298" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif3.gif" height="298" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif4.gif" height="200" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif5.gif" height="200" />
 
 * https://www.youtube.com/watch?v=DUVZtbHpXGA
 * https://www.youtube.com/watch?v=5Tr4UNmSFF4
