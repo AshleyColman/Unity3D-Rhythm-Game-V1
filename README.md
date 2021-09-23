@@ -1,4 +1,4 @@
-# Rhythm-Game-Project-Versions-1-to-160-commit-
+# Rhythm-Game-Project-Version-1
 
 A japanese anime style rhythm game inspired by Osu!
 This project was continued - rewritten from the beginning focusing on being more organised and optimised.
