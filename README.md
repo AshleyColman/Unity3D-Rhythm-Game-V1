@@ -1,6 +1,5 @@
 # Rhythm-Game-Project-Version-1
 
-A japanese anime style rhythm game inspired by Osu!
 <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif2.gif"/>
 
 <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif1.gif" height="278" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif3.gif" height="278" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif4.gif" height="278" /> <img src="https://github.com/Ashleyc97/Rhythm-Game-Project-Versions-1-to-160-commit-CS/blob/master/Gifs/Gif5.gif" height="278" />
